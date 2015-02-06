@@ -1,4 +1,8 @@
-
+/*
+ * Copyright (C) 2015 by XDEV Software, All Rights Reserved.
+ *
+ */
+ 
 package com.xdev.ui;
 
 

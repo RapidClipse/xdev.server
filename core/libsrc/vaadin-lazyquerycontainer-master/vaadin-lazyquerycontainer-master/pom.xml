@@ -1,0 +1,101 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.vaadin.addons.lazyquerycontainer</groupId>
+    <artifactId>vaadin-lazyquerycontainer-root</artifactId>
+    <version>7.3.3.6-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <scm>
+        <url>https://github.com/tlaukkan/vaadin-lazyquerycontainer.git</url>
+        <connection>scm:git:git://github.com:tlaukkan/vaadin-lazyquerycontainer.git</connection>
+        <developerConnection>scm:git:git@github.com:tlaukkan/vaadin-lazyquerycontainer.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <!-- Deploy releases and snapshots to the CloudBees maven repositories -->
+    <distributionManagement>
+        <downloadUrl>http://repository-bubblecloud.forge.cloudbees.com/snapshot/</downloadUrl>
+        <repository>
+            <id>bubblecloud-cloudbees-release</id>
+            <name>bubblecloud-cloudbees-release</name>
+            <url>dav:https://repository-bubblecloud.forge.cloudbees.com/release/</url>
+        </repository>
+        <snapshotRepository>
+            <id>bubblecloud-cloudbees-snapshot</id>
+            <name>bubblecloud-cloudbees-snapshot</name>
+            <url>dav:https://repository-bubblecloud.forge.cloudbees.com/snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>1.0-beta-7</version>
+            </extension>
+        </extensions>
+
+        <plugins>
+            <!--<plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4.2</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                        <version>1.8.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.9.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.2.2</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>vaadin-snapshots</id>
+            <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>EclipseLink Repo</id>
+            <url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo</url>
+        </repository>
+    </repositories>
+
+    <modules>
+        <module>vaadin-lazyquerycontainer</module>
+        <module>vaadin-lazyquerycontainer-jpa-example</module>
+        <module>vaadin-lazyquerycontainer-mock-example</module>
+    </modules>
+
+</project>

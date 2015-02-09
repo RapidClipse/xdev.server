@@ -2,7 +2,7 @@
  * Copyright (C) 2015 by XDEV Software, All Rights Reserved.
  *
  */
- 
+
 package com.xdev.ui;
 
 
@@ -31,7 +31,7 @@ import com.vaadin.ui.Table;
  * @author XDEV Software
  *
  */
-public class XdevTable<E> extends Table
+public class XdevTable extends Table
 {
 	/**
 	 * Creates a new empty table.
@@ -40,11 +40,11 @@ public class XdevTable<E> extends Table
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new table with caption and connect it to a Container.
-	 * 
+	 *
 	 * @param caption
 	 * @param dataSource
 	 */
@@ -52,18 +52,18 @@ public class XdevTable<E> extends Table
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new empty table with caption.
-	 * 
+	 *
 	 * @param caption
 	 */
 	public XdevTable(final String caption)
 	{
 		super(caption);
 	}
-	
+
 	// init defaults
 	{
 		setSelectable(true);

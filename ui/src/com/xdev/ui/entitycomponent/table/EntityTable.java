@@ -1,13 +1,14 @@
 
-package com.xdev.ui.entitycomponent;
+package com.xdev.ui.entitycomponent.table;
 
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.xdev.server.util.KeyValueType;
+import com.xdev.ui.entitycomponent.UIModelProvider;
 
 
-public class EntityComboBox<T> extends AbstractEntityComboBox<T, BeanItemContainer<T>>
+public class EntityTable<T> extends AbstractEntityTable<T, BeanItemContainer<T>>
 {
 	/**
 	 *
@@ -36,5 +37,16 @@ public class EntityComboBox<T> extends AbstractEntityComboBox<T, BeanItemContain
 	protected UIModelProvider.Implementation<T> getModelProvider()
 	{
 		return new UIModelProvider.Implementation<T>();
+	}
+
+
+	@Override
+	public BeanItem<T> getSelectedItem()
+	{
+		if(!this.isMultiSelect())
+		{
+			return this.getContainerDataSource().getItem(this.getValue());
+		}
+		return null;
 	}
 }

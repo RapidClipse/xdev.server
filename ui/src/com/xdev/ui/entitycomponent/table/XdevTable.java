@@ -1,5 +1,5 @@
 
-package com.xdev.ui.entitycomponent;
+package com.xdev.ui.entitycomponent.table;
 
 
 import com.vaadin.data.util.BeanItem;

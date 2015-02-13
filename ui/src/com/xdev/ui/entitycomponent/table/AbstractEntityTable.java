@@ -1,11 +1,13 @@
 
-package com.xdev.ui.entitycomponent;
+package com.xdev.ui.entitycomponent.table;
 
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
 import com.xdev.server.util.KeyValueType;
+import com.xdev.ui.entitycomponent.GenericEntityComponent;
+import com.xdev.ui.entitycomponent.UIModelProvider;
 
 
 public abstract class AbstractEntityTable<BEANTYPE, T extends Container> extends Table implements

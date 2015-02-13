@@ -1,5 +1,5 @@
 
-package com.xdev.ui.entitycomponent;
+package com.xdev.ui.entitycomponent.combobox;
 
 
 import com.vaadin.data.util.BeanItem;

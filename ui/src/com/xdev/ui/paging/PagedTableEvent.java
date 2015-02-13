@@ -2,7 +2,7 @@
 package com.xdev.ui.paging;
 
 
-import com.xdev.ui.entitycomponent.XdevPagedTable;
+import com.xdev.ui.entitycomponent.table.XdevPagedTable;
 
 
 public class PagedTableEvent<EntityType>

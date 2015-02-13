@@ -50,4 +50,11 @@ public class HibernateEntityIDResolver implements EntityIDResolver
 		
 		return idProperty;
 	}
+	
+	
+	public Property getEntityReferenceProperty(Class<?> entityClassA, Class<?> entityClassB)
+	{
+		
+		return null;
+	}
 }

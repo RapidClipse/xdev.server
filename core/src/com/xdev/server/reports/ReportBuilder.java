@@ -1,15 +1,7 @@
-/*
- * XDEV BI Suite
- * 
- * Copyright (c) 2011 - 2013, XDEV Software and/or its affiliates. All rights reserved.
- * Use is subject to license terms.
- */
 
 package com.xdev.server.reports;
 
 
-import java.io.File;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,25 +23,11 @@ import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
-import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JRViewer;
 import net.sf.jasperreports.view.JasperViewer;
 
 
-/**
- * The {@link ReportBuilder} class provides a easy way to access the Jasper
- * Reports API from XDEV API.
- * 
- * 
- * <p>
- * The {@link JasperPrint} instance for this {@link ReportBuilder} is cached
- * internally to allow multiple outputs from one {@link ReportBuilder} instance
- * for non-rewindable {@link JRDataSource}s.
- * </p>
- * 
- * @author XDEV Software Corp.
- */
-//migrated from xdev4
+// migrated from xdev4
 @SuppressWarnings({"unchecked","rawtypes","deprecation"})
 // Because JasperAPI maps ship without generic types specified
 public class ReportBuilder
@@ -81,220 +59,6 @@ public class ReportBuilder
 		this.report = reportStub.getReportTemplate();
 		this.dataSource = reportStub.getDataSource();
 	}
-	
-	
-	/**
-	 * Creates a {@link ReportBuilder} with all needed information to build many
-	 * different outputs of your report.
-	 * 
-	 * 
-	 * 
-	 * 
-	 * @param reportLocation
-	 *            a String describing the location of the compiled
-	 *            {@link JasperReport} design to load. Must not be null.
-	 * 
-	 *            <p>
-	 *            Searches for a resource in the application's classpath and the
-	 *            filesystem.
-	 *            </p>
-	 * 
-	 *            // TODO Examples
-	 * 
-	 * @param parameters
-	 *            report parameters {@link Map}
-	 * @param dataSource
-	 *            {@link JRDataSource} object that contains the data, you want
-	 *            the report to be filled with. Must not be null.
-	 * 
-	 * @throws JRException
-	 *             if the report could not be found or a problem occurred
-	 *             loading the report
-	 */
-	public ReportBuilder(final String reportLocation, final Map parameters,
-			final JRDataSource dataSource) throws JRException
-	{
-		
-		if(reportLocation == null)
-		{
-			throw new IllegalArgumentException("reportLocation must not be null");
-		}
-		else
-		{
-			JasperReport loadedReport = null;
-			
-			// try
-			// {
-			// // try to find report file with xdev api
-			// final InputStream inputStream =
-			// IOUtils.findResource(reportLocation);
-			// loadedReport = (JasperReport)JRLoader.loadObject(inputStream);
-			// }
-			// catch(FileNotFoundException e)
-			// {
-			// fallback try to find report file with jasper api
-			loadedReport = (JasperReport)JRLoader.loadObjectFromFile(reportLocation);
-			// }
-			// catch(IOException e)
-			// {
-			// throw new JRException(e);
-			// }
-			
-			this.report = loadedReport;
-		}
-		
-		if(parameters != null)
-		{
-			this.parameters.putAll(parameters);
-		}
-		
-		/*
-		 * prohibit null vales for dataSource as it is a common pitfall for
-		 * empty reports
-		 */
-		if(dataSource == null)
-		{
-			throw new IllegalArgumentException(
-					"dataSource must not be null. The use of JREmptyDataSource may be appropriate.");
-		}
-		else
-		{
-			this.dataSource = dataSource;
-		}
-		
-	}
-	
-	
-	/**
-	 * Creates a {@link ReportBuilder} with all needed information to build many
-	 * different outputs of your report.
-	 * 
-	 * 
-	 * 
-	 * 
-	 * @param reportLocation
-	 *            a {@link File} describing the location of the compiled
-	 *            {@link JasperReport} design to load. Must not be null.
-	 * @param parameters
-	 *            report parameters {@link Map}
-	 * @param dataSource
-	 *            {@link JRDataSource} object that contains the data, you want
-	 *            the report to be filled with. Must not be null.
-	 * @throws JRException
-	 *             if the report could not be found or a problem occurred
-	 *             loading the report
-	 */
-	
-	public ReportBuilder(final File reportLocation, final Map parameters,
-			final JRDataSource dataSource) throws JRException
-	{
-		
-		if(reportLocation == null)
-		{
-			throw new IllegalArgumentException("reportLocation must not be null");
-		}
-		else
-		{
-			
-			JasperReport loadedReport = null;
-			
-			// try
-			// {
-			// // try to find report file with xdev api
-			// final InputStream inputStream =
-			// IOUtils.findResource(reportLocation
-			// .getAbsolutePath());
-			// loadedReport = (JasperReport)JRLoader.loadObject(inputStream);
-			// }
-			// catch(FileNotFoundException e)
-			// {
-			// fallback try to find report file with jasper api
-			loadedReport = (JasperReport)JRLoader.loadObject(reportLocation);
-			// }
-			// catch(IOException e)
-			// {
-			// throw new JRException(e);
-			// }
-			
-			this.report = loadedReport;
-		}
-		
-		if(parameters != null)
-		{
-			this.parameters.putAll(parameters);
-		}
-		
-		/*
-		 * prohibit null vales for dataSource as it is a common pitfall for
-		 * empty reports
-		 */
-		if(dataSource == null)
-		{
-			throw new IllegalArgumentException(
-					"dataSource must not be null. The use of JREmptyDataSource may be appropriate.");
-		}
-		else
-		{
-			this.dataSource = dataSource;
-		}
-	}
-	
-	
-	/**
-	 * Creates a {@link ReportBuilder} with all needed information to build many
-	 * different outputs of your report.
-	 * 
-	 * @param inputStream
-	 *            a {@link InputStream} to load the compiled
-	 *            {@link JasperReport} design from. Must not be null.
-	 * 
-	 * @param parameters
-	 *            report parameters {@link Map}
-	 * 
-	 * @param dataSource
-	 *            {@link JRDataSource} object that contains the data, you want
-	 *            the report to be filled with. Must not be null.
-	 * 
-	 * @throws JRException
-	 *             if the report could not be found or a problem occurred
-	 *             loading the report
-	 */
-	
-	public ReportBuilder(final InputStream inputStream, final Map parameters,
-			final JRDataSource dataSource) throws JRException
-	{
-		super();
-		
-		if(inputStream == null)
-		{
-			throw new IllegalArgumentException("inputStream must not be null");
-		}
-		else
-		{
-			this.report = (JasperReport)JRLoader.loadObject(inputStream);
-		}
-		
-		if(parameters != null)
-		{
-			this.parameters.putAll(parameters);
-		}
-		
-		/*
-		 * prohibit null vales for dataSource as it is a common pitfall for
-		 * empty reports
-		 */
-		if(dataSource == null)
-		{
-			throw new IllegalArgumentException(
-					"dataSource must not be null. The use of JREmptyDataSource may be appropriate.");
-		}
-		else
-		{
-			this.dataSource = dataSource;
-		}
-		
-	}
-	
 	
 	/**
 	 * Creates a {@link ReportBuilder} with all needed information to build many

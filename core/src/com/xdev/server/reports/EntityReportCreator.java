@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -25,15 +27,34 @@ public abstract class EntityReportCreator extends AbstractReportCreator implemen
 	protected JRDataSource createDataSource(Collection<?> beanCollection,
 			boolean isUseFieldDescription)
 	{
-		// TODO mapping?
 		JRDataSource dataSource = new JRBeanCollectionDataSource(beanCollection,
 				isUseFieldDescription);
 		return dataSource;
 	}
 	
 	
+	protected JRDataSource createDataSource(Collection<?> beanCollection,
+			boolean isUseFieldDescription, String... mapping)
+	{
+		JRDataSource dataSource = new JRBeanCollectionDataSource(beanCollection,
+				isUseFieldDescription);
+		
+		if(mapping != null && mapping.length > 0)
+		{
+			Map<String, String> fieldMapping = new HashMap<String, String>();
+			for(int i = 0; i < mapping.length;)
+			{
+				fieldMapping.put(mapping[i++],mapping[i++]);
+			}
+			return new JRDataSourceMapper(dataSource,fieldMapping);
+		}
+		
+		return dataSource;
+	}
+	
+	
 	@Override
-	public <T> void execute(T creator)
+	public <T> void execute(T info)
 	{
 		try
 		{
@@ -124,6 +145,12 @@ public abstract class EntityReportCreator extends AbstractReportCreator implemen
 							outputStream.close();
 						}
 					}
+					
+					// TODO case open file in new tab after creation
+					// if(target == Target.FILE && openFile)
+					// {
+					// DesktopUtils.open(file);
+					// }
 				}
 				break;
 			}
@@ -138,9 +165,10 @@ public abstract class EntityReportCreator extends AbstractReportCreator implemen
 		}
 	}
 	
+	
 	/*
-	 * TODO Mit einem FileProvider arbeiten. Ein choose File Dialog oder Ähnliches hat hier
-	 * serverseitig nichts zu suchen.
+	 * TODO Mit einem FileProvider arbeiten. Ein choose File Dialog oder
+	 * Ähnliches hat hier serverseitig nichts zu suchen.
 	 */
 	@Override
 	public void setFile(File file)
@@ -149,12 +177,14 @@ public abstract class EntityReportCreator extends AbstractReportCreator implemen
 		super.setFile(file);
 	}
 	
+	
 	@Override
 	public File getFile()
 	{
 		// TODO Auto-generated method stub
 		return super.getFile();
 	}
+	
 	
 	public abstract void init();
 }

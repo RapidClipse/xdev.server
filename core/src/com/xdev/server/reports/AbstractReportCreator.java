@@ -17,6 +17,7 @@ public abstract class AbstractReportCreator implements ReportCreator
 	private boolean			displayPageDialogOnlyOnce;
 	private boolean			displayPrintDialog;
 	private boolean			displayPrintDialogOnlyOnce;
+	private boolean			setOpenFile;
 	
 	private Target			target;
 	private File			file;
@@ -116,6 +117,18 @@ public abstract class AbstractReportCreator implements ReportCreator
 	public void setDisplayPrintDialogOnlyOnce(boolean displayPrintDialogOnlyOnce)
 	{
 		this.displayPrintDialogOnlyOnce = displayPrintDialogOnlyOnce;
+	}
+	
+	
+	public boolean isSetOpenFile()
+	{
+		return setOpenFile;
+	}
+	
+	
+	public void setSetOpenFile(boolean setOpenFile)
+	{
+		this.setOpenFile = setOpenFile;
 	}
 	
 	

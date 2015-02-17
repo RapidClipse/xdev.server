@@ -154,11 +154,11 @@ public abstract class AbstractReportCreator implements ReportCreator
 	@Override
 	public File getFile()
 	{
-		if(this.file != null)
+		//TODO create file to download temporarily on server
+		if(this.file == null)
 		{
-			return file;
+			return new File("/temp/japser/download");
 		}
-		CommandException.throwMissingParameter("file");
 		return file;
 	}
 	

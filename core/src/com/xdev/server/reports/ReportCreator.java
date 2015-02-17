@@ -12,7 +12,7 @@ public interface ReportCreator extends CommandObject
 {
 	public static enum Target
 	{
-		PREVIEW, PRINT, FILE, STREAM
+		PREVIEW, PRINT, STREAM, FILE,
 	}
 	
 	

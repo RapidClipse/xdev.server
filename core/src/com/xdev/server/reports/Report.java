@@ -2,7 +2,6 @@
 package com.xdev.server.reports;
 
 
-import com.xdev.server.lang.CommandObject;
 
 
 public final class Report
@@ -21,9 +20,10 @@ public final class Report
 	 * @param data
 	 *            The {@link EntityReportCreator} containing the report content
 	 */
-	public static void create(CommandObject info) throws ReportException
+	public static ReportCreator create(ReportCreator info) throws ReportException
 	{
 		info.init();
 		info.execute(info);
+		return info;
 	}
 }

@@ -2,7 +2,6 @@
 package com.xdev.server.reports;
 
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -75,22 +74,14 @@ public abstract class EntityReportCreator extends AbstractReportCreator implemen
 				}
 				break;
 				
-				// same behavior
 				case FILE:
 				case STREAM:
 				{
-					boolean closeStream;
-					OutputStream outputStream;
 					if(this.getTarget() == Target.FILE)
 					{
-						closeStream = true;
-						outputStream = new FileOutputStream(this.getFile());
+						this.setOutputStream(new FileOutputStream(this.getFile()));
 					}
-					else
-					{
-						closeStream = false;
-						outputStream = this.getOutputStream();
-					}
+					OutputStream outputStream = this.getOutputStream();
 					try
 					{
 						switch(this.getOutputFormat())
@@ -140,17 +131,9 @@ public abstract class EntityReportCreator extends AbstractReportCreator implemen
 					}
 					finally
 					{
-						if(closeStream)
-						{
-							outputStream.close();
-						}
+						outputStream.close();
 					}
 					
-					// TODO case open file in new tab after creation
-					// if(target == Target.FILE && openFile)
-					// {
-					// DesktopUtils.open(file);
-					// }
 				}
 				break;
 			}
@@ -163,26 +146,6 @@ public abstract class EntityReportCreator extends AbstractReportCreator implemen
 		{
 			throw new ReportException(e);
 		}
-	}
-	
-	
-	/*
-	 * TODO Mit einem FileProvider arbeiten. Ein choose File Dialog oder
-	 * Ähnliches hat hier serverseitig nichts zu suchen.
-	 */
-	@Override
-	public void setFile(File file)
-	{
-		// TODO Auto-generated method stub
-		super.setFile(file);
-	}
-	
-	
-	@Override
-	public File getFile()
-	{
-		// TODO Auto-generated method stub
-		return super.getFile();
 	}
 	
 	

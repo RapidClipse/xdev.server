@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.xdev.server.db.connection.HibernateUtil;
 
 
+//clean http only alternative to vaadin servlet does not support websockets
 public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 {
 	private static final String	HIBERNATEUTIL_FILTER_INIT_PARAM	= "hibernateUtil";
@@ -29,6 +30,7 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 		try
 		{
 			HttpServletRequest httpRequest = (HttpServletRequest)req;
+			System.out.println(httpRequest.getMethod());
 			if(!httpRequest.getMethod().equals("POST"))
 			{
 				// pass it down the chain
@@ -36,7 +38,7 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 				return;
 			}
 			
-			EntityManager em = VaadinSessionEntityManagerHelper.getEntityManagerFactory()
+			EntityManager em = EntityManagerHelper.getEntityManagerFactory()
 					.createEntityManager();
 			// System.out.println("opened em");
 			
@@ -54,11 +56,11 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 		}
 		catch(Exception ex)
 		{
-			if(VaadinSessionEntityManagerHelper.getEntityManager() != null)
+			if(EntityManagerHelper.getEntityManager() != null)
 			{
-				EntityTransaction tx = VaadinSessionEntityManagerHelper.getTransaction();
+				EntityTransaction tx = EntityManagerHelper.getTransaction();
 				if(tx != null && tx.isActive())
-					VaadinSessionEntityManagerHelper.rollback();
+					EntityManagerHelper.rollback();
 			}
 			throw ex;
 		}
@@ -75,17 +77,21 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 	@Override
 	public void init(FilterConfig fc) throws ServletException
 	{
-		String hibernateUtilClassName = fc.getServletContext().getInitParameter(
+		String hibernatePersistenceUnit = fc.getServletContext().getInitParameter(
 				HIBERNATEUTIL_FILTER_INIT_PARAM);
-		try
-		{
-			Class<?> hibernateUtilClazz = Class.forName(hibernateUtilClassName);
-			HibernateUtil hibernateUtilObject = (HibernateUtil)hibernateUtilClazz.newInstance();
-			VaadinSessionEntityManagerHelper.setHibernateUtil(hibernateUtilObject);
-		}
-		catch(Exception e)
-		{
-			throw new RuntimeException(e.getMessage());
-		}
+		EntityManagerHelper.initializeHibernateFactory(new HibernateUtil.Implementation(
+				hibernatePersistenceUnit));
+		
+		// try
+		// {
+		// Class<?> hibernateUtilClazz = Class.forName(hibernateUtilClassName);
+		// HibernateUtil hibernateUtilObject =
+		// (HibernateUtil)hibernateUtilClazz.newInstance();
+		// VaadinSessionEntityManagerHelper.setHibernateUtil(hibernateUtilObject);
+		// }
+		// catch(Exception e)
+		// {
+		// throw new RuntimeException(e.getMessage());
+		// }
 	}
 }

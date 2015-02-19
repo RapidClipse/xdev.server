@@ -12,7 +12,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 
-import com.xdev.server.communication.VaadinSessionEntityManagerHelper;
+import com.xdev.server.communication.EntityManagerHelper;
 
 
 public class HibernateEntityIDResolver implements EntityIDResolver
@@ -23,7 +23,7 @@ public class HibernateEntityIDResolver implements EntityIDResolver
 	public HibernateEntityIDResolver()
 	{
 		this.config = new Configuration();
-		Set<EntityType<?>> set = VaadinSessionEntityManagerHelper.getEntityManager().getMetamodel()
+		Set<EntityType<?>> set = EntityManagerHelper.getEntityManager().getMetamodel()
 				.getEntities();
 		
 		for(Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)

@@ -11,9 +11,13 @@ import javax.persistence.criteria.CriteriaQuery;
 
 import com.googlecode.genericdao.dao.jpa.GenericDAO;
 import com.googlecode.genericdao.dao.jpa.GenericDAOImpl;
+import com.googlecode.genericdao.search.ExampleOptions;
+import com.googlecode.genericdao.search.Filter;
+import com.googlecode.genericdao.search.ISearch;
+import com.googlecode.genericdao.search.SearchResult;
 import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
-import com.xdev.server.communication.VaadinSessionEntityManagerHelper;
+import com.xdev.server.communication.EntityManagerHelper;
 
 
 /**
@@ -22,19 +26,36 @@ import com.xdev.server.communication.VaadinSessionEntityManagerHelper;
  *
  * @see GenericDAO
  */
-public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
-		GenericDAOImpl<T, IT>
+public abstract class TransactionManagingDAO<T, IT extends Serializable> implements GenericDAO<T, IT>
 {
+	/*
+	 * DAO type must be at least GenericDAOImpl to achieve typed behavior and
+	 * JPA support, see type hierarchy.
+	 */
+	private GenericDAOImpl<T, IT>	persistenceManager	= new GenericDAOImpl<>();
+	
+	
+	public GenericDAOImpl<T, IT> getPersistenceManager()
 	{
-		setEntityManager(VaadinSessionEntityManagerHelper.getEntityManager());
-		setSearchProcessor(new JPASearchProcessor(new JPAAnnotationMetadataUtil()));
+		return persistenceManager;
 	}
 	
 	
-	@Override
+	public void setPersistenceManager(GenericDAOImpl<T, IT> persistenceManager)
+	{
+		this.persistenceManager = persistenceManager;
+	}
+	
+	{
+		persistenceManager.setEntityManager(EntityManagerHelper.getEntityManager());
+		persistenceManager.setSearchProcessor(new JPASearchProcessor(
+				new JPAAnnotationMetadataUtil()));
+	}
+	
+	
 	protected EntityManager em()
 	{
-		return VaadinSessionEntityManagerHelper.getEntityManager();
+		return EntityManagerHelper.getEntityManager();
 	}
 	
 	
@@ -66,11 +87,10 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void persist(@SuppressWarnings("unchecked") T... entities)
 	{
 		beginTransaction();
-		super.persist(entities);
+		this.persistenceManager.persist(entities);
 		commit();
 	}
 	
@@ -78,11 +98,10 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public T save(T entity)
 	{
 		beginTransaction();
-		T ret = super.save(entity);
+		T ret = this.persistenceManager.save(entity);
 		commit();
 		return ret;
 	}
@@ -91,11 +110,10 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public T[] save(@SuppressWarnings("unchecked") T... entities)
 	{
 		beginTransaction();
-		T[] ret = super.save(entities);
+		T[] ret = this.persistenceManager.save(entities);
 		commit();
 		return ret;
 	}
@@ -104,11 +122,10 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public boolean remove(T entity)
 	{
 		beginTransaction();
-		boolean ret = super.remove(entity);
+		boolean ret = this.persistenceManager.remove(entity);
 		commit();
 		return ret;
 	}
@@ -117,11 +134,10 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void remove(@SuppressWarnings("unchecked") T... entities)
 	{
 		beginTransaction();
-		super.remove(entities);
+		this.persistenceManager.remove(entities);
 		commit();
 	}
 	
@@ -129,11 +145,10 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public boolean removeById(IT id)
 	{
 		beginTransaction();
-		boolean ret = super.removeById(id);
+		boolean ret = this.persistenceManager.removeById(id);
 		commit();
 		return ret;
 	}
@@ -142,11 +157,10 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void removeByIds(@SuppressWarnings("unchecked") IT... ids)
 	{
 		beginTransaction();
-		super.removeByIds(ids);
+		this.persistenceManager.removeByIds(ids);
 		commit();
 	}
 	
@@ -154,11 +168,10 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public T merge(T entity)
 	{
 		beginTransaction();
-		T ret = super.merge(entity);
+		T ret = this.persistenceManager.merge(entity);
 		commit();
 		return ret;
 	}
@@ -167,11 +180,10 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public T[] merge(@SuppressWarnings("unchecked") T... entities)
 	{
 		beginTransaction();
-		T[] ret = super.merge(entities);
+		T[] ret = this.persistenceManager.merge(entities);
 		commit();
 		return ret;
 	}
@@ -180,11 +192,10 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public T find(IT id)
 	{
 		beginTransaction();
-		T ret = super.find(id);
+		T ret = this.persistenceManager.find(id);
 		commit();
 		return ret;
 	}
@@ -197,7 +208,7 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	public T[] find(@SuppressWarnings("unchecked") IT... ids)
 	{
 		beginTransaction();
-		T[] ret = super.find(ids);
+		T[] ret = this.persistenceManager.find(ids);
 		commit();
 		return ret;
 	}
@@ -206,11 +217,10 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public List<T> findAll()
 	{
 		beginTransaction();
-		List<T> ret = super.findAll();
+		List<T> ret = this.persistenceManager.findAll();
 		commit();
 		return ret;
 	}
@@ -219,11 +229,10 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public T getReference(IT id)
 	{
 		beginTransaction();
-		T ret = super.getReference(id);
+		T ret = this.persistenceManager.getReference(id);
 		commit();
 		return ret;
 	}
@@ -232,12 +241,93 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> extends
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public T[] getReferences(@SuppressWarnings("unchecked") IT... ids)
 	{
 		beginTransaction();
-		T[] ret = super.getReferences(ids);
+		T[] ret = this.persistenceManager.getReferences(ids);
 		commit();
 		return ret;
+	}
+	
+	
+	@Override
+	public <RT> List<RT> search(ISearch search)
+	{
+		beginTransaction();
+		List<RT> searchResult = this.persistenceManager.search(search);
+		commit();
+		
+		return searchResult;
+	}
+	
+	
+	@Override
+	public <RT> RT searchUnique(ISearch search)
+	{
+		beginTransaction();
+		RT searchResult = this.persistenceManager.searchUnique(search);
+		commit();
+		
+		return searchResult;
+	}
+	
+	
+	@Override
+	public int count(ISearch search)
+	{
+		beginTransaction();
+		int count =  this.persistenceManager.count(search);
+		commit();
+		return count;
+	}
+	
+	
+	@Override
+	public <RT> SearchResult<RT> searchAndCount(ISearch search)
+	{
+		beginTransaction();
+		SearchResult<RT> searchCountResult = this.persistenceManager.searchAndCount(search);
+		commit();
+		
+		return searchCountResult;
+	}
+	
+	
+	@Override
+	public boolean isAttached(T entity)
+	{
+		return this.persistenceManager.isAttached(entity);
+	}
+	
+	
+	@Override
+	public void refresh(@SuppressWarnings("unchecked") T... entities)
+	{
+		beginTransaction();
+		this.persistenceManager.refresh(entities);
+		commit();
+	}
+	
+	
+	@Override
+	public void flush()
+	{
+		beginTransaction();
+		this.persistenceManager.flush();
+		commit();
+	}
+	
+	
+	@Override
+	public Filter getFilterFromExample(T example)
+	{
+		return this.persistenceManager.getFilterFromExample(example);
+	}
+	
+	
+	@Override
+	public Filter getFilterFromExample(T example, ExampleOptions options)
+	{
+		return this.persistenceManager.getFilterFromExample(example,options);
 	}
 }

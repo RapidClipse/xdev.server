@@ -41,6 +41,9 @@
 		<dependency org="com.vaadin" name="vaadin-client-compiler"
 			rev="&vaadin.version;" conf="widgetset-compile->default" />
 			
+		<!-- DB Drivers -->
+		<dependency org="mysql" name="mysql-connector-java" rev="5.1.34"/>
+		
 		<!-- Generic Data Access Framework -->	
 		<dependency org="com.googlecode.genericdao" name="dao" rev="1.2.0"/> 
 		
@@ -67,9 +70,7 @@
 		<dependency org="org.jboss.spec.javax.transaction" name="jboss-transaction-api_1.1_spec" rev="1.0.1.Final"/>
 		<dependency org="dom4j" name="dom4j" rev="1.6.1"/>
 		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.10"/>
-		
-		<!-- Jasper -->
-		<dependency org="net.sf.jasperreports" name="jasperreports" rev="6.0.3"/>
+						
 		
 		
 	</dependencies>

@@ -17,7 +17,7 @@ import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 import org.hibernate.mapping.Value;
 
-import com.xdev.server.communication.VaadinSessionEntityManagerHelper;
+import com.xdev.server.communication.EntityManagerHelper;
 
 
 public class HibernateEntityReferenceResolver implements EntityReferenceResolver
@@ -28,7 +28,7 @@ public class HibernateEntityReferenceResolver implements EntityReferenceResolver
 	public HibernateEntityReferenceResolver()
 	{
 		this.config = new Configuration();
-		Set<EntityType<?>> set = VaadinSessionEntityManagerHelper.getEntityManager().getMetamodel()
+		Set<EntityType<?>> set = EntityManagerHelper.getEntityManager().getMetamodel()
 				.getEntities();
 		
 		for(Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)

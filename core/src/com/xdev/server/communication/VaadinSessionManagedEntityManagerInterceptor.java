@@ -30,7 +30,6 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 		try
 		{
 			HttpServletRequest httpRequest = (HttpServletRequest)req;
-			System.out.println(httpRequest.getMethod());
 			if(!httpRequest.getMethod().equals("POST"))
 			{
 				// pass it down the chain

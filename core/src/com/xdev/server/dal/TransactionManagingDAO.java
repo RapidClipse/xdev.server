@@ -10,7 +10,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
 import com.googlecode.genericdao.dao.jpa.GenericDAO;
-import com.googlecode.genericdao.dao.jpa.GenericDAOImpl;
 import com.googlecode.genericdao.search.ExampleOptions;
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.ISearch;
@@ -18,6 +17,7 @@ import com.googlecode.genericdao.search.SearchResult;
 import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
 import com.xdev.server.communication.EntityManagerHelper;
+import com.xdev.server.communication.JPAdaoWrapper;
 
 
 /**
@@ -26,29 +26,32 @@ import com.xdev.server.communication.EntityManagerHelper;
  *
  * @see GenericDAO
  */
-public abstract class TransactionManagingDAO<T, IT extends Serializable> implements GenericDAO<T, IT>
+public abstract class TransactionManagingDAO<T, IT extends Serializable> implements
+		GenericDAO<T, IT>
 {
 	/*
 	 * DAO type must be at least GenericDAOImpl to achieve typed behavior and
 	 * JPA support, see type hierarchy.
 	 */
-	private GenericDAOImpl<T, IT>	persistenceManager	= new GenericDAOImpl<>();
+	private JPAdaoWrapper<T, IT>	persistenceManager;
 	
 	
-	public GenericDAOImpl<T, IT> getPersistenceManager()
+	public GenericDAO<T, IT> getPersistenceManager()
 	{
 		return persistenceManager;
 	}
 	
 	
-	public void setPersistenceManager(GenericDAOImpl<T, IT> persistenceManager)
+	public void setPersistenceManager(JPAdaoWrapper<T, IT> persistenceManager)
 	{
 		this.persistenceManager = persistenceManager;
 	}
 	
+	
+	public TransactionManagingDAO(Class<T> persistentClass)
 	{
-		persistenceManager.setEntityManager(EntityManagerHelper.getEntityManager());
-		persistenceManager.setSearchProcessor(new JPASearchProcessor(
+		this.persistenceManager = new JPAdaoWrapper<>(persistentClass);
+		this.persistenceManager.setSearchProcessor(new JPASearchProcessor(
 				new JPAAnnotationMetadataUtil()));
 	}
 	
@@ -276,7 +279,7 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> impleme
 	public int count(ISearch search)
 	{
 		beginTransaction();
-		int count =  this.persistenceManager.count(search);
+		int count = this.persistenceManager.count(search);
 		commit();
 		return count;
 	}

@@ -37,7 +37,7 @@ import com.vaadin.data.util.filter.Like;
 import com.vaadin.data.util.filter.Not;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
-import com.xdev.server.communication.VaadinSessionEntityManagerHelper;
+import com.xdev.server.communication.EntityManagerHelper;
 
 
 @SuppressWarnings("unchecked")
@@ -66,8 +66,8 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 	 * The size of the query.
 	 */
 	private int							querySize			= -1;
-	
-	
+
+
 	/**
 	 * Constructor for configuring the query.
 	 *
@@ -83,8 +83,8 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 		this.applicationTransactionManagement = entityQueryDefinition
 				.isApplicationManagedTransactions();
 	}
-	
-	
+
+
 	/**
 	 * Constructs new item based on QueryDefinition.
 	 *
@@ -95,16 +95,16 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 	{
 		try
 		{
-			final Object entity = entityClass.newInstance();
-			final BeanInfo info = Introspector.getBeanInfo(entityClass);
+			final Object entity = this.entityClass.newInstance();
+			final BeanInfo info = Introspector.getBeanInfo(this.entityClass);
 			for(final PropertyDescriptor pd : info.getPropertyDescriptors())
 			{
-				for(final Object propertyId : queryDefinition.getPropertyIds())
+				for(final Object propertyId : this.queryDefinition.getPropertyIds())
 				{
 					if(pd.getName().equals(propertyId))
 					{
 						pd.getWriteMethod().invoke(entity,
-								queryDefinition.getPropertyDefaultValue(propertyId));
+								this.queryDefinition.getPropertyDefaultValue(propertyId));
 					}
 				}
 			}
@@ -116,8 +116,8 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 					"Error in bean construction or property population with default values.",e);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Number of beans returned by query.
 	 *
@@ -126,35 +126,35 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 	@Override
 	public final int size()
 	{
-		
-		if(querySize == -1)
+
+		if(this.querySize == -1)
 		{
-			if(queryDefinition.getBatchSize() == 0)
+			if(this.queryDefinition.getBatchSize() == 0)
 			{
-				LOGGER.debug(entityClass.getName() + " size skipped due to 0 bath size.");
+				LOGGER.debug(this.entityClass.getName() + " size skipped due to 0 bath size.");
 				return 0;
 			}
-			
+
 			final CriteriaBuilder cb = em().getCriteriaBuilder();
 			final CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-			final Root<E> root = cq.from(entityClass);
-			
+			final Root<E> root = cq.from(this.entityClass);
+
 			cq.select(cb.count(root));
-			
+
 			setWhereCriteria(cb,cq,root);
-			
+
 			// setOrderClause(cb, cq, root);
-			
+
 			final javax.persistence.Query query = em().createQuery(cq);
-			
-			querySize = ((Number)query.getSingleResult()).intValue();
-			
-			LOGGER.debug(entityClass.getName() + " container size: " + querySize);
+
+			this.querySize = ((Number)query.getSingleResult()).intValue();
+
+			LOGGER.debug(this.entityClass.getName() + " container size: " + this.querySize);
 		}
-		return querySize;
+		return this.querySize;
 	}
-	
-	
+
+
 	/**
 	 * Load batch of items.
 	 *
@@ -169,39 +169,39 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 	{
 		final EntityManager entityManager = this.em();
 		final CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		final CriteriaQuery<E> cq = cb.createQuery(entityClass);
-		final Root<E> root = cq.from(entityClass);
-		
+		final CriteriaQuery<E> cq = cb.createQuery(this.entityClass);
+		final Root<E> root = cq.from(this.entityClass);
+
 		cq.select(root);
-		
+
 		setWhereCriteria(cb,cq,root);
-		
+
 		setOrderClause(cb,cq,root);
-		
+
 		final javax.persistence.TypedQuery<E> query = entityManager.createQuery(cq);
-		
+
 		query.setFirstResult(startIndex);
 		query.setMaxResults(count);
-		
+
 		final List<?> entities = query.getResultList();
 		final List<Item> items = new ArrayList<Item>();
 		for(final Object entity : entities)
 		{
-			if(queryDefinition.isDetachedEntities())
+			if(this.queryDefinition.isDetachedEntities())
 			{
 				entityManager.detach(entity);
 			}
 			items.add(toItem(entity));
 		}
-		
+
 		return items;
 	}
-	
-	
+
+
 	/**
 	 * Sets where criteria of JPA 2.0 Criteria API query according to Vaadin
 	 * filters.
-	 * 
+	 *
 	 * @param cb
 	 *            the CriteriaBuilder
 	 * @param cq
@@ -215,12 +215,12 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 			final Root<E> root)
 	{
 		final List<Container.Filter> filters = new ArrayList<Container.Filter>();
-		filters.addAll(queryDefinition.getDefaultFilters());
-		filters.addAll(queryDefinition.getFilters());
-		
+		filters.addAll(this.queryDefinition.getDefaultFilters());
+		filters.addAll(this.queryDefinition.getFilters());
+
 		// final Object[] sortPropertyIds;
 		// final boolean[] sortPropertyAscendingStates;
-		
+
 		Container.Filter rootFilter;
 		if(filters.size() > 0)
 		{
@@ -235,18 +235,18 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 			final Container.Filter filter = filters.remove(0);
 			rootFilter = new And(rootFilter,filter);
 		}
-		
+
 		if(rootFilter != null)
 		{
 			cq.where(setFilter(rootFilter,cb,cq,root));
 		}
 	}
-	
-	
+
+
 	/**
 	 * Sets order clause of JPA 2.0 Criteria API query according to Vaadin sort
 	 * states.
-	 * 
+	 *
 	 * @param cb
 	 *            the CriteriaBuilder
 	 * @param cq
@@ -261,25 +261,25 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 	{
 		Object[] sortPropertyIds;
 		boolean[] sortPropertyAscendingStates;
-		
-		if(queryDefinition.getSortPropertyIds().length == 0)
+
+		if(this.queryDefinition.getSortPropertyIds().length == 0)
 		{
-			sortPropertyIds = queryDefinition.getDefaultSortPropertyIds();
-			sortPropertyAscendingStates = queryDefinition.getDefaultSortPropertyAscendingStates();
+			sortPropertyIds = this.queryDefinition.getDefaultSortPropertyIds();
+			sortPropertyAscendingStates = this.queryDefinition
+					.getDefaultSortPropertyAscendingStates();
 		}
 		else
 		{
-			sortPropertyIds = queryDefinition.getSortPropertyIds();
-			sortPropertyAscendingStates = queryDefinition.getSortPropertyAscendingStates();
+			sortPropertyIds = this.queryDefinition.getSortPropertyIds();
+			sortPropertyAscendingStates = this.queryDefinition.getSortPropertyAscendingStates();
 		}
-		
+
 		if(sortPropertyIds.length > 0)
 		{
 			final List<Order> orders = new ArrayList<Order>();
 			for(int i = 0; i < sortPropertyIds.length; i++)
 			{
-				final Expression<?> property = (Expression<?>)getPropertyPath(root,
-						sortPropertyIds[i]);
+				final Expression<?> property = getPropertyPath(root,sortPropertyIds[i]);
 				if(sortPropertyAscendingStates[i])
 				{
 					orders.add(cb.asc(property));
@@ -292,8 +292,8 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 			cq.orderBy(orders);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Implements conversion of Vaadin filter to JPA 2.0 Criteria API based
 	 * predicate. Supports the following operations:
@@ -320,48 +320,48 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 		{
 			final And and = (And)filter;
 			final List<Container.Filter> filters = new ArrayList<Container.Filter>(and.getFilters());
-			
+
 			Predicate predicate = cb.and(setFilter(filters.remove(0),cb,cq,root),
 					setFilter(filters.remove(0),cb,cq,root));
-			
+
 			while(filters.size() > 0)
 			{
 				predicate = cb.and(predicate,setFilter(filters.remove(0),cb,cq,root));
 			}
-			
+
 			return predicate;
 		}
-		
+
 		if(filter instanceof Or)
 		{
 			final Or or = (Or)filter;
 			final List<Container.Filter> filters = new ArrayList<Container.Filter>(or.getFilters());
-			
+
 			Predicate predicate = cb.or(setFilter(filters.remove(0),cb,cq,root),
 					setFilter(filters.remove(0),cb,cq,root));
-			
+
 			while(filters.size() > 0)
 			{
 				predicate = cb.or(predicate,setFilter(filters.remove(0),cb,cq,root));
 			}
-			
+
 			return predicate;
 		}
-		
+
 		if(filter instanceof Not)
 		{
 			final Not not = (Not)filter;
 			return cb.not(setFilter(not.getFilter(),cb,cq,root));
 		}
-		
+
 		if(filter instanceof Between)
 		{
 			final Between between = (Between)filter;
-			final Expression property = (Expression)getPropertyPath(root,between.getPropertyId());
+			final Expression property = getPropertyPath(root,between.getPropertyId());
 			return cb.between(property,(Comparable)between.getStartValue(),
 					(Comparable)between.getEndValue());
 		}
-		
+
 		if(filter instanceof Compare)
 		{
 			final Compare compare = (Compare)filter;
@@ -382,13 +382,13 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 				default:
 			}
 		}
-		
+
 		if(filter instanceof IsNull)
 		{
 			final IsNull isNull = (IsNull)filter;
-			return cb.isNull((Expression)getPropertyPath(root,isNull.getPropertyId()));
+			return cb.isNull(getPropertyPath(root,isNull.getPropertyId()));
 		}
-		
+
 		if(filter instanceof Like)
 		{
 			final Like like = (Like)filter;
@@ -403,7 +403,7 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 						like.getValue().toLowerCase());
 			}
 		}
-		
+
 		if(filter instanceof SimpleStringFilter)
 		{
 			final SimpleStringFilter simpleStringFilter = (SimpleStringFilter)filter;
@@ -411,15 +411,15 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 					simpleStringFilter.getPropertyId());
 			return cb.like(property,"%" + simpleStringFilter.getFilterString() + "%");
 		}
-		
+
 		throw new UnsupportedOperationException("Vaadin filter: " + filter.getClass().getName()
 				+ " is not supported.");
 	}
-	
-	
+
+
 	/**
 	 * Gets property path.
-	 * 
+	 *
 	 * @param root
 	 *            the root where path starts form
 	 * @param propertyId
@@ -429,7 +429,7 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 	private Path<Object> getPropertyPath(final Root<?> root, final Object propertyId)
 	{
 		final String[] propertyIdParts = ((String)propertyId).split("\\.");
-		
+
 		Path<Object> path = null;
 		for(final String part : propertyIdParts)
 		{
@@ -444,8 +444,8 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 		}
 		return path;
 	}
-	
-	
+
+
 	/**
 	 * Saves the modifications done by container to the query result. Query will
 	 * be discarded after changes have been saved and new query loaded so that
@@ -463,7 +463,7 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 			final List<Item> removedItems)
 	{
 		final EntityManager entityManager = this.em();
-		if(applicationTransactionManagement)
+		if(this.applicationTransactionManagement)
 		{
 			entityManager.getTransaction().begin();
 		}
@@ -481,7 +481,7 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 				if(!removedItems.contains(item))
 				{
 					Object entity = fromItem(item);
-					if(queryDefinition.isDetachedEntities())
+					if(this.queryDefinition.isDetachedEntities())
 					{
 						entity = entityManager.merge(entity);
 					}
@@ -493,21 +493,21 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 				if(!addedItems.contains(item))
 				{
 					Object entity = fromItem(item);
-					if(queryDefinition.isDetachedEntities())
+					if(this.queryDefinition.isDetachedEntities())
 					{
 						entity = entityManager.merge(entity);
 					}
 					entityManager.remove(entity);
 				}
 			}
-			if(applicationTransactionManagement)
+			if(this.applicationTransactionManagement)
 			{
 				entityManager.getTransaction().commit();
 			}
 		}
 		catch(final Exception e)
 		{
-			if(applicationTransactionManagement)
+			if(this.applicationTransactionManagement)
 			{
 				if(entityManager.getTransaction().isActive())
 				{
@@ -517,8 +517,8 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Removes all items. Query will be discarded after delete all items has
 	 * been called.
@@ -529,38 +529,38 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 	public final boolean deleteAllItems()
 	{
 		final EntityManager entityManager = this.em();
-		if(applicationTransactionManagement)
+		if(this.applicationTransactionManagement)
 		{
 			entityManager.getTransaction().begin();
 		}
 		try
 		{
 			final CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			final CriteriaQuery<E> cq = cb.createQuery(entityClass);
-			final Root<E> root = cq.from(entityClass);
-			
+			final CriteriaQuery<E> cq = cb.createQuery(this.entityClass);
+			final Root<E> root = cq.from(this.entityClass);
+
 			cq.select(root);
-			
+
 			setWhereCriteria(cb,cq,root);
-			
+
 			setOrderClause(cb,cq,root);
-			
+
 			final javax.persistence.TypedQuery<E> query = entityManager.createQuery(cq);
-			
+
 			final List<?> entities = query.getResultList();
 			for(final Object entity : entities)
 			{
 				entityManager.remove(entity);
 			}
-			
-			if(applicationTransactionManagement)
+
+			if(this.applicationTransactionManagement)
 			{
 				entityManager.getTransaction().commit();
 			}
 		}
 		catch(final Exception e)
 		{
-			if(applicationTransactionManagement)
+			if(this.applicationTransactionManagement)
 			{
 				if(entityManager.getTransaction().isActive())
 				{
@@ -571,8 +571,8 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 		}
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Converts bean to Item. Implemented by encapsulating the Bean first to
 	 * BeanItem and then to CompositeItem.
@@ -584,36 +584,39 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 	@SuppressWarnings({"rawtypes"})
 	protected final Item toItem(final Object entity)
 	{
-		if(queryDefinition.isCompositeItems())
+		if(this.queryDefinition.isCompositeItems())
 		{
 			final NestingBeanItem<?> beanItem = new NestingBeanItem<Object>(entity,
-					queryDefinition.getMaxNestedPropertyDepth(),queryDefinition.getPropertyIds());
-			
+					this.queryDefinition.getMaxNestedPropertyDepth(),
+					this.queryDefinition.getPropertyIds());
+
 			final CompositeItem compositeItem = new CompositeItem();
 			compositeItem.addItem("bean",beanItem);
-			
-			for(final Object propertyId : queryDefinition.getPropertyIds())
+
+			for(final Object propertyId : this.queryDefinition.getPropertyIds())
 			{
 				if(compositeItem.getItemProperty(propertyId) == null)
 				{
 					compositeItem.addItemProperty(
 							propertyId,
-							new ObjectProperty(queryDefinition.getPropertyDefaultValue(propertyId),
-									queryDefinition.getPropertyType(propertyId),queryDefinition
-											.isPropertyReadOnly(propertyId)));
+							new ObjectProperty(this.queryDefinition
+									.getPropertyDefaultValue(propertyId),this.queryDefinition
+									.getPropertyType(propertyId),this.queryDefinition
+									.isPropertyReadOnly(propertyId)));
 				}
 			}
-			
+
 			return compositeItem;
 		}
 		else
 		{
-			return new NestingBeanItem<Object>(entity,queryDefinition.getMaxNestedPropertyDepth(),
-					queryDefinition.getPropertyIds());
+			return new NestingBeanItem<Object>(entity,
+					this.queryDefinition.getMaxNestedPropertyDepth(),
+					this.queryDefinition.getPropertyIds());
 		}
 	}
-	
-	
+
+
 	/**
 	 * Converts item back to bean.
 	 *
@@ -623,28 +626,28 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 	 */
 	protected final Object fromItem(final Item item)
 	{
-		if(queryDefinition.isCompositeItems())
+		if(this.queryDefinition.isCompositeItems())
 		{
-			return (Object)((BeanItem<?>)(((CompositeItem)item).getItem("bean"))).getBean();
+			return ((BeanItem<?>)(((CompositeItem)item).getItem("bean"))).getBean();
 		}
 		else
 		{
 			return ((BeanItem<?>)item).getBean();
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the queryDefinition
 	 */
 	protected final EntityQueryDefinition getQueryDefinition()
 	{
-		return queryDefinition;
+		return this.queryDefinition;
 	}
-	
-	
+
+
 	protected EntityManager em()
 	{
-		return VaadinSessionEntityManagerHelper.getEntityManager();
+		return EntityManagerHelper.getEntityManager();
 	}
 }

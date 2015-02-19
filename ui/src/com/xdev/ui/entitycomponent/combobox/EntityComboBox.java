@@ -2,6 +2,8 @@
 package com.xdev.ui.entitycomponent.combobox;
 
 
+import java.util.Collection;
+
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.xdev.server.util.KeyValueType;
@@ -30,6 +32,22 @@ public class EntityComboBox<T> extends AbstractEntityComboBox<T, BeanItemContain
 	{
 		this.setGenericDataSource(this.getModelProvider().getModel(this,entityClass,
 				nestedProperties));
+	}
+
+
+	@SafeVarargs
+	@Override
+	public final <K, V> void setModel(final Class<T> entityClass, final Collection<T> data,
+			final KeyValueType<K, V>... nestedProperties)
+	{
+		final BeanItemContainer<T> container = this.getModelProvider().getModel(this,entityClass,
+				nestedProperties);
+		for(final T entity : data)
+		{
+			container.addBean(entity);
+		}
+		
+		this.setGenericDataSource(container);
 	}
 
 

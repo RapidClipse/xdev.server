@@ -2,6 +2,8 @@
 package com.xdev.ui.entitycomponent.combobox;
 
 
+import java.util.Collection;
+
 import com.vaadin.data.util.BeanItem;
 import com.xdev.server.util.KeyValueType;
 import com.xdev.ui.paging.LazyLoadingUIModelProvider;
@@ -10,26 +12,26 @@ import com.xdev.ui.paging.XdevLazyEntityContainer;
 
 public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityContainer<T>>
 {
-
+	
 	/**
 	 *
 	 */
 	private static final long	serialVersionUID	= -836170197198239894L;
-
-
+	
+	
 	public XdevComboBox()
 	{
 		super();
 	}
-
-
+	
+	
 	public XdevComboBox(final int pageLength)
 	{
 		super();
 		super.setPageLength(pageLength);
 	}
-
-
+	
+	
 	/*
 	 * see XdevLazyEntityContainer code it contains only BeanItems but stores it
 	 * as Items due to framework inheritance restrictions. See
@@ -44,8 +46,8 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 	{
 		return (BeanItem<T>)getContainerDataSource().getItem(id);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -56,6 +58,22 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 	{
 		this.setGenericDataSource(this.getModelProvider().getModel(this,entityClass,
 				nestedProperties));
+	}
+	
+	
+	@SafeVarargs
+	@Override
+	public final <K, V> void setModel(final Class<T> entityClass, final Collection<T> data,
+			final KeyValueType<K, V>... nestedProperties)
+	{
+		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
+				entityClass,nestedProperties);
+		for(final T entity : data)
+		{
+			container.addEntity(entity);
+		}
+		
+		this.setGenericDataSource(container);
 	}
 
 
@@ -68,8 +86,8 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 		return new LazyLoadingUIModelProvider<T>(this.getPageLength(),this.isTextInputAllowed(),
 				false);
 	}
-
-
+	
+	
 	/*
 	 * see XdevLazyEntityContainer code it contains only BeanItems but stores it
 	 * as Items due to framework inheritance restrictions. See
@@ -84,8 +102,8 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 	{
 		return (BeanItem<T>)this.getContainerDataSource().getItem(this.getValue());
 	}
-
-
+	
+	
 	@Override
 	public void setPageLength(final int pageLength)
 	{

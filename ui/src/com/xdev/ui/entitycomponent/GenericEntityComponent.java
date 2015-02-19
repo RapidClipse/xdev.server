@@ -2,6 +2,8 @@
 package com.xdev.ui.entitycomponent;
 
 
+import java.util.Collection;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
@@ -12,6 +14,10 @@ public interface GenericEntityComponent<BEANTYPE, T extends Container> extends
 		GenericEntityViewer<T>, Component
 {
 	public <K, V> void setModel(Class<BEANTYPE> entityClass,
+			@SuppressWarnings("unchecked") KeyValueType<K, V>... nestedProperties);
+	
+	
+	public <K, V> void setModel(Class<BEANTYPE> entityClass, Collection<BEANTYPE> data,
 			@SuppressWarnings("unchecked") KeyValueType<K, V>... nestedProperties);
 	
 	

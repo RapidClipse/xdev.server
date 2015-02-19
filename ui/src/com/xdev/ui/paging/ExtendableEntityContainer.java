@@ -3,7 +3,6 @@ package com.xdev.ui.paging;
 
 
 import org.vaadin.addons.lazyquerycontainer.CompositeItem;
-import org.vaadin.addons.lazyquerycontainer.NestingBeanItem;
 
 import com.vaadin.data.util.BeanItem;
 
@@ -17,7 +16,7 @@ import com.vaadin.data.util.BeanItem;
  * @author Tommi Laukkanen
  */
 // copied from EntityContainer to become extendable
-public class ExtendableEntityContainer<T> extends ExtendableLazyQueryContainer
+public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer
 {
 	private static final long	serialVersionUID	= 1L;
 	
@@ -50,7 +49,7 @@ public class ExtendableEntityContainer<T> extends ExtendableLazyQueryContainer
 	
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
-	 * 
+	 *
 	 * @param applicationManagedTransactions
 	 *            True if application manages transactions instead of container.
 	 * @param detachedEntities
@@ -95,11 +94,9 @@ public class ExtendableEntityContainer<T> extends ExtendableLazyQueryContainer
 	}
 	
 	
-	public BeanItem<T> addEntity(T entity)
+	public int addEntity(final T entity)
 	{
-		return new NestingBeanItem<T>(entity,super.getQueryView().getQueryDefinition()
-				.getMaxNestedPropertyDepth(),super.getQueryView().getQueryDefinition()
-				.getPropertyIds());
+		return getQueryView().addItem(entity);
 	}
 	
 	

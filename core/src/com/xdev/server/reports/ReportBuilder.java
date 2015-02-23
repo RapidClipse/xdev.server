@@ -28,7 +28,7 @@ import net.sf.jasperreports.view.JasperViewer;
 
 
 // migrated from xdev4
-@SuppressWarnings({"unchecked","rawtypes","deprecation"})
+@SuppressWarnings({"unchecked","rawtypes"})
 // Because JasperAPI maps ship without generic types specified
 public class ReportBuilder
 {

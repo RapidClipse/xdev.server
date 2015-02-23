@@ -50,8 +50,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	 * List of registered PropertySetChangeListeners.
 	 */
 	private final List<PropertySetChangeListener>	propertySetChangeListeners	= new ArrayList<PropertySetChangeListener>();
-	
-	
+
+
 	/**
 	 * Constructs LazyQueryContainer with LazyQueryView and given queryFactory.
 	 *
@@ -70,8 +70,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		this.queryView = new EntityLazyQueryView(new LazyQueryDefinition(compositeItems,batchSize,
 				idPropertyId),queryFactory);
 	}
-	
-	
+
+
 	/**
 	 * Constructs LazyQueryContainer with LazyQueryView and given queryFactory
 	 * and queryDefinition.
@@ -86,8 +86,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		this.queryView = new EntityLazyQueryView(queryDefinition,queryFactory);
 	}
-	
-	
+
+
 	/**
 	 * Constructs LazyQueryContainer with the given QueryView. This constructor
 	 * role is to enable use of custom view implementations.
@@ -99,8 +99,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		this.queryView = queryView;
 	}
-	
-	
+
+
 	/**
 	 * Sets new sort state and refreshes container.
 	 *
@@ -115,8 +115,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		this.queryView.sort(sortPropertyIds,ascendingStates);
 	}
-	
-	
+
+
 	/**
 	 * Lists of the property IDs queried.
 	 *
@@ -127,8 +127,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.getQueryDefinition().getPropertyIds();
 	}
-	
-	
+
+
 	/**
 	 * List of the property IDs which can be sorted.
 	 *
@@ -139,8 +139,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.getQueryDefinition().getSortablePropertyIds();
 	}
-	
-	
+
+
 	/**
 	 * Gets the property value class of the given property.
 	 *
@@ -153,8 +153,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.getQueryDefinition().getPropertyType(propertyId);
 	}
-	
-	
+
+
 	/**
 	 * Adds a new property to the definition.
 	 *
@@ -174,8 +174,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		notifyPropertySetChanged();
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Adds a new property to the definition.
 	 *
@@ -199,8 +199,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		notifyPropertySetChanged();
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Removes the given property from the definition.
 	 *
@@ -215,8 +215,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		notifyPropertySetChanged();
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Number of items in the container.
 	 *
@@ -227,8 +227,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.size();
 	}
-	
-	
+
+
 	/**
 	 * Gets list of item indexes in the container.
 	 *
@@ -239,8 +239,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.getItemIdList();
 	}
-	
-	
+
+
 	/**
 	 * Gets item at given index.
 	 *
@@ -260,8 +260,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 			return this.queryView.getItem(this.queryView.getItemIdList().indexOf(itemId));
 		}
 	}
-	
-	
+
+
 	/**
 	 * Gets property of an item.
 	 *
@@ -276,8 +276,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return getItem(itemId).getItemProperty(propertyId);
 	}
-	
-	
+
+
 	/**
 	 * Gets ID of given index. In other words returns the index itself.
 	 *
@@ -290,8 +290,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.getItemIdList().get(index);
 	}
-	
-	
+
+
 	/**
 	 * Gets index of given ID. In other words returns the index itself.
 	 *
@@ -304,8 +304,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.getItemIdList().indexOf(itemId);
 	}
-	
-	
+
+
 	/**
 	 * True if container contains the given index.
 	 *
@@ -318,8 +318,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.getItemIdList().contains(itemId);
 	}
-	
-	
+
+
 	/**
 	 * Check if given index is first i.e. 0.
 	 *
@@ -332,8 +332,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.getItemIdList().indexOf(itemId) == 0;
 	}
-	
-	
+
+
 	/**
 	 * Check if given index is first i.e. size() - 1.
 	 *
@@ -346,8 +346,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.getItemIdList().indexOf(itemId) == size() - 1;
 	}
-	
-	
+
+
 	/**
 	 * @return first item ID i.e. 0.
 	 */
@@ -356,8 +356,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.getItemIdList().get(0);
 	}
-	
-	
+
+
 	/**
 	 * @return last item ID i.e. size() - 1
 	 */
@@ -366,8 +366,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.getItemIdList().get(size() - 1);
 	}
-	
-	
+
+
 	/**
 	 * @param itemId
 	 *            the item index
@@ -387,8 +387,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 			return itemIdList.get(currentIndex + 1);
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param itemId
 	 *            the item index
@@ -408,8 +408,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 			return itemIdList.get(currentIndex - 1);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Not supported.
 	 *
@@ -422,8 +422,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
 	 * Not supported.
 	 *
@@ -436,8 +436,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
 	 * Not supported.
 	 *
@@ -452,8 +452,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
 	 * Not supported.
 	 *
@@ -468,8 +468,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
 	 * Not supported.
 	 *
@@ -482,8 +482,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
 	 * Constructs and adds new item.
 	 *
@@ -497,8 +497,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		notifyItemSetChanged();
 		return itemId;
 	}
-	
-	
+
+
 	/**
 	 * Removes Item at given index.
 	 *
@@ -513,8 +513,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		notifyItemSetChanged();
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Removes all items.
 	 *
@@ -527,8 +527,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		refresh();
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Adds ItemSetChangeListener.
 	 *
@@ -540,10 +540,10 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	public final void addListener(final ItemSetChangeListener listener)
 	{
 		addItemSetChangeListener(listener);
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Removes ItemSetChangeListener.
 	 *
@@ -556,15 +556,15 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		removeItemSetChangeListener(listener);
 	}
-	
-	
+
+
 	@Override
 	public final void removeItemSetChangeListener(final ItemSetChangeListener listener)
 	{
 		this.itemSetChangeListeners.remove(listener);
 	}
-	
-	
+
+
 	/**
 	 * Refreshes container.
 	 */
@@ -573,12 +573,12 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		this.queryView.refresh();
 		notifyItemSetChanged();
 	}
-	
-	
+
+
 	/**
 	 * Notifies that item set has been changed.
 	 */
-	private void notifyItemSetChanged()
+	protected void notifyItemSetChanged()
 	{
 		final QueryItemSetChangeEvent event = new QueryItemSetChangeEvent(this);
 		for(final ItemSetChangeListener listener : this.itemSetChangeListeners)
@@ -586,8 +586,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 			listener.containerItemSetChange(event);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Adds PropertySetChangeListener.
 	 *
@@ -600,22 +600,22 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		addPropertySetChangeListener(listener);
 	}
-	
-	
+
+
 	@Override
 	public final void addItemSetChangeListener(final ItemSetChangeListener listener)
 	{
 		this.itemSetChangeListeners.add(listener);
 	}
-	
-	
+
+
 	@Override
 	public final void addPropertySetChangeListener(final PropertySetChangeListener listener)
 	{
 		this.propertySetChangeListeners.add(listener);
 	}
-	
-	
+
+
 	/**
 	 * Removes PropertySetChangeListener.
 	 *
@@ -628,15 +628,15 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		removePropertySetChangeListener(listener);
 	}
-	
-	
+
+
 	@Override
 	public final void removePropertySetChangeListener(final PropertySetChangeListener listener)
 	{
 		this.propertySetChangeListeners.remove(listener);
 	}
-	
-	
+
+
 	/**
 	 * Notifies that property set has been changed.
 	 */
@@ -648,36 +648,36 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 			listener.containerPropertySetChange(event);
 		}
 	}
-	
-	
+
+
 	@Override
 	public void addContainerFilter(final Filter filter)
 	{
 		getQueryView().addFilter(filter);
 	}
-	
-	
+
+
 	@Override
 	public void removeContainerFilter(final Filter filter)
 	{
 		getQueryView().removeFilter(filter);
 	}
-	
-	
+
+
 	@Override
 	public void removeAllContainerFilters()
 	{
 		getQueryView().removeFilters();
 	}
-	
-	
+
+
 	@Override
 	public Collection<Filter> getContainerFilters()
 	{
 		return getQueryView().getFilters();
 	}
-	
-	
+
+
 	/**
 	 * Adds default filter to underlying QueryDefinition.
 	 *
@@ -688,8 +688,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		getQueryView().getQueryDefinition().addDefaultFilter(filter);
 	}
-	
-	
+
+
 	/**
 	 * Removes default filter from underlying QueryDefinition.
 	 *
@@ -700,8 +700,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		getQueryView().getQueryDefinition().removeDefaultFilter(filter);
 	}
-	
-	
+
+
 	/**
 	 * Removes all default filters from underlying QueryDefinition.
 	 */
@@ -709,9 +709,9 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		getQueryView().getQueryDefinition().removeDefaultFilters();
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Private ItemSetChangeEvent implementation.
 	 *
@@ -727,8 +727,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		 * The container where event occurred.
 		 */
 		private final XdevEntityLazyQueryContainer	container;
-		
-		
+
+
 		/**
 		 * Constructor for setting the container.
 		 *
@@ -739,8 +739,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		{
 			this.container = container;
 		}
-		
-		
+
+
 		/**
 		 * Gets the container where event occurred.
 		 *
@@ -751,11 +751,11 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		{
 			return this.container;
 		}
-		
+
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Private PropertySetChangeEvent implementation.
 	 *
@@ -771,8 +771,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		 * The container where event occurred.
 		 */
 		private final XdevEntityLazyQueryContainer	container;
-		
-		
+
+
 		/**
 		 * Constructor for setting the container.
 		 *
@@ -783,8 +783,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		{
 			this.container = container;
 		}
-		
-		
+
+
 		/**
 		 * Gets the container where event occurred.
 		 *
@@ -795,10 +795,10 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		{
 			return this.container;
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Commits changed and refreshes container.
 	 */
@@ -808,8 +808,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		this.queryView.commit();
 		refresh();
 	}
-	
-	
+
+
 	/**
 	 * Discards changes and refreshes container.
 	 */
@@ -819,8 +819,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 		this.queryView.discard();
 		refresh();
 	}
-	
-	
+
+
 	/**
 	 * @return true if container contains not committed modifications.
 	 */
@@ -829,8 +829,8 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView.isModified();
 	}
-	
-	
+
+
 	/**
 	 * @return the queryView
 	 */
@@ -838,26 +838,26 @@ public class XdevEntityLazyQueryContainer implements Indexed, Sortable, ItemSetC
 	{
 		return this.queryView;
 	}
-	
-	
+
+
 	@Override
 	public final void setBuffered(final boolean buffered)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	@Override
 	public final boolean isBuffered()
 	{
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public final List<?> getItemIds(final int startIndex, final int numberOfItems)
 	{
 		return ContainerHelpers.getItemIdsUsingGetIdByIndex(startIndex,numberOfItems,this);
 	}
-	
+
 }

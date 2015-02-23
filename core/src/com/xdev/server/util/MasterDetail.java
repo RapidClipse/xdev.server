@@ -28,10 +28,6 @@ public interface MasterDetail
 		public <T> void connectMasterDetail(AbstractSelect master, Filterable detailContainer,
 				Object filterProperty, Object detailProperty)
 		{
-			// master.addValueChangeListener(e ->
-			// prepareFilter(detailContainer,detailProperty,master
-			// .getItem(master.getValue()).getItemProperty(filterProperty).getValue()
-			// .toString()));
 			master.addValueChangeListener(new MasterDetailValueChangeListener(master,
 					detailContainer,filterProperty,detailProperty));
 		}
@@ -48,22 +44,6 @@ public interface MasterDetail
 		}
 		
 		
-		private void clearFiltering(Filterable filteredContainer, Object propertyId)
-		{
-			for(Filter filter : filteredContainer.getContainerFilters())
-			{
-				// XXX NOTE: does not work with multiple filters on the same
-				// property
-				if(filter.appliesToProperty(propertyId))
-				{
-					filteredContainer.removeContainerFilter(filter);
-					// filteredContainer.removeAllContainerFilters();
-					return;
-				}
-			}
-		}
-		
-		
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T> void connectForm(AbstractSelect master, BeanFieldGroup<T> detail)
@@ -75,6 +55,19 @@ public interface MasterDetail
 		protected <T> void prepareFormData(T data, BeanFieldGroup<T> detail)
 		{
 			detail.setItemDataSource(data);
+		}
+		
+		
+		private void clearFiltering(Filterable filteredContainer, Object propertyId)
+		{
+			for(Filter filter : filteredContainer.getContainerFilters())
+			{
+				if(filter.appliesToProperty(propertyId))
+				{
+					filteredContainer.removeContainerFilter(filter);
+					return;
+				}
+			}
 		}
 		
 		
@@ -111,8 +104,7 @@ public interface MasterDetail
 				}
 				else
 				{
-					// FIXME remove specific filter
-					this.detailContainer.removeAllContainerFilters();
+					clearFiltering(this.detailContainer,this.detailProperty);
 				}
 			}
 		}

@@ -1,18 +1,21 @@
 
-package com.xdev.ui.entitycomponent.hierarchical;
+package com.xdev.ui.util.wizard;
 
 
 import java.util.Collection;
 
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.ui.AbstractSelect;
 import com.xdev.server.util.EntityReferenceResolver;
 import com.xdev.server.util.HibernateEntityReferenceResolver;
+import com.xdev.ui.entitycomponent.hierarchical.FillTree;
+import com.xdev.ui.entitycomponent.hierarchical.Group;
 import com.xdev.ui.util.annotation.Caption;
 import com.xdev.ui.util.annotation.EntityFieldAnnotation;
 
 
 //Just a Delegate to FillTree.Implementation for utility purpose
-public class XdevFillTree
+public class XdevFillTree implements XdevExecutableCommandObject
 {
 	private final FillTree					fillTreeComposite;
 	private final EntityReferenceResolver	referenceResolver;
@@ -37,22 +40,22 @@ public class XdevFillTree
 	 */
 
 	// TODO create tailored exception type
-	public <T> void addRootGroup(final Class<T> clazz) throws RuntimeException
+	public <T> Group addRootGroup(final Class<T> clazz) throws RuntimeException
 	{
-		this.fillTreeComposite.addRootGroup(clazz,
+		return this.fillTreeComposite.addRootGroup(clazz,
 				this.captionAnnotation.getAnnotationField(clazz,Caption.class));
 	}
 
 
 	// TODO create tailored exception type
-	public void addGroup(final Class<?> clazz, final Class<?> parentClazz) throws RuntimeException
+	public Group addGroup(final Class<?> clazz, final Class<?> parentClazz) throws RuntimeException
 	{
 		// TODO check bidirectionals
 		final String propertyName = this.referenceResolver.getReferenceEntityPropertyName(
 				parentClazz,clazz);
 		try
 		{
-			this.fillTreeComposite.addGroup(clazz,clazz.getDeclaredField(propertyName),
+			return this.fillTreeComposite.addGroup(clazz,clazz.getDeclaredField(propertyName),
 					this.captionAnnotation.getAnnotationField(clazz,Caption.class));
 		}
 		catch(NoSuchFieldException | SecurityException e)
@@ -68,8 +71,21 @@ public class XdevFillTree
 	}
 
 
-	public HierarchicalContainer fillTree()
+	@Override
+	public void execute()
 	{
-		return this.fillTreeComposite.fillTree(new HierarchicalContainer());
+		this.fillTreeComposite.fillTree(new HierarchicalContainer());
+	}
+
+
+	public void setHierarchicalReceiver(final AbstractSelect treeComponent)
+	{
+		this.fillTreeComposite.setHierarchicalReceiver(treeComponent);
+	}
+
+
+	public AbstractSelect getHierarchicalReceiver()
+	{
+		return this.fillTreeComposite.getHierarchicalReceiver();
 	}
 }

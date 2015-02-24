@@ -2,19 +2,19 @@
 package com.xdev.server.util;
 
 
-import java.util.Iterator;
-
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.Filterable;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.filter.Like;
+import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.AbstractSelect;
 
 
 public interface MasterDetail
 {
 	public <T> void connectMasterDetail(AbstractSelect master, Filterable detailContainer,
-			String filterProperty, String detailProperty);
+			Object filterProperty, Object detailProperty);
 	
 	
 	public <T> void connectForm(AbstractSelect master, BeanFieldGroup<T> detail);
@@ -26,29 +26,18 @@ public interface MasterDetail
 		
 		@Override
 		public <T> void connectMasterDetail(AbstractSelect master, Filterable detailContainer,
-				String filterProperty, String detailProperty)
+				Object filterProperty, Object detailProperty)
 		{
-			master.addValueChangeListener(e -> prepareFilter(detailContainer,detailProperty,master
-					.getItem(master.getValue()).getItemProperty(filterProperty).getValue()
-					.toString()));
+			master.addValueChangeListener(new MasterDetailValueChangeListener(master,
+					detailContainer,filterProperty,detailProperty));
 		}
 		
 		
 		protected <T> Filter prepareFilter(Filterable detailContainer, Object propertyId,
-				String value)
+				Object value)
 		{
-			for(Iterator<Filter> iterator = detailContainer.getContainerFilters().iterator(); iterator
-					.hasNext();)
-			{
-				Filter filter = iterator.next();
-				// does not work with multiple filters on the same property
-				if(filter.appliesToProperty(propertyId))
-				{
-					iterator.remove();
-				}
-			}
-			
-			Filter masterDetailFilter = new Like(propertyId,value,false);
+			this.clearFiltering(detailContainer,propertyId);
+			Filter masterDetailFilter = new Compare.Equal(propertyId,value);
 			detailContainer.addContainerFilter(masterDetailFilter);
 			
 			return masterDetailFilter;
@@ -68,5 +57,56 @@ public interface MasterDetail
 			detail.setItemDataSource(data);
 		}
 		
+		
+		private void clearFiltering(Filterable filteredContainer, Object propertyId)
+		{
+			for(Filter filter : filteredContainer.getContainerFilters())
+			{
+				if(filter.appliesToProperty(propertyId))
+				{
+					filteredContainer.removeContainerFilter(filter);
+					return;
+				}
+			}
+		}
+		
+		
+		
+		class MasterDetailValueChangeListener implements ValueChangeListener
+		{
+			private static final long	serialVersionUID	= 3306467309764402175L;
+			
+			private AbstractSelect		filter;
+			private Filterable			detailContainer;
+			private Object				detailProperty, filterProperty;
+			
+			
+			public MasterDetailValueChangeListener(AbstractSelect filter,
+					Filterable detailContainer, Object filterProperty, Object detailProperty)
+			{
+				this.filter = filter;
+				this.detailContainer = detailContainer;
+				this.detailProperty = detailProperty;
+				this.filterProperty = filterProperty;
+			}
+			
+			
+			@Override
+			public void valueChange(ValueChangeEvent event)
+			{
+				if(this.filter.getValue() != null)
+				{
+					prepareFilter(
+							this.detailContainer,
+							this.detailProperty,
+							this.filter.getItem(this.filter.getValue())
+									.getItemProperty(this.filterProperty).getValue().toString());
+				}
+				else
+				{
+					clearFiltering(this.detailContainer,this.detailProperty);
+				}
+			}
+		}
 	}
 }

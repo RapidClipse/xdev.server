@@ -30,17 +30,19 @@ public class InterceptorServlet extends VaadinServlet
 			private static final long	serialVersionUID				= -7847744792732696004L;
 			private static final String	HIBERNATEUTIL_FILTER_INIT_PARAM	= "hibernateUtil";
 			
+			{
+				String hibernatePersistenceUnit = deploymentConfiguration
+						.getApplicationOrSystemProperty(HIBERNATEUTIL_FILTER_INIT_PARAM,"");
+				EntityManagerHelper.initializeHibernateFactory(new HibernateUtil.Implementation(
+						hibernatePersistenceUnit));
+			}
+			
 			
 			@Override
 			public void requestStart(VaadinRequest request, VaadinResponse response)
 			{
 				if(request.getMethod().equals("POST"))
 				{
-					String hibernatePersistenceUnit = deploymentConfiguration
-							.getApplicationOrSystemProperty(HIBERNATEUTIL_FILTER_INIT_PARAM,"");
-					EntityManagerHelper
-							.initializeHibernateFactory(new HibernateUtil.Implementation(
-									hibernatePersistenceUnit));
 					EntityManager em = EntityManagerHelper.getEntityManagerFactory()
 							.createEntityManager();
 					

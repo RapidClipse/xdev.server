@@ -13,7 +13,7 @@ import com.vaadin.ui.AbstractSelect;
 
 public interface MasterDetail
 {
-	public <T> void connectMasterDetail(AbstractSelect master, Filterable detailContainer,
+	public void connectMasterDetail(AbstractSelect master, Filterable detailContainer,
 			Object filterProperty, Object detailProperty);
 	
 	
@@ -25,7 +25,7 @@ public interface MasterDetail
 	{
 		
 		@Override
-		public <T> void connectMasterDetail(AbstractSelect master, Filterable detailContainer,
+		public void connectMasterDetail(AbstractSelect master, Filterable detailContainer,
 				Object filterProperty, Object detailProperty)
 		{
 			master.addValueChangeListener(new MasterDetailValueChangeListener(master,
@@ -33,8 +33,7 @@ public interface MasterDetail
 		}
 		
 		
-		protected <T> Filter prepareFilter(Filterable detailContainer, Object propertyId,
-				Object value)
+		protected Filter prepareFilter(Filterable detailContainer, Object propertyId, Object value)
 		{
 			this.clearFiltering(detailContainer,propertyId);
 			Filter masterDetailFilter = new Compare.Equal(propertyId,value);

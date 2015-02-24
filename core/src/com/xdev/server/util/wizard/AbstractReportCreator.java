@@ -1,11 +1,12 @@
 
-package com.xdev.server.reports;
+package com.xdev.server.util.wizard;
 
 
 import java.io.File;
 import java.io.OutputStream;
 
 import com.xdev.server.lang.CommandException;
+import com.xdev.server.reports.ReportStub;
 
 
 public abstract class AbstractReportCreator implements ReportCreator

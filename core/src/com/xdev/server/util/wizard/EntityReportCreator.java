@@ -1,5 +1,5 @@
 
-package com.xdev.server.reports;
+package com.xdev.server.util.wizard;
 
 
 import java.io.FileOutputStream;
@@ -13,8 +13,12 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+import com.xdev.server.reports.JRDataSourceMapper;
+import com.xdev.server.reports.ReportBuilder;
+import com.xdev.server.reports.ReportException;
 
-public abstract class EntityReportCreator extends AbstractReportCreator implements ReportCreator
+
+public class EntityReportCreator extends AbstractReportCreator implements ReportCreator
 {
 	
 	public EntityReportCreator(Object... args)
@@ -52,8 +56,7 @@ public abstract class EntityReportCreator extends AbstractReportCreator implemen
 	}
 	
 	
-	@Override
-	public <T> void execute(T info)
+	public void execute()
 	{
 		try
 		{
@@ -147,7 +150,4 @@ public abstract class EntityReportCreator extends AbstractReportCreator implemen
 			throw new ReportException(e);
 		}
 	}
-	
-	
-	public abstract void init();
 }

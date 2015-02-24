@@ -1,14 +1,14 @@
 
-package com.xdev.server.reports;
+package com.xdev.server.util.wizard;
 
 
 import java.io.File;
 import java.io.OutputStream;
 
-import com.xdev.server.lang.CommandObject;
+import com.xdev.server.reports.ReportStub;
 
 
-public interface ReportCreator extends CommandObject
+public interface ReportCreator extends XdevExecutableCommandObject
 {
 	public static enum Target
 	{

@@ -2,7 +2,7 @@
  * Copyright (C) 2015 by XDEV Software, All Rights Reserved.
  *
  */
- 
+
 package com.xdev.ui;
 
 
@@ -13,20 +13,20 @@ import com.vaadin.ui.NativeSelect;
 
 
 /**
- * This is a simple drop-down select without, for instance, support for multi
- * select, new items, lazy loading, and other advanced features. Sometimes
+ * This is a simple drop-down select without, for instance, support for
+ * multiselect, new items, lazyloading, and other advanced features. Sometimes
  * "native" select without all the bells-and-whistles of the ComboBox is a
  * better choice.
  *
  * @author XDEV Software
  *
  */
-public class XdevNativeComboBox extends NativeSelect
+public class XdevNativeSelect extends NativeSelect
 {
 	/**
 	 *
 	 */
-	public XdevNativeComboBox()
+	public XdevNativeSelect()
 	{
 		super();
 	}
@@ -36,7 +36,7 @@ public class XdevNativeComboBox extends NativeSelect
 	 * @param caption
 	 * @param options
 	 */
-	public XdevNativeComboBox(final String caption, final Collection<?> options)
+	public XdevNativeSelect(final String caption, final Collection<?> options)
 	{
 		super(caption,options);
 	}
@@ -46,7 +46,7 @@ public class XdevNativeComboBox extends NativeSelect
 	 * @param caption
 	 * @param dataSource
 	 */
-	public XdevNativeComboBox(final String caption, final Container dataSource)
+	public XdevNativeSelect(final String caption, final Container dataSource)
 	{
 		super(caption,dataSource);
 	}
@@ -55,13 +55,8 @@ public class XdevNativeComboBox extends NativeSelect
 	/**
 	 * @param caption
 	 */
-	public XdevNativeComboBox(final String caption)
+	public XdevNativeSelect(final String caption)
 	{
 		super(caption);
-	}
-	
-	// init defaults
-	{
-		setImmediate(true);
 	}
 }

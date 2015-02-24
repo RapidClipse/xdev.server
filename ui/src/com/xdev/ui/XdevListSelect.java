@@ -19,12 +19,12 @@ import com.vaadin.ui.ListSelect;
  * @author XDEV Software
  *
  */
-public class XdevListBox extends ListSelect
+public class XdevListSelect extends ListSelect
 {
 	/**
 	 *
 	 */
-	public XdevListBox()
+	public XdevListSelect()
 	{
 		super();
 	}
@@ -34,7 +34,7 @@ public class XdevListBox extends ListSelect
 	 * @param caption
 	 * @param options
 	 */
-	public XdevListBox(final String caption, final Collection<?> options)
+	public XdevListSelect(final String caption, final Collection<?> options)
 	{
 		super(caption,options);
 	}
@@ -44,7 +44,7 @@ public class XdevListBox extends ListSelect
 	 * @param caption
 	 * @param dataSource
 	 */
-	public XdevListBox(final String caption, final Container dataSource)
+	public XdevListSelect(final String caption, final Container dataSource)
 	{
 		super(caption,dataSource);
 	}
@@ -53,7 +53,7 @@ public class XdevListBox extends ListSelect
 	/**
 	 * @param caption
 	 */
-	public XdevListBox(final String caption)
+	public XdevListSelect(final String caption)
 	{
 		super(caption);
 	}

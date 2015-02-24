@@ -1,0 +1,20 @@
+
+<project name="xdev.server.core" basedir="." default="deploy">
+
+	<property name="target" value="../../XDEV Eclipse/xdev.eclipse.server.core/dist" />
+
+	<target name="deploy">
+
+		<mkdir dir="${target}" />
+
+		<jar destfile="${target}/xdev.server.core.jar" update="false" index="true" duplicate="preserve">
+			<fileset dir="bin" />
+		</jar>
+
+		<copy todir="${target}">
+			<fileset dir="lib" includes="*.jar" />
+		</copy>
+
+	</target>
+
+</project>

@@ -1,7 +1,7 @@
-
+<!DOCTYPE project>
 <project name="xdev.server.core" basedir="." default="deploy">
 
-	<property name="target" value="../../XDEV Eclipse/xdev.eclipse.server.core/dist" />
+	<property name="target" value="../xdev.eclipse.server.core/dist" />
 
 	<target name="deploy">
 

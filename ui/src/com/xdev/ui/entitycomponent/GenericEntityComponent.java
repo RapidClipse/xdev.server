@@ -7,7 +7,7 @@ import java.util.Collection;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
-import com.xdev.server.util.KeyValueType;
+import com.xdev.ui.util.KeyValueType;
 
 
 public interface GenericEntityComponent<BEANTYPE, T extends Container> extends
@@ -15,14 +15,14 @@ public interface GenericEntityComponent<BEANTYPE, T extends Container> extends
 {
 	public <K, V> void setModel(Class<BEANTYPE> entityClass,
 			@SuppressWarnings("unchecked") KeyValueType<K, V>... nestedProperties);
-	
-	
+
+
 	public <K, V> void setModel(Class<BEANTYPE> entityClass, Collection<BEANTYPE> data,
 			@SuppressWarnings("unchecked") KeyValueType<K, V>... nestedProperties);
-	
-	
+
+
 	public Item getItem(Object id);
-	
-	
+
+
 	public Item getSelectedItem();
 }

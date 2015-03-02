@@ -6,8 +6,8 @@ import java.util.Collection;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
-import com.xdev.server.util.KeyValueType;
 import com.xdev.ui.entitycomponent.UIModelProvider;
+import com.xdev.ui.util.KeyValueType;
 
 
 public class EntityComboBox<T> extends AbstractEntityComboBox<T, BeanItemContainer<T>>
@@ -46,7 +46,7 @@ public class EntityComboBox<T> extends AbstractEntityComboBox<T, BeanItemContain
 		{
 			container.addBean(entity);
 		}
-		
+
 		this.setGenericDataSource(container);
 	}
 

@@ -5,9 +5,9 @@ package com.xdev.ui.entitycomponent.combobox;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.ui.ComboBox;
-import com.xdev.server.util.KeyValueType;
 import com.xdev.ui.entitycomponent.GenericEntityComponent;
 import com.xdev.ui.entitycomponent.UIModelProvider;
+import com.xdev.ui.util.KeyValueType;
 
 
 public abstract class AbstractEntityComboBox<BEANTYPE, T extends Container> extends ComboBox

@@ -5,8 +5,8 @@ package com.xdev.ui.paging;
 import org.hibernate.ScrollableResults;
 
 import com.vaadin.data.Container.Viewer;
-import com.xdev.server.util.KeyValueType;
 import com.xdev.ui.entitycomponent.UIModelProvider;
+import com.xdev.ui.util.KeyValueType;
 
 
 public class PagingUIModelProvider<BEANTYPE> implements UIModelProvider<BEANTYPE>

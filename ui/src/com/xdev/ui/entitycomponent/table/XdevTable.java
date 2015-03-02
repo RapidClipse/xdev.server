@@ -5,9 +5,9 @@ package com.xdev.ui.entitycomponent.table;
 import java.util.Collection;
 
 import com.vaadin.data.util.BeanItem;
-import com.xdev.server.util.KeyValueType;
 import com.xdev.ui.paging.LazyLoadingUIModelProvider;
 import com.xdev.ui.paging.XdevLazyEntityContainer;
+import com.xdev.ui.util.KeyValueType;
 
 
 public class XdevTable<T> extends AbstractEntityTable<T, XdevLazyEntityContainer<T>>

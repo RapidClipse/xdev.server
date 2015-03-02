@@ -6,8 +6,8 @@ import org.hibernate.mapping.Property;
 
 import com.vaadin.data.Container.Viewer;
 import com.xdev.server.util.HibernateEntityIDResolver;
-import com.xdev.server.util.KeyValueType;
 import com.xdev.ui.entitycomponent.UIModelProvider;
+import com.xdev.ui.util.KeyValueType;
 
 
 //hibernate/JPA specific implementation
@@ -19,14 +19,14 @@ public class LazyLoadingUIModelProvider<BEANTYPE> implements UIModelProvider<BEA
 	 * for example car.manufacturer.name
 	 */
 	private static final String	VAADIN_PROPERTY_NESTING_PATTERN	= "\\.";
-
-
+	
+	
 	public LazyLoadingUIModelProvider(final int batchSize, final Object idProperty)
 	{
 		this.batchSize = batchSize;
 	}
-
-
+	
+	
 	public LazyLoadingUIModelProvider(final int bachSize, final boolean readOnlyProperties,
 			final boolean sortableProperties)
 	{
@@ -34,8 +34,8 @@ public class LazyLoadingUIModelProvider<BEANTYPE> implements UIModelProvider<BEA
 		this.readOnlyProperties = readOnlyProperties;
 		this.sortableProperties = sortableProperties;
 	}
-
-
+	
+	
 	@Override
 	public <K, V> XdevLazyEntityContainer<BEANTYPE> getModel(final Viewer table,
 			final Class<BEANTYPE> entityClass,
@@ -43,10 +43,10 @@ public class LazyLoadingUIModelProvider<BEANTYPE> implements UIModelProvider<BEA
 	{
 		final Property idProperty = new HibernateEntityIDResolver()
 				.getEntityIDProperty(entityClass);
-
+		
 		final XdevLazyEntityContainer<BEANTYPE> let = new XdevLazyEntityContainer<>(entityClass,
 				this.batchSize,idProperty.getName());
-
+		
 		for(final KeyValueType<K, V> keyValuePair : nestedProperties)
 		{
 			let.addContainerProperty(keyValuePair.getKey(),keyValuePair.getType(),
@@ -54,15 +54,15 @@ public class LazyLoadingUIModelProvider<BEANTYPE> implements UIModelProvider<BEA
 		}
 		let.getQueryView().getQueryDefinition()
 				.setMaxNestedPropertyDepth(this.getMaxNestedPropertyDepth(nestedProperties));
-
+		
 		return let;
 	}
-
-
+	
+	
 	private int getMaxNestedPropertyDepth(final KeyValueType<?, ?>[] nestedProperties)
 	{
 		int maxNestedPropertyDepth = 0;
-
+		
 		for(int i = 0; i < nestedProperties.length; i++)
 		{
 			final int currentDepth = nestedProperties[i].getKey().toString()

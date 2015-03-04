@@ -12,9 +12,9 @@ public final class XDEV
 {
 	// --------------- MASTER DETAIL -----------------------
 	
-	public static void bindComponents(final Consumer<ComponentFilterBuilder> consumer)
+	public static void bindComponents(final Consumer<JPAComponentFilterBuilder> consumer)
 	{
-		final ComponentFilterBuilder builder = new ComponentFilterBuilder.XdevComponentFilterBuilder();
+		final JPAComponentFilterBuilder builder = new XdevJPAComponentFilterBuilder();
 		consumer.accept(builder);
 		builder.execute();
 	}
@@ -49,9 +49,9 @@ public final class XDEV
 	}
 	
 	
-	public static void buildTree(final Consumer<XdevFillTree> consumer)
+	public static void buildTree(final Consumer<XdevFillTree> consumer, final AbstractSelect tree)
 	{
-		final XdevFillTree builder = new XdevFillTree();
+		final XdevFillTree builder = new XdevFillTree(tree);
 		consumer.accept(builder);
 		builder.execute();
 	}

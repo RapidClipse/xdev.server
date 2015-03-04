@@ -6,11 +6,12 @@ import java.util.Collection;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.ui.Component;
 import com.xdev.ui.util.KeyValueType;
 
 
-public interface GenericEntityComponent<BEANTYPE, T extends Container> extends
+public interface GenericEntityComponent<BEANTYPE, T extends Container.Filterable> extends
 		GenericEntityViewer<T>, Component
 {
 	public <K, V> void setModel(Class<BEANTYPE> entityClass,
@@ -25,4 +26,7 @@ public interface GenericEntityComponent<BEANTYPE, T extends Container> extends
 
 
 	public Item getSelectedItem();
+	
+	
+	public void addValueChangeListener(Property.ValueChangeListener listener);
 }

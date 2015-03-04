@@ -10,40 +10,40 @@ import com.xdev.ui.entitycomponent.UIModelProvider;
 import com.xdev.ui.util.KeyValueType;
 
 
-public abstract class AbstractEntityComboBox<BEANTYPE, T extends Container> extends ComboBox
-		implements GenericEntityComponent<BEANTYPE, T>
+public abstract class AbstractEntityComboBox<BEANTYPE, T extends Container.Filterable> extends
+		ComboBox implements GenericEntityComponent<BEANTYPE, T>
 {
 	/**
 	 *
 	 */
 	private static final long	serialVersionUID	= 897703398940222936L;
 	private T					container;
-
-
+	
+	
 	public AbstractEntityComboBox()
 	{
 		super();
 	}
-
-
+	
+	
 	public AbstractEntityComboBox(final String caption)
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public AbstractEntityComboBox(final T dataSource)
 	{
 		super(null,dataSource);
 	}
-
-
+	
+	
 	public AbstractEntityComboBox(final String caption, final T dataSource)
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -52,8 +52,8 @@ public abstract class AbstractEntityComboBox<BEANTYPE, T extends Container> exte
 	{
 		return this.container;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -63,8 +63,8 @@ public abstract class AbstractEntityComboBox<BEANTYPE, T extends Container> exte
 		this.container = newDataSource;
 		super.setContainerDataSource(newDataSource);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -73,8 +73,8 @@ public abstract class AbstractEntityComboBox<BEANTYPE, T extends Container> exte
 	{
 		return super.getItem(itemId);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -83,11 +83,11 @@ public abstract class AbstractEntityComboBox<BEANTYPE, T extends Container> exte
 	{
 		return this.getContainerDataSource().getItem(this.getValue());
 	}
-
-
+	
+	
 	protected abstract UIModelProvider<BEANTYPE> getModelProvider();
-
-
+	
+	
 	@Override
 	public abstract <K, V> void setModel(Class<BEANTYPE> entityClass,
 			@SuppressWarnings("unchecked") KeyValueType<K, V>... nestedProperties);

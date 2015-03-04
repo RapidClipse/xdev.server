@@ -6,5 +6,5 @@ import org.hibernate.mapping.Property;
 
 public interface EntityIDResolver
 {
-	 public <T> Property getEntityIDProperty(Class<T> entity);
+	 public Property getEntityIDProperty(Class<?> entity);
 }

@@ -43,7 +43,7 @@ public class HibernateEntityIDResolver implements EntityIDResolver
 	
 	
 	@Override
-	public <T> Property getEntityIDProperty(Class<T> entityClass)
+	public Property getEntityIDProperty(Class<?> entityClass)
 	{
 		PersistentClass clazz = this.config.getClassMapping(entityClass.getName());
 		Property idProperty = clazz.getIdentifierProperty();

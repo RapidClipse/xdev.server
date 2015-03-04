@@ -20,12 +20,18 @@ import org.hibernate.mapping.Value;
 import com.xdev.server.communication.EntityManagerHelper;
 
 
-public class HibernateEntityReferenceResolver implements EntityReferenceResolver
+/**
+ * Returns a Vaadin Item property chain.
+ * 
+ */
+// TODO create VaadinItemPathConcatenator to avoid manual "." appending
+public class XdevEntityReferenceResolver implements EntityReferenceResolver
 {
-	private final Configuration	config;
+	private final Configuration		config;
+	private final EntityIDResolver	idResolver;
 	
 	
-	public HibernateEntityReferenceResolver()
+	public XdevEntityReferenceResolver()
 	{
 		this.config = new Configuration();
 		Set<EntityType<?>> set = EntityManagerHelper.getEntityManager().getMetamodel()
@@ -44,11 +50,13 @@ public class HibernateEntityReferenceResolver implements EntityReferenceResolver
 			}
 		}
 		this.config.buildMappings();
+		this.idResolver = new HibernateEntityIDResolver();
 	}
 	
 	
 	@Override
 	public String getReferenceEntityPropertyName(Class<?> referenceEntity, Class<?> entity)
+			throws RuntimeException
 	{
 		PersistentClass clazz = this.config.getClassMapping(entity.getName());
 		Property ref = null;
@@ -58,8 +66,8 @@ public class HibernateEntityReferenceResolver implements EntityReferenceResolver
 		{
 			Property it = i.next();
 			/*
-			 * TODO not only referenceable properties are returned, hence a
-			 * manual check is required
+			 * not only referenceable properties are returned, hence a manual
+			 * check is required
 			 */
 			if(this.getReferencedPropertyName(it.getValue()) != null)
 			{
@@ -75,7 +83,53 @@ public class HibernateEntityReferenceResolver implements EntityReferenceResolver
 				}
 			}
 		}
-		return null;
+		return getReferenceEntityPropertyname(referenceEntity,entity,ref);
+	}
+	
+	
+	// look deeper into entity
+	protected String getReferenceEntityPropertyname(Class<?> referenceEntity,
+			Class<?> previousClass, Property previousProperty) throws RuntimeException
+	{
+		if(previousProperty != null)
+		{
+			String name = previousProperty.getName() + ".";
+			previousClass = previousProperty.getType().getReturnedClass();
+			PersistentClass clazz = this.config.getClassMapping(previousClass.getName());
+			
+			for(@SuppressWarnings("unchecked")
+			Iterator<Property> i = clazz.getReferenceablePropertyIterator(); i.hasNext();)
+			{
+				Property it = i.next();
+				/*
+				 * not only referenceable properties are returned, hence a
+				 * manual check is required
+				 */
+				if(this.getReferencedPropertyName(it.getValue()) != null)
+				{
+					previousProperty = it;
+					String propertyName = this.getReferencedPropertyName(previousProperty
+							.getValue());
+					
+					if(propertyName != null)
+					{
+						if(propertyName.equals(referenceEntity.getName()))
+						{
+							return this.attachId(name,previousProperty);
+						}
+					}
+				}
+			}
+		}
+		return getReferenceEntityPropertyname(referenceEntity,previousClass,previousProperty);
+	}
+	
+	
+	private String attachId(String itemPropertyPath, Property property)
+	{
+		Class<?> javaClass = property.getType().getReturnedClass();
+		return itemPropertyPath + property.getName() + "."
+				+ this.idResolver.getEntityIDProperty(javaClass).getName();
 	}
 	
 	

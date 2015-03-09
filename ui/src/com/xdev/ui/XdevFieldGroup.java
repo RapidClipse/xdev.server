@@ -2,11 +2,11 @@
  * Copyright (C) 2015 by XDEV Software, All Rights Reserved.
  *
  */
- 
+
 package com.xdev.ui;
 
 
-import com.vaadin.data.Item;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 
 
@@ -27,27 +27,19 @@ import com.vaadin.data.fieldgroup.FieldGroup;
  * @author XDEV Software
  *
  */
-public class XdevFieldGroup extends FieldGroup
+public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 {
-	/**
-	 * Constructs a field binder. Use {@link #setItemDataSource(Item)} to set a
-	 * data source for the field binder.
-	 * 
-	 */
 	public XdevFieldGroup()
 	{
-		super();
+		super(null);
 	}
 	
 	
 	/**
-	 * Constructs a field binder that uses the given data source.
-	 * 
-	 * @param itemDataSource
-	 *            The data source to bind the fields to
+	 * @param beanType
 	 */
-	public XdevFieldGroup(final Item itemDataSource)
+	public XdevFieldGroup(final Class<T> beanType)
 	{
-		super(itemDataSource);
+		super(beanType);
 	}
 }

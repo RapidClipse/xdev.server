@@ -1,5 +1,5 @@
 
-package com.xdev.server.util.annotation;
+package com.xdev.server.dal;
 
 
 import java.io.Serializable;

@@ -1,5 +1,5 @@
 
-package com.xdev.server.util.annotation;
+package com.xdev.server.util;
 
 
 import java.lang.annotation.ElementType;

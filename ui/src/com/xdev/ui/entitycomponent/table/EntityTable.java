@@ -16,29 +16,29 @@ public class EntityTable<T> extends AbstractEntityTable<T, BeanItemContainer<T>>
 	 *
 	 */
 	private static final long	serialVersionUID	= 8319108515219631399L;
-
-
+	
+	
 	@Override
 	public BeanItem<T> getItem(final Object id)
 	{
 		return super.getContainerDataSource().getItem(id);
 	}
-
-
+	
+	
 	@Override
 	@SafeVarargs
-	public final <K, V> void setModel(final Class<T> entityClass,
-			final KeyValueType<K, V>... nestedProperties)
+	public final void setModel(final Class<T> entityClass,
+			final KeyValueType<?, ?>... nestedProperties)
 	{
 		this.setGenericDataSource(this.getModelProvider().getModel(this,entityClass,
 				nestedProperties));
 	}
-
-
+	
+	
 	@SafeVarargs
 	@Override
-	public final <K, V> void setModel(final Class<T> entityClass, final Collection<T> data,
-			final KeyValueType<K, V>... nestedProperties)
+	public final void setModel(final Class<T> entityClass, final Collection<T> data,
+			final KeyValueType<?, ?>... nestedProperties)
 	{
 		final BeanItemContainer<T> container = this.getModelProvider().getModel(this,entityClass,
 				nestedProperties);
@@ -46,18 +46,18 @@ public class EntityTable<T> extends AbstractEntityTable<T, BeanItemContainer<T>>
 		{
 			container.addBean(entity);
 		}
-
+		
 		this.setGenericDataSource(container);
 	}
-
-
+	
+	
 	@Override
 	protected UIModelProvider.Implementation<T> getModelProvider()
 	{
 		return new UIModelProvider.Implementation<T>();
 	}
-
-
+	
+	
 	@Override
 	public BeanItem<T> getSelectedItem()
 	{

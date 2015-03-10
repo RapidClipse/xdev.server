@@ -7,7 +7,6 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
 import com.xdev.ui.entitycomponent.GenericEntityComponent;
 import com.xdev.ui.entitycomponent.UIModelProvider;
-import com.xdev.ui.util.KeyValueType;
 
 
 public abstract class AbstractEntityTable<BEANTYPE, T extends Container.Filterable> extends Table
@@ -18,32 +17,32 @@ public abstract class AbstractEntityTable<BEANTYPE, T extends Container.Filterab
 	 */
 	private static final long	serialVersionUID	= 897703398940222936L;
 	private T					container;
-
-
+	
+	
 	public AbstractEntityTable()
 	{
 		super();
 	}
-
-
+	
+	
 	public AbstractEntityTable(final String caption)
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public AbstractEntityTable(final T dataSource)
 	{
 		super(null,dataSource);
 	}
-
-
+	
+	
 	public AbstractEntityTable(final String caption, final T dataSource)
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -52,8 +51,8 @@ public abstract class AbstractEntityTable<BEANTYPE, T extends Container.Filterab
 	{
 		return this.container;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -63,8 +62,8 @@ public abstract class AbstractEntityTable<BEANTYPE, T extends Container.Filterab
 		this.container = newDataSource;
 		super.setContainerDataSource(newDataSource);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -73,8 +72,8 @@ public abstract class AbstractEntityTable<BEANTYPE, T extends Container.Filterab
 	{
 		return super.getItem(itemId);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -87,12 +86,7 @@ public abstract class AbstractEntityTable<BEANTYPE, T extends Container.Filterab
 		}
 		return null;
 	}
-
-
+	
+	
 	protected abstract UIModelProvider<BEANTYPE> getModelProvider();
-
-
-	@Override
-	public abstract <K, V> void setModel(Class<BEANTYPE> entityClass,
-			@SuppressWarnings("unchecked") KeyValueType<K, V>... nestedProperties);
 }

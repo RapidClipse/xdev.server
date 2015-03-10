@@ -37,24 +37,24 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 	private static final long		serialVersionUID	= 1L;
 	private PageableContainer<ET>	container			= null;
 	private final ScrollableResults	results;
-
-
+	
+	
 	public XdevPagedTable()
 	{
 		super("");
 		this.results = null;
 		this.addStyleName("pagedtable");
 	}
-
-
+	
+	
 	public XdevPagedTable(final ScrollableResults results)
 	{
 		super("");
 		this.results = results;
 		this.addStyleName("pagedtable");
 	}
-
-
+	
+	
 	public XdevPagedTable(final PageableContainer<ET> container)
 	{
 		super("",container);
@@ -62,8 +62,8 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		this.results = container.getResults();
 		this.addStyleName("pagedtable");
 	}
-
-
+	
+	
 	public XdevPagedTable(final PageableContainer<ET> container, final String caption)
 	{
 		super(caption,container);
@@ -72,15 +72,15 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		this.addStyleName("pagedtable");
 		this.setCaption(caption);
 	}
-
+	
 	private List<PageChangedListener<ET>>	listeners	= null;
-
-
+	
+	
 	public HorizontalLayout createControls()
 	{
 		final Label itemsPerPageLabel = new Label("Items per page:");
 		final ComboBox itemsPerPageSelect = new ComboBox();
-
+		
 		itemsPerPageSelect.addItem("5");
 		itemsPerPageSelect.addItem("10");
 		itemsPerPageSelect.addItem("25");
@@ -93,8 +93,8 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		itemsPerPageSelect.addValueChangeListener(new ValueChangeListener()
 		{
 			private static final long	serialVersionUID	= -2255853716069800092L;
-
-
+			
+			
 			@Override
 			public void valueChange(final com.vaadin.data.Property.ValueChangeEvent event)
 			{
@@ -116,8 +116,8 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		currentPageTextField.addValueChangeListener(new ValueChangeListener()
 		{
 			private static final long	serialVersionUID	= -2255853716069800092L;
-
-
+			
+			
 			@Override
 			public void valueChange(final com.vaadin.data.Property.ValueChangeEvent event)
 			{
@@ -128,20 +128,20 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 				}
 			}
 		});
-
+		
 		// pageLabel.setWidth(null);
 		// currentPageTextField.setWidth("20px");
 		// separatorLabel.setWidth(null);
 		// totalPagesLabel.setWidth(null);
-
+		
 		final HorizontalLayout controlBar = new HorizontalLayout();
 		final HorizontalLayout pageSize = new HorizontalLayout();
 		final HorizontalLayout pageManagement = new HorizontalLayout();
 		final Button first = new Button("<<",new ClickListener()
 		{
 			private static final long	serialVersionUID	= -355520120491283992L;
-
-
+			
+			
 			@Override
 			public void buttonClick(final ClickEvent event)
 			{
@@ -153,8 +153,8 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		final Button previous = new Button("<",new ClickListener()
 		{
 			private static final long	serialVersionUID	= -355520120491283992L;
-
-
+			
+			
 			@Override
 			public void buttonClick(final ClickEvent event)
 			{
@@ -166,8 +166,8 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		final Button next = new Button(">",new ClickListener()
 		{
 			private static final long	serialVersionUID	= -1927138212640638452L;
-
-
+			
+			
 			@Override
 			public void buttonClick(final ClickEvent event)
 			{
@@ -179,8 +179,8 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		final Button last = new Button(">>",new ClickListener()
 		{
 			private static final long	serialVersionUID	= -355520120491283992L;
-
-
+			
+			
 			@Override
 			public void buttonClick(final ClickEvent event)
 			{
@@ -193,12 +193,12 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		previous.setStyleName(ValoTheme.BUTTON_LINK);
 		next.setStyleName(ValoTheme.BUTTON_LINK);
 		last.setStyleName(ValoTheme.BUTTON_LINK);
-
+		
 		first.setEnabled(this.container.getCurrentPage() > 0);
 		previous.setEnabled(this.container.getCurrentPage() > 0);
 		next.setEnabled(this.container.getCurrentPage() < this.container.getTotalAmountOfPages() - 1);
 		last.setEnabled(!(this.container.getCurrentPage() == this.container.getTotalAmountOfPages() - 1));
-
+		
 		itemsPerPageLabel.addStyleName("pagedtable-itemsperpagecaption");
 		itemsPerPageSelect.addStyleName("pagedtable-itemsperpagecombobox");
 		pageLabel.addStyleName("pagedtable-pagecaption");
@@ -209,7 +209,7 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		previous.addStyleName("pagedtable-previous");
 		next.addStyleName("pagedtable-next");
 		last.addStyleName("pagedtable-last");
-
+		
 		itemsPerPageLabel.addStyleName("pagedtable-label");
 		itemsPerPageSelect.addStyleName("pagedtable-combobox");
 		pageLabel.addStyleName("pagedtable-label");
@@ -220,7 +220,7 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		previous.addStyleName("pagedtable-button");
 		next.addStyleName("pagedtable-button");
 		last.addStyleName("pagedtable-button");
-
+		
 		pageSize.addComponent(itemsPerPageLabel);
 		pageSize.addComponent(itemsPerPageSelect);
 		pageSize.setComponentAlignment(itemsPerPageLabel,Alignment.MIDDLE_LEFT);
@@ -249,7 +249,7 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		controlBar.setComponentAlignment(pageManagement,Alignment.MIDDLE_CENTER);
 		controlBar.setWidth("100%");
 		controlBar.setExpandRatio(pageSize,1);
-
+		
 		this.addListener(new PageChangedListener<ET>()
 		{
 			@Override
@@ -261,7 +261,7 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 						.getTotalAmountOfPages() - 1);
 				last.setEnabled(!(XdevPagedTable.this.container.getCurrentPage() == XdevPagedTable.this.container
 						.getTotalAmountOfPages() - 1));
-
+				
 				currentPageTextField.setValue(String.valueOf(XdevPagedTable.this.container
 						.getCurrentPage()));
 				totalPagesLabel.setValue(String.valueOf(XdevPagedTable.this.container
@@ -272,8 +272,8 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		});
 		return controlBar;
 	}
-
-
+	
+	
 	public void addListener(final PageChangedListener<ET> listener)
 	{
 		if(this.listeners == null)
@@ -282,8 +282,8 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		}
 		this.listeners.add(listener);
 	}
-
-
+	
+	
 	public void removeListener(final PageChangedListener<ET> listener)
 	{
 		if(this.listeners == null)
@@ -292,8 +292,8 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		}
 		this.listeners.remove(listener);
 	}
-
-
+	
+	
 	private void firePageChangedEvent()
 	{
 		if(this.listeners != null)
@@ -305,70 +305,70 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 			}
 		}
 	}
-
-
+	
+	
 	public void setAlwaysRecalculateColumnWidths(final boolean alwaysRecalculateColumnWidths)
 	{
 		this.alwaysRecalculateColumnWidths = alwaysRecalculateColumnWidths;
 	}
-
-
+	
+	
 	// Delegates //
-
+	
 	@Override
 	public void nextPage()
 	{
 		this.setCurrentPageFirstItemIndex(this.container.nextPage());
 		firePageChangedEvent();
 	}
-
-
+	
+	
 	@Override
 	public void previousPage()
 	{
 		this.setCurrentPageFirstItemIndex(this.container.previousPage());
 		firePageChangedEvent();
 	}
-
-
+	
+	
 	@Override
 	public void lastPage()
 	{
 		this.setCurrentPageFirstItemIndex(this.container.lastPage());
 		firePageChangedEvent();
 	}
-
-
+	
+	
 	@Override
 	public void firstPage()
 	{
 		this.setCurrentPageFirstItemIndex(this.container.firstPage());
 		firePageChangedEvent();
 	}
-
-
+	
+	
 	@Override
 	public int getTotalAmountOfPages()
 	{
 		return this.container.getTotalAmountOfPages();
 	}
-
-
+	
+	
 	@Override
 	public int getCurrentPage()
 	{
 		return this.container.getCurrentPage();
 	}
-
-
+	
+	
 	@Override
 	public void setCurrentPage(final int currentPage)
 	{
 		this.container.setCurrentPage(currentPage);
 		firePageChangedEvent();
 	}
-
-
+	
+	
 	@Override
 	public void setPageLength(final int pageLength)
 	{
@@ -380,8 +380,8 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 			firePageChangedEvent();
 		}
 	}
-
-
+	
+	
 	// @SuppressWarnings("unchecked")
 	// // due to Vaadin container API casting here is inevitable. Container
 	// clearly
@@ -408,7 +408,7 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 	// {
 	// return this.container;
 	// }
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -417,25 +417,25 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 	{
 		return new PagingUIModelProvider<ET>(this.results);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@SafeVarargs
 	@Override
-	public final <K, V> void setModel(final Class<ET> entityClass,
-			final KeyValueType<K, V>... nestedProperties)
+	public final void setModel(final Class<ET> entityClass,
+			final KeyValueType<?, ?>... nestedProperties)
 	{
 		this.setGenericDataSource(this.getModelProvider().getModel(this,entityClass,
 				nestedProperties));
 	}
-
-
+	
+	
 	@SafeVarargs
 	@Override
-	public final <K, V> void setModel(final Class<ET> entityClass, final Collection<ET> data,
-			final KeyValueType<K, V>... nestedProperties)
+	public final void setModel(final Class<ET> entityClass, final Collection<ET> data,
+			final KeyValueType<?, ?>... nestedProperties)
 	{
 		final PagedBeanItemContainer<ET> container = this.getModelProvider().getModel(this,
 				entityClass,nestedProperties);
@@ -443,8 +443,8 @@ public class XdevPagedTable<ET> extends AbstractEntityTable<ET, PageableContaine
 		{
 			container.addBean(entity);
 		}
-
+		
 		this.setGenericDataSource(container);
 	}
-
+	
 }

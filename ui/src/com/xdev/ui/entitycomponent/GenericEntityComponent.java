@@ -14,19 +14,18 @@ import com.xdev.ui.util.KeyValueType;
 public interface GenericEntityComponent<BEANTYPE, T extends Container.Filterable> extends
 		GenericEntityViewer<T>, Component
 {
-	public <K, V> void setModel(Class<BEANTYPE> entityClass,
-			@SuppressWarnings("unchecked") KeyValueType<K, V>... nestedProperties);
-
-
-	public <K, V> void setModel(Class<BEANTYPE> entityClass, Collection<BEANTYPE> data,
-			@SuppressWarnings("unchecked") KeyValueType<K, V>... nestedProperties);
-
-
+	public void setModel(Class<BEANTYPE> entityClass, KeyValueType<?, ?>... nestedProperties);
+	
+	
+	public void setModel(Class<BEANTYPE> entityClass, Collection<BEANTYPE> data,
+			KeyValueType<?, ?>... nestedProperties);
+	
+	
 	public Item getItem(Object id);
-
-
+	
+	
 	public Item getSelectedItem();
-	
-	
+
+
 	public void addValueChangeListener(Property.ValueChangeListener listener);
 }

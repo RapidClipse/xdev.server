@@ -13,8 +13,8 @@ import com.xdev.ui.util.KeyValueType;
 public interface UIModelProvider<BEANTYPE>
 {
 
-	public <K, V> Container getModel(Viewer table, Class<BEANTYPE> entityClass,
-			@SuppressWarnings("unchecked") KeyValueType<K, V>... nestedProperties);
+	public Container getModel(Viewer table, Class<BEANTYPE> entityClass,
+			KeyValueType<?, ?>... nestedProperties);
 
 
 
@@ -22,14 +22,13 @@ public interface UIModelProvider<BEANTYPE>
 	{
 
 		@Override
-		public <K, V> BeanItemContainer<BEANTYPE> getModel(final Viewer table,
-				final Class<BEANTYPE> entityClass,
-				@SuppressWarnings("unchecked") final KeyValueType<K, V>... nestedProperties)
+		public BeanItemContainer<BEANTYPE> getModel(final Viewer table,
+				final Class<BEANTYPE> entityClass, final KeyValueType<?, ?>... nestedProperties)
 		{
 			final BeanItemContainer<BEANTYPE> beanItemContainer = new BeanItemContainer<>(
 					entityClass);
 
-			for(final KeyValueType<K, V> keyValuePair : nestedProperties)
+			for(final KeyValueType<?, ?> keyValuePair : nestedProperties)
 			{
 				beanItemContainer.addNestedContainerProperty(keyValuePair.getKey().toString());
 			}

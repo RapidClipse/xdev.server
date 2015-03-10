@@ -12,19 +12,19 @@ import com.xdev.ui.util.KeyValueType;
 
 public class XdevTable<T> extends AbstractEntityTable<T, XdevLazyEntityContainer<T>>
 {
-
+	
 	/**
 	 *
 	 */
 	private static final long	serialVersionUID	= -836170197198239894L;
-
-
+	
+	
 	public XdevTable()
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Creates a new empty table with caption.
 	 *
@@ -34,21 +34,21 @@ public class XdevTable<T> extends AbstractEntityTable<T, XdevLazyEntityContainer
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public XdevTable(final int pageLength)
 	{
 		super();
 		super.setPageLength(pageLength);
 	}
-
+	
 	// init defaults
 	{
 		setSelectable(true);
 		setImmediate(true);
 	}
-
-
+	
+	
 	/*
 	 * see XdevLazyEntityContainer code it contains only BeanItems but stores it
 	 * as Items due to framework inheritance restrictions. See
@@ -63,25 +63,25 @@ public class XdevTable<T> extends AbstractEntityTable<T, XdevLazyEntityContainer
 	{
 		return (BeanItem<T>)getContainerDataSource().getItem(id);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@SafeVarargs
 	@Override
-	public final <K, V> void setModel(final Class<T> entityClass,
-			final KeyValueType<K, V>... nestedProperties)
+	public final void setModel(final Class<T> entityClass,
+			final KeyValueType<?, ?>... nestedProperties)
 	{
 		this.setGenericDataSource(this.getModelProvider().getModel(this,entityClass,
 				nestedProperties));
 	}
-
-
+	
+	
 	@SafeVarargs
 	@Override
-	public final <K, V> void setModel(final Class<T> entityClass, final Collection<T> data,
-			final KeyValueType<K, V>... nestedProperties)
+	public final void setModel(final Class<T> entityClass, final Collection<T> data,
+			final KeyValueType<?, ?>... nestedProperties)
 	{
 		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
 				entityClass,nestedProperties);
@@ -89,11 +89,11 @@ public class XdevTable<T> extends AbstractEntityTable<T, XdevLazyEntityContainer
 		{
 			container.addEntity(entity);
 		}
-
+		
 		this.setGenericDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -103,8 +103,8 @@ public class XdevTable<T> extends AbstractEntityTable<T, XdevLazyEntityContainer
 		return new LazyLoadingUIModelProvider<T>(this.getPageLength(),this.isReadOnly(),
 				this.isSortEnabled());
 	}
-
-
+	
+	
 	/*
 	 * see XdevLazyEntityContainer code it contains only BeanItems but stores it
 	 * as Items due to framework inheritance restrictions. See
@@ -123,8 +123,8 @@ public class XdevTable<T> extends AbstractEntityTable<T, XdevLazyEntityContainer
 		}
 		return null;
 	}
-
-
+	
+	
 	@Override
 	public void setPageLength(final int pageLength)
 	{

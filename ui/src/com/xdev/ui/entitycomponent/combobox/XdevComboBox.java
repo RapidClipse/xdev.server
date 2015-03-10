@@ -12,26 +12,26 @@ import com.xdev.ui.util.KeyValueType;
 
 public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityContainer<T>>
 {
-
+	
 	/**
 	 *
 	 */
 	private static final long	serialVersionUID	= -836170197198239894L;
-
-
+	
+	
 	public XdevComboBox()
 	{
 		super();
 	}
-
-
+	
+	
 	public XdevComboBox(final int pageLength)
 	{
 		super();
 		super.setPageLength(pageLength);
 	}
-
-
+	
+	
 	/*
 	 * see XdevLazyEntityContainer code it contains only BeanItems but stores it
 	 * as Items due to framework inheritance restrictions. See
@@ -46,25 +46,25 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 	{
 		return (BeanItem<T>)getContainerDataSource().getItem(id);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@SafeVarargs
 	@Override
-	public final <K, V> void setModel(final Class<T> entityClass,
-			final KeyValueType<K, V>... nestedProperties)
+	public final void setModel(final Class<T> entityClass,
+			final KeyValueType<?, ?>... nestedProperties)
 	{
 		this.setGenericDataSource(this.getModelProvider().getModel(this,entityClass,
 				nestedProperties));
 	}
-
-
+	
+	
 	@SafeVarargs
 	@Override
-	public final <K, V> void setModel(final Class<T> entityClass, final Collection<T> data,
-			final KeyValueType<K, V>... nestedProperties)
+	public final void setModel(final Class<T> entityClass, final Collection<T> data,
+			final KeyValueType<?, ?>... nestedProperties)
 	{
 		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
 				entityClass,nestedProperties);
@@ -72,11 +72,11 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 		{
 			container.addEntity(entity);
 		}
-
+		
 		this.setGenericDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,8 +86,8 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 		return new LazyLoadingUIModelProvider<T>(this.getPageLength(),this.isTextInputAllowed(),
 				false);
 	}
-
-
+	
+	
 	/*
 	 * see XdevLazyEntityContainer code it contains only BeanItems but stores it
 	 * as Items due to framework inheritance restrictions. See
@@ -102,8 +102,8 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 	{
 		return (BeanItem<T>)this.getContainerDataSource().getItem(this.getValue());
 	}
-
-
+	
+	
 	@Override
 	public void setPageLength(final int pageLength)
 	{

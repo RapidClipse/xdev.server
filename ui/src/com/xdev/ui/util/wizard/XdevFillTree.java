@@ -8,10 +8,10 @@ import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.ui.AbstractSelect;
 import com.xdev.server.util.EntityReferenceResolver;
 import com.xdev.server.util.HibernateEntityReferenceResolver;
+import com.xdev.server.util.annotation.Caption;
+import com.xdev.server.util.annotation.EntityFieldAnnotation;
 import com.xdev.ui.entitycomponent.hierarchical.FillTree;
 import com.xdev.ui.entitycomponent.hierarchical.Group;
-import com.xdev.ui.util.annotation.Caption;
-import com.xdev.ui.util.annotation.EntityFieldAnnotation;
 
 
 //Just a Delegate to FillTree.Implementation for utility purpose

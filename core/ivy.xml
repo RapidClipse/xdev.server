@@ -26,8 +26,8 @@
 		<!-- Push support -->
 		<dependency org="com.vaadin" name="vaadin-push" rev="&vaadin.version;" />
 
-		<!-- Servlet 3.0 API -->
-		<dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1" conf="nodeploy->default" />
+		<!-- Servlet 3.1 API -->
+		<dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0" conf="nodeploy->default" />
 
 		<!-- Precompiled DefaultWidgetSet -->
 		<dependency org="com.vaadin" name="vaadin-client-compiled"

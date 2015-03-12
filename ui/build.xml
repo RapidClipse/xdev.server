@@ -11,9 +11,9 @@
 			<fileset dir="bin" />
 		</jar>
 
-		<copy todir="${target}">
+		<!--<copy todir="${target}">
 			<fileset dir="lib" includes="*.jar" />
-		</copy>
+		</copy>-->
 
 	</target>
 

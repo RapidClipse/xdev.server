@@ -1,5 +1,9 @@
+/*
+ * Copyright (C) 2015 by XDEV Software, All Rights Reserved.
+ *
+ */
 
-package com.xdev.ui.entitycomponent.combobox;
+package com.xdev.ui.entitycomponent.listselect;
 
 
 import java.util.Collection;
@@ -9,25 +13,35 @@ import com.xdev.ui.paging.XdevLazyEntityContainer;
 import com.xdev.ui.util.KeyValueType;
 
 
-public class XdevComboBox<T> extends AbstractEntityComboBox<T>
+/**
+ * This is a simple list select without, for instance, support for new items,
+ * lazyloading, and other advanced features.
+ *
+ * @author XDEV Software
+ *
+ */
+public class XdevListSelect<T> extends AbstractEntityListSelect<T>
 {
-
 	/**
 	 *
 	 */
-	private static final long	serialVersionUID	= -836170197198239894L;
-
-
-	public XdevComboBox()
+	public XdevListSelect()
 	{
 		super();
 	}
 
 
-	public XdevComboBox(final int pageLength)
+	/**
+	 * @param caption
+	 */
+	public XdevListSelect(final String caption)
 	{
-		super();
-		super.setPageLength(pageLength);
+		super(caption);
+	}
+
+	// init defaults
+	{
+		setImmediate(true);
 	}
 
 
@@ -66,15 +80,6 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T>
 	@Override
 	protected LazyLoadingUIModelProvider<T> getModelProvider()
 	{
-		return new LazyLoadingUIModelProvider<T>(this.getPageLength(),this.isTextInputAllowed(),
-				false);
-	}
-
-
-	@Override
-	public void setPageLength(final int pageLength)
-	{
-		// FIXME property change to create new model!
-		super.setPageLength(pageLength);
+		return new LazyLoadingUIModelProvider<T>(this.getRows(),false,false);
 	}
 }

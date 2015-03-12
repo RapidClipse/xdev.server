@@ -2,21 +2,22 @@
 package com.xdev.ui.entitycomponent.table;
 
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Table;
-import com.xdev.ui.entitycomponent.GenericEntityComponent;
+import com.xdev.ui.entitycomponent.EntityComponent;
+import com.xdev.ui.entitycomponent.EntityContainer;
 import com.xdev.ui.entitycomponent.UIModelProvider;
 
 
-public abstract class AbstractEntityTable<BEANTYPE, T extends Container.Filterable> extends Table
-		implements GenericEntityComponent<BEANTYPE, T>
+public abstract class AbstractEntityTable<BEANTYPE> extends Table implements
+		EntityComponent<BEANTYPE>
 {
 	/**
 	 *
 	 */
-	private static final long	serialVersionUID	= 897703398940222936L;
-	private T					container;
+	private static final long			serialVersionUID	= 897703398940222936L;
+	
+	private EntityContainer<BEANTYPE>	container;
 	
 	
 	public AbstractEntityTable()
@@ -31,36 +32,34 @@ public abstract class AbstractEntityTable<BEANTYPE, T extends Container.Filterab
 	}
 	
 	
-	public AbstractEntityTable(final T dataSource)
+	public AbstractEntityTable(final EntityContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
+		this.container = dataSource;
 	}
 	
 	
-	public AbstractEntityTable(final String caption, final T dataSource)
+	public AbstractEntityTable(final String caption, final EntityContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
+		this.container = dataSource;
 	}
 	
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public T getContainerDataSource()
+	public EntityContainer<BEANTYPE> getContainerDataSource()
 	{
 		return this.container;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setGenericDataSource(final T newDataSource)
+	public BeanItem<BEANTYPE> getItem(final Object itemId)
 	{
-		this.container = newDataSource;
-		super.setContainerDataSource(newDataSource);
+		return this.container.getEntityItem(itemId);
 	}
 	
 	
@@ -68,25 +67,30 @@ public abstract class AbstractEntityTable<BEANTYPE, T extends Container.Filterab
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Item getItem(final Object itemId)
-	{
-		return super.getItem(itemId);
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Item getSelectedItem()
+	public BeanItem<BEANTYPE> getSelectedItem()
 	{
 		if(!this.isMultiSelect())
 		{
-			return this.getContainerDataSource().getItem(this.getValue());
+			return this.container.getEntityItem(this.getValue());
 		}
 		return null;
 	}
 	
 	
 	protected abstract UIModelProvider<BEANTYPE> getModelProvider();
+	
+	
+	@Override
+	public void setEntityDataSource(final EntityContainer<BEANTYPE> newDataSource)
+	{
+		this.container = newDataSource;
+		super.setContainerDataSource(newDataSource);
+	}
+	
+	
+	@Override
+	public EntityContainer<BEANTYPE> getEntityDataSource()
+	{
+		return this.container;
+	}
 }

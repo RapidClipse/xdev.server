@@ -5,6 +5,7 @@ package com.xdev.ui.paging;
 import org.vaadin.addons.lazyquerycontainer.CompositeItem;
 
 import com.vaadin.data.util.BeanItem;
+import com.xdev.ui.entitycomponent.EntityContainer;
 
 
 /**
@@ -16,7 +17,8 @@ import com.vaadin.data.util.BeanItem;
  * @author Tommi Laukkanen
  */
 // copied from EntityContainer to become extendable
-public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer
+public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer implements
+		EntityContainer<T>
 {
 	private static final long	serialVersionUID	= 1L;
 	
@@ -87,13 +89,15 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer
 	 *
 	 * @return the new constructed entity.
 	 */
+	@Override
 	public T addEntity()
 	{
 		final Object itemId = addItem();
-		return getEntity(indexOfId(itemId));
+		return getEntityItem(indexOfId(itemId)).getBean();
 	}
 	
 	
+	@Override
 	public int addEntity(final T entity)
 	{
 		return getQueryView().addItem(entity);
@@ -107,9 +111,10 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer
 	 *            Index of the entity to be removed.
 	 * @return The removed entity.
 	 */
+	@Override
 	public T removeEntity(final int index)
 	{
-		final T entityToRemove = getEntity(index);
+		final T entityToRemove = getEntityItem(index).getBean();
 		removeItem(getIdByIndex(index));
 		return entityToRemove;
 	}
@@ -122,9 +127,10 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer
 	 *            The ID of the entity.
 	 * @return the entity.
 	 */
-	public T getEntity(final Object id)
+	@Override
+	public BeanItem<T> getEntityItem(final Object id)
 	{
-		return getEntity(indexOfId(id));
+		return getEntityItem(indexOfId(id));
 	}
 	
 	
@@ -135,18 +141,30 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer
 	 *            The index of the entity.
 	 * @return the entity.
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	public T getEntity(final int index)
+	public BeanItem<T> getEntityItem(final int index)
 	{
 		if(getQueryView().getQueryDefinition().isCompositeItems())
 		{
 			final CompositeItem compositeItem = (CompositeItem)getItem(getIdByIndex(index));
 			final BeanItem<T> beanItem = (BeanItem<T>)compositeItem.getItem("bean");
-			return beanItem.getBean();
+			return beanItem;
 		}
 		else
 		{
-			return ((BeanItem<T>)getItem(getIdByIndex(index))).getBean();
+			return((BeanItem<T>)getItem(getIdByIndex(index)));
+		}
+	}
+	
+	
+	@Override
+	public void removeEntity(final T entity)
+	{
+		for(final Object itemId : this.getItemIds())
+		{
+			this.getEntityItem(itemId).equals(entity);
+			this.removeItem(itemId);
 		}
 	}
 	

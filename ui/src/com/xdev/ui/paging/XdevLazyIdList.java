@@ -63,10 +63,18 @@ public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized T[] toArray()
 	{
-		throw new UnsupportedOperationException();
+		final Object[] itemIDArray = new Object[this.lazyQueryView.size()];
+		for(int i = 0; i < this.lazyQueryView.size(); i++)
+		{
+			itemIDArray[i] = this.lazyQueryView.getItem(i).getItemProperty(this.idPropertyId)
+					.getValue();
+		}
+
+		return (T[])itemIDArray;
 	}
 
 

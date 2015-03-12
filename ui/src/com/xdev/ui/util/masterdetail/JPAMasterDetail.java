@@ -8,13 +8,13 @@ import com.xdev.server.util.EntityIDResolver;
 import com.xdev.server.util.EntityReferenceResolver;
 import com.xdev.server.util.HibernateEntityIDResolver;
 import com.xdev.server.util.XdevEntityReferenceResolver;
-import com.xdev.ui.entitycomponent.GenericEntityComponent;
+import com.xdev.ui.entitycomponent.EntityComponent;
 
 
 @SuppressWarnings("rawtypes")
 public interface JPAMasterDetail extends MasterDetail
 {
-	public void connectMasterDetail(GenericEntityComponent master, GenericEntityComponent detail,
+	public void connectMasterDetail(EntityComponent master, EntityComponent detail,
 			Class masterClass, Class detailClass);
 	
 	
@@ -37,8 +37,8 @@ public interface JPAMasterDetail extends MasterDetail
 		// 2. getContainer from detail component
 		// 3. getConnectedEntities from master and detail
 		@Override
-		public void connectMasterDetail(final GenericEntityComponent master,
-				final GenericEntityComponent detailContainer, final Class masterClass,
+		public void connectMasterDetail(final EntityComponent master,
+				final EntityComponent detailContainer, final Class masterClass,
 				final Class detailClass)
 		{
 			// 1. get primary property from master class
@@ -52,15 +52,15 @@ public interface JPAMasterDetail extends MasterDetail
 		
 		private class MasterDetailValueChangeListener implements ValueChangeListener
 		{
-			private static final long				serialVersionUID	= 3306467309764402175L;
+			private static final long		serialVersionUID	= 3306467309764402175L;
 			
-			private final GenericEntityComponent	filter;
-			private final GenericEntityComponent	detailContainer;
-			private final Object					detailProperty, filterProperty;
+			private final EntityComponent	filter;
+			private final EntityComponent	detailContainer;
+			private final Object			detailProperty, filterProperty;
 			
 			
-			public MasterDetailValueChangeListener(final GenericEntityComponent filter,
-					final GenericEntityComponent detailContainer, final Object filterProperty,
+			public MasterDetailValueChangeListener(final EntityComponent filter,
+					final EntityComponent detailContainer, final Object filterProperty,
 					final Object detailProperty)
 			{
 				this.filter = filter;
@@ -75,15 +75,13 @@ public interface JPAMasterDetail extends MasterDetail
 			{
 				if(this.filter.getSelectedItem() != null)
 				{
-					prepareFilter(this.detailContainer.getContainerDataSource(),
-							this.detailProperty,
+					prepareFilter(this.detailContainer.getEntityDataSource(),this.detailProperty,
 							this.filter.getSelectedItem().getItemProperty(this.filterProperty)
 									.getValue().toString());
 				}
 				else
 				{
-					clearFiltering(this.detailContainer.getContainerDataSource(),
-							this.detailProperty);
+					clearFiltering(this.detailContainer.getEntityDataSource(),this.detailProperty);
 				}
 			}
 		}

@@ -10,28 +10,28 @@ import com.xdev.ui.paging.XdevLazyEntityContainer;
 import com.xdev.ui.util.KeyValueType;
 
 
-public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityContainer<T>>
+public class XdevComboBox<T> extends AbstractEntityComboBox<T>
 {
-	
+
 	/**
 	 *
 	 */
 	private static final long	serialVersionUID	= -836170197198239894L;
-	
-	
+
+
 	public XdevComboBox()
 	{
 		super();
 	}
-	
-	
+
+
 	public XdevComboBox(final int pageLength)
 	{
 		super();
 		super.setPageLength(pageLength);
 	}
-	
-	
+
+
 	/*
 	 * see XdevLazyEntityContainer code it contains only BeanItems but stores it
 	 * as Items due to framework inheritance restrictions. See
@@ -46,8 +46,8 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 	{
 		return (BeanItem<T>)getContainerDataSource().getItem(id);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -56,11 +56,11 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 	public final void setModel(final Class<T> entityClass,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
-		this.setGenericDataSource(this.getModelProvider().getModel(this,entityClass,
-				nestedProperties));
+		this.setEntityDataSource(this.getModelProvider()
+				.getModel(this,entityClass,nestedProperties));
 	}
-	
-	
+
+
 	@SafeVarargs
 	@Override
 	public final void setModel(final Class<T> entityClass, final Collection<T> data,
@@ -72,11 +72,11 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 		{
 			container.addEntity(entity);
 		}
-		
-		this.setGenericDataSource(container);
+
+		this.setEntityDataSource(container);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,8 +86,8 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 		return new LazyLoadingUIModelProvider<T>(this.getPageLength(),this.isTextInputAllowed(),
 				false);
 	}
-	
-	
+
+
 	/*
 	 * see XdevLazyEntityContainer code it contains only BeanItems but stores it
 	 * as Items due to framework inheritance restrictions. See
@@ -102,8 +102,8 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T, XdevLazyEntityCon
 	{
 		return (BeanItem<T>)this.getContainerDataSource().getItem(this.getValue());
 	}
-	
-	
+
+
 	@Override
 	public void setPageLength(final int pageLength)
 	{

@@ -2,11 +2,10 @@
 package com.xdev.ui.entitycomponent;
 
 
-import com.vaadin.data.Container;
 import com.vaadin.data.Container.Viewer;
 
 
-public interface GenericEntityViewer<T extends Container.Filterable> extends Viewer
+public interface GenericEntityViewer<BEANTYPE> extends Viewer
 {
 
 	/**
@@ -15,7 +14,7 @@ public interface GenericEntityViewer<T extends Container.Filterable> extends Vie
 	 * @param newDataSource
 	 *            The new data source Item
 	 */
-	public void setGenericDataSource(T newDataSource);
+	public void setEntityDataSource(EntityContainer<BEANTYPE> newDataSource);
 
 
 	/**
@@ -23,7 +22,6 @@ public interface GenericEntityViewer<T extends Container.Filterable> extends Vie
 	 *
 	 * @return data source Container
 	 */
-	@Override
-	public T getContainerDataSource();
+	public EntityContainer<BEANTYPE> getEntityDataSource();
 
 }

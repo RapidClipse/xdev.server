@@ -42,17 +42,17 @@ public class EntityManagerHelper
 	
 	public static EntityManager getEntityManager()
 	{
-		EntityManager em = (EntityManager)VaadinService.getCurrentRequest().getAttribute(
+		return (EntityManager)VaadinService.getCurrentRequest().getAttribute(
 				"HibernateEntityManager");
-		return em;
 	}
 	
 	
 	public static void closeEntityManager()
 	{
-		if(getEntityManager() != null)
+		EntityManager entityManager = getEntityManager();
+		if(entityManager != null)
 		{
-			getEntityManager().close();
+			entityManager.close();
 		}
 	}
 	
@@ -89,8 +89,7 @@ public class EntityManagerHelper
 	
 	public static <T> CriteriaQuery<T> getCriteriaQuery(Class<T> type)
 	{
-		CriteriaBuilder cb = EntityManagerHelper.getEntityManager()
-				.getCriteriaBuilder();
+		CriteriaBuilder cb = EntityManagerHelper.getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(type);
 		return cq;
 	}

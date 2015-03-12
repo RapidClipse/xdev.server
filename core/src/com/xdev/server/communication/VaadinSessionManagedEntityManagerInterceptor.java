@@ -5,6 +5,7 @@ package com.xdev.server.communication;
 import java.io.IOException;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -37,12 +38,16 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 				return;
 			}
 			
-			EntityManager em = EntityManagerHelper.getEntityManagerFactory()
-					.createEntityManager();
-			// System.out.println("opened em");
-			
-			// Add the EntityManager to the request
-			req.setAttribute("HibernateEntityManager",em);
+			EntityManagerFactory factory = EntityManagerHelper.getEntityManagerFactory();
+			EntityManager manager = null;
+			if(factory != null)
+			{
+				manager = factory.createEntityManager();
+				// System.out.println("opened em");
+				
+				// Add the EntityManager to the request
+				req.setAttribute("HibernateEntityManager",manager);
+			}
 			
 			// Call the next filter until the actual request (continue request
 			// processing)
@@ -51,7 +56,10 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 			// Flush and close the EntityManager after request is resolved
 			// System.out.println("closing em");
 			// System.out.println("---------------------------------------------------");
-			em.close();
+			if(manager != null)
+			{
+				manager.close();
+			}
 		}
 		catch(Exception ex)
 		{
@@ -59,7 +67,9 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 			{
 				EntityTransaction tx = EntityManagerHelper.getTransaction();
 				if(tx != null && tx.isActive())
+				{
 					EntityManagerHelper.rollback();
+				}
 			}
 			throw ex;
 		}

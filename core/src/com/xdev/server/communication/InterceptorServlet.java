@@ -2,8 +2,13 @@
 package com.xdev.server.communication;
 
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceException;
 
 import com.vaadin.server.DeploymentConfiguration;
 import com.vaadin.server.ServiceException;
@@ -30,25 +35,52 @@ public class InterceptorServlet extends VaadinServlet
 			private static final long	serialVersionUID				= -7847744792732696004L;
 			private static final String	HIBERNATEUTIL_FILTER_INIT_PARAM	= "hibernateUtil";
 			
-			{
-				String hibernatePersistenceUnit = deploymentConfiguration
-						.getApplicationOrSystemProperty(HIBERNATEUTIL_FILTER_INIT_PARAM,"");
-				EntityManagerHelper.initializeHibernateFactory(new HibernateUtil.Implementation(
-						hibernatePersistenceUnit));
-			}
+			private boolean				hibernateFactoryInitialized		= false;
 			
 			
 			@Override
 			public void requestStart(VaadinRequest request, VaadinResponse response)
 			{
+				if(!hibernateFactoryInitialized)
+				{
+					hibernateFactoryInitialized = true;
+					
+					try
+					{
+						String hibernatePersistenceUnit = deploymentConfiguration
+								.getApplicationOrSystemProperty(HIBERNATEUTIL_FILTER_INIT_PARAM,"");
+						EntityManagerHelper
+								.initializeHibernateFactory(new HibernateUtil.Implementation(
+										hibernatePersistenceUnit));
+					}
+					catch(PersistenceException e)
+					{
+						Logger.getLogger(InterceptorServlet.class.getName()).log(Level.WARNING,
+								e.getMessage(),e);
+					}
+				}
+				
 				if(request.getMethod().equals("POST"))
 				{
-					EntityManager em = EntityManagerHelper.getEntityManagerFactory()
-							.createEntityManager();
-					
-					// Add the EntityManager to the request
-					request.setAttribute("HibernateEntityManager",em);
+					try
+					{
+						EntityManagerFactory factory = EntityManagerHelper
+								.getEntityManagerFactory();
+						if(factory != null)
+						{
+							EntityManager manager = factory.createEntityManager();
+							
+							// Add the EntityManager to the request
+							request.setAttribute("HibernateEntityManager",manager);
+						}
+					}
+					catch(PersistenceException e)
+					{
+						Logger.getLogger(InterceptorServlet.class.getName()).log(Level.WARNING,
+								e.getMessage(),e);
+					}
 				}
+				
 				super.requestStart(request,response);
 			}
 			

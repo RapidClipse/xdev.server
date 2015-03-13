@@ -74,7 +74,7 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 				{
 					if(propertyName.equals(referenceEntity.getName()))
 					{
-						return ref.getName();
+						return this.attachId(ref);
 					}
 				}
 			}
@@ -126,6 +126,13 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 		Class<?> javaClass = property.getType().getReturnedClass();
 		return itemPropertyPath + property.getName() + "."
 				+ this.idResolver.getEntityIDProperty(javaClass).getName();
+	}
+	
+	
+	private String attachId(Property property)
+	{
+		Class<?> javaClass = property.getType().getReturnedClass();
+		return property.getName() + "." + this.idResolver.getEntityIDProperty(javaClass).getName();
 	}
 	
 }

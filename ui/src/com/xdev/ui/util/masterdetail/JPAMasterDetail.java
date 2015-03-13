@@ -33,9 +33,6 @@ public interface JPAMasterDetail extends MasterDetail
 		}
 		
 		
-		// 1. connect master and detail component
-		// 2. getContainer from detail component
-		// 3. getConnectedEntities from master and detail
 		@Override
 		public void connectMasterDetail(final EntityComponent master,
 				final EntityComponent detailContainer, final Class masterClass,

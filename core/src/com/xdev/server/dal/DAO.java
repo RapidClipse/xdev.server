@@ -12,7 +12,7 @@ import com.googlecode.genericdao.dao.jpa.GenericDAO;
 
 
 @Target(ElementType.TYPE)
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface DAO
 {
 	public Class<? extends GenericDAO<?, ? extends Serializable>> daoClass();

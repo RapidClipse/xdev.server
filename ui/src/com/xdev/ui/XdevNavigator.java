@@ -2,7 +2,7 @@
  * Copyright (C) 2015 by XDEV Software, All Rights Reserved.
  *
  */
- 
+
 package com.xdev.ui;
 
 
@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.Navigator.EmptyView;
 import com.vaadin.navigator.Navigator.SingleComponentContainerViewDisplay;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -45,17 +44,17 @@ public class XdevNavigator
 	private List<ViewProvider>				additionalViewProviders;
 	private String							initialNavigationState;
 	private ViewEntry						errorView;
-	
-	
+
+
 	/**
 	 *
 	 */
 	public XdevNavigator()
 	{
-		this.views.put("",new XdevViewEntry("",EmptyView.class,""));
+		this.views.put("",new XdevViewEntry("",XdevView.class,""));
 	}
-	
-	
+
+
 	/**
 	 * @return the container in which the views are displayed
 	 */
@@ -63,8 +62,8 @@ public class XdevNavigator
 	{
 		return this.container;
 	}
-	
-	
+
+
 	/**
 	 * @param container
 	 *            the container in which the views are displayed
@@ -72,7 +71,7 @@ public class XdevNavigator
 	public void setContainer(final SingleComponentContainer container)
 	{
 		this.container = container;
-		
+
 		container.addAttachListener(new AttachListener()
 		{
 			@Override
@@ -83,13 +82,13 @@ public class XdevNavigator
 			}
 		});
 	}
-	
-	
+
+
 	private void attach()
 	{
 		this.navigator = createNavigator();
 		this.navigator.addProvider(new XdevViewProvider());
-		
+
 		if(this.additionalViewProviders != null)
 		{
 			for(final ViewProvider viewProvider : this.additionalViewProviders)
@@ -98,28 +97,28 @@ public class XdevNavigator
 			}
 			this.additionalViewProviders = null;
 		}
-		
+
 		if(this.errorView != null)
 		{
 			navigator_setErrorView(this.errorView);
 			this.errorView = null;
 		}
-		
+
 		if(this.initialNavigationState != null)
 		{
 			this.navigator.navigateTo(this.initialNavigationState);
 			this.initialNavigationState = null;
 		}
 	}
-	
-	
+
+
 	protected Navigator createNavigator()
 	{
 		return new Navigator(this.container.getUI(),new SingleComponentContainerViewDisplay(
 				this.container));
 	}
-	
-	
+
+
 	/**
 	 * Registers a view class for a view name.
 	 * <p>
@@ -138,8 +137,8 @@ public class XdevNavigator
 	{
 		addView(path,viewType,path);
 	}
-	
-	
+
+
 	/**
 	 * Registers a view class for a view name.
 	 * <p>
@@ -160,8 +159,8 @@ public class XdevNavigator
 	{
 		this.views.put(path,new XdevViewEntry(path,viewType,title));
 	}
-	
-	
+
+
 	/**
 	 * Registers a view class for a view name.
 	 * <p>
@@ -179,8 +178,8 @@ public class XdevNavigator
 	{
 		addView(path,view,path);
 	}
-	
-	
+
+
 	/**
 	 * Registers a view for a view name.
 	 * <p>
@@ -201,14 +200,14 @@ public class XdevNavigator
 	{
 		this.views.put(path,new XdevViewEntry(path,view,title));
 	}
-	
-	
+
+
 	public ViewEntry removeView(final String path)
 	{
 		return this.views.remove(path);
 	}
-	
-	
+
+
 	/**
 	 *
 	 * @return all registered views
@@ -219,8 +218,8 @@ public class XdevNavigator
 	{
 		return this.views.values().toArray(new XdevViewEntry[this.views.size()]);
 	}
-	
-	
+
+
 	/**
 	 * Registers a view that is instantiated when no other view matches the
 	 * navigation state.
@@ -231,8 +230,8 @@ public class XdevNavigator
 	{
 		setErrorView(new XdevViewEntry("",viewType,""));
 	}
-	
-	
+
+
 	/**
 	 * Registers a view that is instantiated when no other view matches the
 	 * navigation state.
@@ -243,8 +242,8 @@ public class XdevNavigator
 	{
 		setErrorView(new XdevViewEntry("",view,""));
 	}
-	
-	
+
+
 	private void setErrorView(final ViewEntry errorView)
 	{
 		if(this.navigator != null)
@@ -256,8 +255,8 @@ public class XdevNavigator
 			this.errorView = errorView;
 		}
 	}
-	
-	
+
+
 	private void navigator_setErrorView(final ViewEntry errorView)
 	{
 		this.navigator.setErrorProvider(new ViewProvider()
@@ -267,8 +266,8 @@ public class XdevNavigator
 			{
 				return viewAndParameters;
 			}
-			
-			
+
+
 			@Override
 			public View getView(final String viewName)
 			{
@@ -276,8 +275,8 @@ public class XdevNavigator
 			}
 		});
 	}
-	
-	
+
+
 	public void removeErrorView()
 	{
 		if(this.navigator != null)
@@ -289,8 +288,8 @@ public class XdevNavigator
 			this.errorView = null;
 		}
 	}
-	
-	
+
+
 	public void addViewProvider(final ViewProvider viewProvider)
 	{
 		if(this.navigator != null)
@@ -303,12 +302,12 @@ public class XdevNavigator
 			{
 				this.additionalViewProviders = new ArrayList<>();
 			}
-			
+
 			this.additionalViewProviders.add(viewProvider);
 		}
 	}
-	
-	
+
+
 	public void removeViewProvider(final ViewProvider viewProvider)
 	{
 		if(this.navigator != null)
@@ -318,15 +317,15 @@ public class XdevNavigator
 		else if(this.additionalViewProviders != null)
 		{
 			this.additionalViewProviders.remove(viewProvider);
-			
+
 			if(this.additionalViewProviders.isEmpty())
 			{
 				this.additionalViewProviders = null;
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Navigates to a view and initialize the view with given parameters.
 	 * <p>
@@ -363,9 +362,9 @@ public class XdevNavigator
 			this.initialNavigationState = navigationState;
 		}
 	}
-	
-	
-	
+
+
+
 	private class XdevViewProvider implements ViewProvider
 	{
 		@Override
@@ -378,11 +377,11 @@ public class XdevNavigator
 					return path;
 				}
 			}
-			
+
 			return null;
 		}
-		
-		
+
+
 		@Override
 		public View getView(final String viewName)
 		{
@@ -391,43 +390,43 @@ public class XdevNavigator
 			{
 				return entry.getView();
 			}
-			
+
 			return null;
 		}
 	}
-	
-	
-	
+
+
+
 	public static interface ViewEntry
 	{
 		/**
 		 * @return the path
 		 */
 		public String getPath();
-
-
+		
+		
 		/**
 		 * @return the view
 		 */
 		public View getView();
-
-
+		
+		
 		/**
 		 * @return the title
 		 */
 		public String getTitle();
 	}
-	
-	
-	
+
+
+
 	private static class XdevViewEntry implements ViewEntry
 	{
 		private final String				path;
 		private final Class<? extends View>	viewType;
 		private View						view;
 		private final String				title;
-		
-		
+
+
 		private XdevViewEntry(final String path, final Class<? extends View> viewType,
 				final String title)
 		{
@@ -435,8 +434,8 @@ public class XdevNavigator
 			this.viewType = viewType;
 			this.title = title;
 		}
-		
-		
+
+
 		@SuppressWarnings("unchecked")
 		private <V extends Component & View> XdevViewEntry(final String path, final V view,
 				final String title)
@@ -446,15 +445,15 @@ public class XdevNavigator
 			this.view = view;
 			this.title = title;
 		}
-		
-		
+
+
 		@Override
 		public String getPath()
 		{
 			return this.path;
 		}
-		
-		
+
+
 		@Override
 		public View getView()
 		{
@@ -471,11 +470,11 @@ public class XdevNavigator
 					throw new RuntimeException(e);
 				}
 			}
-			
+
 			return this.view;
 		}
-		
-		
+
+
 		@Override
 		public String getTitle()
 		{

@@ -16,34 +16,12 @@ import com.vaadin.ui.CustomComponent;
  * @author XDEV Software
  *
  */
-public class XdevWindow extends CustomComponent implements View
+public class XdevView extends CustomComponent implements View
 {
-	private String	navigationKey;
-	
-	
-	/**
-	 * @return the navigationKey
-	 */
-	public String getNavigationKey()
-	{
-		return this.navigationKey;
-	}
-
-
-	/**
-	 * @param navigationKey
-	 *            the navigationKey to set
-	 */
-	public void setNavigationKey(final String navigationKey)
-	{
-		this.navigationKey = navigationKey;
-	}
-
-
 	/**
 	 *
 	 */
-	public XdevWindow()
+	public XdevView()
 	{
 		super();
 

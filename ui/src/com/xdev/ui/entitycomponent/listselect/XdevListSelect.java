@@ -8,6 +8,7 @@ package com.xdev.ui.entitycomponent.listselect;
 
 import java.util.Collection;
 
+import com.xdev.ui.entitycomponent.IDToEntitySetConverter;
 import com.xdev.ui.paging.LazyLoadingUIModelProvider;
 import com.xdev.ui.paging.XdevLazyEntityContainer;
 import com.xdev.ui.util.KeyValueType;
@@ -29,8 +30,8 @@ public class XdevListSelect<T> extends AbstractEntityListSelect<T>
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 */
@@ -38,26 +39,32 @@ public class XdevListSelect<T> extends AbstractEntityListSelect<T>
 	{
 		super(caption);
 	}
-
+	
 	// init defaults
 	{
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings({"rawtypes","unchecked"})
 	@SafeVarargs
 	@Override
 	public final void setModel(final Class<T> entityClass,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
-		this.setEntityDataSource(this.getModelProvider()
-				.getModel(this,entityClass,nestedProperties));
+		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
+				entityClass,nestedProperties);
+		this.setEntityDataSource(container);
+		
+		// vaadin api compiler warnings
+		this.setConverter(new IDToEntitySetConverter(container));
 	}
-
-
+	
+	
+	@SuppressWarnings({"rawtypes","unchecked"})
 	@SafeVarargs
 	@Override
 	public final void setModel(final Class<T> entityClass, final Collection<T> data,
@@ -69,11 +76,14 @@ public class XdevListSelect<T> extends AbstractEntityListSelect<T>
 		{
 			container.addEntity(entity);
 		}
-
+		
 		this.setEntityDataSource(container);
+		
+		// vaadin api compiler warnings
+		this.setConverter(new IDToEntitySetConverter(container));
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

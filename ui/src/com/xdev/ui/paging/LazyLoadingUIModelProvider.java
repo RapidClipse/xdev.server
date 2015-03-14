@@ -4,8 +4,9 @@ package com.xdev.ui.paging;
 
 import org.hibernate.mapping.Property;
 
-import com.vaadin.data.Container.Viewer;
+import com.vaadin.ui.AbstractSelect;
 import com.xdev.server.util.HibernateEntityIDResolver;
+import com.xdev.ui.entitycomponent.IDToEntityConverter;
 import com.xdev.ui.entitycomponent.UIModelProvider;
 import com.xdev.ui.util.KeyValueType;
 
@@ -37,7 +38,7 @@ public class LazyLoadingUIModelProvider<BEANTYPE> implements UIModelProvider<BEA
 
 
 	@Override
-	public XdevLazyEntityContainer<BEANTYPE> getModel(final Viewer table,
+	public XdevLazyEntityContainer<BEANTYPE> getModel(final AbstractSelect component,
 			final Class<BEANTYPE> entityClass, final KeyValueType<?, ?>... nestedProperties)
 	{
 		final Property idProperty = new HibernateEntityIDResolver()
@@ -53,6 +54,9 @@ public class LazyLoadingUIModelProvider<BEANTYPE> implements UIModelProvider<BEA
 		}
 		let.getQueryView().getQueryDefinition()
 				.setMaxNestedPropertyDepth(this.getMaxNestedPropertyDepth(nestedProperties));
+
+		// register non beanitemcontainer id converter
+		component.setConverter(new IDToEntityConverter<BEANTYPE>(let));
 
 		return let;
 	}

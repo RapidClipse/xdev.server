@@ -4,6 +4,7 @@ package com.xdev.ui.entitycomponent.table;
 
 import java.util.Collection;
 
+import com.xdev.ui.entitycomponent.IDToEntitySetConverter;
 import com.xdev.ui.paging.LazyLoadingUIModelProvider;
 import com.xdev.ui.paging.XdevLazyEntityContainer;
 import com.xdev.ui.util.KeyValueType;
@@ -41,26 +42,26 @@ public class XdevTable<T> extends AbstractEntityTable<T>
 		super.setPageLength(pageLength);
 	}
 
-	// init defaults
-	{
-		setSelectable(true);
-		setImmediate(true);
-	}
-
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings({"rawtypes","unchecked"})
 	@SafeVarargs
 	@Override
 	public final void setModel(final Class<T> entityClass,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
-		this.setEntityDataSource(this.getModelProvider()
-				.getModel(this,entityClass,nestedProperties));
+		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
+				entityClass,nestedProperties);
+		this.setEntityDataSource(container);
+
+		// vaadin api compiler warnings
+		this.setConverter(new IDToEntitySetConverter(container));
 	}
 
 
+	@SuppressWarnings({"rawtypes","unchecked"})
 	@SafeVarargs
 	@Override
 	public final void setModel(final Class<T> entityClass, final Collection<T> data,
@@ -74,6 +75,9 @@ public class XdevTable<T> extends AbstractEntityTable<T>
 		}
 
 		this.setEntityDataSource(container);
+
+		// vaadin api compiler warnings
+		this.setConverter(new IDToEntitySetConverter(container));
 	}
 
 

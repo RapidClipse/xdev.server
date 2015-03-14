@@ -15,11 +15,11 @@ public interface EntityContainer<T> extends Container.Filterable
 	 * @return the new constructed entity.
 	 */
 	public T addEntity();
-	
-	
+
+
 	public int addEntity(final T entity);
-	
-	
+
+
 	/**
 	 * Removes given entity at given index and returns it.
 	 *
@@ -28,11 +28,11 @@ public interface EntityContainer<T> extends Container.Filterable
 	 * @return The removed entity.
 	 */
 	public T removeEntity(final int index);
-	
-	
+
+
 	public void removeEntity(T entity);
-	
-	
+
+
 	/**
 	 * Gets entity by ID.
 	 *
@@ -41,8 +41,8 @@ public interface EntityContainer<T> extends Container.Filterable
 	 * @return the entity.
 	 */
 	public BeanItem<T> getEntityItem(final Object id);
-	
-	
+
+
 	/**
 	 * Gets entity at given index.
 	 *
@@ -51,7 +51,10 @@ public interface EntityContainer<T> extends Container.Filterable
 	 * @return the entity.
 	 */
 	public BeanItem<T> getEntityItem(final int index);
-	
-	
+
+
 	public void refresh();
+	
+	
+	public Class<T> getEntityType();
 }

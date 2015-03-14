@@ -21,8 +21,9 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 		EntityContainer<T>
 {
 	private static final long	serialVersionUID	= 1L;
-	
-	
+	private final Class<T>		entityType;
+
+
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
 	 *
@@ -46,9 +47,10 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 		super(new IntrospectionEntityQueryDefinition<T>(applicationManagedTransactions,
 				detachedEntities,false,entityClass,batchSize,idPropertyId),
 				new RequisitioningEntityQueryFactory<T>());
+		this.entityType = entityClass;
 	}
-	
-	
+
+
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
 	 *
@@ -78,12 +80,14 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 		super(new IntrospectionEntityQueryDefinition<T>(applicationManagedTransactions,
 				detachedEntities,false,entityClass,batchSize,idPropertyId),
 				new RequisitioningEntityQueryFactory<T>());
-		
+
 		getQueryView().getQueryDefinition().setDefaultSortState(defaultSortPropertyIds,
 				defaultSortPropertyAscendingStates);
+		
+		this.entityType = entityClass;
 	}
-	
-	
+
+
 	/**
 	 * Adds entity to the container as first item i.e. at index 0.
 	 *
@@ -95,15 +99,15 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 		final Object itemId = addItem();
 		return getEntityItem(indexOfId(itemId)).getBean();
 	}
-	
-	
+
+
 	@Override
 	public int addEntity(final T entity)
 	{
 		return getQueryView().addItem(entity);
 	}
-	
-	
+
+
 	/**
 	 * Removes given entity at given index and returns it.
 	 *
@@ -118,8 +122,8 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 		removeItem(getIdByIndex(index));
 		return entityToRemove;
 	}
-	
-	
+
+
 	/**
 	 * Gets entity by ID.
 	 *
@@ -132,8 +136,8 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 	{
 		return getEntityItem(indexOfId(id));
 	}
-	
-	
+
+
 	/**
 	 * Gets entity at given index.
 	 *
@@ -156,8 +160,8 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 			return((BeanItem<T>)getItem(getIdByIndex(index)));
 		}
 	}
-	
-	
+
+
 	@Override
 	public void removeEntity(final T entity)
 	{
@@ -167,5 +171,12 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 			this.removeItem(itemId);
 		}
 	}
-	
+
+
+	@Override
+	public Class<T> getEntityType()
+	{
+		return this.entityType;
+	}
+
 }

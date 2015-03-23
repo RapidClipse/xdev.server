@@ -40,13 +40,13 @@ public class DAOs
 	}
 	
 	
-	public static <T, I extends Serializable> GenericDAO<T, I> get(
-			Class<? extends GenericDAO<T, I>> daoType) throws RuntimeException
+	public static <D extends GenericDAO<?,?>> D get(Class<D> daoType)
+			throws RuntimeException
 	{
 		synchronized(cache)
 		{
 			@SuppressWarnings("unchecked")
-			GenericDAO<T, I> dao = (GenericDAO<T, I>)cache.get(daoType);
+			D dao = (D)cache.get(daoType);
 			
 			if(dao == null)
 			{

@@ -16,7 +16,7 @@ import com.xdev.server.util.HibernateEntityIDResolver;
 
 
 //TODO check if object as ID type is always suitable
-public class IDToEntitySetConverter<T> implements Converter<Set<Object>, Set<T>>
+public class IDToEntitySetConverter<T> implements Converter<Set<? extends Object>, Set<T>>
 {
 	private final EntityContainer<T>	container;
 	private final EntityIDResolver		idResolver;
@@ -35,7 +35,7 @@ public class IDToEntitySetConverter<T> implements Converter<Set<Object>, Set<T>>
 	
 	
 	@Override
-	public Set<T> convertToModel(final Set<Object> itemIds,
+	public Set<T> convertToModel(final Set<? extends Object> itemIds,
 			final Class<? extends Set<T>> targetType, final Locale locale)
 			throws com.vaadin.data.util.converter.Converter.ConversionException
 	{
@@ -55,11 +55,27 @@ public class IDToEntitySetConverter<T> implements Converter<Set<Object>, Set<T>>
 		
 		return this.beanSet;
 	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<Set<T>> getModelType()
+	{
+		return (Class<Set<T>>)this.beanSet.getClass();
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<Set<? extends Object>> getPresentationType()
+	{
+		return (Class<Set<? extends Object>>)this.idSet.getClass();
+	}
 	
 	
 	@Override
-	public Set<Object> convertToPresentation(final Set<T> values,
-			final Class<? extends Set<Object>> targetType, final Locale locale)
+	public Set<? extends Object> convertToPresentation(final Set<T> values,
+			final Class<? extends Set<? extends Object>> targetType, final Locale locale)
 			throws com.vaadin.data.util.converter.Converter.ConversionException
 	{
 		this.idSet = new LinkedHashSet<>();
@@ -88,22 +104,6 @@ public class IDToEntitySetConverter<T> implements Converter<Set<Object>, Set<T>>
 			}
 		}
 		return this.idSet;
-	}
-	
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<Set<T>> getModelType()
-	{
-		return (Class<Set<T>>)this.beanSet.getClass();
-	}
-	
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Class<Set<Object>> getPresentationType()
-	{
-		return (Class<Set<Object>>)this.idSet.getClass();
 	}
 	
 }

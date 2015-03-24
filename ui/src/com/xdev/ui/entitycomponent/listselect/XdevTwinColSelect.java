@@ -60,7 +60,10 @@ public class XdevTwinColSelect<T> extends AbstractTwinColSelect<T>
 
 		this.setEntityDataSource(container);
 
-		// vaadin api compiler warnings
+		/*
+		 * vaadin api compiler warnings, cant define a converter with a set as
+		 * wrapper data type
+		 */
 		this.setConverter(new IDToEntitySetConverter(container));
 	}
 
@@ -80,7 +83,10 @@ public class XdevTwinColSelect<T> extends AbstractTwinColSelect<T>
 
 		this.setEntityDataSource(container);
 
-		// vaadin api compiler warnings
+		/*
+		 * vaadin api compiler warnings, cant define a converter with a set as
+		 * wrapper data type
+		 */
 		this.setConverter(new IDToEntitySetConverter(container));
 	}
 

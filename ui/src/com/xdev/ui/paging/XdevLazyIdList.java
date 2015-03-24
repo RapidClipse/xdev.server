@@ -94,22 +94,26 @@ public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 	@Override
 	public T get(final int index)
 	{
-		if(index < 0 || index >= this.lazyQueryView.size())
+		if(index != -1)
 		{
-			throw new IndexOutOfBoundsException();
+			if(index > 0 || index <= this.lazyQueryView.size())
+			{
+				@SuppressWarnings("unchecked")
+				final T itemId = (T)this.lazyQueryView.getItem(index)
+						.getItemProperty(this.idPropertyId).getValue();
+				// Do not put added item ids to id index map and make sure that
+				// existing item indexes start from 0 i.e. ignore added items as
+				// they
+				// are compensated for in indexOf method.
+				final int addedItemSize = this.lazyQueryView.getAddedItems().size();
+				if(index >= addedItemSize)
+				{
+					this.idIndexMap.put(itemId,index - addedItemSize);
+				}
+				return itemId;
+			}
 		}
-		@SuppressWarnings("unchecked")
-		final T itemId = (T)this.lazyQueryView.getItem(index).getItemProperty(this.idPropertyId)
-				.getValue();
-		// Do not put added item ids to id index map and make sure that
-		// existing item indexes start from 0 i.e. ignore added items as they
-		// are compensated for in indexOf method.
-		final int addedItemSize = this.lazyQueryView.getAddedItems().size();
-		if(index >= addedItemSize)
-		{
-			this.idIndexMap.put(itemId,index - addedItemSize);
-		}
-		return itemId;
+		return null;
 	}
 
 

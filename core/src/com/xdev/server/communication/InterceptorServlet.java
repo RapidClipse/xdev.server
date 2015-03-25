@@ -12,6 +12,7 @@ import javax.persistence.PersistenceException;
 
 import com.vaadin.server.DeploymentConfiguration;
 import com.vaadin.server.ServiceException;
+import com.vaadin.server.SessionExpiredException;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinResponse;
 import com.vaadin.server.VaadinServlet;
@@ -24,6 +25,7 @@ import com.xdev.server.db.connection.HibernateUtil;
 public class InterceptorServlet extends VaadinServlet
 {
 	private static final long	serialVersionUID	= 2973107786947933744L;
+	
 	
 	
 	@Override
@@ -69,12 +71,12 @@ public class InterceptorServlet extends VaadinServlet
 						if(factory != null)
 						{
 							EntityManager manager = factory.createEntityManager();
-							
-							// Add the EntityManager to the request
-							request.setAttribute("HibernateEntityManager",manager);
+							VaadinSession session = findVaadinSession(request);
+							// Add the EntityManager to the session
+							session.setAttribute("HibernateEntityManager",manager);
 						}
 					}
-					catch(PersistenceException e)
+					catch(PersistenceException | ServiceException | SessionExpiredException e)
 					{
 						Logger.getLogger(InterceptorServlet.class.getName()).log(Level.WARNING,
 								e.getMessage(),e);

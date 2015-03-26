@@ -15,10 +15,10 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-package com.xdev.server.util;
+package com.xdev.server.lang;
 
 
-public interface EntityReferenceResolver
+public interface XdevExecutableCommandObject
 {
-	public String getReferenceEntityPropertyName(Class<?> referenceEntity, Class<?> entity);
+	public void execute();
 }

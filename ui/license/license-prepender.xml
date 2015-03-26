@@ -1,0 +1,17 @@
+<!DOCTYPE project>
+
+<!--
+This buildfile is used to prepend source files with a specified license information.
+Existing license information get overwritten.
+
+It is recommended to close all source file editors in eclipse before starting this script to avoid conflicts.
+-->
+
+<project name="Prepend License" default="prepend" basedir=".">
+
+	<target name="prepend">
+		<taskdef name="licenseprepender" classname="anttasks.LicenseTextPrepender" classpath="license-prepender.jar" />
+		<licenseprepender inputfile="header.txt" srcdir="../src" />
+	</target>
+
+</project>

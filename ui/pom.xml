@@ -1,0 +1,31 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>xdev-server-ui</artifactId>
+	<version>0.2.0</version>
+	<name>XDEV Server UI</name>
+
+	<parent>
+		<groupId>com.xdev-software</groupId>
+		<artifactId>xdev-server-pom</artifactId>
+		<version>0.0.0</version>
+		<relativePath>../xdev.server.pom/pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<repositoryName>xdev.server.ui</repositoryName>
+		<pluginProject>xdev.eclipse.server.ui</pluginProject>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.xdev-software</groupId>
+			<artifactId>xdev-server-core</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+	</dependencies>
+	
+</project>

@@ -24,7 +24,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
-import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinSession;
 import com.xdev.server.db.connection.HibernateUtil;
 
 
@@ -58,8 +58,7 @@ public class EntityManagerHelper
 	
 	public static EntityManager getEntityManager()
 	{
-		return (EntityManager)VaadinService.getCurrentRequest().getAttribute(
-				"HibernateEntityManager");
+		return (EntityManager)VaadinSession.getCurrent().getAttribute("HibernateEntityManager");
 	}
 	
 	

@@ -29,9 +29,9 @@ public class AccessUtils
 					// Add the EntityManager to the session
 					VaadinSession.getCurrent().setAttribute("HibernateEntityManager",manager);
 				}
-
+				
 				runnable.run();
-
+				
 				try
 				{
 					EntityManagerHelper.closeEntityManager();
@@ -49,7 +49,7 @@ public class AccessUtils
 				}
 			}
 		});
-
+		
 		return future;
 	}
 }

@@ -17,30 +17,39 @@ public class AccessUtils
 {
 	public static Future<Void> access(final Runnable runnable)
 	{
-		EntityManagerFactory factory = EntityManagerHelper.getEntityManagerFactory();
-		if(factory != null)
+		final Future<Void> future = UI.getCurrent().access(new Runnable()
 		{
-			EntityManager manager = factory.createEntityManager();
-			// Add the EntityManager to the session
-			VaadinSession.getCurrent().setAttribute("HibernateEntityManager",manager);
-		}
-		
-		Future<Void> future = UI.getCurrent().access(runnable);
-		
-		try
-		{
-			EntityManagerHelper.closeEntityManager();
-		}
-		catch(Exception e)
-		{
-			if(EntityManagerHelper.getEntityManager() != null)
+			@Override
+			public void run()
 			{
-				EntityTransaction tx = EntityManagerHelper.getTransaction();
-				if(tx != null && tx.isActive())
-					EntityManagerHelper.rollback();
+				final EntityManagerFactory factory = EntityManagerHelper.getEntityManagerFactory();
+				if(factory != null)
+				{
+					final EntityManager manager = factory.createEntityManager();
+					// Add the EntityManager to the session
+					VaadinSession.getCurrent().setAttribute("HibernateEntityManager",manager);
+				}
+
+				runnable.run();
+
+				try
+				{
+					EntityManagerHelper.closeEntityManager();
+				}
+				catch(final Exception e)
+				{
+					if(EntityManagerHelper.getEntityManager() != null)
+					{
+						final EntityTransaction tx = EntityManagerHelper.getTransaction();
+						if(tx != null && tx.isActive())
+						{
+							EntityManagerHelper.rollback();
+						}
+					}
+				}
 			}
-		}
-		
+		});
+
 		return future;
 	}
 }

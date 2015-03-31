@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2013-2015 by XDEV Software, All Rights Reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package com.xdev.server.util;
 
@@ -15,35 +31,41 @@ import com.xdev.server.communication.EntityManagerHelper;
 
 public class AccessUtils
 {
-	public static Future<Void> access(final Runnable runnable)
+	public static Future<Void> access(final UI ui, final Runnable runnable)
 	{
-		final Future<Void> future = UI.getCurrent().access(new Runnable()
+		final Future<Void> future = ui.access(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				final EntityManagerFactory factory = EntityManagerHelper.getEntityManagerFactory();
-				if(factory != null)
-				{
-					final EntityManager manager = factory.createEntityManager();
-					// Add the EntityManager to the session
-					VaadinSession.getCurrent().setAttribute("HibernateEntityManager",manager);
-				}
-				
-				runnable.run();
-				
 				try
 				{
-					EntityManagerHelper.closeEntityManager();
-				}
-				catch(final Exception e)
-				{
-					if(EntityManagerHelper.getEntityManager() != null)
+					final EntityManagerFactory factory = EntityManagerHelper
+							.getEntityManagerFactory();
+					if(factory != null)
 					{
-						final EntityTransaction tx = EntityManagerHelper.getTransaction();
-						if(tx != null && tx.isActive())
+						final EntityManager manager = factory.createEntityManager();
+						// Add the EntityManager to the session
+						VaadinSession.getCurrent().setAttribute("HibernateEntityManager",manager);
+					}
+					
+					runnable.run();
+				}
+				finally
+				{
+					try
+					{
+						EntityManagerHelper.closeEntityManager();
+					}
+					catch(final Exception e)
+					{
+						if(EntityManagerHelper.getEntityManager() != null)
 						{
-							EntityManagerHelper.rollback();
+							final EntityTransaction tx = EntityManagerHelper.getTransaction();
+							if(tx != null && tx.isActive())
+							{
+								EntityManagerHelper.rollback();
+							}
 						}
 					}
 				}

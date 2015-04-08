@@ -5,16 +5,16 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.server.communication;
 
 
@@ -41,37 +41,38 @@ import com.xdev.server.db.connection.HibernateUtil;
 public class InterceptorServlet extends VaadinServlet
 {
 	private static final long	serialVersionUID	= 2973107786947933744L;
-	
-	
-	
+
+
 	@Override
 	protected VaadinServletService createServletService(
-			DeploymentConfiguration deploymentConfiguration) throws ServiceException
+			final DeploymentConfiguration deploymentConfiguration) throws ServiceException
 	{
-		VaadinServletService servletService = new VaadinServletService(this,deploymentConfiguration)
+		final VaadinServletService servletService = new VaadinServletService(this,
+				deploymentConfiguration)
 		{
 			private static final long	serialVersionUID				= -7847744792732696004L;
-			private static final String	HIBERNATEUTIL_FILTER_INIT_PARAM	= "hibernateUtil";
+			private static final String	HIBERNATEUTIL_FILTER_INIT_PARAM	= "persistenceUnit";
 			
 			private boolean				hibernateFactoryInitialized		= false;
 			
 			
 			@Override
-			public void requestStart(VaadinRequest request, VaadinResponse response)
+			public void requestStart(final VaadinRequest request, final VaadinResponse response)
 			{
-				if(!hibernateFactoryInitialized)
+				if(!this.hibernateFactoryInitialized)
 				{
-					hibernateFactoryInitialized = true;
+					this.hibernateFactoryInitialized = true;
 					
 					try
 					{
-						String hibernatePersistenceUnit = deploymentConfiguration
-								.getApplicationOrSystemProperty(HIBERNATEUTIL_FILTER_INIT_PARAM,"");
+						final String hibernatePersistenceUnit = deploymentConfiguration
+								.getApplicationOrSystemProperty(HIBERNATEUTIL_FILTER_INIT_PARAM,
+										null);
 						EntityManagerHelper
 								.initializeHibernateFactory(new HibernateUtil.Implementation(
 										hibernatePersistenceUnit));
 					}
-					catch(PersistenceException e)
+					catch(final PersistenceException e)
 					{
 						Logger.getLogger(InterceptorServlet.class.getName()).log(Level.WARNING,
 								e.getMessage(),e);
@@ -82,12 +83,12 @@ public class InterceptorServlet extends VaadinServlet
 				{
 					try
 					{
-						EntityManagerFactory factory = EntityManagerHelper
+						final EntityManagerFactory factory = EntityManagerHelper
 								.getEntityManagerFactory();
 						if(factory != null)
 						{
-							EntityManager manager = factory.createEntityManager();
-							VaadinSession session = findVaadinSession(request);
+							final EntityManager manager = factory.createEntityManager();
+							final VaadinSession session = findVaadinSession(request);
 							// Add the EntityManager to the session
 							session.setAttribute("HibernateEntityManager",manager);
 						}
@@ -104,20 +105,22 @@ public class InterceptorServlet extends VaadinServlet
 			
 			
 			@Override
-			public void requestEnd(VaadinRequest request, VaadinResponse response,
-					VaadinSession session)
+			public void requestEnd(final VaadinRequest request, final VaadinResponse response,
+					final VaadinSession session)
 			{
 				try
 				{
 					EntityManagerHelper.closeEntityManager();
 				}
-				catch(Exception e)
+				catch(final Exception e)
 				{
 					if(EntityManagerHelper.getEntityManager() != null)
 					{
-						EntityTransaction tx = EntityManagerHelper.getTransaction();
+						final EntityTransaction tx = EntityManagerHelper.getTransaction();
 						if(tx != null && tx.isActive())
+						{
 							EntityManagerHelper.rollback();
+						}
 					}
 				}
 				

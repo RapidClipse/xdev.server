@@ -27,8 +27,8 @@ import org.hibernate.mapping.Property;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
-import com.xdev.server.util.EntityIDResolver;
-import com.xdev.server.util.HibernateEntityIDResolver;
+import com.xdev.util.EntityIDResolver;
+import com.xdev.util.HibernateEntityIDResolver;
 
 
 //TODO check if object as ID type is always suitable

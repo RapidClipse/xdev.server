@@ -21,7 +21,7 @@ package com.xdev.ui;
 import org.hibernate.StaleObjectStateException;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.xdev.server.dal.DAOs;
+import com.xdev.dal.DAOs;
 import com.xdev.ui.fieldgroup.ObjectLockedException;
 
 

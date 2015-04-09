@@ -22,17 +22,17 @@ import java.util.Collection;
 
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.ui.AbstractSelect;
-import com.xdev.server.lang.XdevExecutableCommandObject;
-import com.xdev.server.util.Caption;
-import com.xdev.server.util.EntityReferenceResolver;
-import com.xdev.server.util.HibernateEntityReferenceResolver;
-import com.xdev.server.util.ReflectionUtils;
+import com.xdev.lang.ExecutableCommandObject;
 import com.xdev.ui.entitycomponent.hierarchical.FillTree;
 import com.xdev.ui.entitycomponent.hierarchical.Group;
+import com.xdev.util.Caption;
+import com.xdev.util.EntityReferenceResolver;
+import com.xdev.util.HibernateEntityReferenceResolver;
+import com.xdev.util.ReflectionUtils;
 
 
 //Just a Delegate to FillTree.Implementation for utility purpose
-public class XdevFillTree implements XdevExecutableCommandObject
+public class XdevFillTree implements ExecutableCommandObject
 {
 	private final FillTree					fillTreeComposite;
 	private final EntityReferenceResolver	referenceResolver;

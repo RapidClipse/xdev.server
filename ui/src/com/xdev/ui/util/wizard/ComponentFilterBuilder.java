@@ -20,11 +20,11 @@ package com.xdev.ui.util.wizard;
 
 import com.vaadin.data.Container;
 import com.vaadin.ui.AbstractSelect;
-import com.xdev.server.lang.XdevExecutableCommandObject;
+import com.xdev.lang.ExecutableCommandObject;
 
 
 //master detail for components
-public interface ComponentFilterBuilder extends XdevExecutableCommandObject
+public interface ComponentFilterBuilder extends ExecutableCommandObject
 {
 	public void setMasterComponent(AbstractSelect masterComponent);
 	

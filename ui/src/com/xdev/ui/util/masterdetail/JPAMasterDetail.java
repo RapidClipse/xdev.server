@@ -20,11 +20,11 @@ package com.xdev.ui.util.masterdetail;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.xdev.server.util.EntityIDResolver;
-import com.xdev.server.util.EntityReferenceResolver;
-import com.xdev.server.util.HibernateEntityIDResolver;
-import com.xdev.server.util.XdevEntityReferenceResolver;
 import com.xdev.ui.entitycomponent.EntityComponent;
+import com.xdev.util.EntityIDResolver;
+import com.xdev.util.EntityReferenceResolver;
+import com.xdev.util.HibernateEntityIDResolver;
+import com.xdev.util.XdevEntityReferenceResolver;
 
 
 @SuppressWarnings("rawtypes")

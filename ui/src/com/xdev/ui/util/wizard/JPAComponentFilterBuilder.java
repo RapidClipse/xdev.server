@@ -18,12 +18,12 @@
 package com.xdev.ui.util.wizard;
 
 
-import com.xdev.server.lang.XdevExecutableCommandObject;
+import com.xdev.lang.ExecutableCommandObject;
 import com.xdev.ui.entitycomponent.EntityComponent;
 
 
 //master detail for components
-public interface JPAComponentFilterBuilder extends XdevExecutableCommandObject
+public interface JPAComponentFilterBuilder extends ExecutableCommandObject
 {
 	public void setMasterComponent(EntityComponent<?> masterComponent);
 

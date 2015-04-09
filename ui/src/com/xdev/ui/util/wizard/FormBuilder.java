@@ -19,13 +19,13 @@ package com.xdev.ui.util.wizard;
 
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.xdev.server.lang.XdevExecutableCommandObject;
+import com.xdev.lang.ExecutableCommandObject;
 import com.xdev.ui.entitycomponent.EntityComponent;
 import com.xdev.ui.util.masterdetail.MasterDetail;
 
 
 //master detail for forms
-public interface FormBuilder<T> extends XdevExecutableCommandObject
+public interface FormBuilder<T> extends ExecutableCommandObject
 {
 	public void setMasterComponent(EntityComponent<T> masterComponent);
 

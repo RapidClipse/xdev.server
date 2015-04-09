@@ -21,10 +21,10 @@ package com.xdev.ui.paging;
 import org.hibernate.mapping.Property;
 
 import com.vaadin.ui.AbstractSelect;
-import com.xdev.server.util.HibernateEntityIDResolver;
 import com.xdev.ui.entitycomponent.IDToEntityConverter;
 import com.xdev.ui.entitycomponent.UIModelProvider;
 import com.xdev.ui.util.KeyValueType;
+import com.xdev.util.HibernateEntityIDResolver;
 
 
 //hibernate/JPA specific implementation

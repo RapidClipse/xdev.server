@@ -53,7 +53,7 @@ import com.vaadin.data.util.filter.Like;
 import com.vaadin.data.util.filter.Not;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
-import com.xdev.server.communication.EntityManagerHelper;
+import com.xdev.communication.EntityManagerHelper;
 
 
 @SuppressWarnings("unchecked")

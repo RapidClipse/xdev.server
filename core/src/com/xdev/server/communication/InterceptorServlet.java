@@ -40,9 +40,6 @@ import com.xdev.server.db.connection.HibernateUtil;
 //has full control over each type of vaadin communication, including websockets
 public class InterceptorServlet extends VaadinServlet
 {
-	private static final long	serialVersionUID	= 2973107786947933744L;
-
-
 	@Override
 	protected VaadinServletService createServletService(
 			final DeploymentConfiguration deploymentConfiguration) throws ServiceException
@@ -50,19 +47,18 @@ public class InterceptorServlet extends VaadinServlet
 		final VaadinServletService servletService = new VaadinServletService(this,
 				deploymentConfiguration)
 		{
-			private static final long	serialVersionUID				= -7847744792732696004L;
 			private static final String	HIBERNATEUTIL_FILTER_INIT_PARAM	= "persistenceUnit";
-			
+
 			private boolean				hibernateFactoryInitialized		= false;
-			
-			
+
+
 			@Override
 			public void requestStart(final VaadinRequest request, final VaadinResponse response)
 			{
 				if(!this.hibernateFactoryInitialized)
 				{
 					this.hibernateFactoryInitialized = true;
-					
+
 					try
 					{
 						final String hibernatePersistenceUnit = deploymentConfiguration
@@ -78,7 +74,7 @@ public class InterceptorServlet extends VaadinServlet
 								e.getMessage(),e);
 					}
 				}
-				
+
 				if(request.getMethod().equals("POST"))
 				{
 					try
@@ -99,11 +95,11 @@ public class InterceptorServlet extends VaadinServlet
 								e.getMessage(),e);
 					}
 				}
-				
+
 				super.requestStart(request,response);
 			}
-			
-			
+
+
 			@Override
 			public void requestEnd(final VaadinRequest request, final VaadinResponse response,
 					final VaadinSession session)
@@ -123,7 +119,7 @@ public class InterceptorServlet extends VaadinServlet
 						}
 					}
 				}
-				
+
 				super.requestEnd(request,response,session);
 			}
 		};

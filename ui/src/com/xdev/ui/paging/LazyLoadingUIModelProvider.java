@@ -21,7 +21,7 @@ package com.xdev.ui.paging;
 import org.hibernate.mapping.Property;
 
 import com.vaadin.ui.AbstractSelect;
-import com.xdev.ui.entitycomponent.IDToEntityConverter;
+import com.xdev.ui.entitycomponent.IDToBeanConverter;
 import com.xdev.ui.entitycomponent.UIModelProvider;
 import com.xdev.ui.util.KeyValueType;
 import com.xdev.util.HibernateEntityIDResolver;
@@ -72,7 +72,7 @@ public class LazyLoadingUIModelProvider<BEANTYPE> implements UIModelProvider<BEA
 				.setMaxNestedPropertyDepth(this.getMaxNestedPropertyDepth(nestedProperties));
 
 		// register non beanitemcontainer id converter
-		component.setConverter(new IDToEntityConverter<BEANTYPE>(let));
+		component.setConverter(new IDToBeanConverter<BEANTYPE>(let));
 
 		return let;
 	}

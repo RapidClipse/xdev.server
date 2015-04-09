@@ -32,9 +32,9 @@ import com.xdev.util.HibernateEntityIDResolver;
 
 
 //TODO check if object as ID type is always suitable
-public class IDToEntitySetConverter<T> implements Converter<Set<? extends Object>, Set<T>>
+public class IDToBeanSetConverter<T> implements Converter<Set<? extends Object>, Set<T>>
 {
-	private final EntityContainer<T>	container;
+	private final BeanContainer<T>	container;
 	private final EntityIDResolver		idResolver;
 	private Set<T>						beanSet	= new LinkedHashSet<>();
 	private Set<Object>					idSet	= new LinkedHashSet<>();
@@ -43,7 +43,7 @@ public class IDToEntitySetConverter<T> implements Converter<Set<? extends Object
 	/**
 	 *
 	 */
-	public IDToEntitySetConverter(final EntityContainer<T> container)
+	public IDToBeanSetConverter(final BeanContainer<T> container)
 	{
 		this.container = container;
 		this.idResolver = new HibernateEntityIDResolver();
@@ -60,7 +60,7 @@ public class IDToEntitySetConverter<T> implements Converter<Set<? extends Object
 		{
 			for(final Object itemId : itemIds)
 			{
-				final BeanItem<T> item = this.container.getEntityItem(itemId);
+				final BeanItem<T> item = this.container.getBeanItem(itemId);
 				if(item != null)
 				{
 					this.beanSet.add(item.getBean());

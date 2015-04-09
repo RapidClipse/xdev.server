@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.ui.AbstractSelect;
-import com.xdev.ui.entitycomponent.EntityComponent;
+import com.xdev.ui.entitycomponent.BeanComponent;
 
 
 public final class XDEV
@@ -37,7 +37,7 @@ public final class XDEV
 	}
 	
 	
-	public static <T> void bindForm(final EntityComponent<T> masterComponent,
+	public static <T> void bindForm(final BeanComponent<T> masterComponent,
 			final BeanFieldGroup<T> form)
 	{
 		XDEV.bindForm((Consumer<FormBuilder<T>>)formBinder -> {

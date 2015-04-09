@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.entitycomponent;
 
 
@@ -23,19 +23,19 @@ import com.vaadin.data.util.BeanItem;
 
 
 //entity filtering for example for master detail purpose
-public interface EntityContainer<T> extends Container.Filterable
+public interface BeanContainer<T> extends Container.Filterable
 {
 	/**
 	 * Adds entity to the container as first item i.e. at index 0.
 	 *
 	 * @return the new constructed entity.
 	 */
-	public T addEntity();
-
-
-	public int addEntity(final T entity);
-
-
+	public T addBean();
+	
+	
+	public int addBean(final T bean);
+	
+	
 	/**
 	 * Removes given entity at given index and returns it.
 	 *
@@ -43,12 +43,12 @@ public interface EntityContainer<T> extends Container.Filterable
 	 *            Index of the entity to be removed.
 	 * @return The removed entity.
 	 */
-	public T removeEntity(final int index);
-
-
-	public void removeEntity(T entity);
-
-
+	public T removeBean(final int index);
+	
+	
+	public void removeBean(T bean);
+	
+	
 	/**
 	 * Gets entity by ID.
 	 *
@@ -56,9 +56,9 @@ public interface EntityContainer<T> extends Container.Filterable
 	 *            The ID of the entity.
 	 * @return the entity.
 	 */
-	public BeanItem<T> getEntityItem(final Object id);
-
-
+	public BeanItem<T> getBeanItem(final Object id);
+	
+	
 	/**
 	 * Gets entity at given index.
 	 *
@@ -66,11 +66,11 @@ public interface EntityContainer<T> extends Container.Filterable
 	 *            The index of the entity.
 	 * @return the entity.
 	 */
-	public BeanItem<T> getEntityItem(final int index);
-
-
+	public BeanItem<T> getBeanItem(final int index);
+	
+	
 	public void refresh();
-	
-	
-	public Class<T> getEntityType();
+
+
+	public Class<T> getBeanType();
 }

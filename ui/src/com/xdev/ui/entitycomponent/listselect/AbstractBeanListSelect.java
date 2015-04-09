@@ -15,93 +15,93 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-package com.xdev.ui.entitycomponent.combobox;
+package com.xdev.ui.entitycomponent.listselect;
 
 
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.ComboBox;
-import com.xdev.ui.entitycomponent.EntityComponent;
-import com.xdev.ui.entitycomponent.EntityContainer;
+import com.vaadin.ui.ListSelect;
+import com.xdev.ui.entitycomponent.BeanComponent;
+import com.xdev.ui.entitycomponent.BeanContainer;
 import com.xdev.ui.entitycomponent.UIModelProvider;
 
 
-public abstract class AbstractEntityComboBox<BEANTYPE> extends ComboBox implements
-		EntityComponent<BEANTYPE>
+public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect implements
+		BeanComponent<BEANTYPE>
 {
 	/**
 	 *
 	 */
 	private static final long			serialVersionUID	= 897703398940222936L;
-	private EntityContainer<BEANTYPE>	container;
-	
-	
-	public AbstractEntityComboBox()
+	private BeanContainer<BEANTYPE>	container;
+
+
+	public AbstractBeanListSelect()
 	{
 		super();
 	}
-	
-	
-	public AbstractEntityComboBox(final String caption)
+
+
+	public AbstractBeanListSelect(final String caption)
 	{
 		super(caption);
 	}
-	
-	
-	public AbstractEntityComboBox(final EntityContainer<BEANTYPE> dataSource)
+
+
+	public AbstractBeanListSelect(final BeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
 	}
-	
-	
-	public AbstractEntityComboBox(final String caption, final EntityContainer<BEANTYPE> dataSource)
+
+
+	public AbstractBeanListSelect(final String caption, final BeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public EntityContainer<BEANTYPE> getContainerDataSource()
+	public BeanContainer<BEANTYPE> getContainerDataSource()
 	{
 		return this.container;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public BeanItem<BEANTYPE> getItem(final Object itemId)
 	{
-		return this.container.getEntityItem(itemId);
+		return this.container.getBeanItem(itemId);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public BeanItem<BEANTYPE> getSelectedItem()
 	{
-		return this.container.getEntityItem(this.getValue());
+		return this.container.getBeanItem(this.getValue());
 	}
-	
-	
+
+
 	protected abstract UIModelProvider<BEANTYPE> getModelProvider();
-	
-	
+
+
 	@Override
-	public void setEntityDataSource(final EntityContainer<BEANTYPE> newDataSource)
+	public void setDataContainer(final BeanContainer<BEANTYPE> newDataSource)
 	{
 		this.container = newDataSource;
 		super.setContainerDataSource(newDataSource);
 	}
-	
-	
+
+
 	@Override
-	public EntityContainer<BEANTYPE> getEntityDataSource()
+	public BeanContainer<BEANTYPE> getDataContainer()
 	{
 		return this.container;
 	}

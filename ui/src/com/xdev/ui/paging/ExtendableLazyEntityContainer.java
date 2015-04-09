@@ -21,7 +21,7 @@ package com.xdev.ui.paging;
 import org.vaadin.addons.lazyquerycontainer.CompositeItem;
 
 import com.vaadin.data.util.BeanItem;
-import com.xdev.ui.entitycomponent.EntityContainer;
+import com.xdev.ui.entitycomponent.BeanContainer;
 
 
 /**
@@ -33,8 +33,8 @@ import com.xdev.ui.entitycomponent.EntityContainer;
  * @author Tommi Laukkanen
  */
 // copied from EntityContainer to become extendable
-public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer implements
-		EntityContainer<T>
+public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContainer implements
+		BeanContainer<T>
 {
 	private static final long	serialVersionUID	= 1L;
 	private final Class<T>		entityType;
@@ -56,7 +56,7 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 	 * @param compositeItems
 	 *            True f items are wrapped to CompositeItems.
 	 */
-	public ExtendableEntityContainer(final Class<T> entityClass, final int batchSize,
+	public ExtendableLazyEntityContainer(final Class<T> entityClass, final int batchSize,
 			final Object idPropertyId, final boolean applicationManagedTransactions,
 			final boolean detachedEntities)
 	{
@@ -88,7 +88,7 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 	 * @param idPropertyId
 	 *            Property containing the property ID.
 	 */
-	public ExtendableEntityContainer(final boolean applicationManagedTransactions,
+	public ExtendableLazyEntityContainer(final boolean applicationManagedTransactions,
 			final boolean detachedEntities, final Class<T> entityClass, final int batchSize,
 			final Object[] defaultSortPropertyIds,
 			final boolean[] defaultSortPropertyAscendingStates, final Object idPropertyId)
@@ -110,15 +110,15 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 	 * @return the new constructed entity.
 	 */
 	@Override
-	public T addEntity()
+	public T addBean()
 	{
 		final Object itemId = addItem();
-		return getEntityItem(indexOfId(itemId)).getBean();
+		return getBeanItem(indexOfId(itemId)).getBean();
 	}
 
 
 	@Override
-	public int addEntity(final T entity)
+	public int addBean(final T entity)
 	{
 		return getQueryView().addItem(entity);
 	}
@@ -132,9 +132,9 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 	 * @return The removed entity.
 	 */
 	@Override
-	public T removeEntity(final int index)
+	public T removeBean(final int index)
 	{
-		final T entityToRemove = getEntityItem(index).getBean();
+		final T entityToRemove = getBeanItem(index).getBean();
 		removeItem(getIdByIndex(index));
 		return entityToRemove;
 	}
@@ -148,9 +148,9 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 	 * @return the entity.
 	 */
 	@Override
-	public BeanItem<T> getEntityItem(final Object id)
+	public BeanItem<T> getBeanItem(final Object id)
 	{
-		return getEntityItem(indexOfId(id));
+		return getBeanItem(indexOfId(id));
 	}
 
 
@@ -163,7 +163,7 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public BeanItem<T> getEntityItem(final int index)
+	public BeanItem<T> getBeanItem(final int index)
 	{
 		if(getQueryView().getQueryDefinition().isCompositeItems())
 		{
@@ -179,18 +179,18 @@ public class ExtendableEntityContainer<T> extends XdevEntityLazyQueryContainer i
 
 
 	@Override
-	public void removeEntity(final T entity)
+	public void removeBean(final T entity)
 	{
 		for(final Object itemId : this.getItemIds())
 		{
-			this.getEntityItem(itemId).equals(entity);
+			this.getBeanItem(itemId).equals(entity);
 			this.removeItem(itemId);
 		}
 	}
 
 
 	@Override
-	public Class<T> getEntityType()
+	public Class<T> getBeanType()
 	{
 		return this.entityType;
 	}

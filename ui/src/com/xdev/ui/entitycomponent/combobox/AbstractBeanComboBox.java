@@ -15,67 +15,67 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-package com.xdev.ui.entitycomponent.table;
+package com.xdev.ui.entitycomponent.combobox;
 
 
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.Table;
-import com.xdev.ui.entitycomponent.EntityComponent;
-import com.xdev.ui.entitycomponent.EntityContainer;
+import com.vaadin.ui.ComboBox;
+import com.xdev.ui.entitycomponent.BeanComponent;
+import com.xdev.ui.entitycomponent.BeanContainer;
 import com.xdev.ui.entitycomponent.UIModelProvider;
 
 
-public abstract class AbstractEntityTable<BEANTYPE> extends Table implements
-		EntityComponent<BEANTYPE>
+public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox implements
+		BeanComponent<BEANTYPE>
 {
 	/**
 	 *
 	 */
 	private static final long			serialVersionUID	= 897703398940222936L;
+	private BeanContainer<BEANTYPE>	container;
 	
-	private EntityContainer<BEANTYPE>	container;
 	
-	
-	public AbstractEntityTable()
+	public AbstractBeanComboBox()
 	{
 		super();
 	}
 	
 	
-	public AbstractEntityTable(final String caption)
+	public AbstractBeanComboBox(final String caption)
 	{
 		super(caption);
 	}
 	
 	
-	public AbstractEntityTable(final EntityContainer<BEANTYPE> dataSource)
+	public AbstractBeanComboBox(final BeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
-		this.container = dataSource;
 	}
 	
 	
-	public AbstractEntityTable(final String caption, final EntityContainer<BEANTYPE> dataSource)
+	public AbstractBeanComboBox(final String caption, final BeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
-		this.container = dataSource;
 	}
 	
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public EntityContainer<BEANTYPE> getContainerDataSource()
+	public BeanContainer<BEANTYPE> getContainerDataSource()
 	{
 		return this.container;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public BeanItem<BEANTYPE> getItem(final Object itemId)
 	{
-		return this.container.getEntityItem(itemId);
+		return this.container.getBeanItem(itemId);
 	}
 	
 	
@@ -85,11 +85,7 @@ public abstract class AbstractEntityTable<BEANTYPE> extends Table implements
 	@Override
 	public BeanItem<BEANTYPE> getSelectedItem()
 	{
-		if(!this.isMultiSelect())
-		{
-			return this.container.getEntityItem(this.getValue());
-		}
-		return null;
+		return this.container.getBeanItem(this.getValue());
 	}
 	
 	
@@ -97,7 +93,7 @@ public abstract class AbstractEntityTable<BEANTYPE> extends Table implements
 	
 	
 	@Override
-	public void setEntityDataSource(final EntityContainer<BEANTYPE> newDataSource)
+	public void setDataContainer(final BeanContainer<BEANTYPE> newDataSource)
 	{
 		this.container = newDataSource;
 		super.setContainerDataSource(newDataSource);
@@ -105,7 +101,7 @@ public abstract class AbstractEntityTable<BEANTYPE> extends Table implements
 	
 	
 	@Override
-	public EntityContainer<BEANTYPE> getEntityDataSource()
+	public BeanContainer<BEANTYPE> getDataContainer()
 	{
 		return this.container;
 	}

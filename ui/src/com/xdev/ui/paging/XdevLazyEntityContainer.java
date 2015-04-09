@@ -18,7 +18,7 @@
 package com.xdev.ui.paging;
 
 
-public class XdevLazyEntityContainer<T> extends ExtendableEntityContainer<T>
+public class XdevLazyEntityContainer<T> extends ExtendableLazyEntityContainer<T>
 {
 	/**
 	 *

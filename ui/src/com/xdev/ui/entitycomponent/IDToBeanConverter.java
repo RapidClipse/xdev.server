@@ -31,16 +31,16 @@ import com.xdev.util.HibernateEntityIDResolver;
 
 
 //TODO check if object as ID type is always suitable
-public class IDToEntityConverter<T> implements Converter<Object, T>
+public class IDToBeanConverter<T> implements Converter<Object, T>
 {
-	private final EntityContainer<T>	container;
+	private final BeanContainer<T>	container;
 	private final EntityIDResolver		idResolver;
 	
 	
 	/**
 	 *
 	 */
-	public IDToEntityConverter(final EntityContainer<T> container)
+	public IDToBeanConverter(final BeanContainer<T> container)
 	{
 		this.container = container;
 		this.idResolver = new HibernateEntityIDResolver();
@@ -60,7 +60,7 @@ public class IDToEntityConverter<T> implements Converter<Object, T>
 		// multi selection
 		if(!(itemID instanceof Set))
 		{
-			final BeanItem<T> item = this.container.getEntityItem(itemID);
+			final BeanItem<T> item = this.container.getBeanItem(itemID);
 			if(item != null)
 			{
 				return item.getBean();
@@ -102,7 +102,7 @@ public class IDToEntityConverter<T> implements Converter<Object, T>
 	@Override
 	public Class<T> getModelType()
 	{
-		return this.container.getEntityType();
+		return this.container.getBeanType();
 	}
 	
 	

@@ -15,3 +15,31 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
+package com.xdev.ui.entitycomponent;
+
+
+import java.util.Collection;
+
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.Component;
+import com.xdev.ui.util.KeyValueType;
+
+
+public interface BeanComponent<BEANTYPE> extends BeanViewer<BEANTYPE>, Component
+{
+	public void setDataContainer(Class<BEANTYPE> beanClass, KeyValueType<?, ?>... nestedProperties);
+
+
+	public void setDataContainer(Class<BEANTYPE> entityClass, Collection<BEANTYPE> data,
+			KeyValueType<?, ?>... nestedProperties);
+
+
+	public BeanItem<BEANTYPE> getItem(Object id);
+
+
+	public BeanItem<BEANTYPE> getSelectedItem();
+
+
+	public void addValueChangeListener(Property.ValueChangeListener listener);
+}

@@ -21,7 +21,7 @@ package com.xdev.ui.entitycomponent;
 import com.vaadin.data.Container.Viewer;
 
 
-public interface GenericEntityViewer<BEANTYPE> extends Viewer
+public interface BeanViewer<BEANTYPE> extends Viewer
 {
 
 	/**
@@ -30,7 +30,7 @@ public interface GenericEntityViewer<BEANTYPE> extends Viewer
 	 * @param newDataSource
 	 *            The new data source Item
 	 */
-	public void setEntityDataSource(EntityContainer<BEANTYPE> newDataSource);
+	public void setDataContainer(BeanContainer<BEANTYPE> newDataSource);
 
 
 	/**
@@ -38,6 +38,6 @@ public interface GenericEntityViewer<BEANTYPE> extends Viewer
 	 *
 	 * @return data source Container
 	 */
-	public EntityContainer<BEANTYPE> getEntityDataSource();
+	public BeanContainer<BEANTYPE> getDataContainer();
 
 }

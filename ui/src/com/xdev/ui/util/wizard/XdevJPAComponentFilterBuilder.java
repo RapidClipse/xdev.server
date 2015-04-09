@@ -18,13 +18,13 @@
 package com.xdev.ui.util.wizard;
 
 
-import com.xdev.ui.entitycomponent.EntityComponent;
+import com.xdev.ui.entitycomponent.BeanComponent;
 import com.xdev.ui.util.masterdetail.JPAMasterDetail;
 
 
 public class XdevJPAComponentFilterBuilder implements JPAComponentFilterBuilder
 {
-	private EntityComponent<?>		masterComponent, detailComponent;
+	private BeanComponent<?>		masterComponent, detailComponent;
 	private Class<?>				masterEntity, detailEntity;
 
 	private final JPAMasterDetail	masterDetail;
@@ -46,14 +46,14 @@ public class XdevJPAComponentFilterBuilder implements JPAComponentFilterBuilder
 
 
 	@Override
-	public void setMasterComponent(final EntityComponent<?> masterComponent)
+	public void setMasterComponent(final BeanComponent<?> masterComponent)
 	{
 		this.masterComponent = masterComponent;
 	}
 
 
 	@Override
-	public void setDetailComponent(final EntityComponent<?> detailComponent)
+	public void setDetailComponent(final BeanComponent<?> detailComponent)
 	{
 		this.detailComponent = detailComponent;
 	}

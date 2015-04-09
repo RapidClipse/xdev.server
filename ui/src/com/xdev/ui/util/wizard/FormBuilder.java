@@ -20,14 +20,14 @@ package com.xdev.ui.util.wizard;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.xdev.lang.ExecutableCommandObject;
-import com.xdev.ui.entitycomponent.EntityComponent;
+import com.xdev.ui.entitycomponent.BeanComponent;
 import com.xdev.ui.util.masterdetail.MasterDetail;
 
 
 //master detail for forms
 public interface FormBuilder<T> extends ExecutableCommandObject
 {
-	public void setMasterComponent(EntityComponent<T> masterComponent);
+	public void setMasterComponent(BeanComponent<T> masterComponent);
 
 
 	public void setForm(BeanFieldGroup<T> form);
@@ -36,7 +36,7 @@ public interface FormBuilder<T> extends ExecutableCommandObject
 
 	public class XdevFormBuilder<T> implements FormBuilder<T>
 	{
-		private EntityComponent<T>	masterComponent;
+		private BeanComponent<T>	masterComponent;
 		private BeanFieldGroup<T>	form;
 		private final MasterDetail	masterDetail;
 
@@ -55,7 +55,7 @@ public interface FormBuilder<T> extends ExecutableCommandObject
 
 
 		@Override
-		public void setMasterComponent(final EntityComponent<T> masterComponent)
+		public void setMasterComponent(final BeanComponent<T> masterComponent)
 		{
 			this.masterComponent = masterComponent;
 		}

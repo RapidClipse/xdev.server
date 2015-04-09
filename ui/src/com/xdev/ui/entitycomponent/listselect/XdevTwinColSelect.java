@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.entitycomponent.listselect;
 
 
 import java.util.Collection;
 
-import com.xdev.ui.entitycomponent.IDToEntitySetConverter;
+import com.xdev.ui.entitycomponent.IDToBeanSetConverter;
 import com.xdev.ui.paging.LazyLoadingUIModelProvider;
 import com.xdev.ui.paging.XdevLazyEntityContainer;
 import com.xdev.ui.util.KeyValueType;
@@ -33,7 +33,7 @@ import com.xdev.ui.util.KeyValueType;
  * @author XDEV Software
  *
  */
-public class XdevTwinColSelect<T> extends AbstractTwinColSelect<T>
+public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 {
 	/**
 	 *
@@ -64,42 +64,42 @@ public class XdevTwinColSelect<T> extends AbstractTwinColSelect<T>
 	@SuppressWarnings({"rawtypes","unchecked"})
 	@SafeVarargs
 	@Override
-	public final void setModel(final Class<T> entityClass,
+	public final void setDataContainer(final Class<T> beanClass,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
 		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
-				entityClass,nestedProperties);
+				beanClass,nestedProperties);
 
-		this.setEntityDataSource(container);
+		this.setDataContainer(container);
 
 		/*
 		 * vaadin api compiler warnings, cant define a converter with a set as
 		 * wrapper data type
 		 */
-		this.setConverter(new IDToEntitySetConverter(container));
+		this.setConverter(new IDToBeanSetConverter(container));
 	}
 
 
 	@SuppressWarnings({"rawtypes","unchecked"})
 	@SafeVarargs
 	@Override
-	public final void setModel(final Class<T> entityClass, final Collection<T> data,
+	public final void setDataContainer(final Class<T> beanClass, final Collection<T> data,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
 		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
-				entityClass,nestedProperties);
+				beanClass,nestedProperties);
 		for(final T entity : data)
 		{
-			container.addEntity(entity);
+			container.addBean(entity);
 		}
 
-		this.setEntityDataSource(container);
+		this.setDataContainer(container);
 
 		/*
 		 * vaadin api compiler warnings, cant define a converter with a set as
 		 * wrapper data type
 		 */
-		this.setConverter(new IDToEntitySetConverter(container));
+		this.setConverter(new IDToBeanSetConverter(container));
 	}
 
 

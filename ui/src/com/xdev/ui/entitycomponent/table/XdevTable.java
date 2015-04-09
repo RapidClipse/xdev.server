@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.entitycomponent.table;
 
 
@@ -25,7 +25,7 @@ import com.xdev.ui.paging.XdevLazyEntityContainer;
 import com.xdev.ui.util.KeyValueType;
 
 
-public class XdevTable<T> extends AbstractEntityTable<T>
+public class XdevTable<T> extends AbstractBeanTable<T>
 {
 
 	/**
@@ -69,28 +69,28 @@ public class XdevTable<T> extends AbstractEntityTable<T>
 	 */
 	@SafeVarargs
 	@Override
-	public final void setModel(final Class<T> entityClass,
+	public final void setDataContainer(final Class<T> beanClass,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
 		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
-				entityClass,nestedProperties);
-		this.setEntityDataSource(container);
+				beanClass,nestedProperties);
+		this.setDataContainer(container);
 	}
 
 
 	@SafeVarargs
 	@Override
-	public final void setModel(final Class<T> entityClass, final Collection<T> data,
+	public final void setDataContainer(final Class<T> beanClass, final Collection<T> data,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
 		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
-				entityClass,nestedProperties);
+				beanClass,nestedProperties);
 		for(final T entity : data)
 		{
-			container.addEntity(entity);
+			container.addBean(entity);
 		}
 
-		this.setEntityDataSource(container);
+		this.setDataContainer(container);
 
 	}
 

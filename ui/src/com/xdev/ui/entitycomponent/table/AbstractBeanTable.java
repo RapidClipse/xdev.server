@@ -15,67 +15,67 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-package com.xdev.ui.entitycomponent.listselect;
+package com.xdev.ui.entitycomponent.table;
 
 
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.TwinColSelect;
-import com.xdev.ui.entitycomponent.EntityComponent;
-import com.xdev.ui.entitycomponent.EntityContainer;
+import com.vaadin.ui.Table;
+import com.xdev.ui.entitycomponent.BeanComponent;
+import com.xdev.ui.entitycomponent.BeanContainer;
 import com.xdev.ui.entitycomponent.UIModelProvider;
 
 
-public abstract class AbstractTwinColSelect<BEANTYPE> extends TwinColSelect implements
-		EntityComponent<BEANTYPE>
+public abstract class AbstractBeanTable<BEANTYPE> extends Table implements
+		BeanComponent<BEANTYPE>
 {
 	/**
 	 *
 	 */
 	private static final long			serialVersionUID	= 897703398940222936L;
-	private EntityContainer<BEANTYPE>	container;
+	
+	private BeanContainer<BEANTYPE>	container;
 	
 	
-	public AbstractTwinColSelect()
+	public AbstractBeanTable()
 	{
 		super();
 	}
 	
 	
-	public AbstractTwinColSelect(final String caption)
+	public AbstractBeanTable(final String caption)
 	{
 		super(caption);
 	}
 	
 	
-	public AbstractTwinColSelect(final EntityContainer<BEANTYPE> dataSource)
+	public AbstractBeanTable(final BeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
+		this.container = dataSource;
 	}
 	
 	
-	public AbstractTwinColSelect(final String caption, final EntityContainer<BEANTYPE> dataSource)
+	public AbstractBeanTable(final String caption, final BeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
+		this.container = dataSource;
 	}
 	
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public EntityContainer<BEANTYPE> getContainerDataSource()
+	public BeanContainer<BEANTYPE> getContainerDataSource()
 	{
 		return this.container;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public BeanItem<BEANTYPE> getItem(final Object itemId)
 	{
-		return this.container.getEntityItem(itemId);
+		return this.container.getBeanItem(itemId);
 	}
 	
 	
@@ -85,7 +85,11 @@ public abstract class AbstractTwinColSelect<BEANTYPE> extends TwinColSelect impl
 	@Override
 	public BeanItem<BEANTYPE> getSelectedItem()
 	{
-		return this.container.getEntityItem(this.getValue());
+		if(!this.isMultiSelect())
+		{
+			return this.container.getBeanItem(this.getValue());
+		}
+		return null;
 	}
 	
 	
@@ -93,7 +97,7 @@ public abstract class AbstractTwinColSelect<BEANTYPE> extends TwinColSelect impl
 	
 	
 	@Override
-	public void setEntityDataSource(final EntityContainer<BEANTYPE> newDataSource)
+	public void setDataContainer(final BeanContainer<BEANTYPE> newDataSource)
 	{
 		this.container = newDataSource;
 		super.setContainerDataSource(newDataSource);
@@ -101,7 +105,7 @@ public abstract class AbstractTwinColSelect<BEANTYPE> extends TwinColSelect impl
 	
 	
 	@Override
-	public EntityContainer<BEANTYPE> getEntityDataSource()
+	public BeanContainer<BEANTYPE> getDataContainer()
 	{
 		return this.container;
 	}

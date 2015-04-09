@@ -26,7 +26,7 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.AbstractSelect;
-import com.xdev.ui.entitycomponent.EntityComponent;
+import com.xdev.ui.entitycomponent.BeanComponent;
 
 
 public interface MasterDetail
@@ -35,7 +35,7 @@ public interface MasterDetail
 			Object filterProperty, Object detailProperty);
 	
 	
-	public <T> void connectForm(final EntityComponent<T> master, BeanFieldGroup<T> detail);
+	public <T> void connectForm(final BeanComponent<T> master, BeanFieldGroup<T> detail);
 
 
 
@@ -64,7 +64,7 @@ public interface MasterDetail
 
 
 		@Override
-		public <T> void connectForm(final EntityComponent<T> master, final BeanFieldGroup<T> detail)
+		public <T> void connectForm(final BeanComponent<T> master, final BeanFieldGroup<T> detail)
 		{
 			master.addValueChangeListener(e -> prepareFormData(master.getSelectedItem(),detail));
 		}

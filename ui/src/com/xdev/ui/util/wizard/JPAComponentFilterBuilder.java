@@ -19,16 +19,16 @@ package com.xdev.ui.util.wizard;
 
 
 import com.xdev.lang.ExecutableCommandObject;
-import com.xdev.ui.entitycomponent.EntityComponent;
+import com.xdev.ui.entitycomponent.BeanComponent;
 
 
 //master detail for components
 public interface JPAComponentFilterBuilder extends ExecutableCommandObject
 {
-	public void setMasterComponent(EntityComponent<?> masterComponent);
+	public void setMasterComponent(BeanComponent<?> masterComponent);
 
 
-	public void setDetailComponent(EntityComponent<?> detailComponent);
+	public void setDetailComponent(BeanComponent<?> detailComponent);
 
 
 	public <T> void setMasterEntity(Class<T> masterEntity);

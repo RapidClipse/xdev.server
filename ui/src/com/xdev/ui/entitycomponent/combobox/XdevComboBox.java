@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.entitycomponent.combobox;
 
 
@@ -25,62 +25,61 @@ import com.xdev.ui.paging.XdevLazyEntityContainer;
 import com.xdev.ui.util.KeyValueType;
 
 
-public class XdevComboBox<T> extends AbstractEntityComboBox<T>
+public class XdevComboBox<T> extends AbstractBeanComboBox<T>
 {
-	
+
 	/**
 	 *
 	 */
 	private static final long	serialVersionUID	= -836170197198239894L;
-	
-	
+
+
 	public XdevComboBox()
 	{
 		super();
 	}
-	
-	
+
+
 	public XdevComboBox(final int pageLength)
 	{
 		super();
 		super.setPageLength(pageLength);
 	}
-	
+
 	// init defaults
 	{
 		setImmediate(true);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@SafeVarargs
 	@Override
-	public final void setModel(final Class<T> entityClass,
+	public final void setDataContainer(final Class<T> beanClass,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
-		this.setEntityDataSource(this.getModelProvider()
-				.getModel(this,entityClass,nestedProperties));
+		this.setDataContainer(this.getModelProvider().getModel(this,beanClass,nestedProperties));
 	}
-	
-	
+
+
 	@SafeVarargs
 	@Override
-	public final void setModel(final Class<T> entityClass, final Collection<T> data,
+	public final void setDataContainer(final Class<T> beanClass, final Collection<T> data,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
 		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
-				entityClass,nestedProperties);
+				beanClass,nestedProperties);
 		for(final T entity : data)
 		{
-			container.addEntity(entity);
+			container.addBean(entity);
 		}
-		
-		this.setEntityDataSource(container);
+
+		this.setDataContainer(container);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -90,8 +89,8 @@ public class XdevComboBox<T> extends AbstractEntityComboBox<T>
 		return new LazyLoadingUIModelProvider<T>(this.getPageLength(),this.isTextInputAllowed(),
 				false);
 	}
-	
-	
+
+
 	@Override
 	public void setPageLength(final int pageLength)
 	{

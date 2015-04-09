@@ -5,16 +5,16 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.server.dal;
 
 
@@ -38,13 +38,14 @@ import com.googlecode.genericdao.search.SearchResult;
 import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
 import com.xdev.server.communication.EntityManagerHelper;
+import com.xdev.server.communication.JPAdaoWrapper;
 
 
 /**
- * CAUTION: Use only in correspondence with a transactional DAO implementation if no
- * transaction manager like for example JTA is active. The actions executed with
- * this DAO implementation do neither open nor close transactions.
- * 
+ * CAUTION: Use only in correspondence with a transactional DAO implementation
+ * if no transaction manager like for example JTA is active. The actions
+ * executed with this DAO implementation do neither open nor close transactions.
+ *
  * @author XDEV Software (JW)
  *
  * @see GenericDAO
@@ -55,294 +56,308 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 	 * DAO type must be at least GenericDAOImpl to achieve typed behavior and
 	 * JPA support, see type hierarchy.
 	 */
-	private GenericDAOImpl<T, IT>	persistenceManager		= new GenericDAOImpl<>();
-	
+	private JPAdaoWrapper<T, IT>		persistenceManager;
+
 	// lock meta data
-	private long					lockTimeOut				= 0;
-	private static final String		LOCK_TIMEOUT_PROPERTY	= "javax.persistence.lock.timeout";
-	private Map<String, Object>		lockProperties			= new HashMap<String, Object>();
-	
-	
-	public void setLockTimeOut(long lockTimeOut)
+	private long						lockTimeOut				= 0;
+	private static final String			LOCK_TIMEOUT_PROPERTY	= "javax.persistence.lock.timeout";
+	private final Map<String, Object>	lockProperties			= new HashMap<String, Object>();
+
+
+	public void setLockTimeOut(final long lockTimeOut)
 	{
 		this.lockTimeOut = lockTimeOut;
 	}
-	
-	
-	public GenericDAOImpl<T, IT> getPersistenceManager()
+
+
+	public JPAdaoWrapper<T, IT> getPersistenceManager()
 	{
-		return persistenceManager;
+		return this.persistenceManager;
 	}
-	
-	
-	public void setPersistenceManager(GenericDAOImpl<T, IT> persistenceManager)
+
+
+	public void setPersistenceManager(final JPAdaoWrapper<T, IT> persistenceManager)
 	{
 		this.persistenceManager = persistenceManager;
 	}
-	
+
 	{
-		persistenceManager.setEntityManager(EntityManagerHelper.getEntityManager());
-		persistenceManager.setSearchProcessor(new JPASearchProcessor(
+		this.persistenceManager.setEntityManager(EntityManagerHelper.getEntityManager());
+		this.persistenceManager.setSearchProcessor(new JPASearchProcessor(
 				new JPAAnnotationMetadataUtil()));
 	}
-	
-	
+
+
+	@Override
 	protected EntityManager em()
 	{
 		return EntityManagerHelper.getEntityManager();
 	}
-	
-	
-	public CriteriaQuery<T> buildCriteriaQuery(Class<T> type)
+
+
+	public CriteriaQuery<T> buildCriteriaQuery(final Class<T> type)
 	{
-		CriteriaBuilder cb = em().getCriteriaBuilder();
+		final CriteriaBuilder cb = em().getCriteriaBuilder();
 		return cb.createQuery(type);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public void persist(@SuppressWarnings("unchecked") T... entities)
+	@Override
+	public void persist(@SuppressWarnings("unchecked") final T... entities)
 	{
-		for(T entity : entities)
+		for(final T entity : entities)
 		{
 			// TODO make LockModeType configurable?
 			em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
 		}
-		
+
 		this.persistenceManager.persist(entities);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public T save(T entity)
+	@Override
+	public T save(final T entity)
 	{
 		em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
-		T ret = this.persistenceManager.save(entity);
+		final T ret = this.persistenceManager.save(entity);
 		return ret;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public T[] save(@SuppressWarnings("unchecked") T... entities)
+	@Override
+	public T[] save(@SuppressWarnings("unchecked") final T... entities)
 	{
-		for(T entity : entities)
+		for(final T entity : entities)
 		{
 			em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
 		}
-		T[] ret = this.persistenceManager.save(entities);
+		final T[] ret = this.persistenceManager.save(entities);
 		return ret;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean remove(T entity)
+	@Override
+	public boolean remove(final T entity)
 	{
 		em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
-		boolean ret = this.persistenceManager.remove(entity);
+		final boolean ret = this.persistenceManager.remove(entity);
 		return ret;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public void remove(@SuppressWarnings("unchecked") T... entities)
+	@Override
+	public void remove(@SuppressWarnings("unchecked") final T... entities)
 	{
-		for(T entity : entities)
+		for(final T entity : entities)
 		{
 			em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
 		}
 		this.persistenceManager.remove(entities);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean removeById(IT id)
+	@Override
+	public boolean removeById(final IT id)
 	{
-		T entity = this.find(id);
+		final T entity = this.find(id);
 		em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
-		
-		boolean ret = this.persistenceManager.removeById(id);
+
+		final boolean ret = this.persistenceManager.removeById(id);
 		return ret;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeByIds(@SuppressWarnings("unchecked") IT... ids)
+	@Override
+	public void removeByIds(@SuppressWarnings("unchecked") final IT... ids)
 	{
-		T[] entities = this.find(ids);
-		for(T entity : entities)
+		final T[] entities = this.find(ids);
+		for(final T entity : entities)
 		{
 			em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
 		}
-		
+
 		this.persistenceManager.removeByIds(ids);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public T merge(T entity)
+	@Override
+	public T merge(final T entity)
 	{
 		em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
-		T ret = this.persistenceManager.merge(entity);
+		final T ret = this.persistenceManager.merge(entity);
 		return ret;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public T[] merge(@SuppressWarnings("unchecked") T... entities)
+	@Override
+	public T[] merge(@SuppressWarnings("unchecked") final T... entities)
 	{
-		for(T entity : entities)
+		for(final T entity : entities)
 		{
 			em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
 		}
-		T[] ret = this.persistenceManager.merge(entities);
+		final T[] ret = this.persistenceManager.merge(entities);
 		return ret;
 	}
-	
-	
+
+
 	// -------- TODO pessimistic read allowed ? - check / provide configuration
 	// ----------
 	/**
 	 * {@inheritDoc}
 	 */
-	public T find(IT id)
+	@Override
+	public T find(final IT id)
 	{
-		T ret = this.persistenceManager.find(id);
+		final T ret = this.persistenceManager.find(id);
 		return ret;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public T[] find(@SuppressWarnings("unchecked") IT... ids)
+	public T[] find(@SuppressWarnings("unchecked") final IT... ids)
 	{
-		T[] ret = this.persistenceManager.find(ids);
+		final T[] ret = this.persistenceManager.find(ids);
 		return ret;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public List<T> findAll()
 	{
-		List<T> ret = this.persistenceManager.findAll();
+		final List<T> ret = this.persistenceManager.findAll();
 		return ret;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public T getReference(IT id)
+	@Override
+	public T getReference(final IT id)
 	{
-		T ret = this.persistenceManager.getReference(id);
+		final T ret = this.persistenceManager.getReference(id);
 		return ret;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public T[] getReferences(@SuppressWarnings("unchecked") IT... ids)
+	@Override
+	public T[] getReferences(@SuppressWarnings("unchecked") final IT... ids)
 	{
-		T[] ret = this.persistenceManager.getReferences(ids);
+		final T[] ret = this.persistenceManager.getReferences(ids);
 		return ret;
 	}
-	
-	
+
+
 	@Override
-	public <RT> List<RT> search(ISearch search)
+	public <RT> List<RT> search(final ISearch search)
 	{
-		List<RT> searchResult = this.persistenceManager.search(search);
+		final List<RT> searchResult = this.persistenceManager.search(search);
 		return searchResult;
 	}
-	
-	
+
+
 	@Override
-	public <RT> RT searchUnique(ISearch search)
+	public <RT> RT searchUnique(final ISearch search)
 	{
-		RT searchResult = this.persistenceManager.searchUnique(search);
+		final RT searchResult = this.persistenceManager.searchUnique(search);
 		return searchResult;
 	}
-	
-	
+
+
 	@Override
-	public int count(ISearch search)
+	public int count(final ISearch search)
 	{
-		int count = this.persistenceManager.count(search);
+		final int count = this.persistenceManager.count(search);
 		return count;
 	}
-	
-	
+
+
 	@Override
-	public <RT> SearchResult<RT> searchAndCount(ISearch search)
+	public <RT> SearchResult<RT> searchAndCount(final ISearch search)
 	{
-		SearchResult<RT> searchCountResult = this.persistenceManager.searchAndCount(search);
-		
+		final SearchResult<RT> searchCountResult = this.persistenceManager.searchAndCount(search);
+
 		return searchCountResult;
 	}
-	
-	
+
+
 	@Override
-	public boolean isAttached(T entity)
+	public boolean isAttached(final T entity)
 	{
 		return this.persistenceManager.isAttached(entity);
 	}
-	
-	
+
+
 	@Override
-	public void refresh(@SuppressWarnings("unchecked") T... entities)
+	public void refresh(@SuppressWarnings("unchecked") final T... entities)
 	{
 		this.persistenceManager.refresh(entities);
 	}
-	
-	
+
+
 	@Override
 	public void flush()
 	{
-		for(EntityType<?> entity : em().getMetamodel().getEntities())
+		for(final EntityType<?> entity : em().getMetamodel().getEntities())
 		{
 			// FIXME is this a lockable entity respresentation?
 			em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
 		}
 		this.persistenceManager.flush();
 	}
-	
-	
+
+
 	@Override
-	public Filter getFilterFromExample(T example)
+	public Filter getFilterFromExample(final T example)
 	{
 		return this.persistenceManager.getFilterFromExample(example);
 	}
-	
-	
+
+
 	@Override
-	public Filter getFilterFromExample(T example, ExampleOptions options)
+	public Filter getFilterFromExample(final T example, final ExampleOptions options)
 	{
 		return this.persistenceManager.getFilterFromExample(example,options);
 	}
-	
-	
+
+
 	public long getLockTimeOut()
 	{
 		if(this.lockProperties.get(LOCK_TIMEOUT_PROPERTY) == null
@@ -350,6 +365,6 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		{
 			this.lockProperties.put(LOCK_TIMEOUT_PROPERTY,this.lockTimeOut);
 		}
-		return lockTimeOut;
+		return this.lockTimeOut;
 	}
 }

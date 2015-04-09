@@ -15,18 +15,32 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-package com.xdev.server.util;
+package com.xdev.communication;
 
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Caption
+/**
+ * 
+ * @author XDEV Software (JW)
+ *
+ */
+public class EntityManagerFactoryListener implements ServletContextListener
 {
-	// public String name();
+	
+	@Override
+	public void contextInitialized(ServletContextEvent sce)
+	{
+		// nothing to do here
+	}
+	
+	
+	@Override
+	public void contextDestroyed(ServletContextEvent sce)
+	{
+		EntityManagerHelper.closeEntityManagerFactory();
+	}
+	
 }

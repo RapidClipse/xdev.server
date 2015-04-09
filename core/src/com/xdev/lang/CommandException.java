@@ -5,42 +5,47 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
-package com.xdev.server.communication;
+
+package com.xdev.lang;
 
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
-
-/**
- * 
- * @author XDEV Software (JW)
- *
- */
-public class EntityManagerFactoryListener implements ServletContextListener
+public class CommandException extends RuntimeException
 {
-	
-	@Override
-	public void contextInitialized(ServletContextEvent sce)
+	public CommandException()
 	{
-		// nothing to do here
+		super();
 	}
-	
-	
-	@Override
-	public void contextDestroyed(ServletContextEvent sce)
+
+
+	public CommandException(final String message, final Throwable cause)
 	{
-		EntityManagerHelper.closeEntityManagerFactory();
+		super(message,cause);
 	}
-	
+
+
+	public CommandException(final String message)
+	{
+		super(message);
+	}
+
+
+	public CommandException(final Throwable cause)
+	{
+		super(cause);
+	}
+
+
+	public static void throwMissingParameter(final String name) throws CommandException
+	{
+		throw new CommandException("Missing parameter: " + name);
+	}
 }

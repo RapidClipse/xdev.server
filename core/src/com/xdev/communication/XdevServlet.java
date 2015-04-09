@@ -15,7 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.server.communication;
+package com.xdev.communication;
 
 
 import java.util.logging.Level;
@@ -25,6 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
+import javax.servlet.Servlet;
 
 import com.vaadin.server.DeploymentConfiguration;
 import com.vaadin.server.ServiceException;
@@ -34,11 +35,16 @@ import com.vaadin.server.VaadinResponse;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletService;
 import com.vaadin.server.VaadinSession;
-import com.xdev.server.db.connection.HibernateUtil;
+import com.xdev.db.connection.HibernateUtils;
 
 
-//has full control over each type of vaadin communication, including websockets
-public class InterceptorServlet extends VaadinServlet
+/**
+ * Extended {@link Servlet} with full control over each type of communication,
+ * including websockets.
+ *
+ * @author XDEV Software
+ */
+public class XdevServlet extends VaadinServlet
 {
 	@Override
 	protected VaadinServletService createServletService(
@@ -65,12 +71,12 @@ public class InterceptorServlet extends VaadinServlet
 								.getApplicationOrSystemProperty(HIBERNATEUTIL_FILTER_INIT_PARAM,
 										null);
 						EntityManagerHelper
-								.initializeHibernateFactory(new HibernateUtil.Implementation(
+								.initializeHibernateFactory(new HibernateUtils.Implementation(
 										hibernatePersistenceUnit));
 					}
 					catch(final PersistenceException e)
 					{
-						Logger.getLogger(InterceptorServlet.class.getName()).log(Level.WARNING,
+						Logger.getLogger(XdevServlet.class.getName()).log(Level.WARNING,
 								e.getMessage(),e);
 					}
 				}
@@ -91,7 +97,7 @@ public class InterceptorServlet extends VaadinServlet
 					}
 					catch(PersistenceException | ServiceException | SessionExpiredException e)
 					{
-						Logger.getLogger(InterceptorServlet.class.getName()).log(Level.WARNING,
+						Logger.getLogger(XdevServlet.class.getName()).log(Level.WARNING,
 								e.getMessage(),e);
 					}
 				}

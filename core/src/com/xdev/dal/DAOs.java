@@ -15,13 +15,13 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-package com.xdev.server.dal;
+package com.xdev.dal;
 
 
 import java.io.Serializable;
 
 import com.googlecode.genericdao.dao.jpa.GenericDAO;
-import com.xdev.server.util.SoftCache;
+import com.xdev.util.SoftCache;
 
 
 public class DAOs

@@ -15,7 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-package com.xdev.server.communication;
+package com.xdev.communication;
 
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import com.xdev.server.db.connection.HibernateUtil;
+import com.xdev.db.connection.HibernateUtils;
 
 
 //clean http only alternative to vaadin servlet does not support websockets
@@ -104,7 +104,7 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 	{
 		String hibernatePersistenceUnit = fc.getServletContext().getInitParameter(
 				HIBERNATEUTIL_FILTER_INIT_PARAM);
-		EntityManagerHelper.initializeHibernateFactory(new HibernateUtil.Implementation(
+		EntityManagerHelper.initializeHibernateFactory(new HibernateUtils.Implementation(
 				hibernatePersistenceUnit));
 		
 		// try

@@ -15,7 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.server.util;
+package com.xdev.ui;
 
 
 import java.util.concurrent.Future;
@@ -26,7 +26,7 @@ import javax.persistence.EntityTransaction;
 
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
-import com.xdev.server.communication.EntityManagerHelper;
+import com.xdev.communication.EntityManagerHelper;
 
 
 public class AccessUtils

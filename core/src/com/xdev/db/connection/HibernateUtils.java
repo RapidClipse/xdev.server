@@ -15,10 +15,29 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-package com.xdev.server.util;
+package com.xdev.db.connection;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
-public interface EntityReferenceResolver
+public interface HibernateUtils
 {
-	public String getReferenceEntityPropertyName(Class<?> referenceEntity, Class<?> entity);
+	public EntityManagerFactory getEntityManagerFactory();
+	
+	public class Implementation implements HibernateUtils
+	{
+		private final EntityManagerFactory	entityManagerFactory;
+		
+		public Implementation(String persistenceUnit)
+		{
+			entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit);
+		}
+		
+		
+		public EntityManagerFactory getEntityManagerFactory()
+		{
+			return entityManagerFactory;
+		}
+		
+	}
 }

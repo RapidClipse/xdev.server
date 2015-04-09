@@ -15,7 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-package com.xdev.server.util;
+package com.xdev.util;
 
 
 import java.util.Iterator;
@@ -28,15 +28,15 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 
-import com.xdev.server.communication.EntityManagerHelper;
+import com.xdev.communication.EntityManagerHelper;
 
 
-public class HibernateEntityReferenceResolver implements EntityReferenceResolver
+public class HibernateEntityIDResolver implements EntityIDResolver
 {
 	private final Configuration	config;
 	
 	
-	public HibernateEntityReferenceResolver()
+	public HibernateEntityIDResolver()
 	{
 		this.config = new Configuration();
 		Set<EntityType<?>> set = EntityManagerHelper.getEntityManager().getMetamodel()
@@ -59,34 +59,18 @@ public class HibernateEntityReferenceResolver implements EntityReferenceResolver
 	
 	
 	@Override
-	public String getReferenceEntityPropertyName(Class<?> referenceEntity, Class<?> entity)
+	public Property getEntityIDProperty(Class<?> entityClass)
 	{
-		PersistentClass clazz = this.config.getClassMapping(entity.getName());
-		Property ref = null;
+		PersistentClass clazz = this.config.getClassMapping(entityClass.getName());
+		Property idProperty = clazz.getIdentifierProperty();
 		
-		for(@SuppressWarnings("unchecked")
-		Iterator<Property> i = clazz.getReferenceablePropertyIterator(); i.hasNext();)
-		{
-			Property it = i.next();
-			/*
-			 * TODO not only referenceable properties are returned, hence a
-			 * manual check is required
-			 */
-			if(HibernateMetaDataUtils.getReferencablePropertyName(it.getValue()) != null)
-			{
-				ref = it;
-				String propertyName = HibernateMetaDataUtils.getReferencablePropertyName(ref
-						.getValue());
-				
-				if(propertyName != null)
-				{
-					if(propertyName.equals(referenceEntity.getName()))
-					{
-						return ref.getName();
-					}
-				}
-			}
-		}
+		return idProperty;
+	}
+	
+	
+	public Property getEntityReferenceProperty(Class<?> entityClassA, Class<?> entityClassB)
+	{
+		
 		return null;
 	}
 }

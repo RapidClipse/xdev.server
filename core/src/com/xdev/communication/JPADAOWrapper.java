@@ -5,17 +5,17 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
-package com.xdev.server.communication;
+
+package com.xdev.communication;
 
 
 import java.io.Serializable;
@@ -33,16 +33,17 @@ import com.googlecode.genericdao.search.SearchResult;
 
 
 @SuppressWarnings("unchecked")
-public class JPAdaoWrapper<T, ID extends Serializable> extends JPABaseDAO implements
+public class JPADAOWrapper<T, ID extends Serializable> extends JPABaseDAO implements
 		GenericDAO<T, ID>
 {
 	private final Class<T>	persistentClass;
-	
-	
-	public JPAdaoWrapper(Class<T> persistentClass)
+
+
+	public JPADAOWrapper(final Class<T> persistentClass)
 	{
 		this.persistentClass = persistentClass;
 	}
+	
 	
 	@Override
 	protected EntityManager em()
@@ -50,150 +51,178 @@ public class JPAdaoWrapper<T, ID extends Serializable> extends JPABaseDAO implem
 		return EntityManagerHelper.getEntityManager();
 	}
 	
+	
+	@Override
 	public int count(ISearch search)
 	{
 		if(search == null)
+		{
 			search = new Search();
-		return _count(persistentClass,search);
+		}
+		return _count(this.persistentClass,search);
 	}
-	
-	
-	public T find(ID id)
+
+
+	@Override
+	public T find(final ID id)
 	{
-		return _find(persistentClass,id);
+		return _find(this.persistentClass,id);
 	}
-	
-	
-	public T[] find(ID... ids)
+
+
+	@Override
+	public T[] find(final ID... ids)
 	{
-		return _find(persistentClass,ids);
+		return _find(this.persistentClass,ids);
 	}
-	
-	
+
+
+	@Override
 	public List<T> findAll()
 	{
-		return _all(persistentClass);
+		return _all(this.persistentClass);
 	}
-	
-	
+
+
+	@Override
 	public void flush()
 	{
 		_flush();
 	}
-	
-	
-	public T getReference(ID id)
+
+
+	@Override
+	public T getReference(final ID id)
 	{
-		return _getReference(persistentClass,id);
+		return _getReference(this.persistentClass,id);
 	}
-	
-	
-	public T[] getReferences(ID... ids)
+
+
+	@Override
+	public T[] getReferences(final ID... ids)
 	{
-		return _getReferences(persistentClass,ids);
+		return _getReferences(this.persistentClass,ids);
 	}
-	
-	
-	public boolean isAttached(T entity)
+
+
+	@Override
+	public boolean isAttached(final T entity)
 	{
 		return _contains(entity);
 	}
-	
-	
-	public void refresh(T... entities)
+
+
+	@Override
+	public void refresh(final T... entities)
 	{
 		_refresh(entities);
 	}
-	
-	
-	public boolean remove(T entity)
+
+
+	@Override
+	public boolean remove(final T entity)
 	{
 		return _removeEntity(entity);
 	}
-	
-	
-	public void remove(T... entities)
+
+
+	@Override
+	public void remove(final T... entities)
 	{
 		_removeEntities((Object[])entities);
 	}
-	
-	
-	public boolean removeById(ID id)
+
+
+	@Override
+	public boolean removeById(final ID id)
 	{
-		return _removeById(persistentClass,id);
+		return _removeById(this.persistentClass,id);
 	}
-	
-	
-	public void removeByIds(ID... ids)
+
+
+	@Override
+	public void removeByIds(final ID... ids)
 	{
-		_removeByIds(persistentClass,ids);
+		_removeByIds(this.persistentClass,ids);
 	}
-	
-	
-	public T merge(T entity)
+
+
+	@Override
+	public T merge(final T entity)
 	{
 		return _merge(entity);
 	}
-	
-	
-	public T[] merge(T... entities)
+
+
+	@Override
+	public T[] merge(final T... entities)
 	{
-		return _merge(persistentClass,entities);
+		return _merge(this.persistentClass,entities);
 	}
-	
-	
-	public void persist(T... entities)
+
+
+	@Override
+	public void persist(final T... entities)
 	{
 		_persist(entities);
 	}
-	
-	
-	public T save(T entity)
+
+
+	@Override
+	public T save(final T entity)
 	{
 		return _persistOrMerge(entity);
 	}
-	
-	
-	public T[] save(T... entities)
+
+
+	@Override
+	public T[] save(final T... entities)
 	{
-		return _persistOrMerge(persistentClass,entities);
+		return _persistOrMerge(this.persistentClass,entities);
 	}
-	
-	
-	public <RT> List<RT> search(ISearch search)
-	{
-		if(search == null)
-			return (List<RT>)findAll();
-		return _search(persistentClass,search);
-	}
-	
-	
-	public <RT> SearchResult<RT> searchAndCount(ISearch search)
+
+
+	@Override
+	public <RT> List<RT> search(final ISearch search)
 	{
 		if(search == null)
 		{
-			SearchResult<RT> result = new SearchResult<RT>();
+			return (List<RT>)findAll();
+		}
+		return _search(this.persistentClass,search);
+	}
+
+
+	@Override
+	public <RT> SearchResult<RT> searchAndCount(final ISearch search)
+	{
+		if(search == null)
+		{
+			final SearchResult<RT> result = new SearchResult<RT>();
 			result.setResult((List<RT>)findAll());
 			result.setTotalCount(result.getResult().size());
 			return result;
 		}
-		return _searchAndCount(persistentClass,search);
+		return _searchAndCount(this.persistentClass,search);
 	}
-	
-	
-	public <RT> RT searchUnique(ISearch search)
+
+
+	@Override
+	public <RT> RT searchUnique(final ISearch search)
 	{
-		return (RT)_searchUnique(persistentClass,search);
+		return (RT)_searchUnique(this.persistentClass,search);
 	}
-	
-	
-	public Filter getFilterFromExample(T example)
+
+
+	@Override
+	public Filter getFilterFromExample(final T example)
 	{
 		return _getFilterFromExample(example);
 	}
-	
-	
-	public Filter getFilterFromExample(T example, ExampleOptions options)
+
+
+	@Override
+	public Filter getFilterFromExample(final T example, final ExampleOptions options)
 	{
 		return _getFilterFromExample(example,options);
 	}

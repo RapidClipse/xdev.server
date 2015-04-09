@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.xdev.server.communication;
+package com.xdev.communication;
 
 
 import javax.persistence.EntityManager;
@@ -24,7 +24,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
 import com.vaadin.server.VaadinSession;
-import com.xdev.server.db.connection.HibernateUtil;
+import com.xdev.db.connection.HibernateUtils;
 
 
 // Vaadin Session / technology - specific global helper
@@ -39,17 +39,17 @@ public class EntityManagerHelper
 		return emf;
 	}
 
-	private static HibernateUtil	hibernateUtil;
+	private static HibernateUtils	hibernateUtil;
 
 
-	public static EntityManagerFactory initializeHibernateFactory(final HibernateUtil hibernateUtil)
+	public static EntityManagerFactory initializeHibernateFactory(final HibernateUtils hibernateUtil)
 	{
 		EntityManagerHelper.hibernateUtil = hibernateUtil;
 		return emf = hibernateUtil.getEntityManagerFactory();
 	}
 
 
-	public static HibernateUtil getHibernateutil()
+	public static HibernateUtils getHibernateutil()
 	{
 		return hibernateUtil;
 	}

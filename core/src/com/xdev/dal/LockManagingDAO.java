@@ -15,7 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.server.dal;
+package com.xdev.dal;
 
 
 import java.io.Serializable;
@@ -37,8 +37,8 @@ import com.googlecode.genericdao.search.ISearch;
 import com.googlecode.genericdao.search.SearchResult;
 import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
-import com.xdev.server.communication.EntityManagerHelper;
-import com.xdev.server.communication.JPAdaoWrapper;
+import com.xdev.communication.EntityManagerHelper;
+import com.xdev.communication.JPADAOWrapper;
 
 
 /**
@@ -56,7 +56,7 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 	 * DAO type must be at least GenericDAOImpl to achieve typed behavior and
 	 * JPA support, see type hierarchy.
 	 */
-	private JPAdaoWrapper<T, IT>		persistenceManager;
+	private JPADAOWrapper<T, IT>		persistenceManager;
 
 	// lock meta data
 	private long						lockTimeOut				= 0;
@@ -70,13 +70,13 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 	}
 
 
-	public JPAdaoWrapper<T, IT> getPersistenceManager()
+	public JPADAOWrapper<T, IT> getPersistenceManager()
 	{
 		return this.persistenceManager;
 	}
 
 
-	public void setPersistenceManager(final JPAdaoWrapper<T, IT> persistenceManager)
+	public void setPersistenceManager(final JPADAOWrapper<T, IT> persistenceManager)
 	{
 		this.persistenceManager = persistenceManager;
 	}

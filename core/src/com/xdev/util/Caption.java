@@ -15,29 +15,18 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-package com.xdev.server.db.connection;
+package com.xdev.util;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
-public interface HibernateUtil
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Caption
 {
-	public EntityManagerFactory getEntityManagerFactory();
-	
-	public class Implementation implements HibernateUtil
-	{
-		private final EntityManagerFactory	entityManagerFactory;
-		
-		public Implementation(String persistenceUnit)
-		{
-			entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit);
-		}
-		
-		
-		public EntityManagerFactory getEntityManagerFactory()
-		{
-			return entityManagerFactory;
-		}
-		
-	}
+	// public String name();
 }

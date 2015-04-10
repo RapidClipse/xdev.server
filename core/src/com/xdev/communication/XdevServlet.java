@@ -46,6 +46,9 @@ import com.xdev.db.connection.HibernateUtils;
  */
 public class XdevServlet extends VaadinServlet
 {
+	static final String	HIBERNATEUTIL_FILTER_INIT_PARAM	= "persistenceUnit";
+	
+	
 	@Override
 	protected VaadinServletService createServletService(
 			final DeploymentConfiguration deploymentConfiguration) throws ServiceException
@@ -53,9 +56,7 @@ public class XdevServlet extends VaadinServlet
 		final VaadinServletService servletService = new VaadinServletService(this,
 				deploymentConfiguration)
 		{
-			private static final String	HIBERNATEUTIL_FILTER_INIT_PARAM	= "persistenceUnit";
-
-			private boolean				hibernateFactoryInitialized		= false;
+			private boolean	hibernateFactoryInitialized	= false;
 
 
 			@Override
@@ -92,7 +93,8 @@ public class XdevServlet extends VaadinServlet
 							final EntityManager manager = factory.createEntityManager();
 							final VaadinSession session = findVaadinSession(request);
 							// Add the EntityManager to the session
-							session.setAttribute("HibernateEntityManager",manager);
+							session.setAttribute(EntityManagerHelper.ENTITY_MANAGER_ATTRIBUTE,
+									manager);
 						}
 					}
 					catch(PersistenceException | ServiceException | SessionExpiredException e)

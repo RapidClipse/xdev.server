@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.xdev.communication;
 
 
@@ -30,6 +31,7 @@ import com.xdev.db.connection.HibernateUtils;
 // Vaadin Session / technology - specific global helper
 public class EntityManagerHelper
 {
+	public final static String			ENTITY_MANAGER_ATTRIBUTE	= "EntityManager";
 
 	private static EntityManagerFactory	emf;
 
@@ -57,7 +59,7 @@ public class EntityManagerHelper
 
 	public static EntityManager getEntityManager()
 	{
-		return (EntityManager)VaadinSession.getCurrent().getAttribute("HibernateEntityManager");
+		return (EntityManager)VaadinSession.getCurrent().getAttribute(ENTITY_MANAGER_ATTRIBUTE);
 	}
 
 

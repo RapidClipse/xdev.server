@@ -46,9 +46,10 @@ public class AccessUtils
 					{
 						final EntityManager manager = factory.createEntityManager();
 						// Add the EntityManager to the session
-						VaadinSession.getCurrent().setAttribute("HibernateEntityManager",manager);
+						VaadinSession.getCurrent().setAttribute(
+								EntityManagerHelper.ENTITY_MANAGER_ATTRIBUTE,manager);
 					}
-					
+
 					runnable.run();
 				}
 				finally
@@ -71,7 +72,7 @@ public class AccessUtils
 				}
 			}
 		});
-		
+
 		return future;
 	}
 }

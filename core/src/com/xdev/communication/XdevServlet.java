@@ -26,15 +26,21 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 
+import com.vaadin.server.BootstrapFragmentResponse;
+import com.vaadin.server.BootstrapListener;
+import com.vaadin.server.BootstrapPageResponse;
 import com.vaadin.server.DeploymentConfiguration;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.SessionExpiredException;
+import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinResponse;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletService;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.server.WebBrowser;
 import com.xdev.db.connection.HibernateUtils;
 
 
@@ -133,5 +139,41 @@ public class XdevServlet extends VaadinServlet
 		};
 		servletService.init();
 		return servletService;
+	}
+	
+	
+	@Override
+	protected void servletInitialized() throws ServletException
+	{
+		super.servletInitialized();
+		
+		getService().addSessionInitListener(event -> initSession(event));
+	}
+	
+	
+	protected void initSession(final SessionInitEvent event)
+	{
+		final WebBrowser browser = new WebBrowser();
+		browser.updateRequestDetails(event.getRequest());
+		if(browser.isAndroid() || browser.isIOS() || browser.isWindowsPhone())
+		{
+			event.getSession().addBootstrapListener(new BootstrapListener()
+			{
+				@Override
+				public void modifyBootstrapPage(final BootstrapPageResponse response)
+				{
+					response.getDocument().head().prependElement("meta").attr("name","viewport")
+							.attr("content","width=device-width, initial-scale=1.0"
+							// + ", maximum-scale=1.0, user-scalable=0"
+							);
+				}
+				
+				
+				@Override
+				public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
+				{
+				}
+			});
+		}
 	}
 }

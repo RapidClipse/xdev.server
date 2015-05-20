@@ -53,22 +53,22 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 				chain.doFilter(req,res);
 				return;
 			}
-
+			
 			final EntityManagerFactory factory = EntityManagerHelper.getEntityManagerFactory();
 			EntityManager manager = null;
 			if(factory != null)
 			{
 				manager = factory.createEntityManager();
 				// System.out.println("opened em");
-
+				
 				// Add the EntityManager to the request
 				req.setAttribute(EntityManagerHelper.ENTITY_MANAGER_ATTRIBUTE,manager);
 			}
-
+			
 			// Call the next filter until the actual request (continue request
 			// processing)
 			chain.doFilter(req,res);
-
+			
 			// Flush and close the EntityManager after request is resolved
 			// System.out.println("closing em");
 			// System.out.println("---------------------------------------------------");
@@ -90,22 +90,22 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 			throw ex;
 		}
 	}
-
-
+	
+	
 	@Override
 	public void destroy()
 	{
 		// nothing to do here
 	}
-
-
+	
+	
 	@Override
 	public void init(final FilterConfig fc) throws ServletException
 	{
 		try
 		{
 			final String hibernatePersistenceUnit = fc.getServletContext().getInitParameter(
-					XdevServlet.HIBERNATEUTIL_FILTER_INIT_PARAM);
+					XdevServletService.HIBERNATEUTIL_FILTER_INIT_PARAM);
 			EntityManagerHelper.initializeHibernateFactory(new HibernateUtils.Implementation(
 					hibernatePersistenceUnit));
 		}
@@ -114,7 +114,7 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 			Logger.getLogger(VaadinSessionManagedEntityManagerInterceptor.class.getName()).log(
 					Level.WARNING,e.getMessage(),e);
 		}
-
+		
 		// try
 		// {
 		// Class<?> hibernateUtilClazz = Class.forName(hibernateUtilClassName);

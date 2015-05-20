@@ -18,14 +18,6 @@
 package com.xdev.communication;
 
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.PersistenceException;
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
 import com.vaadin.server.BootstrapFragmentResponse;
@@ -33,124 +25,40 @@ import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
 import com.vaadin.server.DeploymentConfiguration;
 import com.vaadin.server.ServiceException;
-import com.vaadin.server.SessionExpiredException;
 import com.vaadin.server.SessionInitEvent;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinResponse;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletService;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.server.WebBrowser;
-import com.xdev.db.connection.HibernateUtils;
 
 
 /**
- * Extended {@link Servlet} with full control over each type of communication,
- * including websockets.
+ * Extended {@link VaadinServlet} with full control over each type of
+ * communication, including websockets.
  *
  * @author XDEV Software
  */
 public class XdevServlet extends VaadinServlet
 {
-	static final String	HIBERNATEUTIL_FILTER_INIT_PARAM	= "persistenceUnit";
-	
-	
 	@Override
 	protected VaadinServletService createServletService(
 			final DeploymentConfiguration deploymentConfiguration) throws ServiceException
 	{
-		final VaadinServletService servletService = new VaadinServletService(this,
-				deploymentConfiguration)
-		{
-			private boolean	hibernateFactoryInitialized	= false;
-
-
-			@Override
-			public void requestStart(final VaadinRequest request, final VaadinResponse response)
-			{
-				if(!this.hibernateFactoryInitialized)
-				{
-					this.hibernateFactoryInitialized = true;
-
-					try
-					{
-						final String hibernatePersistenceUnit = deploymentConfiguration
-								.getApplicationOrSystemProperty(HIBERNATEUTIL_FILTER_INIT_PARAM,
-										null);
-						EntityManagerHelper
-								.initializeHibernateFactory(new HibernateUtils.Implementation(
-										hibernatePersistenceUnit));
-					}
-					catch(final PersistenceException e)
-					{
-						Logger.getLogger(XdevServlet.class.getName()).log(Level.WARNING,
-								e.getMessage(),e);
-					}
-				}
-
-				if(request.getMethod().equals("POST"))
-				{
-					try
-					{
-						final EntityManagerFactory factory = EntityManagerHelper
-								.getEntityManagerFactory();
-						if(factory != null)
-						{
-							final EntityManager manager = factory.createEntityManager();
-							final VaadinSession session = findVaadinSession(request);
-							// Add the EntityManager to the session
-							session.setAttribute(EntityManagerHelper.ENTITY_MANAGER_ATTRIBUTE,
-									manager);
-						}
-					}
-					catch(PersistenceException | ServiceException | SessionExpiredException e)
-					{
-						Logger.getLogger(XdevServlet.class.getName()).log(Level.WARNING,
-								e.getMessage(),e);
-					}
-				}
-
-				super.requestStart(request,response);
-			}
-
-
-			@Override
-			public void requestEnd(final VaadinRequest request, final VaadinResponse response,
-					final VaadinSession session)
-			{
-				try
-				{
-					EntityManagerHelper.closeEntityManager();
-				}
-				catch(final Exception e)
-				{
-					if(EntityManagerHelper.getEntityManager() != null)
-					{
-						final EntityTransaction tx = EntityManagerHelper.getTransaction();
-						if(tx != null && tx.isActive())
-						{
-							EntityManagerHelper.rollback();
-						}
-					}
-				}
-
-				super.requestEnd(request,response,session);
-			}
-		};
+		final XdevServletService servletService = new XdevServletService(this,
+				deploymentConfiguration);
 		servletService.init();
 		return servletService;
 	}
-	
-	
+
+
 	@Override
 	protected void servletInitialized() throws ServletException
 	{
 		super.servletInitialized();
-		
+
 		getService().addSessionInitListener(event -> initSession(event));
 	}
-	
-	
+
+
 	protected void initSession(final SessionInitEvent event)
 	{
 		final WebBrowser browser = new WebBrowser();
@@ -167,8 +75,8 @@ public class XdevServlet extends VaadinServlet
 							// + ", maximum-scale=1.0, user-scalable=0"
 							);
 				}
-				
-				
+
+
 				@Override
 				public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
 				{

@@ -18,7 +18,7 @@
 	<properties>
 		<repositoryName>xdev.server.core</repositoryName>
 		<pluginProject>xdev.eclipse.server.core</pluginProject>
-		<vaadinVersion>7.4.6</vaadinVersion>
+		<vaadinVersion>7.4.7</vaadinVersion>
 		<hibernateVersion>4.3.10.Final</hibernateVersion>
 	</properties>
 
@@ -119,11 +119,6 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>antlr</artifactId>
 			<version>2.7.5H3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-			<version>1.0.1.Final</version>
 		</dependency>
         <dependency>
             <groupId>javax.validation</groupId>

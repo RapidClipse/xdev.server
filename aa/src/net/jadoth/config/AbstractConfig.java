@@ -33,7 +33,7 @@ public abstract class AbstractConfig implements Config
 
 	static final EqHashTable<String, String> toTable(final XGettingCollection<KeyValue<String, String>> entries)
 	{
-		// einträge in neuer hashtable sammeln
+		// eintrï¿½ge in neuer hashtable sammeln
 		final EqHashTable<String, String> newConfig = EqHashTable.New();
 		newConfig.addAll(entries);
 		return newConfig;

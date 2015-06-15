@@ -473,7 +473,7 @@ public abstract class _intArrayStorage
 		final _intPredicate predicate
 	)
 	{
-		// trying to optimize für bulk procedure types here is hardly possible due to predicate
+		// trying to optimize fï¿½r bulk procedure types here is hardly possible due to predicate
 
 		for(int i = 0; i < size; i++){
 			final int element;

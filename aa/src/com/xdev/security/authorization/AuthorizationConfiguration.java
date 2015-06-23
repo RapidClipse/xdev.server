@@ -17,9 +17,10 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.notNull;
-import net.jadoth.collections.types.XGettingEnum;
-import net.jadoth.collections.types.XGettingTable;
+import static com.xdev.security.Util.notNull;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Intermediate data structure that represents authorization definition information in a general purpose, yet
@@ -35,7 +36,7 @@ public interface AuthorizationConfiguration
 	 *
 	 * @return a table representing all valid resources and their defined child resources.
 	 */
-	public XGettingTable<String, ? extends XGettingEnum<String>> resourceResources();
+	public Map<String, ? extends Set<String>> resourceResources();
 
 	/**
 	 * The parent role names (value) for every valid role (keys).
@@ -44,7 +45,7 @@ public interface AuthorizationConfiguration
 	 * @return a table representing all valid roles and their parent roles.
 	 * @see #roleRoles()
 	 */
-	public XGettingTable<String, ? extends XGettingEnum<String>> roleRoles();
+	public Map<String, ? extends Set<String>> roleRoles();
 
 	/**
 	 * The explicitely defined permissions (value) for every valid role (keys).
@@ -54,7 +55,7 @@ public interface AuthorizationConfiguration
 	 * @return a table representing all valid roles and their defined permissions.
 	 * @see #rolePermissions()
 	 */
-	public XGettingTable<String, ? extends XGettingTable<String, Integer>> rolePermissions();
+	public Map<String, ? extends Map<String, Integer>> rolePermissions();
 
 	/**
 	 * The role names (value) for every valid subject (keys).
@@ -62,7 +63,7 @@ public interface AuthorizationConfiguration
 	 *
 	 * @return a table representing all valid subjects and their defined roles.
 	 */
-	public XGettingTable<String, ? extends XGettingEnum<String>> subjectRoles();
+	public Map<String, ? extends Set<String>> subjectRoles();
 
 
 
@@ -76,10 +77,10 @@ public interface AuthorizationConfiguration
 	 * @return a new {@link AuthorizationConfiguration} instance
 	 */
 	public static AuthorizationConfiguration New(
-		final XGettingTable<String, ? extends XGettingEnum<String>>           resourceResources,
-		final XGettingTable<String, ? extends XGettingEnum<String>>           roleRoles        ,
-		final XGettingTable<String, ? extends XGettingTable<String, Integer>> rolePermissions  ,
-		final XGettingTable<String, ? extends XGettingEnum<String>>           subjectRoles
+		final Map<String, ? extends Set<String>>           resourceResources,
+		final Map<String, ? extends Set<String>>           roleRoles        ,
+		final Map<String, ? extends Map<String, Integer>> rolePermissions  ,
+		final Map<String, ? extends Set<String>>           subjectRoles
 	)
 	{
 		return new Implementation(
@@ -103,10 +104,10 @@ public interface AuthorizationConfiguration
 		// instance fields //
 		////////////////////
 
-		final XGettingTable<String, ? extends XGettingEnum<String>>           resourceResources;
-		final XGettingTable<String, ? extends XGettingEnum<String>>           roleRoles        ;
-		final XGettingTable<String, ? extends XGettingTable<String, Integer>> rolePermissions  ;
-		final XGettingTable<String, ? extends XGettingEnum<String>>           subjectRoles     ;
+		final Map<String, ? extends Set<String>>           resourceResources;
+		final Map<String, ? extends Set<String>>           roleRoles        ;
+		final Map<String, ? extends Map<String, Integer>> rolePermissions  ;
+		final Map<String, ? extends Set<String>>           subjectRoles     ;
 
 
 		////////////////////////////////////////////////////////////////////////////
@@ -118,10 +119,10 @@ public interface AuthorizationConfiguration
 		 * Implementation detail constructor that might change in the future.
 		 */
 		Implementation(
-			final XGettingTable<String, ? extends XGettingEnum<String>>           resourceResources,
-			final XGettingTable<String, ? extends XGettingEnum<String>>           roleRoles        ,
-			final XGettingTable<String, ? extends XGettingTable<String, Integer>> rolePermissions  ,
-			final XGettingTable<String, ? extends XGettingEnum<String>>           subjectRoles
+			final Map<String, ? extends Set<String>>           resourceResources,
+			final Map<String, ? extends Set<String>>           roleRoles        ,
+			final Map<String, ? extends Map<String, Integer>> rolePermissions  ,
+			final Map<String, ? extends Set<String>>           subjectRoles
 		)
 		{
 			super();
@@ -141,7 +142,7 @@ public interface AuthorizationConfiguration
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XGettingTable<String, ? extends XGettingEnum<String>> resourceResources()
+		public final Map<String, ? extends Set<String>> resourceResources()
 		{
 			return this.resourceResources;
 		}
@@ -150,7 +151,7 @@ public interface AuthorizationConfiguration
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XGettingTable<String, ? extends XGettingEnum<String>> roleRoles()
+		public final Map<String, ? extends Set<String>> roleRoles()
 		{
 			return this.roleRoles;
 		}
@@ -159,7 +160,7 @@ public interface AuthorizationConfiguration
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XGettingTable<String, ? extends XGettingTable<String, Integer>> rolePermissions()
+		public final Map<String, ? extends Map<String, Integer>> rolePermissions()
 		{
 			return this.rolePermissions;
 		}
@@ -168,7 +169,7 @@ public interface AuthorizationConfiguration
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XGettingTable<String, ? extends XGettingEnum<String>> subjectRoles()
+		public final Map<String, ? extends Set<String>> subjectRoles()
 		{
 			return this.subjectRoles;
 		}

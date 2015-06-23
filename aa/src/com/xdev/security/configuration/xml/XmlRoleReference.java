@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-import net.jadoth.util.chars.Named;
+import com.xdev.security.Named;
 
 
 // pragmatic workaround class for insufficient JAXB concept

@@ -17,13 +17,14 @@
 
 package com.xdev.security.authorization;
 
-import net.jadoth.collections.types.XGettingCollection;
-import net.jadoth.collections.types.XGettingEnum;
+import java.util.Collection;
+import java.util.Set;
+
 
 
 /**
  * Function type for updating a passed {@link Subject} instance for a given subject name and collection of roles.
- * For more details, see {@link #updateSubject(Subject, String, XGettingEnum)}.
+ * For more details, see {@link #updateSubject(Subject, String, Set)}.
  *
  * @author XDEV Software (TM)
  */
@@ -39,7 +40,7 @@ public interface SubjectUpdater
 	 *
 	 * @return an updated {@link Subject} instance, potentially different from the passed instance.
 	 */
-	public Subject updateSubject(Subject subject, String subjectName, XGettingEnum<Role> roles);
+	public Subject updateSubject(Subject subject, String subjectName, Set<Role> roles);
 
 
 
@@ -51,7 +52,7 @@ public interface SubjectUpdater
 	 *
 	 * @param existingSubjects the subjects already existing before the updating process.
 	 */
-	public default void prepareSubjectUpdate(final XGettingCollection<Subject> existingSubjects)
+	public default void prepareSubjectUpdate(final Collection<Subject> existingSubjects)
 	{
 		// no-op in default implementation
 	}
@@ -65,7 +66,7 @@ public interface SubjectUpdater
 	 *
 	 * @param updatedSubjects the updated and potentially newly created subjects.
 	 */
-	public default void commitSubjectUpdate(final XGettingCollection<Subject> updatedSubjects)
+	public default void commitSubjectUpdate(final Collection<Subject> updatedSubjects)
 	{
 		// no-op in default implementation
 	}
@@ -79,7 +80,7 @@ public interface SubjectUpdater
 	 *
 	 * @param updatedSubjects the updated and potentially newly created, empty or inconsistent subjects.
 	 */
-	public default void rollbackSubjectUpdate(final XGettingCollection<Subject> updatedSubjects, final Exception cause)
+	public default void rollbackSubjectUpdate(final Collection<Subject> updatedSubjects, final Exception cause)
 	{
 		// no-op in default implementation
 	}

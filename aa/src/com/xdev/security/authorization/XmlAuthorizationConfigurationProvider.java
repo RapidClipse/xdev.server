@@ -17,15 +17,14 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.notNull;
+import static com.xdev.security.Util.notNull;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
-import net.jadoth.collections.EqHashEnum;
-import net.jadoth.collections.EqHashTable;
-import net.jadoth.util.chars.Named;
-
+import com.xdev.security.Named;
 import com.xdev.security.configuration.xml.XmlConfiguration;
 import com.xdev.security.configuration.xml.XmlPermission;
 import com.xdev.security.configuration.xml.XmlResource;
@@ -47,10 +46,10 @@ public class XmlAuthorizationConfigurationProvider implements AuthorizationConfi
 
 	public static final AuthorizationConfiguration build(final XmlConfiguration xmlConfig)
 	{
-		final EqHashTable<String, EqHashEnum<String>>           resourceResources = EqHashTable.New();
-		final EqHashTable<String, EqHashEnum<String>>           roleRoles         = EqHashTable.New();
-		final EqHashTable<String, EqHashTable<String, Integer>> rolePermissions   = EqHashTable.New();
-		final EqHashTable<String, EqHashEnum<String>>           subjectRoles      = EqHashTable.New();
+		final HashMap<String, HashSet<String>>          resourceResources = new HashMap<>();
+		final HashMap<String, HashSet<String>>          roleRoles         = new HashMap<>();
+		final HashMap<String, HashMap<String, Integer>> rolePermissions   = new HashMap<>();
+		final HashMap<String, HashSet<String>>          subjectRoles      = new HashMap<>();
 
 		for(final XmlResource resource : xmlConfig.resources())
 		{
@@ -74,35 +73,35 @@ public class XmlAuthorizationConfigurationProvider implements AuthorizationConfi
 		return AuthorizationConfiguration.New(resourceResources, roleRoles, rolePermissions, subjectRoles);
 	}
 
-	private static EqHashEnum<String> unboxNames(final List<? extends Named> nameds)
+	private static HashSet<String> unboxNames(final List<? extends Named> nameds)
 	{
 		if(nameds == null)
 		{
 			return null;
 		}
 
-		final EqHashEnum<String> names = EqHashEnum.NewCustom(nameds.size());
+		final HashSet<String> names = new HashSet<>(nameds.size());
 
 		for(final Named named : nameds)
 		{
-			names.put(named.name());
+			names.add(named.name());
 		}
 
 		return names;
 	}
 
-	private static EqHashTable<String, Integer> unboxPermissions(final List<XmlPermission> permissions)
+	private static HashMap<String, Integer> unboxPermissions(final List<XmlPermission> permissions)
 	{
 		if(permissions == null)
 		{
 			return null;
 		}
 
-		final EqHashTable<String, Integer> unboxed = EqHashTable.New();
+		final HashMap<String, Integer> unboxed = new HashMap<>();
 
 		for(final XmlPermission permission : permissions)
 		{
-			unboxed.add(permission.resource(), permission.factor() == null ?0 :permission.factor());
+			unboxed.put(permission.resource(), permission.factor() == null ?0 :permission.factor());
 		}
 
 		return unboxed;

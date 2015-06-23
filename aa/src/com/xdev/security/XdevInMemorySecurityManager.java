@@ -17,13 +17,12 @@
 
 package com.xdev.security;
 
-import static net.jadoth.Jadoth.notNull;
+import static com.xdev.security.Util.notNull;
 
 import java.io.File;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
-import net.jadoth.collections.types.XMap;
 
 import com.xdev.security.authentication.AuthenticationFailedException;
 import com.xdev.security.authentication.Authenticator;
@@ -49,7 +48,7 @@ public interface XdevInMemorySecurityManager extends XdevSecurityManager<Credent
 {
 	/**
 	 * A specialized version of {@link #authenticate(CredentialsUsernamePassword)} that wraps the passed
-	 * username and password in a new {@link CredentialsUsernamePassword} instance.
+	 * username and password in a new {@link CredentialsUsernamePassword} instane.
 	 *
 	 * @param username the username to be used in the credentials.
 	 * @param password the password to be used in the credentials.
@@ -95,7 +94,7 @@ public interface XdevInMemorySecurityManager extends XdevSecurityManager<Credent
 	 * @param password      the password to be used in the login process for authentication.
 	 * @param successAction the action to be executed upon a successful authentication.
 	 * @param failAction    the action to be executed upon a unsuccessful authentication.
-	 * @param exceptionHandler the callback logic to handle any occurring {@link RuntimeException} exception.
+	 * @param exceptionHandler the callback logic to handle any occuring {@link RuntimeException} exception.
 	 * @see #login(String, String, Consumer, Consumer)
 	 */
 	public default void login(
@@ -229,7 +228,7 @@ public interface XdevInMemorySecurityManager extends XdevSecurityManager<Credent
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XMap<String, Role> roles()
+		public final Map<String, Role> roles()
 		{
 			return this.authorizationManager.roles();
 		}
@@ -238,7 +237,7 @@ public interface XdevInMemorySecurityManager extends XdevSecurityManager<Credent
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XMap<String, Subject> subjects()
+		public final Map<String, Subject> subjects()
 		{
 			return this.authorizationManager.subjects();
 		}

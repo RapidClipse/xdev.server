@@ -31,11 +31,6 @@ public class AuthorizationException extends RuntimeException
 	// constructors //
 	/////////////////
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 746255165233465200L;
-
 	public AuthorizationException()
 	{
 		super();

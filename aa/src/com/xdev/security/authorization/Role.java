@@ -17,19 +17,16 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.notNull;
-import net.jadoth.collections.ConstHashEnum;
-import net.jadoth.collections.EqHashTable;
-import net.jadoth.collections.HashEnum;
-import net.jadoth.collections.X;
-import net.jadoth.collections.types.XAddingEnum;
-import net.jadoth.collections.types.XEnum;
-import net.jadoth.collections.types.XGettingCollection;
-import net.jadoth.collections.types.XGettingEnum;
-import net.jadoth.collections.types.XGettingMap;
-import net.jadoth.collections.types.XGettingSequence;
-import net.jadoth.collections.types.XImmutableEnum;
-import net.jadoth.collections.types.XMap;
+import static com.xdev.security.Util.notNull;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import com.xdev.security.Util;
 
 
 /**
@@ -50,12 +47,12 @@ public interface Role
 	/**
 	 * @return The roles this role instance has been defined by.
 	 */
-	public XGettingEnum<Role> roles();
+	public Collection<Role> roles();
 
 	/**
 	 * @return The permissions this role instance has been defined by.
 	 */
-	public XGettingEnum<Permission> permissions();
+	public Collection<Permission> permissions();
 
 
 
@@ -70,9 +67,9 @@ public interface Role
 	 *
 	 * @return the effective roles.
 	 */
-	public default XGettingEnum<Role> effectiveRoles()
+	public default Set<Role> effectiveRoles()
 	{
-		return collectEffectiveRoles(this.roles(), HashEnum.New());
+		return collectEffectiveRoles(this.roles(), new HashSet<>());
 	}
 
 	/**
@@ -82,9 +79,9 @@ public interface Role
 	 *
 	 * @return the effective permissions.
 	 */
-	public default XGettingMap<Resource, Permission> effectivePermissions()
+	public default Map<Resource, Permission> effectivePermissions()
 	{
-		return collectEffectivePermissions(X.Reference(this));
+		return collectEffectivePermissions(Util.HashSet(this));
 	}
 
 
@@ -100,17 +97,17 @@ public interface Role
 	 * @return the passed roles' collected effective permissions.
 	 * @see #effectivePermissions()
 	 */
-	public static XGettingMap<Resource, Permission> collectEffectivePermissions(final XGettingSequence<Role> roles)
+	public static Map<Resource, Permission> collectEffectivePermissions(final Collection<Role> roles)
 	{
-		return collectEffectivePermissions(roles, HashEnum.New(), HashEnum.New(), HashEnum.New(), EqHashTable.New());
+		return collectEffectivePermissions(roles, new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashMap<>());
 	}
 
-	public static <M extends XMap<Resource, Permission>> M collectEffectivePermissions(
-		final XGettingCollection<Role> roles               ,
-		final XEnum<Role>              handledRoles        ,
-		final XEnum<Permission>        handledPermissions  ,
-		final XEnum<Resource>          handledResources    ,
-		final M                        collectedPermissions
+	public static <M extends Map<Resource, Permission>> M collectEffectivePermissions(
+		final Collection<Role> roles               ,
+		final Set<Role>        handledRoles        ,
+		final Set<Permission>  handledPermissions  ,
+		final Set<Resource>    handledResources    ,
+		final M                collectedPermissions
 	)
 	{
 		for(final Role role : roles)
@@ -125,12 +122,17 @@ public interface Role
 		return collectedPermissions;
 	}
 
-	public static <R, C extends XAddingEnum<? super Role>> C collectEffectiveRoles(
-		final XGettingSequence<Role> roles         ,
-		final C                      effectiveRoles
+	public static <R, C extends Set<? super Role>> C collectEffectiveRoles(
+		final Collection<Role> roles         ,
+		final C                effectiveRoles
 	)
 	{
 		// more specific roles take precedence, so it's desired to use add instead of put
+		/* (19.06.2015 TM)NOTE: might be destroyed be using old JDK collections:
+		 * There is no Set type with proper order (like "Enum" in Jadoth Core library)
+		 * List would allow duplicates which is false, Set has no order.
+		 * JDK collections are just not sufficient for proper software development.
+		 */
 		for(final Role role : roles)
 		{
 			if(effectiveRoles.add(role))
@@ -144,10 +146,10 @@ public interface Role
 	}
 
 	public static void collectEffectivePermissions(
-		final Iterable<Permission>       permissions       ,
-		final XEnum<Permission>          handledPermissions,
-		final XEnum<Resource>            handledResources  ,
-		final XMap<Resource, Permission> effectivePermissions
+		final Iterable<Permission>      permissions         ,
+		final Set<Permission>           handledPermissions  ,
+		final Set<Resource>             handledResources    ,
+		final Map<Resource, Permission> effectivePermissions
 	)
 	{
 		for(final Permission permission : permissions)
@@ -172,8 +174,8 @@ public interface Role
 	public static void collectEffectivePermissions(
 		final Resource                   resource            ,
 		final Permission                 permission          ,
-		final XEnum<Resource>            handledResources    ,
-		final XMap<Resource, Permission> effectivePermissions
+		final Set<Resource>              handledResources    ,
+		final Map<Resource, Permission> effectivePermissions
 	)
 	{
 		if(!handledResources.add(resource))
@@ -208,8 +210,8 @@ public interface Role
 	 */
 	public static Role New(
 		final String                             name       ,
-		final XGettingEnum<? extends Role>       roles      ,
-		final XGettingEnum<? extends Permission> permissions
+		final Set<? extends Role>       roles      ,
+		final Set<? extends Permission> permissions
 	)
 	{
 		return new Role.Implementation(name, roles, permissions);
@@ -222,9 +224,9 @@ public interface Role
 	 * @param roles the parent roles of the new role, potentially none.
 	 * @return a new {@link Role} instance.
 	 */
-	public static Role NewFromRoles(final String name, final XGettingEnum<? extends Role> roles)
+	public static Role NewFromRoles(final String name, final Set<? extends Role> roles)
 	{
-		return new Role.Implementation(name, roles, X.empty());
+		return new Role.Implementation(name, roles, Collections.emptySet());
 	}
 
 	/**
@@ -234,9 +236,9 @@ public interface Role
 	 * @param permissions the explicitely granted permissions for the new role, potentially none.
 	 * @return a new {@link Role} instance.
 	 */
-	public static Role NewFromPermissions(final String name , final XGettingEnum<? extends Permission> permissions)
+	public static Role NewFromPermissions(final String name , final Set<? extends Permission> permissions)
 	{
-		return new Role.Implementation(name, X.empty(), permissions);
+		return new Role.Implementation(name, Collections.emptySet(), permissions);
 	}
 
 	/**
@@ -247,7 +249,7 @@ public interface Role
 	 */
 	public static Role New(final String name)
 	{
-		return new Role.Implementation(name, X.empty(), X.empty());
+		return new Role.Implementation(name, Collections.emptySet(), Collections.emptySet());
 	}
 
 	/**
@@ -259,7 +261,13 @@ public interface Role
 	 */
 	public static Role New(final String name , final Role... roles)
 	{
-		return new Role.Implementation(name, roles == null ?X.empty() :X.ConstEnum(roles), X.empty());
+		return new Role.Implementation(
+			name,
+			roles == null
+				? Collections.emptySet()
+				: Util.HashSet(roles),
+			Collections.emptySet()
+		);
 	}
 
 	/**
@@ -271,7 +279,13 @@ public interface Role
 	 */
 	public static Role New(final String name, final Permission... permissions)
 	{
-		return new Role.Implementation(name, X.empty(), permissions == null ?X.empty() :X.ConstEnum(permissions));
+		return new Role.Implementation(
+			name,
+			Collections.emptySet(),
+			permissions == null
+				? Collections.emptySet()
+				: Util.HashSet(permissions)
+		);
 	}
 
 	/**
@@ -288,8 +302,8 @@ public interface Role
 	public static Role provide(
 		final Role                 role       ,
 		final String               name       ,
-		final XGettingEnum<String> parentRoles,
-		final XGettingEnum<String> permissions
+		final Set<String> parentRoles,
+		final Set<String> permissions
 	)
 	{
 		if(name == null)
@@ -327,8 +341,8 @@ public interface Role
 	public static void update(
 		final Role                     role       ,
 		final String                   name       ,
-		final XGettingEnum<Role>       parentRoles,
-		final XGettingEnum<Permission> permissions
+		final Set<Role>       parentRoles,
+		final Set<Permission> permissions
 	)
 	{
 		if(name == null)
@@ -368,7 +382,7 @@ public interface Role
 	@FunctionalInterface
 	public interface Creator
 	{
-		public Role createRole(String name, XGettingEnum<? extends Role> roles, XGettingEnum<? extends Permission> permissions);
+		public Role createRole(String name, Set<? extends Role> roles, Set<? extends Permission> permissions);
 	}
 
 	/**
@@ -384,14 +398,14 @@ public interface Role
 		 *
 		 * @param permissions the {@link Permission} instances to be set.
 		 */
-		public void setPermissions(XGettingCollection<? extends Permission> permissions);
+		public void setPermissions(Collection<? extends Permission> permissions);
 
 		/**
 		 * Sets the passed {@link Role} instances as the new parent roles for this {@link Role} instance.
 		 *
 		 * @param roles the {@link Role} instances to be set.
 		 */
-		public void setRoles(XGettingCollection<? extends Role> roles);
+		public void setRoles(Collection<? extends Role> roles);
 	}
 
 
@@ -406,9 +420,9 @@ public interface Role
 		// instance fields //
 		////////////////////
 
-		private final    String                     name       ;
-		private volatile XImmutableEnum<Role>       roles      ;
-		private volatile XImmutableEnum<Permission> permissions;
+		private final    String                 name       ;
+		private volatile Collection<Role>       roles      ;
+		private volatile Collection<Permission> permissions;
 
 
 
@@ -420,9 +434,9 @@ public interface Role
 		 * Implementation detail constructor that might change in the future.
 		 */
 		Implementation(
-			final String                                   name       ,
-			final XGettingCollection<? extends Role>       roles      ,
-			final XGettingCollection<? extends Permission> permissions
+			final String                           name       ,
+			final Collection<? extends Role>       roles      ,
+			final Collection<? extends Permission> permissions
 		)
 		{
 			super();
@@ -441,11 +455,11 @@ public interface Role
 		 * @param permissions the {@link Permission} instances to be set.
 		 */
 		@Override
-		public void setPermissions(final XGettingCollection<? extends Permission> permissions)
+		public void setPermissions(final Collection<? extends Permission> permissions)
 		{
 			this.permissions = permissions == null
-				?X.empty()
-				:ConstHashEnum.New(permissions)
+				?Collections.emptySet()
+				:new HashSet<>(permissions)
 			;
 		}
 
@@ -454,11 +468,11 @@ public interface Role
 		 * @param roles the {@link Role} instances to be set.
 		 */
 		@Override
-		public void setRoles(final XGettingCollection<? extends Role> roles)
+		public void setRoles(final Collection<? extends Role> roles)
 		{
 			this.roles = roles == null
-				?X.empty()
-				:ConstHashEnum.New(roles)
+				?Collections.emptySet()
+				:new HashSet<>(roles)
 			;
 		}
 
@@ -481,7 +495,7 @@ public interface Role
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XGettingEnum<Role> roles()
+		public final Collection<Role> roles()
 		{
 			return this.roles;
 		}
@@ -490,7 +504,7 @@ public interface Role
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XGettingEnum<Permission> permissions()
+		public final Collection<Permission> permissions()
 		{
 			return this.permissions;
 		}

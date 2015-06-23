@@ -37,8 +37,8 @@ public interface Authenticator<C, R>
 {
 
 	/**
-	 * Tries to authenticate the passed credentials and returns an appropriate result.
-	 * The exact meaning of the result is implementation-dependent.
+	 * Tries to authenticate the passed credentials and returns an apropriate result.
+	 * The exact meaning of the result is implementation-dependant.
 	 *
 	 * @param credentials the credentials to be authenticated
 	 * @return the result of the authentication

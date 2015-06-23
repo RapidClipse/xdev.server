@@ -30,13 +30,6 @@ public class AuthenticationFailedException extends RuntimeException
 	// constructors //
 	/////////////////
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1682654011785451553L;
-
-
-
 	public AuthenticationFailedException()
 	{
 		super();

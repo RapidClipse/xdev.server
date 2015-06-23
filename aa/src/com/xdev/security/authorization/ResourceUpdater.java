@@ -17,13 +17,14 @@
 
 package com.xdev.security.authorization;
 
-import net.jadoth.collections.types.XGettingCollection;
-import net.jadoth.collections.types.XGettingEnum;
+import java.util.Collection;
+import java.util.Set;
+
 
 
 /**
  * Functional type that updates {@link Resource} instances.
- * For more details, see {@link #updateResource(Resource, String, XGettingEnum)}.
+ * For more details, see {@link #updateResource(Resource, String, Set)}.
  *
  * @author XDEV Software (TM)
  */
@@ -38,7 +39,7 @@ public interface ResourceUpdater
 	 * @param resourceName the identifying name of the passed {@link Resource} instance.
 	 * @param children the resource's defined children to be used for the updating process (potentially empty).
 	 */
-	public void updateResource(Resource resource, String resourceName, XGettingEnum<Resource> children);
+	public void updateResource(Resource resource, String resourceName, Set<Resource> children);
 
 
 
@@ -50,7 +51,7 @@ public interface ResourceUpdater
 	 *
 	 * @param existingResources the resources already existing before the updating process.
 	 */
-	public default void prepareResourceUpdate(final XGettingCollection<Resource> existingResources)
+	public default void prepareResourceUpdate(final Collection<Resource> existingResources)
 	{
 		// no-op in default implementation
 	}
@@ -64,7 +65,7 @@ public interface ResourceUpdater
 	 *
 	 * @param updatedResources the updated and potentially newly created resources.
 	 */
-	public default void commitResourceUpdate(final XGettingCollection<Resource> updatedResources)
+	public default void commitResourceUpdate(final Collection<Resource> updatedResources)
 	{
 		// no-op in default implementation
 	}
@@ -78,7 +79,7 @@ public interface ResourceUpdater
 	 *
 	 * @param updatedResources the updated and potentially newly created, empty or inconsistent resources.
 	 */
-	public default void rollbackResourceUpdate(final XGettingCollection<Resource> updatedResources, final Exception cause)
+	public default void rollbackResourceUpdate(final Collection<Resource> updatedResources, final Exception cause)
 	{
 		// no-op in default implementation
 	}

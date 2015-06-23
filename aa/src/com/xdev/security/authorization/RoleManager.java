@@ -17,10 +17,12 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.notNull;
-import net.jadoth.collections.EqHashTable;
-import net.jadoth.collections.LockedMap;
-import net.jadoth.collections.types.XMap;
+import static com.xdev.security.Util.notNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.xdev.security.LockedMap;
 
 
 /**
@@ -46,7 +48,7 @@ public interface RoleManager extends RoleRegistry
 	 * @return an accessing instance to the internal registry.
 	 */
 	@Override
-	public XMap<String, Role> roles();
+	public Map<String, Role> roles();
 
 
 	/**
@@ -69,7 +71,7 @@ public interface RoleManager extends RoleRegistry
 	{
 		return new Implementation(
 			notNull(registryLock),
-			EqHashTable.New()
+			new HashMap<>()
 		);
 	}
 
@@ -80,7 +82,7 @@ public interface RoleManager extends RoleRegistry
 	 * @param map the entries datastructure to be used internally.
 	 * @return a new {@link RoleManager} instance.
 	 */
-	public static RoleManager New(final XMap<String, Role> map)
+	public static RoleManager New(final Map<String, Role> map)
 	{
 		return new Implementation(
 			new Object(),
@@ -96,7 +98,7 @@ public interface RoleManager extends RoleRegistry
 	 * @param  map the entries datastructure to be used internally.
 	 * @return a new {@link RoleManager} instance.
 	 */
-	public static RoleManager New(final Object registryLock, final XMap<String, Role> map)
+	public static RoleManager New(final Object registryLock, final Map<String, Role> map)
 	{
 		return new Implementation(
 			notNull(registryLock),
@@ -117,7 +119,7 @@ public interface RoleManager extends RoleRegistry
 		// instance fields //
 		////////////////////
 
-		final XMap<String, Role>      map         ;
+		final Map<String, Role>       map         ;
 		final Object                  registryLock;
 		final LockedMap<String, Role> lockedMap   ;
 		final RoleRegistry            roleRegistry;
@@ -131,7 +133,7 @@ public interface RoleManager extends RoleRegistry
 		/**
 		 * Implementation detail constructor that might change in the future.
 		 */
-		Implementation(final Object registryLock, final XMap<String, Role> map)
+		Implementation(final Object registryLock, final Map<String, Role> map)
 		{
 			super();
 			this.registryLock = registryLock;
@@ -150,7 +152,7 @@ public interface RoleManager extends RoleRegistry
 		 * {@inheritDoc}
 		 */
 		@Override
-		public XMap<String, Role> roles()
+		public Map<String, Role> roles()
 		{
 			return this.lockedMap;
 		}

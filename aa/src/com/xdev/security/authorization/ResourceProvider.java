@@ -17,12 +17,13 @@
 
 package com.xdev.security.authorization;
 
-import net.jadoth.collections.types.XGettingEnum;
+import java.util.Set;
+
 
 
 /**
  * Function type that provides {@link Resource} instances.
- * For details, see {@link #provideResource(Resource, String, XGettingEnum)}.
+ * For details, see {@link #provideResource(Resource, String, Set)}.
  *
  * @author XDEV Software (TM)
  */
@@ -39,5 +40,5 @@ public interface ResourceProvider
 	 *
 	 * @return a new {@link Resource} instance that satisfies the specified values.
 	 */
-	public Resource provideResource(Resource existingInstance, String name, XGettingEnum<String> children);
+	public Resource provideResource(Resource existingInstance, String name, Set<String> children);
 }

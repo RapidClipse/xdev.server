@@ -17,7 +17,7 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.notNull;
+import static com.xdev.security.Util.notNull;
 
 
 /**

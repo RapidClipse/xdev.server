@@ -17,12 +17,11 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.notNull;
+import static com.xdev.security.Util.notNull;
 
+import java.util.Collection;
 import java.util.ConcurrentModificationException;
-
-import net.jadoth.collections.HashEnum;
-import net.jadoth.collections.types.XGettingCollection;
+import java.util.HashSet;
 
 
 /**
@@ -35,9 +34,9 @@ public interface RoleBuilder
 {
 	public String name();
 
-	public XGettingCollection<? extends Role> roles();
+	public Collection<? extends Role> roles();
 
-	public XGettingCollection<? extends Permission> permissions();
+	public Collection<? extends Permission> permissions();
 
 	public RoleBuilder name(String name);
 
@@ -45,9 +44,9 @@ public interface RoleBuilder
 
 	public RoleBuilder grant(Permission permission);
 
-	public RoleBuilder roles(XGettingCollection<? extends Role> roles);
+	public RoleBuilder roles(Collection<? extends Role> roles);
 
-	public RoleBuilder permissions(XGettingCollection<? extends Permission> permissions);
+	public RoleBuilder permissions(Collection<? extends Permission> permissions);
 
 	/**
 	 * Resets this {@link RoleBuilder} instance's internal state to default values (effectively "clearing" the state).
@@ -128,8 +127,8 @@ public interface RoleBuilder
 		////////////////////
 
 		private       String               buildingName        = null;
-		private final HashEnum<Role>       buildingRoles       = HashEnum.New();
-		private final HashEnum<Permission> buildingPermissions = HashEnum.New();
+		private final HashSet<Role>       buildingRoles       = new HashSet<>();
+		private final HashSet<Permission> buildingPermissions = new HashSet<>();
 		private final Role.Creator         roleCreator        ;
 		private final RoleManager          roleManager        ;
 
@@ -168,7 +167,7 @@ public interface RoleBuilder
 		 * {@inheritDoc}
 		 */
 		@Override
-		public XGettingCollection<? extends Role> roles()
+		public Collection<? extends Role> roles()
 		{
 			return this.buildingRoles;
 		}
@@ -177,7 +176,7 @@ public interface RoleBuilder
 		 * {@inheritDoc}
 		 */
 		@Override
-		public XGettingCollection<? extends Permission> permissions()
+		public Collection<? extends Permission> permissions()
 		{
 			return this.buildingPermissions;
 		}
@@ -228,7 +227,7 @@ public interface RoleBuilder
 		 * {@inheritDoc}
 		 */
 		@Override
-		public synchronized RoleBuilder roles(final XGettingCollection<? extends Role> roles)
+		public synchronized RoleBuilder roles(final Collection<? extends Role> roles)
 		{
 			this.buildingRoles.addAll(roles);
 			return this;
@@ -238,7 +237,7 @@ public interface RoleBuilder
 		 * {@inheritDoc}
 		 */
 		@Override
-		public synchronized RoleBuilder permissions(final XGettingCollection<? extends Permission> permissions)
+		public synchronized RoleBuilder permissions(final Collection<? extends Permission> permissions)
 		{
 			this.buildingPermissions.addAll(permissions);
 			return this;
@@ -253,7 +252,8 @@ public interface RoleBuilder
 			synchronized(this.roleManager.lockRoleRegistry())
 			{
 				// validate name viability before creator is called
-				if(this.roleManager.roles().keys().contains(this.buildingName)){
+				if(this.roleManager.roles().keySet().contains(this.buildingName))
+				{
 					// (10.06.2014 TM)TODO: proper exception
 					throw new RuntimeException("Role already exists with name "+this.buildingName);
 				}
@@ -262,7 +262,8 @@ public interface RoleBuilder
 				final Role role = this.roleCreator.createRole(this.buildingName, this.buildingRoles, this.buildingPermissions);
 
 				// if add fails nevertheless, something is wrong (e.g. inconsistent use of lock instance or lock loophole)
-				if(!this.roleManager.roles().add(this.buildingName, role)){
+				if(this.roleManager.roles().putIfAbsent(this.buildingName, role) != role)
+				{
 					// (10.06.2014 TM)TODO: proper exception
 					throw new ConcurrentModificationException("Illegal registry state for role "+this.buildingName);
 				}

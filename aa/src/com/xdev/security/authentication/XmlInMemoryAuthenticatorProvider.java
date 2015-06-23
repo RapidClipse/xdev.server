@@ -17,13 +17,12 @@
 
 package com.xdev.security.authentication;
 
-import static net.jadoth.Jadoth.notNull;
+import static com.xdev.security.Util.notNull;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
-
-import net.jadoth.collections.EqHashTable;
-import net.jadoth.collections.types.XGettingMap;
+import java.util.Map;
 
 import com.xdev.security.configuration.xml.XmlConfiguration;
 import com.xdev.security.configuration.xml.XmlSubject;
@@ -85,11 +84,11 @@ public final class XmlInMemoryAuthenticatorProvider implements InMemoryAuthentic
 	 * entries.
 	 *
 	 * @param subjects the {@link List} of {@link XmlSubject} instances from which the entries shall be built.
-	 * @return the username/password entries in the form of a {@link XGettingMap} instance.
+	 * @return the username/password entries in the form of a {@link Map} instance.
 	 */
-	public static XGettingMap<String, String> buildEntries(final List<XmlSubject> subjects)
+	public static Map<String, String> buildEntries(final List<XmlSubject> subjects)
 	{
-		final EqHashTable<String, String> entries = EqHashTable.NewCustom(subjects.size());
+		final HashMap<String, String> entries = new HashMap<>(subjects.size());
 
 		for(final XmlSubject subject : subjects)
 		{

@@ -17,11 +17,10 @@
 
 package com.xdev.security.authentication;
 
-import net.jadoth.collections.EqConstHashTable;
-import net.jadoth.collections.types.XGettingCollection;
-import net.jadoth.collections.types.XGettingMap;
-import net.jadoth.collections.types.XImmutableMap;
-import net.jadoth.util.KeyValue;
+import java.util.Map;
+
+import com.xdev.security.KeyValue;
+import com.xdev.security.Util;
 
 
 /**
@@ -46,25 +45,10 @@ public final class InMemoryAuthenticator implements Authenticator<CredentialsUse
 	 * @param usernamePasswords the username/password data.
 	 * @return a new {@link InMemoryAuthenticator} instance using the passed data as a user inventory.
 	 */
-	public static final InMemoryAuthenticator New(final XGettingMap<String, String> usernamePasswords)
+	public static final InMemoryAuthenticator New(final Map<String, String> usernamePasswords)
 	{
 		// immure to ensure immutability for central, potentially concurrently used instance
-		return new InMemoryAuthenticator(usernamePasswords.immure());
-	}
-
-	/**
-	 * Creates a new {@link InMemoryAuthenticator} instance using a copy of the passed username/password collection.
-	 * The entries are interpreted as the keys representing the key and the associated value representing the
-	 * associated password.
-	 *
-	 * @param usernamePasswords the username/password data.
-	 * @return a new {@link InMemoryAuthenticator} instance using the passed data as a user inventory.
-	 */
-	public static final InMemoryAuthenticator New(
-		final XGettingCollection<? extends KeyValue<String, String>> usernamePasswords
-	)
-	{
-		return new InMemoryAuthenticator(EqConstHashTable.New(usernamePasswords));
+		return new InMemoryAuthenticator(usernamePasswords);
 	}
 
 	/**
@@ -78,7 +62,7 @@ public final class InMemoryAuthenticator implements Authenticator<CredentialsUse
 	@SafeVarargs
 	public static final InMemoryAuthenticator New(final KeyValue<String, String>... usernamePasswords)
 	{
-		return new InMemoryAuthenticator(EqConstHashTable.New(usernamePasswords));
+		return new InMemoryAuthenticator(Util.asMap(usernamePasswords));
 	}
 
 
@@ -90,7 +74,7 @@ public final class InMemoryAuthenticator implements Authenticator<CredentialsUse
 	/**
 	 * The internally used authentication map.
 	 */
-	final XImmutableMap<String, String> usernamePasswords;
+	final Map<String, String> usernamePasswords;
 
 
 
@@ -103,7 +87,7 @@ public final class InMemoryAuthenticator implements Authenticator<CredentialsUse
 	 *
 	 * @param usernamePasswords
 	 */
-	InMemoryAuthenticator(final XImmutableMap<String, String> usernamePasswords)
+	InMemoryAuthenticator(final Map<String, String> usernamePasswords)
 	{
 		super();
 		this.usernamePasswords = usernamePasswords;

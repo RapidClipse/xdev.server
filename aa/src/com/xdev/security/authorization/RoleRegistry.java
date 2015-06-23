@@ -17,11 +17,13 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.notNull;
-import net.jadoth.collections.EqHashTable;
-import net.jadoth.collections.LockedGettingMap;
-import net.jadoth.collections.types.XGettingCollection;
-import net.jadoth.collections.types.XGettingMap;
+import static com.xdev.security.Util.notNull;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.xdev.security.LockedMap;
 
 
 /**
@@ -46,7 +48,7 @@ public interface RoleRegistry
 	 *
 	 * @return a read-only map containing all known roles.
 	 */
-	public XGettingMap<String, Role> roles();
+	public Map<String, Role> roles();
 
 	/**
 	 * Returns the lock instance that is internally used by this registry instance.
@@ -65,7 +67,7 @@ public interface RoleRegistry
 	 * @param registryLock the locking instance to be used to synchronize on for accessing the registry.
 	 * @return a new {@link RoleRegistry} instance using the passed instances.
 	 */
-	public static RoleRegistry New(final XGettingMap<String, Role> registry, final Object registryLock)
+	public static RoleRegistry New(final Map<String, Role> registry, final Object registryLock)
 	{
 		return new Implementation(
 			notNull(registry)    ,
@@ -80,7 +82,7 @@ public interface RoleRegistry
 	 * @param registry the map instance to be used as the internal datastructure.
 	 * @return a new {@link RoleRegistry} instance using the passed instance.
 	 */
-	public static RoleRegistry New(final XGettingMap<String, Role> registry)
+	public static RoleRegistry New(final Map<String, Role> registry)
 	{
 		return New(registry, new Object());
 	}
@@ -94,7 +96,7 @@ public interface RoleRegistry
 	 * @param registryLock the locking instance to be used to synchronize on for accessing the registry.
 	 * @return a new {@link RoleRegistry} instance using the passed instances.
 	 */
-	public static RoleRegistry New(final XGettingCollection<? extends Role> roles, final Object registryLock)
+	public static RoleRegistry New(final Collection<? extends Role> roles, final Object registryLock)
 	{
 		return New(
 			Implementation.buildRegistry(notNull(roles)),
@@ -109,7 +111,7 @@ public interface RoleRegistry
 	 * @param subjects the {@link Role} instance to be used as the internal datastructure.
 	 * @return a new {@link RoleRegistry} instance using the passed instance.
 	 */
-	public static RoleRegistry New(final XGettingCollection<? extends Role> roles)
+	public static RoleRegistry New(final Collection<? extends Role> roles)
 	{
 		return New(roles, new Object());
 	}
@@ -128,10 +130,10 @@ public interface RoleRegistry
 		// static methods //
 		///////////////////
 
-		static final XGettingMap<String, Role> buildRegistry(final XGettingCollection<? extends Role> roles)
+		static final Map<String, Role> buildRegistry(final Collection<? extends Role> roles)
 		{
-			final EqHashTable<String, Role> registry = EqHashTable.New();
-			roles.iterate(role -> registry.add(role.name(), role));
+			final HashMap<String, Role> registry = new HashMap<>();
+			roles.forEach(role -> registry.put(role.name(), role));
 			return registry;
 		}
 
@@ -144,19 +146,19 @@ public interface RoleRegistry
 		/**
 		 * The read-only role-name-to-role map used as an internal datastructure
 		 */
-		private final XGettingMap<String, Role>      registry      ;
+		private final Map<String, Role>      registry      ;
 
 		/**
 		 * The instance used to synchronize on. This may be any instance, even the map or registry instance itself.
 		 */
-		private final Object                         registryLock  ;
+		private final Object                  registryLock  ;
 
 		/**
 		 * A map wrapper implementation wrapping the actual registry map and using the registryLock instance to
 		 * perform synchronization. Through this technique, the map can be accessed directly without losing the
 		 * consistent concurrency protection achieve via the locking instance.
 		 */
-		private final LockedGettingMap<String, Role> lockedRegistry;
+		private final LockedMap<String, Role> lockedRegistry;
 
 
 
@@ -170,12 +172,12 @@ public interface RoleRegistry
 		 * @param registry the map instance to be used as the internal datastructure.
 		 * @param registryLock the locking instance to be used to synchronize on for accessing the registry.
 		 */
-		Implementation(final XGettingMap<String, Role> registry, final Object registryLock)
+		Implementation(final Map<String, Role> registry, final Object registryLock)
 		{
 			super();
 			this.registry       = registry;
 			this.registryLock   = registryLock;
-			this.lockedRegistry = LockedGettingMap.New(this.registry, registryLock);
+			this.lockedRegistry = LockedMap.New(this.registry, registryLock);
 		}
 
 
@@ -206,7 +208,7 @@ public interface RoleRegistry
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XGettingMap<String, Role> roles()
+		public final Map<String, Role> roles()
 		{
 			return this.lockedRegistry;
 		}

@@ -23,15 +23,13 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-import net.jadoth.util.chars.Named;
-
 
 /**
  * JAXB mapping type.
  *
  * @author XDEV Software (TM)
  */
-public final class XmlResource implements Named
+public final class XmlResource
 {
 	///////////////////////////////////////////////////////////////////////////
 	// instance fields //
@@ -84,7 +82,6 @@ public final class XmlResource implements Named
 	// override methods //
 	/////////////////////
 
-	@Override
 	public final String name()
 	{
 		return this.name;

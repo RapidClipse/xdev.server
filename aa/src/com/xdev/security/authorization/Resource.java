@@ -17,10 +17,11 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.notNull;
-import net.jadoth.collections.X;
-import net.jadoth.collections.types.XGettingCollection;
-import net.jadoth.collections.types.XGettingEnum;
+import static com.xdev.security.Util.notNull;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 
 /**
@@ -40,9 +41,9 @@ public interface Resource
 	 *
 	 * @return the child resources of this resource, potentially none.
 	 */
-	public default XGettingEnum<? extends Resource> children()
+	public default Set<? extends Resource> children()
 	{
-		return X.empty();
+		return Collections.emptySet();
 	}
 
 
@@ -72,7 +73,7 @@ public interface Resource
 	public static Resource provide(
 		final Resource             existingInstance,
 		final String               name            ,
-		final XGettingEnum<String> children
+		final Set<String> children
 	)
 	{
 		// delegate to simple StringResource's provide
@@ -90,7 +91,7 @@ public interface Resource
 	public static void update(
 		final Resource               resource    ,
 		final String                 resourceName,
-		final XGettingEnum<Resource> children
+		final Set<Resource> children
 	)
 	{
 		// delegate to simple StringResource's update
@@ -114,7 +115,7 @@ public interface Resource
 		public static Resource provide(
 			final String               name            ,
 			final Resource             existingInstance,
-			final XGettingEnum<String> children
+			final Set<String> children
 		)
 		{
 			validateName(name);
@@ -132,7 +133,7 @@ public interface Resource
 		public static void update(
 			final String                 name    ,
 			final Resource               resource,
-			final XGettingEnum<Resource> children
+			final Set<Resource> children
 		)
 		{
 			validateName(name);
@@ -148,7 +149,7 @@ public interface Resource
 			}
 		}
 
-		private static void validateChildren(final XGettingCollection<?> children)
+		private static void validateChildren(final Collection<?> children)
 		{
 			if(children != null && !children.isEmpty())
 			{

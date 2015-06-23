@@ -17,13 +17,11 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.notNull;
+import static com.xdev.security.Util.notNull;
 
-import java.util.function.Function;
-
-import net.jadoth.collections.EqHashTable;
-import net.jadoth.collections.types.XGettingCollection;
-import net.jadoth.collections.types.XGettingMap;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A registry type that provides a means for centralized lookup and iteration of known {@link Permission} instances.
@@ -83,7 +81,7 @@ public interface PermissionRegistry
 	 * @return a new {@link PermissionRegistry} instance using the passed instances.
 	 */
 	public static PermissionRegistry New(
-		final XGettingMap<Resource, ? extends XGettingMap<Integer, Permission>> registry    ,
+		final Map<Resource, ? extends Map<Integer, Permission>> registry    ,
 		final Object                                                            registryLock
 	)
 	{
@@ -101,7 +99,7 @@ public interface PermissionRegistry
 	 * @return a new {@link PermissionRegistry} instance using the passed instances.
 	 */
 	public static PermissionRegistry New(
-		final XGettingMap<Resource, ? extends XGettingMap<Integer, Permission>> registry
+		final Map<Resource, ? extends Map<Integer, Permission>> registry
 	)
 	{
 		return New(registry, new Object());
@@ -117,7 +115,7 @@ public interface PermissionRegistry
 	 * @return a new {@link PermissionRegistry} instance using the passed instances.
 	 */
 	public static PermissionRegistry New(
-		final XGettingCollection<? extends Permission> permissions ,
+		final Collection<? extends Permission> permissions ,
 		final Object                                   registryLock
 	)
 	{
@@ -134,7 +132,7 @@ public interface PermissionRegistry
 	 * @param permissions the map instance to be used as the internal datastructure.
 	 * @return a new {@link PermissionRegistry} instance using the passed instance.
 	 */
-	public static PermissionRegistry New(final XGettingCollection<? extends Permission> permissions)
+	public static PermissionRegistry New(final Collection<? extends Permission> permissions)
 	{
 		return New(permissions, new Object());
 	}
@@ -154,20 +152,20 @@ public interface PermissionRegistry
 		// static methods  //
 		///////////////////
 
-		static final EqHashTable<Resource, EqHashTable<Integer, Permission>> buildRegistry(
-			final XGettingCollection<? extends Permission> permissions
+		static final HashMap<Resource, HashMap<Integer, Permission>> buildRegistry(
+			final Collection<? extends Permission> permissions
 		)
 		{
-			// (28.05.2014 TM)TODO: make HashEqualator configurable. Consolidate with Manager.
-			final EqHashTable<Resource, EqHashTable<Integer, Permission>> registry = EqHashTable.New();
-			final Function<Resource, EqHashTable<Integer, Permission>>    supplier = r -> EqHashTable.New();
+			final HashMap<Resource, HashMap<Integer, Permission>> registry = new HashMap<>();
 
 			for(final Permission permission : permissions)
 			{
-				registry
-				.ensure(permission.resource(), supplier)
-				.add(permission.factor(), permission)
-				;
+				HashMap<Integer, Permission> map = registry.get(permission.resource());
+				if(map == null)
+				{
+					registry.put(permission.resource(), map = new HashMap<>());
+				}
+				map.put(permission.factor(), permission);
 			}
 
 			return registry;
@@ -179,7 +177,7 @@ public interface PermissionRegistry
 		// instance fields //
 		////////////////////
 
-		private final XGettingMap<Resource, ? extends XGettingMap<Integer, Permission>> registry    ;
+		private final Map<Resource, ? extends Map<Integer, Permission>> registry    ;
 		private final Object                                                            registryLock;
 
 
@@ -192,7 +190,7 @@ public interface PermissionRegistry
 		 * Implementation detail constructor that might change in the future.
 		 */
 		Implementation(
-			final XGettingMap<Resource, ? extends XGettingMap<Integer, Permission>> registry    ,
+			final Map<Resource, ? extends Map<Integer, Permission>> registry    ,
 			final Object                                                            registryLock
 		)
 		{
@@ -215,7 +213,7 @@ public interface PermissionRegistry
 		{
 			synchronized(this.registryLock)
 			{
-				final XGettingMap<Integer, Permission> resourceMap = this.registry.get(resource);
+				final Map<Integer, Permission> resourceMap = this.registry.get(resource);
 				return resourceMap != null ? resourceMap.get(factor) :null;
 			}
 		}

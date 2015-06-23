@@ -17,8 +17,8 @@
 
 package com.xdev.security.authorization;
 
-import net.jadoth.collections.types.XGettingCollection;
-import net.jadoth.collections.types.XGettingMap;
+import java.util.Collection;
+import java.util.Map;
 
 
 /**
@@ -56,9 +56,9 @@ public interface AuthorizationRegistry extends PermissionRegistry, RoleRegistry,
 	 * @return a new {@link AuthorizationRegistry} instance.
 	 */
 	public static AuthorizationRegistry New(
-		final XGettingCollection<? extends Permission> permissions,
-		final XGettingCollection<? extends Role>       roles      ,
-		final XGettingCollection<? extends Subject>    subjects
+		final Collection<? extends Permission> permissions,
+		final Collection<? extends Role>       roles      ,
+		final Collection<? extends Subject>    subjects
 	)
 	{
 		return New(permissions, roles, subjects, new Object());
@@ -76,9 +76,9 @@ public interface AuthorizationRegistry extends PermissionRegistry, RoleRegistry,
 	 * @return a new {@link AuthorizationRegistry} instance.
 	 */
 	public static AuthorizationRegistry New(
-		final XGettingCollection<? extends Permission> permissions,
-		final XGettingCollection<? extends Role>       roles      ,
-		final XGettingCollection<? extends Subject>    subjects   ,
+		final Collection<? extends Permission> permissions,
+		final Collection<? extends Role>       roles      ,
+		final Collection<? extends Subject>    subjects   ,
 		final Object                                   sharedLock
 	)
 	{
@@ -165,7 +165,7 @@ public interface AuthorizationRegistry extends PermissionRegistry, RoleRegistry,
 		 * {@inheritDoc}
 		 */
 		@Override
-		public XGettingMap<String, Role> roles()
+		public Map<String, Role> roles()
 		{
 			return this.roleRegistry.roles();
 		}
@@ -194,7 +194,7 @@ public interface AuthorizationRegistry extends PermissionRegistry, RoleRegistry,
 		 * {@inheritDoc}
 		 */
 		@Override
-		public XGettingMap<String, Subject> subjects()
+		public Map<String, Subject> subjects()
 		{
 			return this.subjectRegistry.subjects();
 		}

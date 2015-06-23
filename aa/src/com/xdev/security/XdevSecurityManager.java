@@ -17,8 +17,9 @@
 
 package com.xdev.security;
 
-import static net.jadoth.Jadoth.notNull;
-import net.jadoth.collections.types.XMap;
+import static com.xdev.security.Util.notNull;
+
+import java.util.Map;
 
 import com.xdev.security.authentication.AuthenticationFailedException;
 import com.xdev.security.authentication.Authenticator;
@@ -119,7 +120,7 @@ public interface XdevSecurityManager<C, R> extends Authenticator<C, R>, Authoriz
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XMap<String, Role> roles()
+		public final Map<String, Role> roles()
 		{
 			return this.authorizationManager.roles();
 		}
@@ -128,7 +129,7 @@ public interface XdevSecurityManager<C, R> extends Authenticator<C, R>, Authoriz
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XMap<String, Subject> subjects()
+		public final Map<String, Subject> subjects()
 		{
 			return this.authorizationManager.subjects();
 		}

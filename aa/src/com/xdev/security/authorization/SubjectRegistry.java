@@ -17,11 +17,13 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.notNull;
-import net.jadoth.collections.EqHashTable;
-import net.jadoth.collections.LockedGettingMap;
-import net.jadoth.collections.types.XGettingCollection;
-import net.jadoth.collections.types.XGettingMap;
+import static com.xdev.security.Util.notNull;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.xdev.security.LockedMap;
 
 
 /**
@@ -46,7 +48,7 @@ public interface SubjectRegistry
 	 *
 	 * @return a read-only map containing all known subjects.
 	 */
-	public XGettingMap<String, Subject> subjects();
+	public Map<String, Subject> subjects();
 
 	/**
 	 * Returns the lock instance that is internally used by this registry instance.
@@ -65,7 +67,7 @@ public interface SubjectRegistry
 	 * @param registryLock the locking instance to be used to synchronize on for accessing the registry.
 	 * @return a new {@link SubjectRegistry} instance using the passed instances.
 	 */
-	public static SubjectRegistry New(final XGettingMap<String, Subject> registry, final Object registryLock)
+	public static SubjectRegistry New(final Map<String, Subject> registry, final Object registryLock)
 	{
 		return new Implementation(
 			notNull(registry)    ,
@@ -80,7 +82,7 @@ public interface SubjectRegistry
 	 * @param registry the map instance to be used as the internal datastructure.
 	 * @return a new {@link SubjectRegistry} instance using the passed instance.
 	 */
-	public static SubjectRegistry New(final XGettingMap<String, Subject> registry)
+	public static SubjectRegistry New(final Map<String, Subject> registry)
 	{
 		return New(registry, new Object());
 	}
@@ -94,7 +96,7 @@ public interface SubjectRegistry
 	 * @param registryLock the locking instance to be used to synchronize on for accessing the registry.
 	 * @return a new {@link SubjectRegistry} instance using the passed instances.
 	 */
-	public static SubjectRegistry New(final XGettingCollection<? extends Subject> subjects, final Object registryLock)
+	public static SubjectRegistry New(final Collection<? extends Subject> subjects, final Object registryLock)
 	{
 		return New(
 			Implementation.buildRegistry(notNull(subjects)),
@@ -109,7 +111,7 @@ public interface SubjectRegistry
 	 * @param subjects the {@link Subject} instance to be used as the internal datastructure.
 	 * @return a new {@link SubjectRegistry} instance using the passed instance.
 	 */
-	public static SubjectRegistry New(final XGettingCollection<? extends Subject> subjects)
+	public static SubjectRegistry New(final Collection<? extends Subject> subjects)
 	{
 		return New(subjects, new Object());
 	}
@@ -129,11 +131,11 @@ public interface SubjectRegistry
 		// static methods //
 		///////////////////
 
-		static final XGettingMap<String, Subject> buildRegistry(final XGettingCollection<? extends Subject> subjects)
+		static final Map<String, Subject> buildRegistry(final Collection<? extends Subject> subjects)
 		{
-			final EqHashTable<String, Subject> registry = EqHashTable.New();
+			final HashMap<String, Subject> registry = new HashMap<>();
 
-			subjects.iterate(subject -> registry.add(subject.name(), subject));
+			subjects.forEach(subject -> registry.put(subject.name(), subject));
 
 			return registry;
 		}
@@ -147,19 +149,19 @@ public interface SubjectRegistry
 		/**
 		 * The read-only subject-name-to-subject map used as an internal datastructure
 		 */
-		private final XGettingMap<String, Subject>      registry      ;
+		private final Map<String, Subject>      registry      ;
 
 		/**
 		 * The instance used to synchronize on. This may be any instance, even the map or registry instance itself.
 		 */
-		private final Object                            registryLock  ;
+		private final Object                     registryLock  ;
 
 		/**
 		 * A map wrapper implementation wrapping the actual registry map and using the registryLock instance to
 		 * perform synchronization. Through this technique, the map can be accessed directly without losing the
 		 * consistent concurrency protection achieve via the locking instance.
 		 */
-		private final LockedGettingMap<String, Subject> lockedRegistry;
+		private final LockedMap<String, Subject> lockedRegistry;
 
 
 
@@ -173,12 +175,12 @@ public interface SubjectRegistry
 		 * @param registry the map instance to be used as the internal datastructure.
 		 * @param registryLock the locking instance to be used to synchronize on for accessing the registry.
 		 */
-		Implementation(final XGettingMap<String, Subject> registry, final Object registryLock)
+		Implementation(final Map<String, Subject> registry, final Object registryLock)
 		{
 			super();
 			this.registry       = registry;
 			this.registryLock   = registryLock;
-			this.lockedRegistry = LockedGettingMap.New(this.registry, registryLock);
+			this.lockedRegistry = LockedMap.New(this.registry, registryLock);
 		}
 
 
@@ -204,7 +206,7 @@ public interface SubjectRegistry
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XGettingMap<String, Subject> subjects()
+		public final Map<String, Subject> subjects()
 		{
 			return this.lockedRegistry;
 		}

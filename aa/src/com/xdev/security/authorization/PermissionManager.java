@@ -17,8 +17,9 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.notNull;
-import net.jadoth.collections.EqHashTable;
+import static com.xdev.security.Util.notNull;
+
+import java.util.HashMap;
 
 
 /**
@@ -75,7 +76,7 @@ public interface PermissionManager extends PermissionRegistry, PermissionProvide
 	 * @return a new {@link PermissionManager} instance.
 	 * @see Permission#New(Resource, int)
 	 * @see PermissionManager#New(PermissionProvider)
-	 * @see PermissionManager#New(Object, PermissionProvider, EqHashTable)
+	 * @see PermissionManager#New(Object, PermissionProvider, HashMap)
 	 */
 	public static PermissionManager New()
 	{
@@ -91,11 +92,11 @@ public interface PermissionManager extends PermissionRegistry, PermissionProvide
 	 *         instances.
 	 * @return a new {@link PermissionManager} instance.
 	 * @see PermissionManager#New()
-	 * @see PermissionManager#New(Object, PermissionProvider, EqHashTable)
+	 * @see PermissionManager#New(Object, PermissionProvider, HashMap)
 	 */
 	public static PermissionManager New(final PermissionProvider permissionProvider)
 	{
-		return New(new Object(), permissionProvider, EqHashTable.New());
+		return New(new Object(), permissionProvider, new HashMap<>());
 	}
 
 	/**
@@ -114,7 +115,7 @@ public interface PermissionManager extends PermissionRegistry, PermissionProvide
 	public static PermissionManager New(
 		final Object                                                  registryLock      ,
 		final PermissionProvider                                      permissionProvider,
-		final EqHashTable<Resource, EqHashTable<Integer, Permission>> table
+		final HashMap<Resource, HashMap<Integer, Permission>> table
 	)
 	{
 		return new PermissionManager.Implementation(
@@ -138,7 +139,7 @@ public interface PermissionManager extends PermissionRegistry, PermissionProvide
 		////////////////////
 
 		final PermissionProvider                                      permissionProvider;
-		final EqHashTable<Resource, EqHashTable<Integer, Permission>> table             ;
+		final HashMap<Resource, HashMap<Integer, Permission>> table             ;
 		final Object                                                  registryLock      ;
 		final PermissionRegistry                                      registry          ;
 
@@ -154,7 +155,7 @@ public interface PermissionManager extends PermissionRegistry, PermissionProvide
 		Implementation(
 			final PermissionProvider                                      permissionProvider ,
 			final Object                                                  registryLock,
-			final EqHashTable<Resource, EqHashTable<Integer, Permission>> table
+			final HashMap<Resource, HashMap<Integer, Permission>> table
 		)
 		{
 			super();
@@ -179,13 +180,15 @@ public interface PermissionManager extends PermissionRegistry, PermissionProvide
 			synchronized(this.registryLock)
 			{
 				Permission permission = this.registry.permission(resource, factor);
-				if(permission == null){
+				if(permission == null)
+				{
 					permission = this.permission(resource, factor);
-					EqHashTable<Integer, Permission> resourceMap = this.table.get(resource);
-					if(resourceMap == null){
-						this.table.add(resource, resourceMap = EqHashTable.New());
+					HashMap<Integer, Permission> resourceMap = this.table.get(resource);
+					if(resourceMap == null)
+					{
+						this.table.put(resource, resourceMap = new HashMap<>());
 					}
-					resourceMap.add(factor, permission);
+					resourceMap.put(factor, permission);
 				}
 				return permission;
 			}
@@ -197,9 +200,10 @@ public interface PermissionManager extends PermissionRegistry, PermissionProvide
 		@Override
 		public synchronized Permission permission(final Resource resource, final Integer factor)
 		{
-//				return this.registry.permission(resource, factor);
-				//instead of empty registry use permission provider.
-				return this.permissionProvider.providePermission(resource, factor);
+			synchronized(this.registryLock)
+			{
+				return this.registry.permission(resource, factor);
+			}
 		}
 
 		/**

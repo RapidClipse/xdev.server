@@ -17,19 +17,16 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.coalesce;
-import static net.jadoth.Jadoth.notNull;
+import static com.xdev.security.Util.notNull;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import net.jadoth.collections.EqHashTable;
-import net.jadoth.collections.HashEnum;
-import net.jadoth.collections.X;
-import net.jadoth.collections.types.XGettingEnum;
-import net.jadoth.collections.types.XGettingMap;
-import net.jadoth.collections.types.XGettingTable;
-import net.jadoth.collections.types.XMap;
-import net.jadoth.util.KeyValue;
+import com.xdev.security.Util;
 
 /**
  * Composite type that combines {@link AuthorizationRegistry} with managing aspects of {@link PermissionManager},
@@ -347,10 +344,10 @@ public interface AuthorizationManager extends AuthorizationRegistry, PermissionM
 		final RoleUpdater                        roleUpdater          ;
 		final SubjectUpdater                     subjectUpdater       ;
 
-		final EqHashTable<String, Resource>                           resourceTable   = EqHashTable.New();
-		final EqHashTable<Resource, EqHashTable<Integer, Permission>> permissionTable = EqHashTable.New();
-		final EqHashTable<String, Role>                               roleTable       = EqHashTable.New();
-		final EqHashTable<String, Subject>                            subjectTable    = EqHashTable.New();
+		final HashMap<String, Resource>                       resourceTable   = new HashMap<>();
+		final HashMap<Resource, HashMap<Integer, Permission>> permissionTable = new HashMap<>();
+		final HashMap<String, Role>                           roleTable       = new HashMap<>();
+		final HashMap<String, Subject>                        subjectTable    = new HashMap<>();
 
 		final Object                sharedLock         = new Object();
 		final PermissionManager     permissionManager;
@@ -487,7 +484,7 @@ public interface AuthorizationManager extends AuthorizationRegistry, PermissionM
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XMap<String, Role> roles()
+		public final Map<String, Role> roles()
 		{
 			this.ensureInitialized();
 			return this.roleManager.roles();
@@ -497,7 +494,7 @@ public interface AuthorizationManager extends AuthorizationRegistry, PermissionM
 		 * {@inheritDoc}
 		 */
 		@Override
-		public final XMap<String, Subject> subjects()
+		public final Map<String, Subject> subjects()
 		{
 			this.ensureInitialized();
 			return this.subjectManager.subjects();
@@ -530,10 +527,10 @@ public interface AuthorizationManager extends AuthorizationRegistry, PermissionM
 
 		private void build()
 		{
-			final EqHashTable<String, Resource>                           resources   = EqHashTable.New();
-			final EqHashTable<Resource, EqHashTable<Integer, Permission>> permissions = EqHashTable.New();
-			final EqHashTable<String, Role>                               roles       = EqHashTable.New();
-			final EqHashTable<String, Subject>                            subjects    = EqHashTable.New();
+			final HashMap<String, Resource>                       resources   = new HashMap<>();
+			final HashMap<Resource, HashMap<Integer, Permission>> permissions = new HashMap<>();
+			final HashMap<String, Role>                           roles       = new HashMap<>();
+			final HashMap<String, Subject>                        subjects    = new HashMap<>();
 
 			// prepare updaters (normaly no-op, but important hooking opportunity for custom logic)
 			this.resourceUpdater.prepareResourceUpdate(this.resourceTable.values());
@@ -584,10 +581,10 @@ public interface AuthorizationManager extends AuthorizationRegistry, PermissionM
 			this.roleTable      .clear();
 			this.subjectTable   .clear();
 
-			this.resourceTable  .addAll(resources)  ;
-			this.permissionTable.addAll(permissions);
-			this.roleTable      .addAll(roles)      ;
-			this.subjectTable   .addAll(subjects)   ;
+			this.resourceTable  .putAll(resources)  ;
+			this.permissionTable.putAll(permissions);
+			this.roleTable      .putAll(roles)      ;
+			this.subjectTable   .putAll(subjects)   ;
 		}
 
 		/**
@@ -603,9 +600,9 @@ public interface AuthorizationManager extends AuthorizationRegistry, PermissionM
 			}
 		}
 
-		private static final <E> XGettingEnum<E> resolve(
-			final XGettingEnum<String>   names,
-			final EqHashTable<String, E> mapping
+		private static final <E> Set<E> resolve(
+			final Set<String>   names,
+			final HashMap<String, E> mapping
 		)
 		{
 			if(names == null)
@@ -613,7 +610,7 @@ public interface AuthorizationManager extends AuthorizationRegistry, PermissionM
 				return null;
 			}
 
-			final HashEnum<E> resolved = HashEnum.NewCustom(names.size());
+			final HashSet<E> resolved = new HashSet<>(names.size());
 
 			for(final String name : names)
 			{
@@ -622,43 +619,43 @@ public interface AuthorizationManager extends AuthorizationRegistry, PermissionM
 				{
 					throw new RuntimeException("Missing element: "+name);
 				}
-				resolved.put(element);
+				resolved.add(element);
 			}
 
 			return resolved;
 		}
 
 		private static final Permission lookupPermission(
-			final EqHashTable<Resource, EqHashTable<Integer, Permission>> table   ,
+			final HashMap<Resource, HashMap<Integer, Permission>> table   ,
 			final Resource                                                resource,
 			final Integer                                                 factor
 		)
 		{
-			final EqHashTable<Integer, Permission> subTable = table.get(resource);
+			final HashMap<Integer, Permission> subTable = table.get(resource);
 			return subTable == null ?null :subTable.get(factor);
 		}
 
 		private static final void putPermission(
-			final EqHashTable<Resource, EqHashTable<Integer, Permission>> table     ,
+			final HashMap<Resource, HashMap<Integer, Permission>> table     ,
 			final Resource                                                resource  ,
 			final Integer                                                 factor    ,
 			final Permission                                              permission
 		)
 		{
-			EqHashTable<Integer, Permission> subTable = table.get(resource);
+			HashMap<Integer, Permission> subTable = table.get(resource);
 			if(subTable == null)
 			{
-				table.put(resource, subTable = EqHashTable.New());
+				table.put(resource, subTable = new HashMap<>());
 			}
 			subTable.put(factor, permission);
 		}
 
-		private static final XGettingEnum<Permission> resolvePermissions(
-			final EqHashTable<Resource, EqHashTable<Integer, Permission>> oldPermissionTable,
-			final EqHashTable<Resource, EqHashTable<Integer, Permission>> newPermissionTable,
-			final XGettingTable<String, Integer>                          definitions       ,
-			final XGettingMap<String, Resource>                           resources         ,
-			final PermissionProvider                                      permissionProvider
+		private static final Set<Permission> resolvePermissions(
+			final HashMap<Resource, HashMap<Integer, Permission>> oldPermissionTable,
+			final HashMap<Resource, HashMap<Integer, Permission>> newPermissionTable,
+			final Map<String, Integer>                            definitions       ,
+			final Map<String, Resource>                           resources         ,
+			final PermissionProvider                              permissionProvider
 		)
 		{
 			if(definitions == null)
@@ -666,138 +663,133 @@ public interface AuthorizationManager extends AuthorizationRegistry, PermissionM
 				return null;
 			}
 
-			final HashEnum<Permission> permissions = HashEnum.New();
+			final HashSet<Permission> permissions = new HashSet<>();
 
-			for(final KeyValue<String, Integer> definition : definitions)
+			definitions.forEach((k,v) ->
 			{
-				final Resource resource = resources.get(definition.key());
+				final Resource resource = resources.get(k);
 				if(resource == null)
 				{
-					throw new RuntimeException("Resource not found: "+definition.key()); // (18.06.2014 TM)TODO: proper exception
+					throw new RuntimeException("Resource not found: "+k); // (18.06.2014 TM)TODO: proper exception
 				}
 
-				Permission permission = lookupPermission(newPermissionTable, resource, definition.value());
+				Permission permission = lookupPermission(newPermissionTable, resource, v);
 				if(permission == null)
 				{
-					permission = permissionProvider.providePermission(resource, definition.value());
+					permission = permissionProvider.providePermission(resource, v);
 				}
 				if(permission == null)
 				{
-					throw new RuntimeException("Permission provider failure for "+definition.key()+" ("+definition.value()+")"); // (18.06.2014 TM)TODO: proper exception
+					throw new RuntimeException("Permission provider failure for "+k+" ("+v+")"); // (18.06.2014 TM)TODO: proper exception
 				}
-				putPermission(newPermissionTable, resource, definition.value(), permission);
-				permissions.put(permission);
-			}
+				putPermission(newPermissionTable, resource, v, permission);
+				permissions.add(permission);
+			});
 
 			return permissions;
 		}
 
 		private void buildResourceTable(
-			final EqHashTable<String, Resource> newResources ,
-			final AuthorizationConfiguration                 configuration
+			final HashMap<String, Resource>  newResources ,
+			final AuthorizationConfiguration configuration
 		)
 		{
 			final ResourceProvider              resourceProvider = this.resourceProvider;
 			final ResourceUpdater               resourceUpdater  = this.resourceUpdater;
-			final EqHashTable<String, Resource> oldResources     = this.resourceTable  ;
+			final HashMap<String, Resource> oldResources     = this.resourceTable  ;
 
-			final XGettingTable<String, ? extends XGettingEnum<String>> resourcesDefinitions =
+			final Map<String, ? extends Set<String>> resourcesDefinitions =
 				configuration.resourceResources()
 			;
 
 			/* resolve instance names to actual instances by looking up already registered existing ones or
 			 * getting new ones from the provider. String references are passed as a means for early validation.
 			 */
-			for(final KeyValue<String, ? extends XGettingEnum<String>> resDef : resourcesDefinitions)
+			resourcesDefinitions.forEach((resourceName, value) ->
 			{
-				final String   resourceName = resDef.key();
-				final Resource resource     = resourceProvider.provideResource(
+				final Resource resource = resourceProvider.provideResource(
 					oldResources.get(resourceName),
 					resourceName,
-					resDef.value()
+					value
 				);
 
 				// always put returned instance in case the provider discarded the old instance and created a new one.
 				newResources.put(resourceName, resource);
-			}
+			});
 
 			/* Update the instances in a second pass after all instances have been resolved.
 			 * Children collections have to be resolved locally for passing the actual collections to the updater.
 			 */
-			for(final KeyValue<String, Resource> resource : newResources)
+			newResources.forEach((name, value) ->
 			{
-				final String name = resource.key();
 				resourceUpdater.updateResource(
-					resource.value(),
+					value,
 					name,
 					resolve(resourcesDefinitions.get(name), newResources)
 				);
-			}
+			});
 		}
 
 		private void buildRoleTable(
-			final EqHashTable<String, Role>                               newRoles          ,
-			final AuthorizationConfiguration                                           config            ,
-			final XGettingMap<String, Resource>                           resources         ,
-			final EqHashTable<Resource, EqHashTable<Integer, Permission>> newPermissionTable
+			final HashMap<String, Role>                           newRoles          ,
+			final AuthorizationConfiguration                      config            ,
+			final Map<String, Resource>                           resources         ,
+			final HashMap<Resource, HashMap<Integer, Permission>> newPermissionTable
 		)
 		{
-			final RoleProvider                                            roleProvider       = this.roleProvider      ;
-			final PermissionProvider                                      permissionProvider = this.permissionProvider;
-			final RoleUpdater                                             roleUpdater        = this.roleUpdater       ;
-			final EqHashTable<String, Role>                               oldRoles           = this.roleTable         ;
-			final EqHashTable<Resource, EqHashTable<Integer, Permission>> oldPermissionTable = this.permissionTable   ;
+			final RoleProvider                                    roleProvider       = this.roleProvider      ;
+			final PermissionProvider                              permissionProvider = this.permissionProvider;
+			final RoleUpdater                                     roleUpdater        = this.roleUpdater       ;
+			final HashMap<String, Role>                           oldRoles           = this.roleTable         ;
+			final HashMap<Resource, HashMap<Integer, Permission>> oldPermissionTable = this.permissionTable   ;
 
-			final XGettingTable<String, ? extends XGettingEnum<String>>           roleRoles       = config.roleRoles()      ;
-			final XGettingTable<String, ? extends XGettingTable<String, Integer>> rolePermissions = config.rolePermissions();
+			final Map<String, ? extends Set<String>>              roleRoles          = config.roleRoles()      ;
+			final Map<String, ? extends Map<String, Integer>>     rolePermissions    = config.rolePermissions();
 
 			/* resolve instance names to actual instances by looking up already registered existing ones or
 			 * getting new ones from the provider. String references are passed as a means for early validation.
 			 */
-			for(final KeyValue<String, ? extends XGettingEnum<String>> roleRolesDef : roleRoles)
+			roleRoles.forEach((roleName, value) ->
 			{
-				final String                         roleName     = roleRolesDef.key();
-				final XGettingTable<String, Integer> permissions  = rolePermissions.get(roleName);
-				final Role                           existingRole = oldRoles.get(roleName);
-				final Role                           role         = roleProvider.provideRole(
+				final Map<String, Integer> permissions  = rolePermissions.get(roleName);
+				final Role                 existingRole = oldRoles.get(roleName);
+				final Role                 role         = roleProvider.provideRole(
 					existingRole,
 					roleName,
-					roleRolesDef.value(),
-					coalesce(permissions, X.<String,XGettingEnum<String>>emptyTable()).keys()
+					value,
+					Util.ensureNonNullMap(permissions).keySet()
 				);
 
 				// always put returned instance in case the provider discarded the old instance and created a new one.
 				newRoles.put(roleName, role);
-			}
+			});
 			// complementary pass to cover definitions that only have permissions, no parent roles
-			for(final KeyValue<String, ? extends XGettingTable<String, Integer>> rolePermDef : rolePermissions)
+			rolePermissions.forEach((roleName, value) ->
 			{
-				final String roleName = rolePermDef.key();
 				if(newRoles.get(roleName) != null)
 				{
 					// role already covered, continue loop
-					continue;
+					return;
 				}
 
 				final Role role = roleProvider.provideRole(
 					oldRoles.get(roleName),
 					roleName,
-					X.empty(), // obviously empty, otherwise first loop would have covered it already
-					rolePermDef.value().keys()
+					Collections.emptySet(), // obviously empty, otherwise first loop would have covered it already
+					value.keySet()
 				);
 
 				// always put returned instance in case the provider discarded the old instance and created a new one.
 				newRoles.put(roleName, role);
-			}
+			});
 
 			/* Update the instances in a second pass after all instances have been resolved.
 			 * Children collections have to be resolved locally for passing the actual collections to the updater.
 			 */
-			for(final KeyValue<String, Role> role : newRoles)
+			newRoles.forEach((name, value) ->
 			{
-				final String name = role.key();
 				roleUpdater.updateRole(
-					role.value(),
+					value,
 					name,
 					resolve(roleRoles.get(name), newRoles),
 					resolvePermissions(
@@ -808,39 +800,40 @@ public interface AuthorizationManager extends AuthorizationRegistry, PermissionM
 						permissionProvider
 					)
 				);
-			}
+			});
 		}
 
 		private void buildSubjectTable(
-			final EqHashTable<String, Subject> newSubjects,
-			final AuthorizationConfiguration                configuration,
-			final EqHashTable<String, Role>    roles
+			final HashMap<String, Subject>   newSubjects,
+			final AuthorizationConfiguration configuration,
+			final HashMap<String, Role>      roles
 		)
 		{
-			final SubjectUpdater               subjectUpdater = this.subjectUpdater;
-			final EqHashTable<String, Subject> oldSubjects    = this.subjectTable  ;
+			final SubjectUpdater           subjectUpdater = this.subjectUpdater;
+			final HashMap<String, Subject> oldSubjects    = this.subjectTable  ;
 
-			final XGettingTable<String, ? extends XGettingEnum<String>> subjectDefinitions = configuration.subjectRoles();
+			final Map<String, ? extends Set<String>> subjectDefinitions = configuration.subjectRoles();
 
 
 			/* subject resolving and updating can be done in one pass as it has no type-recursion
 			 * (subject knows other subjects) like resource or role.
 			 */
-			for(final KeyValue<String, ? extends XGettingEnum<String>> subjDef : subjectDefinitions)
+//			for(final KeyValue<String, ? extends Set<String>> subjDef : subjectDefinitions.)
+			subjectDefinitions.forEach((subjectName, value) ->
 			{
-				final String  subjectName = subjDef.key();
-				final Subject subject     = subjectUpdater.updateSubject(
+				final Subject subject = subjectUpdater.updateSubject(
 					oldSubjects.get(subjectName),
 					subjectName,
-					resolve(subjDef.value(), roles)
+					resolve(value, roles)
 				);
-				if(subject == null){
+				if(subject == null)
+				{
 					throw new RuntimeException("Subject providing failure for "+subjectName); // (18.06.2014 TM)TODO: proper exception
 				}
 
 				// always put returned instance in case the provider discarded the old instance and created a new one.
 				newSubjects.put(subjectName, subject);
-			}
+			});
 		}
 
 	}

@@ -17,11 +17,12 @@
 
 package com.xdev.security.authorization;
 
-import net.jadoth.collections.types.XGettingEnum;
+import java.util.Set;
+
 
 /**
  * Function type that provides {@link Role} instances.
- * For details, see {@link #provideRole(Role, String, XGettingEnum, XGettingEnum)}.
+ * For details, see {@link #provideRole(Role, String, Set, Set)}.
  *
  * @see RoleUpdater
  * @author XDEV Software (TM)
@@ -40,5 +41,5 @@ public interface RoleProvider
 	 * @param permissions the names of the role's explicit permissions for validation purposes.
 	 * @return a {@link Role} instance suitable for the specified values, either already existing or newly created.
 	 */
-	public Role provideRole(Role existingRole, String name, XGettingEnum<String> parentRoles, XGettingEnum<String> permissions);
+	public Role provideRole(Role existingRole, String name, Set<String> parentRoles, Set<String> permissions);
 }

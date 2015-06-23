@@ -17,14 +17,15 @@
 
 package com.xdev.security.authorization;
 
-import net.jadoth.collections.types.XGettingCollection;
-import net.jadoth.collections.types.XGettingEnum;
+import java.util.Collection;
+import java.util.Set;
+
 
 
 /**
  * Function type for updating a passed {@link Role} instance for a given role name and collections of parent roles
  * and explicit permissions.
- * For more details, see {@link #updateRole(Role, String, XGettingEnum, XGettingEnum)}.
+ * For more details, see {@link #updateRole(Role, String, Set, Set)}.
  *
  * @author XDEV Software (TM)
  */
@@ -41,7 +42,7 @@ public interface RoleUpdater
 	 * @param parentRoles the parent roles that the {@link Role} instance must reference to be valid.
 	 * @param permissions the explicit permissions that the {@link Role} instance must reference to be valid.
 	 */
-	public void updateRole(Role role, String name, XGettingEnum<Role> parentRoles, XGettingEnum<Permission> permissions);
+	public void updateRole(Role role, String name, Set<Role> parentRoles, Set<Permission> permissions);
 
 
 
@@ -53,7 +54,7 @@ public interface RoleUpdater
 	 *
 	 * @param existingRoles the roles already existing before the updating process.
 	 */
-	public default void prepareRoleUpdate(final XGettingCollection<Role> existingRoles)
+	public default void prepareRoleUpdate(final Collection<Role> existingRoles)
 	{
 		// no-op in default implementation
 	}
@@ -67,7 +68,7 @@ public interface RoleUpdater
 	 *
 	 * @param updatedRoles the updated and potentially newly created roles.
 	 */
-	public default void commitRoleUpdate(final XGettingCollection<Role> updatedRoles)
+	public default void commitRoleUpdate(final Collection<Role> updatedRoles)
 	{
 		// no-op in default implementation
 	}
@@ -81,7 +82,7 @@ public interface RoleUpdater
 	 *
 	 * @param updatedRoles the updated and potentially newly created, empty or inconsistent roles.
 	 */
-	public default void rollbackRoleUpdate(final XGettingCollection<Role> updatedRoles, final Exception cause)
+	public default void rollbackRoleUpdate(final Collection<Role> updatedRoles, final Exception cause)
 	{
 		// no-op in default implementation
 	}

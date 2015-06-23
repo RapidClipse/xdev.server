@@ -17,10 +17,12 @@
 
 package com.xdev.security.authorization;
 
-import static net.jadoth.Jadoth.notNull;
-import net.jadoth.collections.EqHashTable;
-import net.jadoth.collections.LockedMap;
-import net.jadoth.collections.types.XMap;
+import static com.xdev.security.Util.notNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.xdev.security.LockedMap;
 
 /**
  * Manager type that extends {@link SubjectRegistry} with functionality for mutating (managing) the registered entries.
@@ -46,7 +48,7 @@ public interface SubjectManager extends SubjectRegistry
 	 * @return an accessing instance to the internal registry.
 	 */
 	@Override
-	public XMap<String, Subject> subjects();
+	public Map<String, Subject> subjects();
 
 
 
@@ -70,7 +72,7 @@ public interface SubjectManager extends SubjectRegistry
 	{
 		return new Implementation(
 			notNull(registryLock),
-			EqHashTable.New()
+			new HashMap<>()
 		);
 	}
 
@@ -81,7 +83,7 @@ public interface SubjectManager extends SubjectRegistry
 	 * @param map the entries datastructure to be used internally.
 	 * @return a new {@link SubjectManager} instance.
 	 */
-	public static SubjectManager New(final XMap<String, Subject> map)
+	public static SubjectManager New(final Map<String, Subject> map)
 	{
 		return new Implementation(
 			new Object(),
@@ -97,7 +99,7 @@ public interface SubjectManager extends SubjectRegistry
 	 * @param  map the entries datastructure to be used internally.
 	 * @return a new {@link SubjectManager} instance.
 	 */
-	public static SubjectManager New(final Object registryLock, final XMap<String, Subject> map)
+	public static SubjectManager New(final Object registryLock, final Map<String, Subject> map)
 	{
 		return new Implementation(
 			notNull(registryLock),
@@ -119,7 +121,7 @@ public interface SubjectManager extends SubjectRegistry
 		// instance fields //
 		////////////////////
 
-		final XMap<String, Subject>      map            ;
+		final Map<String, Subject>      map            ;
 		final Object                     registryLock   ;
 		final LockedMap<String, Subject> lockedMap      ;
 		final SubjectRegistry            subjectRegistry;
@@ -133,7 +135,7 @@ public interface SubjectManager extends SubjectRegistry
 		/**
 		 * Implementation detail constructor that might change in the future.
 		 */
-		Implementation(final Object registryLock, final XMap<String, Subject> map)
+		Implementation(final Object registryLock, final Map<String, Subject> map)
 		{
 			super();
 			this.registryLock    = registryLock;
@@ -152,7 +154,7 @@ public interface SubjectManager extends SubjectRegistry
 		 * {@inheritDoc}
 		 */
 		@Override
-		public XMap<String, Subject> subjects()
+		public Map<String, Subject> subjects()
 		{
 			return this.lockedMap;
 		}

@@ -15,14 +15,17 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.security.authentication;
+package com.xdev.security.authentication.ldap;
 
 
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
-import com.xdev.security.authentication.ldap.LDAPConfiguration;
+import com.xdev.security.authentication.AuthenticationFailedException;
+import com.xdev.security.authentication.Authenticator;
+import com.xdev.security.authentication.AuthenticatorProvider;
+import com.xdev.security.authentication.CredentialsUsernamePassword;
 
 
 /**

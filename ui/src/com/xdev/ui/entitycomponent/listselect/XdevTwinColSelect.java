@@ -20,7 +20,9 @@ package com.xdev.ui.entitycomponent.listselect;
 
 import java.util.Collection;
 
-import com.xdev.ui.entitycomponent.IDToBeanSetConverter;
+import com.vaadin.data.util.converter.Converter;
+import com.vaadin.data.util.converter.ConverterUtil;
+import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.paging.LazyLoadingUIModelProvider;
 import com.xdev.ui.paging.XdevLazyEntityContainer;
 import com.xdev.ui.util.KeyValueType;
@@ -70,13 +72,12 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
 				beanClass,nestedProperties);
 
-		this.setDataContainer(container);
-
 		/*
 		 * vaadin api compiler warnings, cant define a converter with a set as
 		 * wrapper data type
 		 */
-		this.setConverter(new IDToBeanSetConverter(container));
+		this.setConverter(new IDToBeanCollectionConverter(container));
+		this.setDataContainer(container);
 	}
 
 
@@ -93,13 +94,12 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 			container.addBean(entity);
 		}
 
-		this.setDataContainer(container);
-
 		/*
 		 * vaadin api compiler warnings, cant define a converter with a set as
 		 * wrapper data type
 		 */
-		this.setConverter(new IDToBeanSetConverter(container));
+		this.setConverter(new IDToBeanCollectionConverter(container));
+		this.setDataContainer(container);
 	}
 
 
@@ -111,4 +111,41 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 	{
 		return new LazyLoadingUIModelProvider<T>(this.getRows(),false,false);
 	}
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.vaadin.ui.AbstractField#setConverter(java.lang.Class)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public void setConverter(final Class<?> datamodelType)
+	{
+		// set converter only if utils find a suitable one.
+		final Converter<Object, ?> c = (Converter<Object, ?>)ConverterUtil.getConverter(getType(),
+				datamodelType,getSession());
+		if(c != null)
+		{
+			setConverter(c);
+		}
+	}
+
+	// /*
+	// * (non-Javadoc)
+	// *
+	// * @see com.vaadin.ui.AbstractSelect#getType()
+	// */
+	// @Override
+	// public Class<?> getType()
+	// {
+	// if(isMultiSelect())
+	// {
+	// return Collection.class;
+	// }
+	// else
+	// {
+	// return Object.class;
+	// }
+	// }
 }

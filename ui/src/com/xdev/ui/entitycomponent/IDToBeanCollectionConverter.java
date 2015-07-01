@@ -19,8 +19,10 @@ package com.xdev.ui.entitycomponent;
 
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -38,10 +40,10 @@ public class IDToBeanCollectionConverter<T> implements
 {
 	private final BeanContainer<T>	container;
 	private final EntityIDResolver	idResolver;
-	private Set<T>					beanCollection	= new HashSet<>();
+	private Collection<T>			beanCollection	= new ArrayList<T>();
 	private Collection<Object>		idCollection	= new HashSet<>();
-	
-	
+
+
 	/**
 	 *
 	 */
@@ -50,28 +52,28 @@ public class IDToBeanCollectionConverter<T> implements
 		this.container = container;
 		this.idResolver = new HibernateEntityIDResolver();
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Collection<? extends Object>> getModelType()
 	{
 		return (Class<Collection<? extends Object>>)this.idCollection.getClass();
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Set<T>> getPresentationType()
 	{
 		return (Class<Set<T>>)this.beanCollection.getClass();
-		
+
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.vaadin.data.util.converter.Converter#convertToModel(java.lang.Object,
 	 * java.lang.Class, java.util.Locale)
@@ -81,7 +83,16 @@ public class IDToBeanCollectionConverter<T> implements
 			final Class<? extends Collection<? extends Object>> targetType, final Locale locale)
 			throws com.vaadin.data.util.converter.Converter.ConversionException
 	{
-		this.beanCollection = new HashSet<>();
+		// TODO create suitable type provider
+		if(targetType.isAssignableFrom(List.class))
+		{
+			this.beanCollection = new ArrayList<>();
+		}
+		else
+		{
+			this.beanCollection = new HashSet<>();
+		}
+		
 		if(itemIds != null)
 		{
 			for(final Object itemId : itemIds)
@@ -97,11 +108,11 @@ public class IDToBeanCollectionConverter<T> implements
 		
 		return this.beanCollection;
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang
 	 * .Object, java.lang.Class, java.util.Locale)
@@ -127,7 +138,7 @@ public class IDToBeanCollectionConverter<T> implements
 							.getEntityIDProperty(bean.getClass());
 					final Field idField = bean.getClass().getDeclaredField(idProperty.getName());
 					idField.setAccessible(true);
-					
+
 					this.idCollection.add(idField.get(bean));
 				}
 				catch(NoSuchFieldException | SecurityException | IllegalArgumentException
@@ -139,5 +150,5 @@ public class IDToBeanCollectionConverter<T> implements
 		}
 		return (Set<T>)this.idCollection;
 	}
-	
+
 }

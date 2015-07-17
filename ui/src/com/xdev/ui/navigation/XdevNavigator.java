@@ -15,7 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.ui;
+package com.xdev.ui.navigation;
 
 
 import com.vaadin.navigator.NavigationStateManager;

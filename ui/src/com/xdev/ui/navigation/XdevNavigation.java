@@ -41,10 +41,8 @@ public class XdevNavigation implements NavigationDefinition
 		{
 			return this.viewName;
 		}
-		else
-		{
-			throw new RuntimeException("No View set");
-		}
+
+		throw new RuntimeException("No View set");
 	}
 
 
@@ -86,10 +84,6 @@ public class XdevNavigation implements NavigationDefinition
 	public <T> T getParameter(final ViewChangeEvent navigationEvent, final String parameterName,
 			final Class<T> type)
 	{
-		/*
-		 * Prüfung: Beinhaltet die URL id (=parameterName) um navigation
-		 * (forward, backwards) in der selben view zu ermöglichen?
-		 */
 		if(navigationEvent.getParameters().contains(parameterName))
 		{
 			final URLParameterRegistryValue value = this.registry.get(navigationEvent.getViewName(),
@@ -98,13 +92,13 @@ public class XdevNavigation implements NavigationDefinition
 			{
 				if(value.getType().isAssignableFrom(type))
 				{
-					if(value.getPersistent_ID() != null)
+					if(value.getPersistentID() != null)
 					{
-						return (T)DAOs.get(type).find(value.getPersistent_ID());
+						return (T)DAOs.get(type).find(value.getPersistentID());
 					}
 					else
 					{
-						return (T)value.getEntity();
+						return (T)value.getValue();
 					}
 				}
 			}

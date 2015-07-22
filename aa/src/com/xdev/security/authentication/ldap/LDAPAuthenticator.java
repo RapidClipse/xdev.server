@@ -33,8 +33,8 @@ import com.xdev.security.authentication.CredentialsUsernamePassword;
  */
 
 // TODO return type should be login meta data object
-public final class LDAPAuthenticator implements
-		Authenticator<CredentialsUsernamePassword, DirContext>
+public final class LDAPAuthenticator
+		implements Authenticator<CredentialsUsernamePassword, DirContext>
 {
 
 	// /////////////////////////////////////////////////////////////////////////
@@ -80,13 +80,13 @@ public final class LDAPAuthenticator implements
 		{
 			this.configuration.setPrincipal(credentials.username());
 			this.configuration.setCredential(credentials.password());
-			ldapContext = new InitialDirContext(this.configuration.getLdapEnviromentConfiguration());
+			ldapContext = new InitialDirContext(
+					this.configuration.getLdapEnviromentConfiguration());
 			return ldapContext;
 		}
-		// TODO throw proper exception
 		catch(final NamingException e)
 		{
-			throw new RuntimeException(e);
+			throw new AuthenticationFailedException(e);
 		}
 	}
 
@@ -97,8 +97,7 @@ public final class LDAPAuthenticator implements
 	 *
 	 * @author XDEV Software (TM)
 	 */
-	public interface Provider extends
-			AuthenticatorProvider<CredentialsUsernamePassword, DirContext>
+	public interface Provider extends AuthenticatorProvider<CredentialsUsernamePassword, DirContext>
 	{
 		/**
 		 * {@inheritDoc}

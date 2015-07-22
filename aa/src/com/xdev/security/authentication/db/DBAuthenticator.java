@@ -30,8 +30,8 @@ import com.xdev.security.authentication.CredentialsUsernamePassword;
  * @author XDEV Software (JW)
  */
 
-public final class DBAuthenticator implements
-		Authenticator<CredentialsUsernamePassword, CredentialsUsernamePassword>
+public final class DBAuthenticator
+		implements Authenticator<CredentialsUsernamePassword, CredentialsUsernamePassword>
 {
 
 	private final Class<? extends CredentialsUsernamePassword>	authenticationEntityType;
@@ -66,17 +66,15 @@ public final class DBAuthenticator implements
 	protected CredentialsUsernamePassword checkCredentials(
 			final CredentialsUsernamePassword credentials) throws AuthenticationFailedException
 	{
-		final String hashedInputPassword = new String(this.hashStrategy.hashPassword(credentials
-				.password()));
-		final List<Object> entities = DAOs.get(this.authenticationEntityType).findAll();
+		final String hashedInputPassword = new String(
+				this.hashStrategy.hashPassword(credentials.password()));
+		final List<Object> entities = DAOs.getByEntityType(this.authenticationEntityType).findAll();
 		for(final Object object : entities)
 		{
 			final CredentialsUsernamePassword entity = (CredentialsUsernamePassword)object;
 			if(entity.username().equals(credentials.username()))
 			{
-				final String hashedDBPassword = new String(this.hashStrategy.hashPassword(entity
-						.password()));
-				if(hashedInputPassword.equals(hashedDBPassword))
+				if(entity.password().equals(hashedInputPassword))
 				{
 					return entity;
 				}

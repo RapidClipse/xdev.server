@@ -23,6 +23,7 @@ import java.util.List;
 import com.xdev.dal.DAOs;
 import com.xdev.security.authentication.AuthenticationFailedException;
 import com.xdev.security.authentication.Authenticator;
+import com.xdev.security.authentication.AuthenticatorLoginInfo;
 import com.xdev.security.authentication.CredentialsUsernamePassword;
 
 
@@ -31,13 +32,15 @@ import com.xdev.security.authentication.CredentialsUsernamePassword;
  */
 
 public final class DBAuthenticator
-		implements Authenticator<CredentialsUsernamePassword, CredentialsUsernamePassword>
+		implements Authenticator<CredentialsUsernamePassword, CredentialsUsernamePassword>,
+		AuthenticatorLoginInfo
 {
-
+	
 	private final Class<? extends CredentialsUsernamePassword>	authenticationEntityType;
 	private final DBHashStrategy								hashStrategy	= new DBHashStrategy.PBKDF2WithHmacSHA1();
-
-
+	private boolean												hasPassedLogin	= false;
+	
+	
 	/**
 	 *
 	 */
@@ -46,23 +49,23 @@ public final class DBAuthenticator
 	{
 		this.authenticationEntityType = authenticationEntityType;
 	}
-
-
+	
+	
 	public final CredentialsUsernamePassword authenticate(final String username,
 			final String password) throws AuthenticationFailedException
 	{
 		return this.authenticate(CredentialsUsernamePassword.New(username,password));
 	}
-
-
+	
+	
 	@Override
 	public CredentialsUsernamePassword authenticate(final CredentialsUsernamePassword credentials)
 			throws AuthenticationFailedException
 	{
 		return checkCredentials(credentials);
 	}
-
-
+	
+	
 	protected CredentialsUsernamePassword checkCredentials(
 			final CredentialsUsernamePassword credentials) throws AuthenticationFailedException
 	{
@@ -76,11 +79,19 @@ public final class DBAuthenticator
 			{
 				if(entity.password().equals(hashedInputPassword))
 				{
+					this.hasPassedLogin = true;
 					return entity;
 				}
 			}
 		}
-
+		
 		throw new AuthenticationFailedException();
+	}
+	
+	
+	@Override
+	public boolean hasPassedLogin()
+	{
+		return this.hasPassedLogin;
 	}
 }

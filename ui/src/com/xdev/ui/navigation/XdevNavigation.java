@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,79 +31,85 @@ public class XdevNavigation implements NavigationDefinition
 {
 	private final URLParameterRegistry registry = UI.getCurrent().getSession()
 			.getAttribute(URLParameterRegistry.class);
-
+			
 	private String viewName;
-
-
+	
+	
 	public String getViewName()
 	{
 		if(this.viewName != null)
 		{
 			return this.viewName;
 		}
-
+		
 		throw new RuntimeException("No View set");
 	}
-
-
+	
+	
 	@Override
 	public NavigationDefinition to(final String viewName)
 	{
 		this.viewName = viewName;
-
+		
 		return this;
 	}
-
-
+	
+	
 	@Override
 	public NavigationDefinition parameter(final String parameterName, final Object parameterValue)
 	{
 		this.registry.put(parameterValue,this.getViewName(),parameterName);
 		return this;
 	}
-
-
+	
+	
 	@Override
 	public void navigate()
 	{
 		final Collection<URLParameterRegistryValue> values = this.registry
 				.getValues(this.getViewName());
-
+				
 		String navigationURL = this.getViewName();
 		for(final URLParameterRegistryValue urlParameterRegistryValue : values)
 		{
 			navigationURL += "/" + urlParameterRegistryValue.getPropertyName();
 		}
-
+		
 		UI.getCurrent().getNavigator().navigateTo(navigationURL);
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getParameter(final ViewChangeEvent navigationEvent, final String parameterName,
 			final Class<T> type)
 	{
-		if(navigationEvent.getParameters().contains(parameterName))
+		final String[] parameters = navigationEvent.getParameters().split("/");
+		
+		for(int i = 0; i < parameters.length; i++)
 		{
-			final URLParameterRegistryValue value = this.registry.get(navigationEvent.getViewName(),
-					parameterName);
-			if(value != null)
+			if(parameters[i].equals(parameterName))
 			{
-				if(value.getType().isAssignableFrom(type))
+				final URLParameterRegistryValue value = this.registry
+						.get(navigationEvent.getViewName(),parameterName);
+				if(value != null)
 				{
-					if(value.getPersistent_ID() != null)
+					if(value.getType().isAssignableFrom(type))
 					{
-						return (T)DAOs.get(type).find(value.getPersistent_ID());
-					}
-					else
-					{
-						return (T)value.getEntity();
+						if(value.getPersistent_ID() != null)
+						{
+							return (T)DAOs.getByEntityType(type).find(value.getPersistent_ID());
+						}
+						else
+						{
+							return (T)value.getEntity();
+						}
 					}
 				}
 			}
 		}
+		
 		throw new RuntimeException("Incompatible navigation process");
 	}
-
+	
 }

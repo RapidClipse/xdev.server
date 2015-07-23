@@ -5,16 +5,16 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui;
 
 
@@ -67,15 +67,21 @@ public abstract class XdevUI extends UI
 	{
 		super();
 	}
-	
-	
+
+
+	public static XdevUI getCurrent()
+	{
+		return (XdevUI)UI.getCurrent();
+	}
+
+
 	/**
 	 * Creates a new UI with the given component (often a layout) as its
 	 * content.
-	 * 
+	 *
 	 * @param content
 	 *            the component to use as this UIs content.
-	 * 
+	 *
 	 * @see #setContent(Component)
 	 */
 	public XdevUI(final Component content)
@@ -83,8 +89,10 @@ public abstract class XdevUI extends UI
 		super(content);
 	}
 
+
 	// init defaults
 	{
 		setLocale(Locale.getDefault());
 	}
+
 }

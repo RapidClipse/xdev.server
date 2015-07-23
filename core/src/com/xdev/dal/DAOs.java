@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.dal;
 
 
@@ -28,7 +28,8 @@ public class DAOs
 {
 	// private static final Configuration config;
 	// private static final EntityFieldAnnotation annotationReader;
-	private static final SoftCache<Class<?>, GenericDAO<?, ?>>	cache;
+	private static final SoftCache<Class<?>, GenericDAO<?, ?>> cache;
+	
 	
 	static
 	{
@@ -51,19 +52,18 @@ public class DAOs
 		// }
 		// config.buildMappings();
 		// annotationReader = new EntityFieldAnnotation();
-		
+
 		cache = new SoftCache<>();
 	}
-	
-	
-	public static <D extends GenericDAO<?,?>> D get(Class<D> daoType)
-			throws RuntimeException
+
+
+	public static <D extends GenericDAO<?, ?>> D get(final Class<D> daoType) throws RuntimeException
 	{
 		synchronized(cache)
 		{
 			@SuppressWarnings("unchecked")
 			D dao = (D)cache.get(daoType);
-			
+
 			if(dao == null)
 			{
 				try
@@ -76,25 +76,39 @@ public class DAOs
 					throw new RuntimeException(e);
 				}
 			}
-			
+
 			return dao;
 		}
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
-	public static <T, I extends Serializable> GenericDAO<T, I> get(Object entity)
+	public static <T, I extends Serializable> GenericDAO<T, I> get(final Object entity)
 			throws RuntimeException
 	{
-		DAO dao = entity.getClass().getAnnotation(DAO.class);
+		final DAO dao = entity.getClass().getAnnotation(DAO.class);
 		if(dao == null)
 		{
 			throw new RuntimeException("Not an entity");
 		}
-		
+
 		return (GenericDAO<T, I>)get(dao.daoClass());
 	}
 	
+	
+	@SuppressWarnings("unchecked")
+	public static <T, I extends Serializable> GenericDAO<T, I> getByEntityType(
+			final Class<?> entityType) throws RuntimeException
+	{
+		final DAO dao = entityType.getAnnotation(DAO.class);
+		if(dao == null)
+		{
+			throw new RuntimeException("Not an entity");
+		}
+
+		return (GenericDAO<T, I>)get(dao.daoClass());
+	}
+
 	// - just use get with dao type for now
 	// annotation types can not be generic
 	// @SuppressWarnings("unchecked")

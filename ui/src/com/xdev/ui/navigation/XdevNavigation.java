@@ -96,13 +96,13 @@ public class XdevNavigation implements NavigationDefinition
 				{
 					if(value.getType().isAssignableFrom(type))
 					{
-						if(value.getPersistent_ID() != null)
+						if(value.getPersistentID() != null)
 						{
-							return (T)DAOs.getByEntityType(type).find(value.getPersistent_ID());
+							return (T)DAOs.getByEntityType(type).find(value.getPersistentID());
 						}
 						else
 						{
-							return (T)value.getEntity();
+							return (T)value.getValue();
 						}
 					}
 				}

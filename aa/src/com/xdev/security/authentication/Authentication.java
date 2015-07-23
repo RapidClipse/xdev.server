@@ -32,11 +32,24 @@ public class Authentication
 	}
 	
 	
-	public static void setUser(final Subject user, final AuthenticatorLoginInfo loginInfo)
+	public static void setUser(final Subject user, final Object loginInfo)
 	{
-		if(loginInfo.hasPassedLogin())
+		// TODO enhance API to avoid type checks
+		// if(loginInfo.hasPassedLogin())
+		// {
+		// UI.getCurrent().getSession().setAttribute(Subject.class,user);
+		// }
+		
+		if(loginInfo != null)
 		{
 			UI.getCurrent().getSession().setAttribute(Subject.class,user);
+		}
+		else if(loginInfo instanceof Boolean)
+		{
+			if((boolean)loginInfo)
+			{
+				UI.getCurrent().getSession().setAttribute(Subject.class,user);
+			}
 		}
 	}
 	

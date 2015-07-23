@@ -36,42 +36,42 @@ import com.xdev.security.authentication.CredentialsUsernamePassword;
 public final class LDAPAuthenticator
 		implements Authenticator<CredentialsUsernamePassword, DirContext>
 {
-	
+
 	// /////////////////////////////////////////////////////////////////////////
 	// instance fields //
 	// //////////////////
-	
+
 	final LDAPConfiguration	configuration;
 	static DirContext		ldapContext;
-	
-	
+
+
 	// /////////////////////////////////////////////////////////////////////////
 	// constructors //
 	// ///////////////
-	
+
 	public LDAPAuthenticator(final LDAPConfiguration configuration)
 	{
 		super();
 		this.configuration = configuration;
-		
+
 	}
-	
-	
+
+
 	// /////////////////////////////////////////////////////////////////////////
 	// declared methods //
 	// ///////////////////
-	
+
 	public final DirContext authenticate(final String username, final String password)
 			throws AuthenticationFailedException
 	{
 		return this.authenticate(CredentialsUsernamePassword.New(username,password));
 	}
-	
-	
+
+
 	// /////////////////////////////////////////////////////////////////////////
 	// override methods //
 	// ///////////////////
-	
+
 	@Override
 	public final DirContext authenticate(final CredentialsUsernamePassword credentials)
 			throws AuthenticationFailedException
@@ -89,9 +89,9 @@ public final class LDAPAuthenticator
 			throw new AuthenticationFailedException(e);
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * An {@link LDAPAuthenticator}-specific provider type.
 	 *
@@ -105,13 +105,5 @@ public final class LDAPAuthenticator
 		@Override
 		public LDAPAuthenticator provideAuthenticator();
 	}
-	
-	
-	@Override
-	public boolean hasPassedLogin()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
+
 }

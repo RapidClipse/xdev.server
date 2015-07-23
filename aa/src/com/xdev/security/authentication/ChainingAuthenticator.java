@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,7 +27,7 @@ import static com.xdev.security.Util.notNull;
  * See {@link Authenticator#then(Authenticator)}.
  *
  * @author XDEV Software (TM)
- * 		
+ *
  * @param <C>
  *            the type of the credentials instance to be authenticated.
  * @param <R>
@@ -122,7 +122,7 @@ public final class ChainingAuthenticator<C, R> implements Authenticator<C, R>
 	 *            the credentials to be used in the authentication attempt.
 	 * @return either the result of an successful first attempt or whatever the
 	 *         second attempt returns.
-	 * 		
+	 *
 	 * @throws AuthenticationFailedException
 	 *             if the second authenticator throws one.
 	 */
@@ -176,14 +176,6 @@ public final class ChainingAuthenticator<C, R> implements Authenticator<C, R>
 		// second attempt (with "final say" characteristics). Returns whatever
 		// the second authenticator returns
 		return this.second.authenticate(credentials);
-	}
-
-
-	@Override
-	public boolean hasPassedLogin()
-	{
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 }

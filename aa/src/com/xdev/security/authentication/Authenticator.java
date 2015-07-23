@@ -31,15 +31,15 @@ package com.xdev.security.authentication;
  * in case a successful authentication has to create the user instance itself.
  *
  * @author XDEV Software (TM)
- *		
+ *
  * @param <C>
  *            the type of the credentials instance to be authenticated.
  * @param <R>
  *            the type of the result/response instance to be returned upon an
  *            authentication attempt.
  */
-// @FunctionalInterface
-public interface Authenticator<C, R> extends AuthenticatorLoginInfo
+@FunctionalInterface
+public interface Authenticator<C, R>
 {
 
 	/**
@@ -52,8 +52,8 @@ public interface Authenticator<C, R> extends AuthenticatorLoginInfo
 	 * @throws AuthenticationFailedException
 	 */
 	public R authenticate(C credentials) throws AuthenticationFailedException;
-	
-	
+
+
 	///////////////////////////////////////////////////////////////////////////
 	// default methods //
 	/////////////////////

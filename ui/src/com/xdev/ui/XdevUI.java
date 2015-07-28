@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -20,12 +20,19 @@ package com.xdev.ui;
 
 import java.util.Locale;
 
+import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.FieldEvents.FocusListener;
+import com.vaadin.event.FieldEvents.FocusNotifier;
 import com.vaadin.server.UIProvider;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
+import com.xdev.ui.action.XdevActionManager;
+import com.xdev.ui.event.FocusChangeEvent;
+import com.xdev.ui.event.FocusChangeListener;
+import com.xdev.ui.util.UIUtils;
 
 
 /**
@@ -59,6 +66,15 @@ import com.vaadin.ui.UI;
  */
 public abstract class XdevUI extends UI
 {
+	private final FocusListener				focusNotifier		= this::focusedComponentChanged;
+	private final ComponentAttachListener	focusAttachListener	= event -> addFocusWatcher(
+			event.getAttachedComponent());
+	private final ComponentDetachListener	focusDetachListener	= event -> removeFocusWatcher(
+			event.getDetachedComponent());
+	private Component						lastFocusedComponent;
+	private XdevActionManager				xdevActionManager;
+	
+	
 	/**
 	 * Creates a new empty UI without a caption. The content of the UI must be
 	 * set by calling {@link #setContent(Component)} before using the UI.
@@ -67,14 +83,8 @@ public abstract class XdevUI extends UI
 	{
 		super();
 	}
-
-
-	public static XdevUI getCurrent()
-	{
-		return (XdevUI)UI.getCurrent();
-	}
-
-
+	
+	
 	/**
 	 * Creates a new UI with the given component (often a layout) as its
 	 * content.
@@ -88,11 +98,119 @@ public abstract class XdevUI extends UI
 	{
 		super(content);
 	}
-
-
+	
+	
 	// init defaults
 	{
 		setLocale(Locale.getDefault());
 	}
-
+	
+	
+	/**
+	 * @return the xdevActionManager
+	 */
+	public XdevActionManager getXdevActionManager()
+	{
+		if(this.xdevActionManager == null)
+		{
+			this.xdevActionManager = new XdevActionManager(this);
+		}
+		
+		return this.xdevActionManager;
+	}
+	
+	
+	public void addFocusChangeListener(final FocusChangeListener listener)
+	{
+		if(getListeners(FocusChangeEvent.class).isEmpty())
+		{
+			final Component content = getContent();
+			if(content != null)
+			{
+				addFocusWatcher(content);
+			}
+		}
+		
+		addListener(FocusChangeEvent.EVENT_ID,FocusChangeEvent.class,listener,
+				FocusChangeListener.focusChangedMethod);
+	}
+	
+	
+	public void removeFocusChangeListener(final FocusChangeListener listener)
+	{
+		removeListener(FocusChangeEvent.EVENT_ID,FocusChangeEvent.class,listener);
+		
+		if(getListeners(FocusChangeEvent.class).isEmpty())
+		{
+			final Component content = getContent();
+			if(content != null)
+			{
+				removeFocusWatcher(content);
+			}
+		}
+	}
+	
+	
+	private void focusedComponentChanged(final FocusEvent event)
+	{
+		this.lastFocusedComponent = event.getComponent();
+		fireEvent(new FocusChangeEvent(this.lastFocusedComponent));
+	}
+	
+	
+	@Override
+	public void setContent(final Component content)
+	{
+		super.setContent(content);
+		
+		if(content != null && !getListeners(FocusChangeEvent.class).isEmpty())
+		{
+			addFocusWatcher(content);
+		}
+	}
+	
+	
+	private void addFocusWatcher(final Component root)
+	{
+		UIUtils.lookupComponentTree(root,c -> {
+			
+			if(c instanceof FocusNotifier)
+			{
+				((FocusNotifier)c).addFocusListener(this.focusNotifier);
+			}
+			if(c instanceof ComponentAttachDetachNotifier)
+			{
+				((ComponentAttachDetachNotifier)c)
+						.addComponentAttachListener(this.focusAttachListener);
+				((ComponentAttachDetachNotifier)c)
+						.addComponentDetachListener(this.focusDetachListener);
+			}
+			
+			return null;
+		});
+		
+		fireEvent(new FocusChangeEvent(
+				this.lastFocusedComponent != null ? this.lastFocusedComponent : this));
+	}
+	
+	
+	private void removeFocusWatcher(final Component component)
+	{
+		UIUtils.lookupComponentTree(component,c -> {
+			
+			if(c instanceof FocusNotifier)
+			{
+				((FocusNotifier)c).removeFocusListener(this.focusNotifier);
+			}
+			if(c instanceof ComponentAttachDetachNotifier)
+			{
+				((ComponentAttachDetachNotifier)c)
+						.removeComponentAttachListener(this.focusAttachListener);
+				((ComponentAttachDetachNotifier)c)
+						.removeComponentDetachListener(this.focusDetachListener);
+			}
+			
+			return null;
+		});
+	}
 }

@@ -18,10 +18,13 @@
 package com.xdev.security.authentication.ui;
 
 
-public interface LoginView
+import com.vaadin.navigator.View;
+
+
+public interface LoginView extends View
 {
 	public String getPassword();
-	
-	
+
+
 	public String getUsername();
 }

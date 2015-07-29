@@ -50,7 +50,48 @@ import com.xdev.ui.navigation.XdevNavigator;
  */
 public class XdevAuthenticationNavigator extends XdevNavigator
 {
-
+	
+	private LoginView	loginView;
+	private View		redirectPage;
+	
+	
+	public LoginView getLoginView()
+	{
+		return this.loginView;
+	}
+	
+	
+	public void setLoginView(final Class<LoginView> loginViewClass)
+	{
+		this.loginView = getLoginView(loginViewClass);
+	}
+	
+	
+	public LoginView getLoginView(final Class<LoginView> viewClass)
+	{
+		for(final View view : getRegisteredViews())
+		{
+			if(view.getClass().equals(viewClass))
+			{
+				return (LoginView)view;
+			}
+		}
+		throw new RuntimeException("No registered view complies to " + viewClass.getName());
+	}
+	
+	
+	public View getRedirectPage()
+	{
+		return this.redirectPage;
+	}
+	
+	
+	public void setRedirectPage(final Class<View> redirectPageClass)
+	{
+		this.redirectPage = this.getView(redirectPageClass);
+	}
+	
+	
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI and replacing the contents of
@@ -77,8 +118,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		super(ui,container);
 		this.initAuthenticationListener();
 	}
-
-
+	
+	
 	/**
 	 * Creates a navigator.
 	 * <p>
@@ -106,8 +147,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		super(ui,stateManager,display);
 		this.initAuthenticationListener();
 	}
-
-
+	
+	
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI and replacing the contents of
@@ -132,8 +173,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		super(ui,container);
 		this.initAuthenticationListener();
 	}
-
-
+	
+	
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI.
@@ -154,44 +195,43 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		super(ui,display);
 		this.initAuthenticationListener();
 	}
-
-
+	
+	
 	private void initAuthenticationListener()
 	{
 		this.addViewChangeListener(new ViewChangeListener()
 		{
-
+			
 			@Override
 			public boolean beforeViewChange(final ViewChangeEvent event)
 			{
 				if(event.getNewView() instanceof LoginView)
 				{
 					return true;
-					// TODO direct to first page
-
+					
 				}
 				else
 				{
 					if(Authentication.getUser() == null)
 					{
-
+						
 						Notification.show("Permission denied",Type.ERROR_MESSAGE);
-						// TODO Redirect to login page required?
-
+						navigateTo(getViewName(getLoginView()));
+						
 						return false;
 					}
 				}
-				return false;
-
+				return true;
+				
 			}
-
-
+			
+			
 			@Override
 			public void afterViewChange(final ViewChangeEvent event)
 			{
 			}
-
+			
 		});
 	}
-
+	
 }

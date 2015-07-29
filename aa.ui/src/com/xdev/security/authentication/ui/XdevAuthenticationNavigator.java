@@ -50,23 +50,30 @@ import com.xdev.ui.navigation.XdevNavigator;
  */
 public class XdevAuthenticationNavigator extends XdevNavigator
 {
-	
+
 	private LoginView	loginView;
 	private View		redirectPage;
-	
-	
+
+
 	public LoginView getLoginView()
 	{
-		return this.loginView;
+		if(this.loginView != null)
+		{
+			return this.loginView;
+		}
+		else
+		{
+			throw new RuntimeException("There is no login view set");
+		}
 	}
-	
-	
+
+
 	public void setLoginView(final Class<LoginView> loginViewClass)
 	{
 		this.loginView = getLoginView(loginViewClass);
 	}
-	
-	
+
+
 	public LoginView getLoginView(final Class<LoginView> viewClass)
 	{
 		for(final View view : getRegisteredViews())
@@ -78,20 +85,27 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		}
 		throw new RuntimeException("No registered view complies to " + viewClass.getName());
 	}
-	
-	
+
+
 	public View getRedirectPage()
 	{
-		return this.redirectPage;
+		if(this.redirectPage != null)
+		{
+			return this.redirectPage;
+		}
+		else
+		{
+			throw new RuntimeException("There is no redirect view set");
+		}
 	}
-	
-	
+
+
 	public void setRedirectPage(final Class<View> redirectPageClass)
 	{
 		this.redirectPage = this.getView(redirectPageClass);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI and replacing the contents of
@@ -118,8 +132,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		super(ui,container);
 		this.initAuthenticationListener();
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator.
 	 * <p>
@@ -147,8 +161,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		super(ui,stateManager,display);
 		this.initAuthenticationListener();
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI and replacing the contents of
@@ -173,8 +187,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		super(ui,container);
 		this.initAuthenticationListener();
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI.
@@ -195,43 +209,54 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		super(ui,display);
 		this.initAuthenticationListener();
 	}
-	
-	
+
+
 	private void initAuthenticationListener()
 	{
 		this.addViewChangeListener(new ViewChangeListener()
 		{
-			
+
 			@Override
 			public boolean beforeViewChange(final ViewChangeEvent event)
 			{
 				if(event.getNewView() instanceof LoginView)
 				{
 					return true;
-					
+
 				}
 				else
 				{
 					if(Authentication.getUser() == null)
 					{
-						
+
 						Notification.show("Permission denied",Type.ERROR_MESSAGE);
-						navigateTo(getViewName(getLoginView()));
-						
+						navigateToLoginView();
+
 						return false;
 					}
 				}
 				return true;
-				
+
 			}
-			
-			
+
+
 			@Override
 			public void afterViewChange(final ViewChangeEvent event)
 			{
 			}
-			
+
 		});
 	}
-	
+
+
+	public void navigateToLoginView()
+	{
+		navigateTo(getViewName(getLoginView()));
+	}
+
+
+	public void navigateToRedirectView()
+	{
+		navigateTo(getViewName(getRedirectPage()));
+	}
 }

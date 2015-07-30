@@ -50,60 +50,8 @@ import com.xdev.ui.navigation.XdevNavigator;
  */
 public class XdevAuthenticationNavigator extends XdevNavigator
 {
-
-	private LoginView	loginView;
-	private View		redirectPage;
-
-
-	public LoginView getLoginView()
-	{
-		if(this.loginView != null)
-		{
-			return this.loginView;
-		}
-		else
-		{
-			throw new RuntimeException("There is no login view set");
-		}
-	}
-
-
-	public void setLoginView(final Class<LoginView> loginViewClass)
-	{
-		this.loginView = getLoginView(loginViewClass);
-	}
-
-
-	public LoginView getLoginView(final Class<LoginView> viewClass)
-	{
-		for(final View view : getRegisteredViews())
-		{
-			if(view.getClass().equals(viewClass))
-			{
-				return (LoginView)view;
-			}
-		}
-		throw new RuntimeException("No registered view complies to " + viewClass.getName());
-	}
-
-
-	public View getRedirectPage()
-	{
-		if(this.redirectPage != null)
-		{
-			return this.redirectPage;
-		}
-		else
-		{
-			throw new RuntimeException("There is no redirect view set");
-		}
-	}
-
-
-	public void setRedirectPage(final Class<View> redirectPageClass)
-	{
-		this.redirectPage = this.getView(redirectPageClass);
-	}
+	private String	loginViewName		= "";
+	private String	redirectViewName	= "";
 
 
 	/**
@@ -130,7 +78,6 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	public XdevAuthenticationNavigator(final UI ui, final ComponentContainer container)
 	{
 		super(ui,container);
-		this.initAuthenticationListener();
 	}
 
 
@@ -159,7 +106,6 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 			final ViewDisplay display)
 	{
 		super(ui,stateManager,display);
-		this.initAuthenticationListener();
 	}
 
 
@@ -185,7 +131,6 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	public XdevAuthenticationNavigator(final UI ui, final SingleComponentContainer container)
 	{
 		super(ui,container);
-		this.initAuthenticationListener();
 	}
 
 
@@ -207,7 +152,49 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	public XdevAuthenticationNavigator(final UI ui, final ViewDisplay display)
 	{
 		super(ui,display);
+	}
+
+
+	{
 		this.initAuthenticationListener();
+	}
+	
+	
+	/**
+	 * @return the loginViewName
+	 */
+	public String getLoginViewName()
+	{
+		return this.loginViewName;
+	}
+	
+	
+	/**
+	 * @param loginViewName
+	 *            the loginViewName to set
+	 */
+	public void setLoginViewName(final String loginViewName)
+	{
+		this.loginViewName = loginViewName;
+	}
+	
+	
+	/**
+	 * @return the redirectViewName
+	 */
+	public String getRedirectViewName()
+	{
+		return this.redirectViewName;
+	}
+	
+	
+	/**
+	 * @param redirectViewName
+	 *            the redirectViewName to set
+	 */
+	public void setRedirectViewName(final String redirectViewName)
+	{
+		this.redirectViewName = redirectViewName;
 	}
 
 
@@ -215,28 +202,19 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		this.addViewChangeListener(new ViewChangeListener()
 		{
-
 			@Override
 			public boolean beforeViewChange(final ViewChangeEvent event)
 			{
-				if(event.getNewView() instanceof LoginView)
+				if(event.getNewView() instanceof LoginView || Authentication.getUser() != null)
 				{
 					return true;
-
 				}
-				else
-				{
-					if(Authentication.getUser() == null)
-					{
 
-						Notification.show("Permission denied",Type.ERROR_MESSAGE);
-						navigateToLoginView();
+				showUnauthorizedAccessMessage();
 
-						return false;
-					}
-				}
-				return true;
+				navigateToLoginView();
 
+				return false;
 			}
 
 
@@ -244,19 +222,24 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 			public void afterViewChange(final ViewChangeEvent event)
 			{
 			}
-
 		});
+	}
+
+
+	protected void showUnauthorizedAccessMessage()
+	{
+		Notification.show("Permission denied",Type.ERROR_MESSAGE);
 	}
 
 
 	public void navigateToLoginView()
 	{
-		navigateTo(getViewName(getLoginView()));
+		navigateTo(getLoginViewName());
 	}
 
 
 	public void navigateToRedirectView()
 	{
-		navigateTo(getViewName(getRedirectPage()));
+		navigateTo(getRedirectViewName());
 	}
 }

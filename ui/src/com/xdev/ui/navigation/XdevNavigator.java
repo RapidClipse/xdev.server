@@ -18,10 +18,6 @@
 package com.xdev.ui.navigation;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.vaadin.navigator.NavigationStateManager;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
@@ -50,8 +46,8 @@ import com.vaadin.ui.UI;
  */
 public class XdevNavigator extends Navigator
 {
-	private final Map<String, View> registeredViews;
-
+	// private final Map<String, Class<? extends View>> registeredViewTypes =
+	// new HashMap<>();
 
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
@@ -77,7 +73,6 @@ public class XdevNavigator extends Navigator
 	public XdevNavigator(final UI ui, final ComponentContainer container)
 	{
 		super(ui,container);
-		this.registeredViews = new HashMap<String, View>();
 	}
 
 
@@ -106,7 +101,6 @@ public class XdevNavigator extends Navigator
 			final ViewDisplay display)
 	{
 		super(ui,stateManager,display);
-		this.registeredViews = new HashMap<String, View>();
 	}
 
 
@@ -132,7 +126,6 @@ public class XdevNavigator extends Navigator
 	public XdevNavigator(final UI ui, final SingleComponentContainer container)
 	{
 		super(ui,container);
-		this.registeredViews = new HashMap<String, View>();
 	}
 
 
@@ -154,67 +147,53 @@ public class XdevNavigator extends Navigator
 	public XdevNavigator(final UI ui, final ViewDisplay display)
 	{
 		super(ui,display);
-		this.registeredViews = new HashMap<String, View>();
 	}
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addView(final String viewName, final Class<? extends View> viewClass)
-	{
-		super.addView(viewName,viewClass);
-		this.registeredViews.put(viewName,
-				new ClassBasedViewProvider(viewName,viewClass).getView(viewName));
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addView(final String viewName, final View view)
-	{
-		super.addView(viewName,view);
-		this.registeredViews.put(viewName,view);
-	}
-
-
-	public Collection<View> getRegisteredViews()
-	{
-		return this.registeredViews.values();
-	}
-
-
-	public View getView(final String viewName)
-	{
-		return this.registeredViews.get(viewName);
-	}
-
-
-	public String getViewName(final View view)
-	{
-		for(final String viewName : this.registeredViews.keySet())
-		{
-			if(this.registeredViews.get(viewName).equals(view))
-			{
-				return viewName;
-			}
-		}
-		throw new RuntimeException("No registered view complies to " + view);
-	}
-
-
-	public View getView(final Class<View> viewClass)
-	{
-		for(final View view : getRegisteredViews())
-		{
-			if(view.getClass().equals(viewClass))
-			{
-				return view;
-			}
-		}
-		throw new RuntimeException("No registered view complies to " + viewClass.getName());
-	}
+	// /**
+	// * {@inheritDoc}
+	// */
+	// @Override
+	// public void addView(final String viewName, final Class<? extends View>
+	// viewClass)
+	// {
+	// super.addView(viewName,viewClass);
+	//
+	// this.registeredViewTypes.put(viewName,viewClass);
+	// }
+	//
+	//
+	// /**
+	// * {@inheritDoc}
+	// */
+	// @Override
+	// public void addView(final String viewName, final View view)
+	// {
+	// super.addView(viewName,view);
+	//
+	// this.registeredViewTypes.put(viewName,view.getClass());
+	// }
+	//
+	//
+	// public Collection<Class<? extends View>> getViewTypes()
+	// {
+	// return this.registeredViewTypes.values();
+	// }
+	//
+	//
+	// public Class<? extends View> getViewType(final String viewName)
+	// {
+	// return this.registeredViewTypes.get(viewName);
+	// }
+	//
+	// protected String getViewName(final Class<? extends View> viewType)
+	// {
+	// for(final String viewName : this.registeredViewTypes.keySet())
+	// {
+	// if(this.registeredViewTypes.get(viewName).equals(viewType))
+	// {
+	// return viewName;
+	// }
+	// }
+	// throw new RuntimeException("No registered view complies to " + viewType);
+	// }
 }

@@ -18,6 +18,7 @@
 package com.xdev.security.authentication.db;
 
 
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -30,9 +31,71 @@ public interface DBHashStrategy
 {
 	// TODO customize salt strength?
 	public byte[] hashPassword(final String password);
-	
-	
-	
+
+
+
+	public class MD5 implements DBHashStrategy
+	{
+
+		@Override
+		public byte[] hashPassword(final String password)
+		{
+			try
+			{
+				final MessageDigest md5Digest = MessageDigest.getInstance("MD5");
+				return md5Digest.digest(password.getBytes());
+			}
+			catch(final NoSuchAlgorithmException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
+
+	}
+
+
+
+	public class SHA2 implements DBHashStrategy
+	{
+
+		@Override
+		public byte[] hashPassword(final String password)
+		{
+			try
+			{
+				final MessageDigest sha256Digest = MessageDigest.getInstance("SHA-256");
+				return sha256Digest.digest(password.getBytes());
+			}
+			catch(final NoSuchAlgorithmException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+
+
+	public class SHA1 implements DBHashStrategy
+	{
+
+		@Override
+		public byte[] hashPassword(final String password)
+		{
+			try
+			{
+				final MessageDigest sha256Digest = MessageDigest.getInstance("SHA-1");
+				return sha256Digest.digest(password.getBytes());
+			}
+			catch(final NoSuchAlgorithmException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+
+
+	// TODO random key storage within db
 	public class PBKDF2WithHmacSHA1 implements DBHashStrategy
 	{
 		@Override
@@ -49,12 +112,12 @@ public interface DBHashStrategy
 				final KeySpec spec = new PBEKeySpec(password.toCharArray(),salt,65536,128);
 				final SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 				hash = f.generateSecret(spec).getEncoded();
-				
+
 			}
 			catch(final NoSuchAlgorithmException nsale)
 			{
 				nsale.printStackTrace();
-				
+
 			}
 			catch(final InvalidKeySpecException ikse)
 			{

@@ -35,12 +35,12 @@ public final class DBAuthenticator
 		implements Authenticator<CredentialsUsernamePassword, CredentialsUsernamePassword>,
 		AuthenticatorLoginInfo
 {
-	
+
 	private final Class<? extends CredentialsUsernamePassword>	authenticationEntityType;
-	private final DBHashStrategy								hashStrategy	= new DBHashStrategy.PBKDF2WithHmacSHA1();
+	private DBHashStrategy										hashStrategy	= new DBHashStrategy.PBKDF2WithHmacSHA1();
 	private boolean												hasPassedLogin	= false;
-	
-	
+
+
 	/**
 	 *
 	 */
@@ -49,23 +49,23 @@ public final class DBAuthenticator
 	{
 		this.authenticationEntityType = authenticationEntityType;
 	}
-	
-	
+
+
 	public final CredentialsUsernamePassword authenticate(final String username,
 			final String password) throws AuthenticationFailedException
 	{
 		return this.authenticate(CredentialsUsernamePassword.New(username,password));
 	}
-	
-	
+
+
 	@Override
 	public CredentialsUsernamePassword authenticate(final CredentialsUsernamePassword credentials)
 			throws AuthenticationFailedException
 	{
 		return checkCredentials(credentials);
 	}
-	
-	
+
+
 	protected CredentialsUsernamePassword checkCredentials(
 			final CredentialsUsernamePassword credentials) throws AuthenticationFailedException
 	{
@@ -84,14 +84,26 @@ public final class DBAuthenticator
 				}
 			}
 		}
-		
+
 		throw new AuthenticationFailedException();
 	}
-	
-	
+
+
 	@Override
 	public boolean hasPassedLogin()
 	{
 		return this.hasPassedLogin;
+	}
+
+
+	public DBHashStrategy getHashStrategy()
+	{
+		return this.hashStrategy;
+	}
+
+
+	public void setHashStrategy(final DBHashStrategy hashStrategy)
+	{
+		this.hashStrategy = hashStrategy;
 	}
 }

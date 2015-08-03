@@ -29,7 +29,6 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.SingleComponentContainer;
 import com.vaadin.ui.UI;
-import com.xdev.security.authentication.Authentication;
 import com.xdev.ui.navigation.XdevNavigator;
 
 

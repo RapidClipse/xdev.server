@@ -98,7 +98,7 @@ public class XdevNavigation implements NavigationDefinition
 					{
 						if(value.getPersistentID() != null)
 						{
-							return (T)DAOs.getByEntityType(type).find(value.getPersistentID());
+							return DAOs.getByEntityType(type).find(value.getPersistentID());
 						}
 						else
 						{

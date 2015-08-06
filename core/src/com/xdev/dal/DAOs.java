@@ -96,18 +96,32 @@ public class DAOs
 	}
 	
 	
-	@SuppressWarnings("unchecked")
 	public static <T, I extends Serializable> GenericDAO<T, I> getByEntityType(
-			final Class<?> entityType) throws RuntimeException
+			final Class<T> entity) throws RuntimeException
 	{
-		final DAO dao = entityType.getAnnotation(DAO.class);
-		if(dao == null)
+		try
 		{
-			throw new RuntimeException("Not an entity");
+			return get(entity.newInstance());
 		}
-
-		return (GenericDAO<T, I>)get(dao.daoClass());
+		catch(InstantiationException | IllegalAccessException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
+
+	// @SuppressWarnings("unchecked")
+	// public static <T, I extends Serializable> GenericDAO<T, I>
+	// getByEntityType(
+	// final Class<?> entityType) throws RuntimeException
+	// {
+	// final DAO dao = entityType.getAnnotation(DAO.class);
+	// if(dao == null)
+	// {
+	// throw new RuntimeException("Not an entity");
+	// }
+	//
+	// return (GenericDAO<T, I>)get(dao.daoClass());
+	// }
 
 	// - just use get with dao type for now
 	// annotation types can not be generic

@@ -35,12 +35,12 @@ public final class DBAuthenticator
 		implements Authenticator<CredentialsUsernamePassword, CredentialsUsernamePassword>,
 		AuthenticatorLoginInfo
 {
-
+	
 	private final Class<? extends CredentialsUsernamePassword>	authenticationEntityType;
-	private DBHashStrategy										hashStrategy	= new DBHashStrategy.PBKDF2WithHmacSHA1();
+	private DBHashStrategy										hashStrategy	= new DBHashStrategy.SHA2();
 	private boolean												hasPassedLogin	= false;
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -49,59 +49,67 @@ public final class DBAuthenticator
 	{
 		this.authenticationEntityType = authenticationEntityType;
 	}
-
-
+	
+	
 	public final CredentialsUsernamePassword authenticate(final String username,
 			final String password) throws AuthenticationFailedException
 	{
-		return this.authenticate(CredentialsUsernamePassword.New(username,password));
+		return this.authenticate(CredentialsUsernamePassword.New(username,password.getBytes()));
 	}
-
-
+	
+	
 	@Override
 	public CredentialsUsernamePassword authenticate(final CredentialsUsernamePassword credentials)
 			throws AuthenticationFailedException
 	{
 		return checkCredentials(credentials);
 	}
-
-
+	
+	
 	protected CredentialsUsernamePassword checkCredentials(
 			final CredentialsUsernamePassword credentials) throws AuthenticationFailedException
 	{
-		final String hashedInputPassword = new String(
-				this.hashStrategy.hashPassword(credentials.password()));
-		final List<Object> entities = DAOs.getByEntityType(this.authenticationEntityType).findAll();
+		final byte[] hasshedPassword = this.hashStrategy.hashPassword(credentials.password());
+		final List<? extends CredentialsUsernamePassword> entities = DAOs
+				.getByEntityType(this.authenticationEntityType).findAll();
 		for(final Object object : entities)
 		{
 			final CredentialsUsernamePassword entity = (CredentialsUsernamePassword)object;
 			if(entity.username().equals(credentials.username()))
 			{
-				if(entity.password().equals(hashedInputPassword))
+				if(hasshedPassword.length == entity.password().length)
 				{
+					for(int i = 0; i < hasshedPassword.length; i++)
+					{
+						if(!(hasshedPassword[i] == entity.password()[i]))
+						{
+							this.hasPassedLogin = false;
+							break;
+						}
+					}
 					this.hasPassedLogin = true;
 					return entity;
 				}
 			}
 		}
-
+		
 		throw new AuthenticationFailedException();
 	}
-
-
+	
+	
 	@Override
 	public boolean hasPassedLogin()
 	{
 		return this.hasPassedLogin;
 	}
-
-
+	
+	
 	public DBHashStrategy getHashStrategy()
 	{
 		return this.hashStrategy;
 	}
-
-
+	
+	
 	public void setHashStrategy(final DBHashStrategy hashStrategy)
 	{
 		this.hashStrategy = hashStrategy;

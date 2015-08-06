@@ -30,7 +30,7 @@ import javax.crypto.spec.PBEKeySpec;
 public interface DBHashStrategy
 {
 	// TODO customize salt strength?
-	public byte[] hashPassword(final String password);
+	public byte[] hashPassword(final byte[] password);
 
 
 
@@ -38,12 +38,12 @@ public interface DBHashStrategy
 	{
 
 		@Override
-		public byte[] hashPassword(final String password)
+		public byte[] hashPassword(final byte[] password)
 		{
 			try
 			{
 				final MessageDigest md5Digest = MessageDigest.getInstance("MD5");
-				return md5Digest.digest(password.getBytes());
+				return md5Digest.digest(password);
 			}
 			catch(final NoSuchAlgorithmException e)
 			{
@@ -59,12 +59,12 @@ public interface DBHashStrategy
 	{
 
 		@Override
-		public byte[] hashPassword(final String password)
+		public byte[] hashPassword(final byte[] password)
 		{
 			try
 			{
 				final MessageDigest sha256Digest = MessageDigest.getInstance("SHA-256");
-				return sha256Digest.digest(password.getBytes());
+				return sha256Digest.digest(password);
 			}
 			catch(final NoSuchAlgorithmException e)
 			{
@@ -79,12 +79,12 @@ public interface DBHashStrategy
 	{
 
 		@Override
-		public byte[] hashPassword(final String password)
+		public byte[] hashPassword(final byte[] password)
 		{
 			try
 			{
 				final MessageDigest sha256Digest = MessageDigest.getInstance("SHA-1");
-				return sha256Digest.digest(password.getBytes());
+				return sha256Digest.digest(password);
 			}
 			catch(final NoSuchAlgorithmException e)
 			{
@@ -99,7 +99,7 @@ public interface DBHashStrategy
 	public class PBKDF2WithHmacSHA1 implements DBHashStrategy
 	{
 		@Override
-		public byte[] hashPassword(final String password)
+		public byte[] hashPassword(final byte[] password)
 		{
 			final byte[] salt = new byte[16];
 			byte[] hash = null;
@@ -109,7 +109,8 @@ public interface DBHashStrategy
 			}
 			try
 			{
-				final KeySpec spec = new PBEKeySpec(password.toCharArray(),salt,65536,128);
+				final KeySpec spec = new PBEKeySpec(new String(password).toCharArray(),salt,65536,
+						128);
 				final SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 				hash = f.generateSecret(spec).getEncoded();
 

@@ -79,7 +79,7 @@ public final class LDAPAuthenticator
 		try
 		{
 			this.configuration.setPrincipal(credentials.username());
-			this.configuration.setCredential(credentials.password());
+			this.configuration.setCredential(new String(credentials.password()));
 			ldapContext = new InitialDirContext(
 					this.configuration.getLdapEnviromentConfiguration());
 			return ldapContext;

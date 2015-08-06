@@ -50,7 +50,7 @@ import com.xdev.ui.navigation.XdevNavigator;
 public class XdevAuthenticationNavigator extends XdevNavigator
 {
 	private String	loginViewName		= "";
-	private String	redirectViewName	= "";
+	private String	redirectViewName	= null;
 
 
 	/**
@@ -157,8 +157,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		this.initAuthenticationListener();
 	}
-	
-	
+
+
 	/**
 	 * @return the loginViewName
 	 */
@@ -166,8 +166,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		return this.loginViewName;
 	}
-	
-	
+
+
 	/**
 	 * @param loginViewName
 	 *            the loginViewName to set
@@ -176,17 +176,24 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		this.loginViewName = loginViewName;
 	}
-	
-	
+
+
 	/**
 	 * @return the redirectViewName
 	 */
 	public String getRedirectViewName()
 	{
-		return this.redirectViewName;
+		if(this.redirectViewName != null)
+		{
+			return this.redirectViewName;
+		}
+		else
+		{
+			throw new RuntimeException("No redirect view set");
+		}
 	}
-	
-	
+
+
 	/**
 	 * @param redirectViewName
 	 *            the redirectViewName to set

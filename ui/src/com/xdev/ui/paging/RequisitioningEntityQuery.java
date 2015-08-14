@@ -53,7 +53,7 @@ import com.vaadin.data.util.filter.Like;
 import com.vaadin.data.util.filter.Not;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
-import com.xdev.communication.EntityManagerHelper;
+import com.xdev.communication.EntityManagerUtil;
 
 
 @SuppressWarnings("unchecked")
@@ -664,6 +664,6 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 
 	protected EntityManager em()
 	{
-		return EntityManagerHelper.getEntityManager();
+		return EntityManagerUtil.getEntityManager();
 	}
 }

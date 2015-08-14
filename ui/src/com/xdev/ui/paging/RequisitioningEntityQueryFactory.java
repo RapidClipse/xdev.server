@@ -27,7 +27,7 @@ import org.vaadin.addons.lazyquerycontainer.Query;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
 import org.vaadin.addons.lazyquerycontainer.QueryFactory;
 
-import com.xdev.communication.EntityManagerHelper;
+import com.xdev.communication.EntityManagerUtil;
 
 
 public class RequisitioningEntityQueryFactory<T> implements QueryFactory, Serializable
@@ -44,7 +44,7 @@ public class RequisitioningEntityQueryFactory<T> implements QueryFactory, Serial
 	 */
 	public EntityManager getEntityManager()
 	{
-		return EntityManagerHelper.getEntityManager();
+		return EntityManagerUtil.getEntityManager();
 	}
 	
 	

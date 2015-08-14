@@ -28,7 +28,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 
-import com.xdev.communication.EntityManagerHelper;
+import com.xdev.communication.EntityManagerUtil;
 
 
 /**
@@ -45,7 +45,7 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 	public XdevEntityReferenceResolver()
 	{
 		this.config = new Configuration();
-		Set<EntityType<?>> set = EntityManagerHelper.getEntityManager().getMetamodel()
+		Set<EntityType<?>> set = EntityManagerUtil.getEntityManager().getMetamodel()
 				.getEntities();
 		
 		for(Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)

@@ -20,11 +20,11 @@ package com.xdev.db.connection;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-public interface HibernateUtils
+public interface EntityManagerFactoryProvider
 {
 	public EntityManagerFactory getEntityManagerFactory();
 	
-	public class Implementation implements HibernateUtils
+	public class Implementation implements EntityManagerFactoryProvider
 	{
 		private final EntityManagerFactory	entityManagerFactory;
 		

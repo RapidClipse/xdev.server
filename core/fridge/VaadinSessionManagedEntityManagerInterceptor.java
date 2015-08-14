@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -59,7 +59,6 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 			if(factory != null)
 			{
 				manager = factory.createEntityManager();
-				// System.out.println("opened em");
 				
 				// Add the EntityManager to the request
 				req.setAttribute(EntityManagerHelper.ENTITY_MANAGER_ATTRIBUTE,manager);
@@ -69,9 +68,6 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 			// processing)
 			chain.doFilter(req,res);
 			
-			// Flush and close the EntityManager after request is resolved
-			// System.out.println("closing em");
-			// System.out.println("---------------------------------------------------");
 			if(manager != null)
 			{
 				manager.close();
@@ -104,27 +100,15 @@ public class VaadinSessionManagedEntityManagerInterceptor implements Filter
 	{
 		try
 		{
-			final String hibernatePersistenceUnit = fc.getServletContext().getInitParameter(
-					XdevServletService.HIBERNATEUTIL_FILTER_INIT_PARAM);
-			EntityManagerHelper.initializeHibernateFactory(new HibernateUtils.Implementation(
-					hibernatePersistenceUnit));
+			final String hibernatePersistenceUnit = fc.getServletContext()
+					.getInitParameter(XdevServletService.HIBERNATEUTIL_FILTER_INIT_PARAM);
+			EntityManagerHelper.initializeHibernateFactory(
+					new HibernateUtils.Implementation(hibernatePersistenceUnit));
 		}
 		catch(final PersistenceException e)
 		{
-			Logger.getLogger(VaadinSessionManagedEntityManagerInterceptor.class.getName()).log(
-					Level.WARNING,e.getMessage(),e);
+			Logger.getLogger(VaadinSessionManagedEntityManagerInterceptor.class.getName())
+					.log(Level.WARNING,e.getMessage(),e);
 		}
-		
-		// try
-		// {
-		// Class<?> hibernateUtilClazz = Class.forName(hibernateUtilClassName);
-		// HibernateUtil hibernateUtilObject =
-		// (HibernateUtil)hibernateUtilClazz.newInstance();
-		// VaadinSessionEntityManagerHelper.setHibernateUtil(hibernateUtilObject);
-		// }
-		// catch(Exception e)
-		// {
-		// throw new RuntimeException(e.getMessage());
-		// }
 	}
 }

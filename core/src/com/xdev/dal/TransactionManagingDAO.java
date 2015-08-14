@@ -32,8 +32,8 @@ import com.googlecode.genericdao.search.ISearch;
 import com.googlecode.genericdao.search.SearchResult;
 import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
-import com.xdev.communication.EntityManagerHelper;
-import com.xdev.communication.JPADAOWrapper;
+import com.xdev.communication.EntityManagerUtil;
+import com.xdev.communication.JPADAO;
 
 
 /**
@@ -49,7 +49,7 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> impleme
 	 * DAO type must be at least GenericDAOImpl to achieve typed behavior and
 	 * JPA support, see type hierarchy.
 	 */
-	private JPADAOWrapper<T, IT>	persistenceManager;
+	private JPADAO<T, IT>	persistenceManager;
 	
 	
 	public GenericDAO<T, IT> getPersistenceManager()
@@ -58,7 +58,7 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> impleme
 	}
 	
 	
-	public void setPersistenceManager(JPADAOWrapper<T, IT> persistenceManager)
+	public void setPersistenceManager(JPADAO<T, IT> persistenceManager)
 	{
 		this.persistenceManager = persistenceManager;
 	}
@@ -66,7 +66,7 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> impleme
 	
 	public TransactionManagingDAO(Class<T> persistentClass)
 	{
-		this.persistenceManager = new JPADAOWrapper<>(persistentClass);
+		this.persistenceManager = new JPADAO<>(persistentClass);
 		this.persistenceManager.setSearchProcessor(new JPASearchProcessor(
 				new JPAAnnotationMetadataUtil()));
 	}
@@ -74,7 +74,7 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> impleme
 	
 	protected EntityManager em()
 	{
-		return EntityManagerHelper.getEntityManager();
+		return EntityManagerUtil.getEntityManager();
 	}
 	
 	

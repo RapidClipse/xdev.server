@@ -47,7 +47,7 @@ public class URLParameterRegistry
 	{
 		if(this.entities == null)
 		{
-			final EntityManager entityManager = EntityManagerHelper.getEntityManager();
+			final EntityManager entityManager = EntityManagerUtil.getEntityManager();
 			if(entityManager != null)
 			{
 				this.entities = entityManager.getMetamodel().getEntities();

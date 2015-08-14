@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,17 +37,14 @@ import com.googlecode.genericdao.search.ISearch;
 import com.googlecode.genericdao.search.SearchResult;
 import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
-import com.xdev.communication.EntityManagerHelper;
-import com.xdev.communication.JPADAOWrapper;
+import com.xdev.communication.EntityManagerUtil;
+import com.xdev.communication.JPADAO;
 
 
 /**
- * CAUTION: Use only in correspondence with a transactional DAO implementation
- * if no transaction manager like for example JTA is active. The actions
- * executed with this DAO implementation do neither open nor close transactions.
  *
  * @author XDEV Software (JW)
- *
+ * 		
  * @see GenericDAO
  */
 public abstract class LockManagingDAO<T, IT extends Serializable> extends GenericDAOImpl<T, IT>
@@ -56,7 +53,7 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 	 * DAO type must be at least GenericDAOImpl to achieve typed behavior and
 	 * JPA support, see type hierarchy.
 	 */
-	private JPADAOWrapper<T, IT>		persistenceManager;
+	private JPADAO<T, IT> persistenceManager;
 
 	// lock meta data
 	private long						lockTimeOut				= 0;
@@ -70,28 +67,29 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 	}
 
 
-	public JPADAOWrapper<T, IT> getPersistenceManager()
+	public JPADAO<T, IT> getPersistenceManager()
 	{
 		return this.persistenceManager;
 	}
 
 
-	public void setPersistenceManager(final JPADAOWrapper<T, IT> persistenceManager)
+	public void setPersistenceManager(final JPADAO<T, IT> persistenceManager)
 	{
 		this.persistenceManager = persistenceManager;
 	}
 
+
 	{
-		this.persistenceManager.setEntityManager(EntityManagerHelper.getEntityManager());
-		this.persistenceManager.setSearchProcessor(new JPASearchProcessor(
-				new JPAAnnotationMetadataUtil()));
+		this.persistenceManager.setEntityManager(EntityManagerUtil.getEntityManager());
+		this.persistenceManager
+				.setSearchProcessor(new JPASearchProcessor(new JPAAnnotationMetadataUtil()));
 	}
 
 
 	@Override
 	protected EntityManager em()
 	{
-		return EntityManagerHelper.getEntityManager();
+		return EntityManagerUtil.getEntityManager();
 	}
 
 

@@ -18,6 +18,9 @@
 package com.xdev.communication;
 
 
+import javax.persistence.LockModeType;
+
+
 /**
  * @author XDEV Software
  *
@@ -35,7 +38,13 @@ public interface Conversation
 	public boolean isPessimisticUnit();
 
 
-	public void setPessimisticUnit(boolean mode);
+	public void setPessimisticUnit(boolean lockState, LockModeType type);
+
+
+	public LockModeType getLockModeType();
+
+
+	public void setLockModeType(final LockModeType lockModeType);
 
 
 	public void start();
@@ -48,8 +57,23 @@ public interface Conversation
 	public class Implementation implements Conversation
 	{
 
-		private boolean	isActive		= false;
-		private boolean	pessimisticUnit	= false;
+		private boolean			isActive		= false;
+		private boolean			pessimisticUnit	= false;
+		private LockModeType	lockModeType;
+
+
+		@Override
+		public LockModeType getLockModeType()
+		{
+			return this.lockModeType;
+		}
+
+
+		@Override
+		public void setLockModeType(final LockModeType lockModeType)
+		{
+			this.lockModeType = lockModeType;
+		}
 
 
 		/*
@@ -106,9 +130,10 @@ public interface Conversation
 		 * @see com.xdev.communication.Conversation#setPessimisticUnit(boolean)
 		 */
 		@Override
-		public void setPessimisticUnit(final boolean mode)
+		public void setPessimisticUnit(final boolean mode, final LockModeType type)
 		{
 			this.pessimisticUnit = mode;
+			this.lockModeType = type;
 		}
 
 	}

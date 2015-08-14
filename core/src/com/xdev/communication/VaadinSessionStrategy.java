@@ -37,7 +37,7 @@ import com.vaadin.server.VaadinSession;
  * Manages Session propagation.
  *
  * @author XDEV Software
- *		
+ * 		
  */
 public interface VaadinSessionStrategy
 {
@@ -158,7 +158,7 @@ public interface VaadinSessionStrategy
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 *		
+	 * 		
 	 */
 	public class PerConversation implements VaadinSessionStrategy
 	{
@@ -244,15 +244,9 @@ public interface VaadinSessionStrategy
 					{
 						em.getTransaction().rollback();
 					}
-					em.close();
 					
-					// set flush mode back to default
-					em.unwrap(Session.class).setFlushMode(FlushMode.AUTO);
+					em.close();
 				}
-			}
-			else
-			{
-				System.out.println("in conversation mode but conversation null");
 			}
 		}
 	}
@@ -263,7 +257,7 @@ public interface VaadinSessionStrategy
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 *		
+	 * 		
 	 */
 	public class PerConversationPessimistic implements VaadinSessionStrategy
 	{

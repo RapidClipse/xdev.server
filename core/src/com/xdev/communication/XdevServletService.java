@@ -82,17 +82,7 @@ public class XdevServletService extends VaadinServletService
 				final EntityManagerFactory factory = EntityManagerUtil.getEntityManagerFactory();
 				if(factory != null)
 				{
-					// final VaadinSession session = findVaadinSession(request);
-					// final EntityManager manager =
-					// factory.createEntityManager();
-					// final Conversationable.Implementation conversationable =
-					// new Conversationable.Implementation();
-					// conversationable.setEntityManager(manager);
-					//
-					// // Add the EntityManager to the session
-					// session.setAttribute(EntityManagerUtil.ENTITY_MANAGER_ATTRIBUTE,
-					// conversationable);
-					this.sessionStrategyProvider.getVaadinSessionStrategy(request,this)
+					this.sessionStrategyProvider.getRequestStartVaadinSessionStrategy(request,this)
 							.handleRequest(request,this);
 				}
 			}
@@ -110,23 +100,10 @@ public class XdevServletService extends VaadinServletService
 	public void requestEnd(final VaadinRequest request, final VaadinResponse response,
 			final VaadinSession session)
 	{
-		this.sessionStrategyProvider.getVaadinSessionStrategy(request,this).requestEnd(request,this,
-				session);
-		// try
-		// {
-		// EntityManagerUtil.closeEntityManager();
-		// }
-		// catch(final Exception e)
-		// {
-		// if(EntityManagerUtil.getEntityManager() != null)
-		// {
-		// final EntityTransaction tx = EntityManagerUtil.getTransaction();
-		// if(tx != null && tx.isActive())
-		// {
-		// EntityManagerUtil.rollback();
-		// }
-		// }
-		// }
+		// TODO explicit provider method for end to keep the start and end
+		// request atomic for a particular strategy.
+		this.sessionStrategyProvider.getRequestEndVaadinSessionStrategy(request,this)
+				.requestEnd(request,this,session);
 
 		super.requestEnd(request,response,session);
 	}

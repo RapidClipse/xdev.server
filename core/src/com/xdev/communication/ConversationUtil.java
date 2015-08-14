@@ -18,15 +18,17 @@
 package com.xdev.communication;
 
 
+import javax.persistence.LockModeType;
+
 import com.vaadin.server.VaadinSession;
 
 
 public class ConversationUtil
 {
-
+	
 	private final static String ENTITY_MANAGER_ATTRIBUTE = "EntityManager";
-
-
+	
+	
 	public static Conversation getConversation()
 	{
 		/*
@@ -37,14 +39,14 @@ public class ConversationUtil
 				.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
 		return conversationable.getConversation();
 	}
-
-
+	
+	
 	private static Conversation newConversation()
 	{
 		final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
 				.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
 		final Conversation conversation = new Conversation.Implementation();
-
+		
 		try
 		{
 			conversationable.setConversation(conversation);
@@ -53,34 +55,42 @@ public class ConversationUtil
 		{
 			return conversationable.getConversation();
 		}
-
+		
 		return conversation;
 	}
-
-
+	
+	
 	public static void startConversation()
 	{
 		newConversation().start();
 	}
-
-
+	
+	
+	public static void startPessimisticConversation(final LockModeType lockMode)
+	{
+		final Conversation conversation = newConversation();
+		conversation.setPessimisticUnit(true,lockMode);
+		conversation.start();
+	}
+	
+	
 	public static void startPessimisticConversation()
 	{
 		final Conversation conversation = newConversation();
-		conversation.setPessimisticUnit(true);
+		conversation.setPessimisticUnit(true,LockModeType.WRITE);
 		conversation.start();
 	}
-
-
+	
+	
 	public static void endConversation()
 	{
 		getConversation().end();
 	}
-
-
+	
+	
 	public static boolean isConversationActive()
 	{
 		return getConversation().isActive();
 	}
-
+	
 }

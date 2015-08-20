@@ -28,7 +28,7 @@ import com.vaadin.server.VaadinSession;
 import com.xdev.db.connection.EntityManagerFactoryProvider;
 
 
-public class EntityManagerUtil
+public class EntityManagerUtils
 {
 	public final static String ENTITY_MANAGER_ATTRIBUTE = "EntityManager";
 
@@ -46,7 +46,7 @@ public class EntityManagerUtil
 	public static EntityManagerFactory initializeHibernateFactory(
 			final EntityManagerFactoryProvider hibernateUtil)
 	{
-		EntityManagerUtil.hibernateUtil = hibernateUtil;
+		EntityManagerUtils.hibernateUtil = hibernateUtil;
 		return emf = hibernateUtil.getEntityManagerFactory();
 	}
 
@@ -131,7 +131,7 @@ public class EntityManagerUtil
 
 	public static <T> CriteriaQuery<T> getCriteriaQuery(final Class<T> type)
 	{
-		final CriteriaBuilder cb = EntityManagerUtil.getEntityManager().getCriteriaBuilder();
+		final CriteriaBuilder cb = EntityManagerUtils.getEntityManager().getCriteriaBuilder();
 		final CriteriaQuery<T> cq = cb.createQuery(type);
 		return cq;
 	}

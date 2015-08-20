@@ -37,7 +37,7 @@ import com.googlecode.genericdao.search.ISearch;
 import com.googlecode.genericdao.search.SearchResult;
 import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
-import com.xdev.communication.EntityManagerUtil;
+import com.xdev.communication.EntityManagerUtils;
 
 
 /**
@@ -79,7 +79,7 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 
 
 	{
-		this.persistenceManager.setEntityManager(EntityManagerUtil.getEntityManager());
+		this.persistenceManager.setEntityManager(EntityManagerUtils.getEntityManager());
 		this.persistenceManager
 				.setSearchProcessor(new JPASearchProcessor(new JPAAnnotationMetadataUtil()));
 	}
@@ -88,7 +88,7 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 	@Override
 	protected EntityManager em()
 	{
-		return EntityManagerUtil.getEntityManager();
+		return EntityManagerUtils.getEntityManager();
 	}
 
 

@@ -32,7 +32,7 @@ import com.googlecode.genericdao.search.ISearch;
 import com.googlecode.genericdao.search.SearchResult;
 import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
-import com.xdev.communication.EntityManagerUtil;
+import com.xdev.communication.EntityManagerUtils;
 
 
 /**
@@ -73,7 +73,7 @@ public abstract class TransactionManagingDAO<T, IT extends Serializable> impleme
 	
 	protected EntityManager em()
 	{
-		return EntityManagerUtil.getEntityManager();
+		return EntityManagerUtils.getEntityManager();
 	}
 	
 	

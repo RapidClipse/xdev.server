@@ -66,7 +66,7 @@ public class XdevServletService extends VaadinServletService
 				// TODO check multiple persistence unit functionality
 				final String hibernatePersistenceUnit = getDeploymentConfiguration()
 						.getApplicationOrSystemProperty(HIBERNATEUTIL_FILTER_INIT_PARAM,null);
-				EntityManagerUtil.initializeHibernateFactory(
+				EntityManagerUtils.initializeHibernateFactory(
 						new EntityManagerFactoryProvider.Implementation(hibernatePersistenceUnit));
 			}
 			catch(final PersistenceException e)
@@ -79,7 +79,7 @@ public class XdevServletService extends VaadinServletService
 		{
 			try
 			{
-				final EntityManagerFactory factory = EntityManagerUtil.getEntityManagerFactory();
+				final EntityManagerFactory factory = EntityManagerUtils.getEntityManagerFactory();
 				if(factory != null)
 				{
 					this.sessionStrategyProvider.getRequestStartVaadinSessionStrategy(request,this)

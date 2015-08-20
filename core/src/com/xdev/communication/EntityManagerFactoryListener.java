@@ -40,7 +40,7 @@ public class EntityManagerFactoryListener implements ServletContextListener
 	@Override
 	public void contextDestroyed(ServletContextEvent sce)
 	{
-		EntityManagerUtil.closeEntityManagerFactory();
+		EntityManagerUtils.closeEntityManagerFactory();
 	}
 	
 }

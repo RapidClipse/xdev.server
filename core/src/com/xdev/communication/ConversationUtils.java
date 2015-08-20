@@ -23,7 +23,7 @@ import javax.persistence.LockModeType;
 import com.vaadin.server.VaadinSession;
 
 
-public class ConversationUtil
+public class ConversationUtils
 {
 	
 	private final static String ENTITY_MANAGER_ATTRIBUTE = "EntityManager";

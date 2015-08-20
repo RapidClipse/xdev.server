@@ -26,7 +26,7 @@ import javax.persistence.EntityTransaction;
 
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
-import com.xdev.communication.EntityManagerUtil;
+import com.xdev.communication.EntityManagerUtils;
 
 
 public class AccessUtils
@@ -40,14 +40,14 @@ public class AccessUtils
 			{
 				try
 				{
-					final EntityManagerFactory factory = EntityManagerUtil
+					final EntityManagerFactory factory = EntityManagerUtils
 							.getEntityManagerFactory();
 					if(factory != null)
 					{
 						final EntityManager manager = factory.createEntityManager();
 						// Add the EntityManager to the session
 						VaadinSession.getCurrent().setAttribute(
-								EntityManagerUtil.ENTITY_MANAGER_ATTRIBUTE,manager);
+								EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE,manager);
 					}
 
 					runnable.run();
@@ -56,16 +56,16 @@ public class AccessUtils
 				{
 					try
 					{
-						EntityManagerUtil.closeEntityManager();
+						EntityManagerUtils.closeEntityManager();
 					}
 					catch(final Exception e)
 					{
-						if(EntityManagerUtil.getEntityManager() != null)
+						if(EntityManagerUtils.getEntityManager() != null)
 						{
-							final EntityTransaction tx = EntityManagerUtil.getTransaction();
+							final EntityTransaction tx = EntityManagerUtils.getTransaction();
 							if(tx != null && tx.isActive())
 							{
-								EntityManagerUtil.rollback();
+								EntityManagerUtils.rollback();
 							}
 						}
 					}

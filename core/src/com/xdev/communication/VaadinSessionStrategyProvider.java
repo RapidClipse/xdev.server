@@ -104,7 +104,7 @@ public interface VaadinSessionStrategyProvider
 			}
 
 			final Conversationable conversationable = (Conversationable)session
-					.getAttribute(EntityManagerUtil.ENTITY_MANAGER_ATTRIBUTE);
+					.getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
 
 			if(conversationable != null)
 			{
@@ -163,7 +163,7 @@ public interface VaadinSessionStrategyProvider
 				}
 
 				final Conversationable conversationable = (Conversationable)session
-						.getAttribute(EntityManagerUtil.ENTITY_MANAGER_ATTRIBUTE);
+						.getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
 
 				if(conversationable != null)
 				{

@@ -68,7 +68,7 @@ public interface VaadinSessionStrategy
 		@Override
 		public void handleRequest(final VaadinRequest request, final VaadinService service)
 		{
-			final EntityManagerFactory factory = EntityManagerUtil.getEntityManagerFactory();
+			final EntityManagerFactory factory = EntityManagerUtils.getEntityManagerFactory();
 			VaadinSession session;
 			try
 			{
@@ -89,7 +89,7 @@ public interface VaadinSessionStrategy
 			manager.getTransaction().begin();
 
 			// Add the EntityManager to the vaadin session
-			session.setAttribute(EntityManagerUtil.ENTITY_MANAGER_ATTRIBUTE,conversationable);
+			session.setAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE,conversationable);
 		}
 
 
@@ -141,16 +141,16 @@ public interface VaadinSessionStrategy
 					}
 					try
 					{
-						EntityManagerUtil.closeEntityManager();
+						EntityManagerUtils.closeEntityManager();
 					}
 					catch(final Exception e)
 					{
 						if(em != null)
 						{
-							final EntityTransaction tx = EntityManagerUtil.getTransaction();
+							final EntityTransaction tx = EntityManagerUtils.getTransaction();
 							if(tx != null && tx.isActive())
 							{
-								EntityManagerUtil.rollback();
+								EntityManagerUtils.rollback();
 							}
 						}
 					}
@@ -175,7 +175,7 @@ public interface VaadinSessionStrategy
 		 */
 		public PerConversation()
 		{
-			final EntityManager em = EntityManagerUtil.getEntityManager();
+			final EntityManager em = EntityManagerUtils.getEntityManager();
 			if(em != null)
 			{
 				/*
@@ -197,7 +197,7 @@ public interface VaadinSessionStrategy
 		@Override
 		public void handleRequest(final VaadinRequest request, final VaadinService service)
 		{
-			final EntityManager em = EntityManagerUtil.getEntityManager();
+			final EntityManager em = EntityManagerUtils.getEntityManager();
 			if(em != null)
 			{
 				/*
@@ -273,7 +273,7 @@ public interface VaadinSessionStrategy
 		 */
 		public PerConversationPessimistic()
 		{
-			final EntityManager em = EntityManagerUtil.getEntityManager();
+			final EntityManager em = EntityManagerUtils.getEntityManager();
 			if(em != null)
 			{
 				/*

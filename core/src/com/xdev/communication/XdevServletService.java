@@ -36,37 +36,37 @@ import com.xdev.db.connection.EntityManagerFactoryProvider;
 
 /**
  * @author XDEV Software
- *
+ *		
  */
 public class XdevServletService extends VaadinServletService
 {
 	static final String HIBERNATEUTIL_FILTER_INIT_PARAM = "persistenceUnit";
-
+	
 	private boolean								hibernateFactoryInitialized	= false;
 	private final VaadinSessionStrategyProvider	sessionStrategyProvider;
-
-
+	
+	
 	public XdevServletService(final VaadinServlet servlet,
 			final DeploymentConfiguration deploymentConfiguration) throws ServiceException
 	{
 		super(servlet,deploymentConfiguration);
 		this.sessionStrategyProvider = new VaadinSessionStrategyProvider.Implementation();
 	}
-
-
+	
+	
 	@Override
 	public void requestStart(final VaadinRequest request, final VaadinResponse response)
 	{
 		if(!this.hibernateFactoryInitialized)
 		{
 			this.hibernateFactoryInitialized = true;
-
+			
 			try
 			{
 				// TODO check multiple persistence unit functionality
 				final String hibernatePersistenceUnit = getDeploymentConfiguration()
 						.getApplicationOrSystemProperty(HIBERNATEUTIL_FILTER_INIT_PARAM,null);
-				EntityManagerUtil.initializeHibernateFactory(
+				EntityManagerUtils.initializeHibernateFactory(
 						new EntityManagerFactoryProvider.Implementation(hibernatePersistenceUnit));
 			}
 			catch(final PersistenceException e)
@@ -74,12 +74,12 @@ public class XdevServletService extends VaadinServletService
 				Logger.getLogger(XdevServlet.class.getName()).log(Level.WARNING,e.getMessage(),e);
 			}
 		}
-
+		
 		if(request.getMethod().equals("POST"))
 		{
 			try
 			{
-				final EntityManagerFactory factory = EntityManagerUtil.getEntityManagerFactory();
+				final EntityManagerFactory factory = EntityManagerUtils.getEntityManagerFactory();
 				if(factory != null)
 				{
 					this.sessionStrategyProvider.getRequestStartVaadinSessionStrategy(request,this)
@@ -91,23 +91,23 @@ public class XdevServletService extends VaadinServletService
 				Logger.getLogger(XdevServlet.class.getName()).log(Level.WARNING,e.getMessage(),e);
 			}
 		}
-
+		
 		super.requestStart(request,response);
 	}
-
-
+	
+	
 	@Override
 	public void requestEnd(final VaadinRequest request, final VaadinResponse response,
 			final VaadinSession session)
 	{
 		final Conversationable conversationable = (Conversationable)session
-				.getAttribute(EntityManagerUtil.ENTITY_MANAGER_ATTRIBUTE);
-
+				.getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
+				
 		super.requestEnd(request,response,session);
 		// TODO explicit provider method for end to keep the start and end
 		// request atomic for a particular strategy.
 		this.sessionStrategyProvider.getRequestEndVaadinSessionStrategy(request,this)
 				.requestEnd(conversationable);
-
+				
 	}
 }

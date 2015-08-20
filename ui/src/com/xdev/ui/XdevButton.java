@@ -73,7 +73,7 @@ public class XdevButton extends Button implements ActionComponent
 			
 			if(action != null)
 			{
-				Util.setComponentPropertiesFromAction(this,action);
+				Utils.setComponentPropertiesFromAction(this,action);
 				this.actionPropertyChangeListener = new ActionPropertyChangeListener(this,action);
 				action.addPropertyChangeListener(this.actionPropertyChangeListener);
 				this.actionClickListener = event -> action

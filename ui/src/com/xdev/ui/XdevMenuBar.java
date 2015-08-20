@@ -189,7 +189,7 @@ public class XdevMenuBar extends MenuBar
 				
 				if(action != null)
 				{
-					Util.setComponentPropertiesFromAction(this,action);
+					Utils.setComponentPropertiesFromAction(this,action);
 					this.actionPropertyChangeListener = new ActionPropertyChangeListener(this,
 							action);
 					action.addPropertyChangeListener(this.actionPropertyChangeListener);

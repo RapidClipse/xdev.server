@@ -111,7 +111,7 @@ public interface ActionComponent
 
 
 
-	public static class Util
+	public static class Utils
 	{
 		public static void setComponentPropertiesFromAction(final ActionComponent component,
 				final Action action)

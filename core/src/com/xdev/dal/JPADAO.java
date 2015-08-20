@@ -15,7 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.communication;
+package com.xdev.dal;
 
 
 import java.io.Serializable;
@@ -34,6 +34,7 @@ import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.SearchResult;
 import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
+import com.xdev.communication.EntityManagerUtil;
 
 
 @SuppressWarnings("unchecked")

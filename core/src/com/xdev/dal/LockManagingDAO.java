@@ -38,7 +38,6 @@ import com.googlecode.genericdao.search.SearchResult;
 import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
 import com.xdev.communication.EntityManagerUtil;
-import com.xdev.communication.JPADAO;
 
 
 /**

@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,17 +37,17 @@ import com.vaadin.server.VaadinSession;
  * Manages Session propagation.
  *
  * @author XDEV Software
- * 		
+ *
  */
 public interface VaadinSessionStrategy
 {
 	public void handleRequest(VaadinRequest request, VaadinService service);
-	
-	
-	public void requestEnd(VaadinRequest request, VaadinService service, VaadinSession session);
-	
-	
-	
+
+
+	public void requestEnd(Conversationable conversationable);
+
+
+
 	/**
 	 * Request / Response propagation to avoid session per operation anti
 	 * pattern.
@@ -57,7 +57,7 @@ public interface VaadinSessionStrategy
 	 */
 	public class PerRequest implements VaadinSessionStrategy
 	{
-		
+
 		/*
 		 * (non-Javadoc)
 		 *
@@ -78,21 +78,21 @@ public interface VaadinSessionStrategy
 			{
 				throw new RuntimeException(e);
 			}
-			
+
 			final EntityManager manager = factory.createEntityManager();
-			
+
 			// instantiate conversationable wrapper with entity manager.
 			final Conversationable.Implementation conversationable = new Conversationable.Implementation();
 			conversationable.setEntityManager(manager);
-			
+
 			// Begin a database transaction, start the unit of work
 			manager.getTransaction().begin();
-			
+
 			// Add the EntityManager to the vaadin session
 			session.setAttribute(EntityManagerUtil.ENTITY_MANAGER_ATTRIBUTE,conversationable);
 		}
-		
-		
+
+
 		/*
 		 * (non-Javadoc)
 		 *
@@ -102,13 +102,12 @@ public interface VaadinSessionStrategy
 		 * com.vaadin.server.VaadinSession)
 		 */
 		@Override
-		public void requestEnd(final VaadinRequest request, final VaadinService service,
-				final VaadinSession session)
+		public void requestEnd(final Conversationable conversationable)
 		{
-			final EntityManager em = EntityManagerUtil.getEntityManager();
-			if(em != null)
+			if(conversationable != null)
 			{
-				if(EntityManagerUtil.getConversation() != null)
+				final EntityManager em = conversationable.getEntityManager();
+				if(conversationable.getConversation() != null)
 				{
 					/*
 					 * Keep the session and with it the persistence context
@@ -116,7 +115,7 @@ public interface VaadinSessionStrategy
 					 * active. The next request will automatically be handled by
 					 * an appropriate conversation managing strategy.
 					 */
-					if(EntityManagerUtil.getConversation().isActive())
+					if(conversationable.getConversation().isActive())
 					{
 						try
 						{
@@ -131,6 +130,15 @@ public interface VaadinSessionStrategy
 				}
 				else
 				{
+					try
+					{
+						// end unit of work
+						em.getTransaction().commit();
+					}
+					catch(final RollbackException e)
+					{
+						em.getTransaction().rollback();
+					}
 					try
 					{
 						EntityManagerUtil.closeEntityManager();
@@ -148,17 +156,17 @@ public interface VaadinSessionStrategy
 					}
 				}
 			}
-			
+
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 * 		
+	 *
 	 */
 	public class PerConversation implements VaadinSessionStrategy
 	{
@@ -178,8 +186,8 @@ public interface VaadinSessionStrategy
 				em.unwrap(Session.class).setFlushMode(FlushMode.MANUAL);
 			}
 		}
-		
-		
+
+
 		/*
 		 * (non-Javadoc)
 		 *
@@ -199,8 +207,8 @@ public interface VaadinSessionStrategy
 				em.getTransaction().begin();
 			}
 		}
-		
-		
+
+
 		/*
 		 * (non-Javadoc)
 		 *
@@ -209,11 +217,10 @@ public interface VaadinSessionStrategy
 		 * com.vaadin.server.VaadinSession)
 		 */
 		@Override
-		public void requestEnd(final VaadinRequest request, final VaadinService service,
-				final VaadinSession session)
+		public void requestEnd(final Conversationable conversationable)
 		{
-			final EntityManager em = EntityManagerUtil.getEntityManager();
-			final Conversation conversation = EntityManagerUtil.getConversation();
+			final EntityManager em = conversationable.getEntityManager();
+			final Conversation conversation = conversationable.getConversation();
 			if(conversation != null)
 			{
 				if(conversation.isActive())
@@ -227,7 +234,7 @@ public interface VaadinSessionStrategy
 					{
 						em.getTransaction().rollback();
 					}
-					
+
 				}
 				else
 				{
@@ -244,20 +251,20 @@ public interface VaadinSessionStrategy
 					{
 						em.getTransaction().rollback();
 					}
-					
+
 					em.close();
 				}
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 * 		
+	 *
 	 */
 	public class PerConversationPessimistic implements VaadinSessionStrategy
 	{
@@ -282,8 +289,8 @@ public interface VaadinSessionStrategy
 				em.getTransaction().begin();
 			}
 		}
-		
-		
+
+
 		/*
 		 * (non-Javadoc)
 		 *
@@ -294,8 +301,8 @@ public interface VaadinSessionStrategy
 		public void handleRequest(final VaadinRequest request, final VaadinService service)
 		{
 		}
-		
-		
+
+
 		/*
 		 * (non-Javadoc)
 		 *
@@ -304,11 +311,10 @@ public interface VaadinSessionStrategy
 		 * com.vaadin.server.VaadinSession)
 		 */
 		@Override
-		public void requestEnd(final VaadinRequest request, final VaadinService service,
-				final VaadinSession session)
+		public void requestEnd(final Conversationable conversationable)
 		{
-			final EntityManager em = EntityManagerUtil.getEntityManager();
-			final Conversation conversation = EntityManagerUtil.getConversation();
+			final EntityManager em = conversationable.getEntityManager();
+			final Conversation conversation = conversationable.getConversation();
 			if(conversation != null)
 			{
 				if(!conversation.isActive())
@@ -327,12 +333,12 @@ public interface VaadinSessionStrategy
 						em.getTransaction().rollback();
 					}
 					em.close();
-					
+
 					// set flush mode back to default
 					em.unwrap(Session.class).setFlushMode(FlushMode.AUTO);
 				}
 			}
 		}
 	}
-	
+
 }

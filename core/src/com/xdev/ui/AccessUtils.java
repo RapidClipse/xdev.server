@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -19,18 +19,65 @@ package com.xdev.ui;
 
 
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceException;
+import javax.persistence.RollbackException;
 
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
+import com.xdev.communication.Conversationable;
 import com.xdev.communication.EntityManagerUtils;
+import com.xdev.communication.XdevServlet;
+import com.xdev.communication.XdevServletService;
+import com.xdev.db.connection.EntityManagerFactoryProvider;
 
 
 public class AccessUtils
 {
+	private static EntityManagerFactory getEntityManagerFactory(final UI ui)
+	{
+		final EntityManagerFactory factory = EntityManagerUtils.getEntityManagerFactory();
+		if(factory == null)
+		{
+			try
+			{
+				final String hibernatePersistenceUnit = ui.getSession().getService()
+						.getDeploymentConfiguration().getApplicationOrSystemProperty(
+								XdevServletService.HIBERNATEUTIL_FILTER_INIT_PARAM,null);
+				EntityManagerUtils.initializeHibernateFactory(
+						new EntityManagerFactoryProvider.Implementation(hibernatePersistenceUnit));
+			}
+			catch(final PersistenceException e)
+			{
+				Logger.getLogger(XdevServlet.class.getName()).log(Level.WARNING,e.getMessage(),e);
+			}
+		}
+
+		return factory;
+	}
+
+
+	private static void startExclusiveWorkingUnit(final EntityManagerFactory factory)
+	{
+		final EntityManager manager = factory.createEntityManager();
+
+		// instantiate conversationable wrapper with entity
+		// manager.
+		final Conversationable.Implementation conversationable = new Conversationable.Implementation();
+		conversationable.setEntityManager(manager);
+
+		// Begin a database transaction, start the unit of
+		// work
+		manager.getTransaction().begin();
+		UI.getCurrent().getSession().setAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE,
+				conversationable);
+	}
+
+
 	public static Future<Void> access(final UI ui, final Runnable runnable)
 	{
 		final Future<Void> future = ui.access(new Runnable()
@@ -40,32 +87,76 @@ public class AccessUtils
 			{
 				try
 				{
-					final EntityManagerFactory factory = EntityManagerUtils
-							.getEntityManagerFactory();
-					if(factory != null)
+					final EntityManagerFactory factory = getEntityManagerFactory(ui);
+					final EntityManager em = EntityManagerUtils.getEntityManager();
+					if(em == null)
 					{
-						final EntityManager manager = factory.createEntityManager();
-						// Add the EntityManager to the session
-						VaadinSession.getCurrent().setAttribute(
-								EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE,manager);
+						startExclusiveWorkingUnit(factory);
+					}
+					else
+					{
+						if(!em.isOpen())
+						{
+							startExclusiveWorkingUnit(factory);
+						}
 					}
 
+					// use existing working unit / entity manager
 					runnable.run();
 				}
 				finally
 				{
-					try
+					final EntityManager em = EntityManagerUtils.getEntityManager();
+					if(em != null)
 					{
-						EntityManagerUtils.closeEntityManager();
-					}
-					catch(final Exception e)
-					{
-						if(EntityManagerUtils.getEntityManager() != null)
+						if(EntityManagerUtils.getConversation() != null)
 						{
-							final EntityTransaction tx = EntityManagerUtils.getTransaction();
-							if(tx != null && tx.isActive())
+							/*
+							 * Keep the session and with it the persistence
+							 * context alive during user think time while a
+							 * conversation is active. The next request will
+							 * automatically be handled by an appropriate
+							 * conversation managing strategy.
+							 */
+							if(EntityManagerUtils.getConversation().isActive())
 							{
-								EntityManagerUtils.rollback();
+								try
+								{
+									// end unit of work
+									em.getTransaction().commit();
+								}
+								catch(final RollbackException e)
+								{
+									em.getTransaction().rollback();
+								}
+							}
+						}
+						else
+						{
+							try
+							{
+								// end unit of work
+								em.getTransaction().commit();
+							}
+							catch(final RollbackException e)
+							{
+								em.getTransaction().rollback();
+							}
+							try
+							{
+								em.close();
+							}
+							catch(final Exception e)
+							{
+								if(em != null)
+								{
+									final EntityTransaction tx = em.getTransaction();
+									if(tx != null && tx.isActive())
+									{
+										em.getTransaction().rollback();
+										;
+									}
+								}
 							}
 						}
 					}

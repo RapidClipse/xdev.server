@@ -17,7 +17,7 @@
 
 package com.xdev.security.authorization;
 
-import static com.xdev.security.Util.notNull;
+import static com.xdev.security.Utils.notNull;
 
 import java.io.File;
 import java.util.Collections;
@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.xdev.security.Util;
+import com.xdev.security.Utils;
 
 /**
  * Composite type that combines {@link AuthorizationRegistry} with managing aspects of {@link PermissionManager},
@@ -757,7 +757,7 @@ public interface AuthorizationManager extends AuthorizationRegistry, PermissionM
 					existingRole,
 					roleName,
 					value,
-					Util.ensureNonNullMap(permissions).keySet()
+					Utils.ensureNonNullMap(permissions).keySet()
 				);
 
 				// always put returned instance in case the provider discarded the old instance and created a new one.

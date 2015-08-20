@@ -21,7 +21,7 @@ package com.xdev.security.authentication;
 import java.util.Map;
 
 import com.xdev.security.KeyValue;
-import com.xdev.security.Util;
+import com.xdev.security.Utils;
 
 
 /**
@@ -74,7 +74,7 @@ public final class InMemoryAuthenticator
 	public static final InMemoryAuthenticator New(
 			final KeyValue<String, String>... usernamePasswords)
 	{
-		return new InMemoryAuthenticator(Util.asMap(usernamePasswords));
+		return new InMemoryAuthenticator(Utils.asMap(usernamePasswords));
 	}
 	
 	///////////////////////////////////////////////////////////////////////////

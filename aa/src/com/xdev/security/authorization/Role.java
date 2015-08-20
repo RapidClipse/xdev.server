@@ -17,7 +17,7 @@
 
 package com.xdev.security.authorization;
 
-import static com.xdev.security.Util.notNull;
+import static com.xdev.security.Utils.notNull;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.xdev.security.Util;
+import com.xdev.security.Utils;
 
 
 /**
@@ -81,7 +81,7 @@ public interface Role
 	 */
 	public default Map<Resource, Permission> effectivePermissions()
 	{
-		return collectEffectivePermissions(Util.HashSet(this));
+		return collectEffectivePermissions(Utils.HashSet(this));
 	}
 
 
@@ -265,7 +265,7 @@ public interface Role
 			name,
 			roles == null
 				? Collections.emptySet()
-				: Util.HashSet(roles),
+				: Utils.HashSet(roles),
 			Collections.emptySet()
 		);
 	}
@@ -284,7 +284,7 @@ public interface Role
 			Collections.emptySet(),
 			permissions == null
 				? Collections.emptySet()
-				: Util.HashSet(permissions)
+				: Utils.HashSet(permissions)
 		);
 	}
 

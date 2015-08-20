@@ -17,7 +17,7 @@
 
 package com.xdev.security.authorization;
 
-import static com.xdev.security.Util.notNull;
+import static com.xdev.security.Utils.notNull;
 
 import java.util.HashMap;
 

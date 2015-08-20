@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 
-public class Util
+public class Utils
 {
 	public static final <T> T notNull(final T object) throws NullPointerException
 	{

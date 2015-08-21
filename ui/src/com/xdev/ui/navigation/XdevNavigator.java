@@ -46,9 +46,6 @@ import com.vaadin.ui.UI;
  */
 public class XdevNavigator extends Navigator
 {
-	// private final Map<String, Class<? extends View>> registeredViewTypes =
-	// new HashMap<>();
-
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI and replacing the contents of
@@ -74,8 +71,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,container);
 	}
-
-
+	
+	
 	/**
 	 * Creates a navigator.
 	 * <p>
@@ -102,8 +99,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,stateManager,display);
 	}
-
-
+	
+	
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI and replacing the contents of
@@ -127,8 +124,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,container);
 	}
-
-
+	
+	
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI.
@@ -148,52 +145,22 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,display);
 	}
-
-	// /**
-	// * {@inheritDoc}
-	// */
-	// @Override
-	// public void addView(final String viewName, final Class<? extends View>
-	// viewClass)
-	// {
-	// super.addView(viewName,viewClass);
-	//
-	// this.registeredViewTypes.put(viewName,viewClass);
-	// }
-	//
-	//
-	// /**
-	// * {@inheritDoc}
-	// */
-	// @Override
-	// public void addView(final String viewName, final View view)
-	// {
-	// super.addView(viewName,view);
-	//
-	// this.registeredViewTypes.put(viewName,view.getClass());
-	// }
-	//
-	//
-	// public Collection<Class<? extends View>> getViewTypes()
-	// {
-	// return this.registeredViewTypes.values();
-	// }
-	//
-	//
-	// public Class<? extends View> getViewType(final String viewName)
-	// {
-	// return this.registeredViewTypes.get(viewName);
-	// }
-	//
-	// protected String getViewName(final Class<? extends View> viewType)
-	// {
-	// for(final String viewName : this.registeredViewTypes.keySet())
-	// {
-	// if(this.registeredViewTypes.get(viewName).equals(viewType))
-	// {
-	// return viewName;
-	// }
-	// }
-	// throw new RuntimeException("No registered view complies to " + viewType);
-	// }
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void navigateTo(final String navigationState)
+	{
+		/*
+		 * UI#doInit initialized the navigator with its default state. If no
+		 * view is set the state is null and an IllegalArgumentException is
+		 * thrown.
+		 */
+		if(navigationState != null)
+		{
+			super.navigateTo(navigationState);
+		}
+	}
 }

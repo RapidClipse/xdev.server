@@ -37,7 +37,7 @@ import com.vaadin.server.VaadinSession;
  * Manages Session propagation.
  *
  * @author XDEV Software
- * 		
+ *
  */
 public interface VaadinSessionStrategy
 {
@@ -53,7 +53,7 @@ public interface VaadinSessionStrategy
 	 * pattern.
 	 *
 	 * @author XDEV Software
-	 * 		
+	 *
 	 */
 	public class PerRequest implements VaadinSessionStrategy
 	{
@@ -117,27 +117,35 @@ public interface VaadinSessionStrategy
 					 */
 					if(conversationable.getConversation().isActive())
 					{
-						try
+						final EntityTransaction transaction = em.getTransaction();
+						if(transaction.isActive())
 						{
-							// end unit of work
-							em.getTransaction().commit();
-						}
-						catch(final RollbackException e)
-						{
-							em.getTransaction().rollback();
+							try
+							{
+								// end unit of work
+								transaction.commit();
+							}
+							catch(final RollbackException e)
+							{
+								transaction.rollback();
+							}
 						}
 					}
 				}
 				else
 				{
-					try
+					final EntityTransaction transaction = em.getTransaction();
+					if(transaction.isActive())
 					{
-						// end unit of work
-						em.getTransaction().commit();
-					}
-					catch(final RollbackException e)
-					{
-						em.getTransaction().rollback();
+						try
+						{
+							// end unit of work
+							transaction.commit();
+						}
+						catch(final RollbackException e)
+						{
+							transaction.rollback();
+						}
 					}
 					try
 					{
@@ -156,7 +164,6 @@ public interface VaadinSessionStrategy
 					}
 				}
 			}
-
 		}
 	}
 
@@ -166,7 +173,7 @@ public interface VaadinSessionStrategy
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 * 		
+	 *
 	 */
 	public class PerConversation implements VaadinSessionStrategy
 	{
@@ -226,15 +233,18 @@ public interface VaadinSessionStrategy
 				if(conversation.isActive())
 				{
 					// Event was not the last request, continue conversation
-					try
+					final EntityTransaction transaction = em.getTransaction();
+					if(transaction.isActive())
 					{
-						em.getTransaction().commit();
+						try
+						{
+							transaction.commit();
+						}
+						catch(final RollbackException e)
+						{
+							transaction.rollback();
+						}
 					}
-					catch(final RollbackException e)
-					{
-						em.getTransaction().rollback();
-					}
-
 				}
 				else
 				{
@@ -243,15 +253,18 @@ public interface VaadinSessionStrategy
 					 * commit, close
 					 */
 					em.flush();
-					try
+					final EntityTransaction transaction = em.getTransaction();
+					if(transaction.isActive())
 					{
-						em.getTransaction().commit();
+						try
+						{
+							transaction.commit();
+						}
+						catch(final RollbackException e)
+						{
+							transaction.rollback();
+						}
 					}
-					catch(final RollbackException e)
-					{
-						em.getTransaction().rollback();
-					}
-
 					em.close();
 				}
 			}
@@ -264,7 +277,7 @@ public interface VaadinSessionStrategy
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 * 		
+	 *
 	 */
 	public class PerConversationPessimistic implements VaadinSessionStrategy
 	{
@@ -324,13 +337,18 @@ public interface VaadinSessionStrategy
 					 * commit, close
 					 */
 					em.flush();
-					try
+
+					final EntityTransaction transaction = em.getTransaction();
+					if(transaction.isActive())
 					{
-						em.getTransaction().commit();
-					}
-					catch(final RollbackException e)
-					{
-						em.getTransaction().rollback();
+						try
+						{
+							transaction.commit();
+						}
+						catch(final RollbackException e)
+						{
+							transaction.rollback();
+						}
 					}
 					em.close();
 				}

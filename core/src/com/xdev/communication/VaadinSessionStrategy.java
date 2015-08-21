@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -44,7 +44,9 @@ public interface VaadinSessionStrategy
 	public void handleRequest(VaadinRequest request, VaadinService service);
 
 
-	public void requestEnd(Conversationable conversationable);
+	// public void requestEnd(Conversationable conversationable);
+
+	public void requestEnd(VaadinRequest request, VaadinService service);
 
 
 
@@ -102,12 +104,12 @@ public interface VaadinSessionStrategy
 		 * com.vaadin.server.VaadinSession)
 		 */
 		@Override
-		public void requestEnd(final Conversationable conversationable)
+		public void requestEnd(final VaadinRequest request, final VaadinService service)
 		{
-			if(conversationable != null)
+			final EntityManager em = EntityManagerUtils.getEntityManager();
+			if(em != null)
 			{
-				final EntityManager em = conversationable.getEntityManager();
-				if(conversationable.getConversation() != null)
+				if(EntityManagerUtils.getConversation() != null)
 				{
 					/*
 					 * Keep the session and with it the persistence context
@@ -115,55 +117,42 @@ public interface VaadinSessionStrategy
 					 * active. The next request will automatically be handled by
 					 * an appropriate conversation managing strategy.
 					 */
-					if(conversationable.getConversation().isActive())
+					if(EntityManagerUtils.getConversation().isActive())
 					{
-						final EntityTransaction transaction = em.getTransaction();
-						if(transaction.isActive())
+						if(em.getTransaction().isActive())
 						{
 							try
 							{
 								// end unit of work
-								transaction.commit();
+								em.getTransaction().commit();
 							}
 							catch(final RollbackException e)
 							{
-								transaction.rollback();
+								em.getTransaction().rollback();
 							}
 						}
 					}
 				}
 				else
 				{
-					final EntityTransaction transaction = em.getTransaction();
-					if(transaction.isActive())
-					{
-						try
-						{
-							// end unit of work
-							transaction.commit();
-						}
-						catch(final RollbackException e)
-						{
-							transaction.rollback();
-						}
-					}
 					try
 					{
-						em.close();
+						EntityManagerUtils.closeEntityManager();
 					}
 					catch(final Exception e)
 					{
 						if(em != null)
 						{
-							final EntityTransaction tx = em.getTransaction();
+							final EntityTransaction tx = EntityManagerUtils.getTransaction();
 							if(tx != null && tx.isActive())
 							{
-								tx.rollback();
+								EntityManagerUtils.rollback();
 							}
 						}
 					}
 				}
 			}
+
 		}
 	}
 
@@ -216,35 +205,28 @@ public interface VaadinSessionStrategy
 		}
 
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see com.xdev.communication.VaadinSessionStrategy#requestEnd(com.
-		 * vaadin. server.VaadinRequest, com.vaadin.server.VaadinService,
-		 * com.vaadin.server.VaadinSession)
-		 */
 		@Override
-		public void requestEnd(final Conversationable conversationable)
+		public void requestEnd(final VaadinRequest request, final VaadinService service)
 		{
-			final EntityManager em = conversationable.getEntityManager();
-			final Conversation conversation = conversationable.getConversation();
+			final EntityManager em = EntityManagerUtils.getEntityManager();
+			final Conversation conversation = EntityManagerUtils.getConversation();
 			if(conversation != null)
 			{
 				if(conversation.isActive())
 				{
 					// Event was not the last request, continue conversation
-					final EntityTransaction transaction = em.getTransaction();
-					if(transaction.isActive())
+					if(em.getTransaction().isActive())
 					{
 						try
 						{
-							transaction.commit();
+							em.getTransaction().commit();
 						}
 						catch(final RollbackException e)
 						{
-							transaction.rollback();
+							em.getTransaction().rollback();
 						}
 					}
+
 				}
 				else
 				{
@@ -253,16 +235,15 @@ public interface VaadinSessionStrategy
 					 * commit, close
 					 */
 					em.flush();
-					final EntityTransaction transaction = em.getTransaction();
-					if(transaction.isActive())
+					if(em.getTransaction().isActive())
 					{
 						try
 						{
-							transaction.commit();
+							em.getTransaction().commit();
 						}
 						catch(final RollbackException e)
 						{
-							transaction.rollback();
+							em.getTransaction().rollback();
 						}
 					}
 					em.close();
@@ -324,10 +305,10 @@ public interface VaadinSessionStrategy
 		 * com.vaadin.server.VaadinSession)
 		 */
 		@Override
-		public void requestEnd(final Conversationable conversationable)
+		public void requestEnd(final VaadinRequest request, final VaadinService service)
 		{
-			final EntityManager em = conversationable.getEntityManager();
-			final Conversation conversation = conversationable.getConversation();
+			final EntityManager em = EntityManagerUtils.getEntityManager();
+			final Conversation conversation = EntityManagerUtils.getConversation();
 			if(conversation != null)
 			{
 				if(!conversation.isActive())

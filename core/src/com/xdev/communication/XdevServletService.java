@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -36,7 +36,7 @@ import com.xdev.db.connection.EntityManagerFactoryProvider;
 
 /**
  * @author XDEV Software
- * 		
+ *		
  */
 public class XdevServletService extends VaadinServletService
 {
@@ -100,14 +100,12 @@ public class XdevServletService extends VaadinServletService
 	public void requestEnd(final VaadinRequest request, final VaadinResponse response,
 			final VaadinSession session)
 	{
-		final Conversationable conversationable = (Conversationable)session
-				.getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
-
-		super.requestEnd(request,response,session);
-		// TODO explicit provider method for end to keep the start and end
-		// request atomic for a particular strategy.
+		// final Conversationable conversationable = (Conversationable)session
+		// .getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
+		//
 		this.sessionStrategyProvider.getRequestEndVaadinSessionStrategy(request,this)
-				.requestEnd(conversationable);
+				.requestEnd(request,this);
+		super.requestEnd(request,response,session);
 
 	}
 }

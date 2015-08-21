@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.paging;
 
 
@@ -335,7 +335,8 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 		if(filter instanceof And)
 		{
 			final And and = (And)filter;
-			final List<Container.Filter> filters = new ArrayList<Container.Filter>(and.getFilters());
+			final List<Container.Filter> filters = new ArrayList<Container.Filter>(
+					and.getFilters());
 
 			Predicate predicate = cb.and(setFilter(filters.remove(0),cb,cq,root),
 					setFilter(filters.remove(0),cb,cq,root));
@@ -428,8 +429,8 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 			return cb.like(property,"%" + simpleStringFilter.getFilterString() + "%");
 		}
 
-		throw new UnsupportedOperationException("Vaadin filter: " + filter.getClass().getName()
-				+ " is not supported.");
+		throw new UnsupportedOperationException(
+				"Vaadin filter: " + filter.getClass().getName() + " is not supported.");
 	}
 
 
@@ -613,12 +614,11 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 			{
 				if(compositeItem.getItemProperty(propertyId) == null)
 				{
-					compositeItem.addItemProperty(
-							propertyId,
-							new ObjectProperty(this.queryDefinition
-									.getPropertyDefaultValue(propertyId),this.queryDefinition
-									.getPropertyType(propertyId),this.queryDefinition
-									.isPropertyReadOnly(propertyId)));
+					compositeItem.addItemProperty(propertyId,
+							new ObjectProperty(
+									this.queryDefinition.getPropertyDefaultValue(propertyId),
+									this.queryDefinition.getPropertyType(propertyId),
+									this.queryDefinition.isPropertyReadOnly(propertyId)));
 				}
 			}
 

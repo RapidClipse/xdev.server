@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,7 +37,7 @@ import com.vaadin.server.VaadinSession;
  * Manages Session propagation.
  *
  * @author XDEV Software
- *
+ * 		
  */
 public interface VaadinSessionStrategy
 {
@@ -55,7 +55,7 @@ public interface VaadinSessionStrategy
 	 * pattern.
 	 *
 	 * @author XDEV Software
-	 *
+	 * 		
 	 */
 	public class PerRequest implements VaadinSessionStrategy
 	{
@@ -135,6 +135,20 @@ public interface VaadinSessionStrategy
 				}
 				else
 				{
+
+					if(em.getTransaction().isActive())
+					{
+						try
+						{
+							// end unit of work
+							em.getTransaction().commit();
+						}
+						catch(final RollbackException e)
+						{
+							em.getTransaction().rollback();
+						}
+					}
+
 					try
 					{
 						EntityManagerUtils.closeEntityManager();
@@ -162,7 +176,7 @@ public interface VaadinSessionStrategy
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 *
+	 * 		
 	 */
 	public class PerConversation implements VaadinSessionStrategy
 	{
@@ -258,7 +272,7 @@ public interface VaadinSessionStrategy
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 *
+	 * 		
 	 */
 	public class PerConversationPessimistic implements VaadinSessionStrategy
 	{

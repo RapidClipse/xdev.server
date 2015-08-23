@@ -37,14 +37,12 @@ import com.vaadin.server.VaadinSession;
  * Manages Session propagation.
  *
  * @author XDEV Software
- * 		
+ *		
  */
 public interface VaadinSessionStrategy
 {
 	public void handleRequest(VaadinRequest request, VaadinService service);
 
-
-	// public void requestEnd(Conversationable conversationable);
 
 	public void requestEnd(VaadinRequest request, VaadinService service);
 
@@ -55,7 +53,7 @@ public interface VaadinSessionStrategy
 	 * pattern.
 	 *
 	 * @author XDEV Software
-	 * 		
+	 *		
 	 */
 	public class PerRequest implements VaadinSessionStrategy
 	{
@@ -176,7 +174,7 @@ public interface VaadinSessionStrategy
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 * 		
+	 *		
 	 */
 	public class PerConversation implements VaadinSessionStrategy
 	{
@@ -272,7 +270,7 @@ public interface VaadinSessionStrategy
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 * 		
+	 *		
 	 */
 	public class PerConversationPessimistic implements VaadinSessionStrategy
 	{

@@ -5,18 +5,20 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.paging;
 
+
+import java.util.Collection;
 
 import org.vaadin.addons.lazyquerycontainer.CompositeItem;
 
@@ -33,8 +35,8 @@ import com.xdev.ui.entitycomponent.BeanContainer;
  * @author Tommi Laukkanen
  */
 // copied from EntityContainer to become extendable
-public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContainer implements
-		BeanContainer<T>
+public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContainer
+		implements BeanContainer<T>
 {
 	private static final long	serialVersionUID	= 1L;
 	private final Class<T>		entityType;
@@ -99,7 +101,7 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 
 		getQueryView().getQueryDefinition().setDefaultSortState(defaultSortPropertyIds,
 				defaultSortPropertyAscendingStates);
-		
+
 		this.entityType = entityClass;
 	}
 
@@ -113,14 +115,18 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	public T addBean()
 	{
 		final Object itemId = addItem();
-		return getBeanItem(indexOfId(itemId)).getBean();
+		final T bean = getBeanItem(indexOfId(itemId)).getBean();
+		this.getQueryView().commit();
+		return bean;
 	}
 
 
 	@Override
 	public int addBean(final T entity)
 	{
-		return getQueryView().addItem(entity);
+		final int index = getQueryView().addItem(entity);
+		this.getQueryView().commit();
+		return index;
 	}
 
 
@@ -136,6 +142,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	{
 		final T entityToRemove = getBeanItem(index).getBean();
 		removeItem(getIdByIndex(index));
+		
+		this.getQueryView().commit();
 		return entityToRemove;
 	}
 
@@ -186,6 +194,7 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 			this.getBeanItem(itemId).equals(entity);
 			this.removeItem(itemId);
 		}
+		this.commit();
 	}
 
 
@@ -193,6 +202,59 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	public Class<T> getBeanType()
 	{
 		return this.entityType;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addAll(final Collection<T> collection)
+	{
+		for(final T entity : collection)
+		{
+			this.getQueryView().addItem(entity);
+		}
+		this.commit();
+		notifyItemSetChanged();
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.xdev.ui.entitycomponent.BeanContainer#removeAllBeans()
+	 */
+	@Override
+	public void removeAllBeans()
+	{
+		for(final Object itemId : this.getItemIds())
+		{
+			this.getQueryView().removeItem(this.indexOfId(itemId));
+		}
+		this.commit();
+		notifyItemSetChanged();
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.xdev.ui.entitycomponent.BeanContainer#removeAll(java.util.Collection)
+	 */
+	@Override
+	public void removeAll(final Collection<T> collection)
+	{
+		/*
+		 * FIXME performance - call commit only once and not with each
+		 * invocation of #removeBean
+		 */
+		for(final T t : collection)
+		{
+			this.removeBean(t);
+		}
+		this.commit();
 	}
 
 }

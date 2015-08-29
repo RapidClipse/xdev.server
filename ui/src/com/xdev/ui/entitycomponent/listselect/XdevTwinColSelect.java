@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -33,7 +33,7 @@ import com.xdev.ui.util.KeyValueType;
  * side for selected items.
  *
  * @author XDEV Software
- *
+ *		
  */
 public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 {
@@ -44,8 +44,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 */
@@ -53,13 +53,14 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 	{
 		super(caption);
 	}
-
+	
+	
 	// init defaults
 	{
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -71,7 +72,7 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 	{
 		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
 				beanClass,nestedProperties);
-
+				
 		/*
 		 * vaadin api compiler warnings, cant define a converter with a set as
 		 * wrapper data type
@@ -79,8 +80,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 		this.setConverter(new IDToBeanCollectionConverter(container));
 		this.setDataContainer(container);
 	}
-
-
+	
+	
 	@SuppressWarnings({"rawtypes","unchecked"})
 	@SafeVarargs
 	@Override
@@ -89,11 +90,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 	{
 		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
 				beanClass,nestedProperties);
-		for(final T entity : data)
-		{
-			container.addBean(entity);
-		}
-
+		container.addAll(data);
+		
 		/*
 		 * vaadin api compiler warnings, cant define a converter with a set as
 		 * wrapper data type
@@ -101,8 +99,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 		this.setConverter(new IDToBeanCollectionConverter(container));
 		this.setDataContainer(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -111,8 +109,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 	{
 		return new LazyLoadingUIModelProvider<T>(this.getRows(),false,false);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -130,7 +128,7 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 			setConverter(c);
 		}
 	}
-
+	
 	// /*
 	// * (non-Javadoc)
 	// *

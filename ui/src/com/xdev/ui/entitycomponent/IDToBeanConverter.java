@@ -14,15 +14,12 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.entitycomponent;
 
 
-import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.Set;
-
-import org.hibernate.mapping.Property;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
@@ -34,7 +31,7 @@ import com.xdev.util.HibernateEntityIDResolver;
 public class IDToBeanConverter<T> implements Converter<Object, T>
 {
 	private final BeanContainer<T>	container;
-	private final EntityIDResolver		idResolver;
+	private final EntityIDResolver	idResolver;
 	
 	
 	/**
@@ -49,8 +46,7 @@ public class IDToBeanConverter<T> implements Converter<Object, T>
 	
 	@Override
 	public T convertToModel(final Object itemID, final Class<? extends T> targetType,
-			final Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException
+			final Locale locale) throws com.vaadin.data.util.converter.Converter.ConversionException
 	{
 		if(itemID == null)
 		{
@@ -73,27 +69,11 @@ public class IDToBeanConverter<T> implements Converter<Object, T>
 	
 	@Override
 	public Object convertToPresentation(final T value, final Class<? extends Object> targetType,
-			final Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException
+			final Locale locale) throws com.vaadin.data.util.converter.Converter.ConversionException
 	{
 		if(value != null)
 		{
-			final Property idProperty = this.idResolver.getEntityIDProperty(value.getClass());
-			try
-			{
-				/*
-				 * TODO rather make entity manager accesible within
-				 * entitycontainer and use it for this purpose
-				 */
-				final Field idField = value.getClass().getDeclaredField(idProperty.getName());
-				idField.setAccessible(true);
-				return idField.get(value);
-			}
-			catch(NoSuchFieldException | SecurityException | IllegalArgumentException
-					| IllegalAccessException e)
-			{
-				throw new RuntimeException(e);
-			}
+			return this.idResolver.getEntityIDPropertyValue(value);
 		}
 		return null;
 	}

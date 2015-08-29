@@ -35,8 +35,8 @@ import com.xdev.util.HibernateEntityIDResolver;
 
 
 //TODO check if object as ID type is always suitable
-public class IDToBeanCollectionConverter<T> implements
-		Converter<Set<T>, Collection<? extends Object>>
+public class IDToBeanCollectionConverter<T>
+		implements Converter<Set<T>, Collection<? extends Object>>
 {
 	private final BeanContainer<T>	container;
 	private final EntityIDResolver	idResolver;
@@ -81,7 +81,7 @@ public class IDToBeanCollectionConverter<T> implements
 	@Override
 	public Collection<? extends Object> convertToModel(final Set<T> itemIds,
 			final Class<? extends Collection<? extends Object>> targetType, final Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException
+					throws com.vaadin.data.util.converter.Converter.ConversionException
 	{
 		// TODO create suitable type provider
 		if(targetType.isAssignableFrom(List.class))
@@ -121,7 +121,7 @@ public class IDToBeanCollectionConverter<T> implements
 	@Override
 	public Set<T> convertToPresentation(final Collection<? extends Object> values,
 			final Class<? extends Set<T>> targetType, final Locale locale)
-			throws com.vaadin.data.util.converter.Converter.ConversionException
+					throws com.vaadin.data.util.converter.Converter.ConversionException
 	{
 		this.idCollection = new HashSet<>();
 		if(values != null)

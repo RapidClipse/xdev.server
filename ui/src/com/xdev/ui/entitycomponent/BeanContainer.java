@@ -18,6 +18,8 @@
 package com.xdev.ui.entitycomponent;
 
 
+import java.util.Collection;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItem;
 
@@ -34,6 +36,15 @@ public interface BeanContainer<T> extends Container.Filterable
 	
 	
 	public int addBean(final T bean);
+	
+	
+	public void addAll(Collection<T> collection);
+	
+	
+	public void removeAllBeans();
+	
+	
+	public void removeAll(Collection<T> collection);
 	
 	
 	/**
@@ -70,7 +81,7 @@ public interface BeanContainer<T> extends Container.Filterable
 	
 	
 	public void refresh();
-
-
+	
+	
 	public Class<T> getBeanType();
 }

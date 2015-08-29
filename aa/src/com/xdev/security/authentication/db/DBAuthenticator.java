@@ -69,7 +69,7 @@ public final class DBAuthenticator
 	protected CredentialsUsernamePassword checkCredentials(
 			final CredentialsUsernamePassword credentials) throws AuthenticationFailedException
 	{
-		final byte[] hasshedPassword = this.hashStrategy.hashPassword(credentials.password());
+		final byte[] hashedPassword = this.hashStrategy.hashPassword(credentials.password());
 		final List<? extends CredentialsUsernamePassword> entities = DAOs
 				.getByEntityType(this.authenticationEntityType).findAll();
 		for(final Object object : entities)
@@ -77,11 +77,11 @@ public final class DBAuthenticator
 			final CredentialsUsernamePassword entity = (CredentialsUsernamePassword)object;
 			if(entity.username().equals(credentials.username()))
 			{
-				if(hasshedPassword.length == entity.password().length)
+				if(hashedPassword.length == entity.password().length)
 				{
-					for(int i = 0; i < hasshedPassword.length; i++)
+					for(int i = 0; i < hashedPassword.length; i++)
 					{
-						if(!(hasshedPassword[i] == entity.password()[i]))
+						if(!(hashedPassword[i] == entity.password()[i]))
 						{
 							this.hasPassedLogin = false;
 							break;

@@ -14,13 +14,17 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.util;
+
 
 import org.hibernate.mapping.Property;
 
 
 public interface EntityIDResolver
 {
-	 public Property getEntityIDProperty(Class<?> entity);
+	public Property getEntityIDProperty(Class<?> entityClass);
+
+
+	public Object getEntityIDPropertyValue(Object entity);
 }

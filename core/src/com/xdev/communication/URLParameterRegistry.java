@@ -34,7 +34,7 @@ import com.xdev.util.HibernateEntityIDResolver;
 
 /**
  * @author XDEV Software
- *
+ * 		
  */
 public class URLParameterRegistry
 {

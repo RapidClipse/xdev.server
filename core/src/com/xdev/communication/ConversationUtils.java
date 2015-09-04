@@ -27,10 +27,10 @@ import com.vaadin.server.VaadinSession;
 
 public class ConversationUtils
 {
-
+	
 	private final static String ENTITY_MANAGER_ATTRIBUTE = "EntityManager";
-
-
+	
+	
 	public static Conversation getConversation()
 	{
 		/*
@@ -41,14 +41,14 @@ public class ConversationUtils
 				.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
 		return conversationable.getConversation();
 	}
-
-
+	
+	
 	private static Conversation newConversation()
 	{
 		final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
 				.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
 		final Conversation conversation = new Conversation.Implementation();
-
+		
 		try
 		{
 			conversationable.setConversation(conversation);
@@ -57,46 +57,52 @@ public class ConversationUtils
 		{
 			return conversationable.getConversation();
 		}
-
+		
 		return conversation;
 	}
-
-
+	
+	
 	public static void startConversation()
 	{
 		newConversation().start();
 	}
-
-
+	
+	
 	public static void startPessimisticConversation(final LockModeType lockMode)
 	{
 		final Conversation conversation = newConversation();
 		conversation.setPessimisticUnit(true,lockMode);
 		conversation.start();
 	}
-
-
+	
+	
 	public static void lockConversation(final Object entity)
 	{
 		EntityManagerUtils.getEntityManager().lock(entity,getConversation().getLockModeType());
 	}
-
-
+	
+	
 	public static void lockConversation(final Object entity, final Map<String, Object> properties)
 	{
 		EntityManagerUtils.getEntityManager().lock(entity,getConversation().getLockModeType(),
 				properties);
 	}
-
-
+	
+	
+	public static void releaseConversationLock()
+	{
+		EntityManagerUtils.getEntityManager().getTransaction().commit();
+	}
+	
+	
 	public static void startPessimisticConversation()
 	{
 		final Conversation conversation = newConversation();
 		conversation.setPessimisticUnit(true,LockModeType.WRITE);
 		conversation.start();
 	}
-
-
+	
+	
 	public static void endConversation()
 	{
 		final Conversation conversation = getConversation();
@@ -105,11 +111,11 @@ public class ConversationUtils
 			conversation.end();
 		}
 	}
-
-
+	
+	
 	public static boolean isConversationActive()
 	{
 		return getConversation().isActive();
 	}
-
+	
 }

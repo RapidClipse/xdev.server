@@ -37,7 +37,7 @@ import com.vaadin.server.VaadinSession;
  * Manages Session propagation.
  *
  * @author XDEV Software
- *		
+ * 		
  */
 public interface VaadinSessionStrategy
 {
@@ -53,7 +53,7 @@ public interface VaadinSessionStrategy
 	 * pattern.
 	 *
 	 * @author XDEV Software
-	 *		
+	 * 		
 	 */
 	public class PerRequest implements VaadinSessionStrategy
 	{
@@ -174,7 +174,7 @@ public interface VaadinSessionStrategy
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 *		
+	 * 		
 	 */
 	public class PerConversation implements VaadinSessionStrategy
 	{
@@ -270,7 +270,7 @@ public interface VaadinSessionStrategy
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 *		
+	 * 		
 	 */
 	public class PerConversationPessimistic implements VaadinSessionStrategy
 	{
@@ -306,6 +306,14 @@ public interface VaadinSessionStrategy
 		@Override
 		public void handleRequest(final VaadinRequest request, final VaadinService service)
 		{
+			final EntityManager em = EntityManagerUtils.getEntityManager();
+			if(em != null)
+			{
+				if(!em.getTransaction().isActive())
+				{
+					em.getTransaction().begin();
+				}
+			}
 		}
 
 

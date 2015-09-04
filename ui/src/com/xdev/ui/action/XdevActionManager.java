@@ -58,11 +58,11 @@ public class XdevActionManager
 		{
 			return ((XdevUI)ui).getXdevActionManager();
 		}
-
+		
 		return null;
 	}
-
-
+	
+	
 	/**
 	 * Notifies all {@link ContextSensitiveHandlerChangeListener}s that the
 	 * state of a certain handler has changed.
@@ -79,20 +79,20 @@ public class XdevActionManager
 	{
 		get(handler).fireContextSensitiveHandlerChanged(handlerType,(T)handler);
 	}
-
-
-
+	
+	
+	
 	private static class ActionContext<T extends ContextSensitiveHandler>
 	{
 		T										handler	= null;
 		final List<ContextSensitiveAction<T>>	actions	= new ArrayList<>();
 	}
-
+	
 	private final XdevUI																						ui;
 	private final Map<Class<? extends ContextSensitiveHandler>, ActionContext<?>>								handlerContextMap;
 	private final Map<Class<? extends ContextSensitiveHandler>, List<ContextSensitiveHandlerChangeListener>>	changeListeners;
-
-
+	
+	
 	/**
 	 * Creates a new action manager. The best way for users to acquire the
 	 * current action manager is {@link XdevUI#getXdevActionManager()}.
@@ -105,11 +105,11 @@ public class XdevActionManager
 		this.ui = ui;
 		this.handlerContextMap = new HashMap<>();
 		this.changeListeners = new HashMap<>();
-
+		
 		ui.addFocusChangeListener(event -> focusChanged(event.getComponent()));
 	}
-
-
+	
+	
 	/**
 	 * Returns the associated UI of this action manager.
 	 *
@@ -119,8 +119,8 @@ public class XdevActionManager
 	{
 		return this.ui;
 	}
-
-
+	
+	
 	/**
 	 * Registeres a state change listener for a certain handler type.
 	 *
@@ -147,8 +147,8 @@ public class XdevActionManager
 			list.add(listener);
 		}
 	}
-
-
+	
+	
 	/**
 	 * Removes the listener of a certain handler type.
 	 *
@@ -171,8 +171,8 @@ public class XdevActionManager
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * Notifies all {@link ContextSensitiveHandlerChangeListener}s that the
 	 * state of a certain handler has changed.
@@ -200,8 +200,8 @@ public class XdevActionManager
 			}
 		}
 	}
-
-
+	
+	
 	<T extends ContextSensitiveHandler> void registerContextSensitiveAction(
 			final ContextSensitiveAction<T> action, final Class<T> handlerType)
 	{
@@ -218,22 +218,28 @@ public class XdevActionManager
 			action.setHandler(actionContext.handler);
 		}
 	}
-
-
+	
+	
 	private void focusChanged(final Component root)
 	{
+		if(root instanceof ActionComponent && ((ActionComponent)root).getAction() != null)
+		{
+			// ActionComponents themselves don't fire focus event
+			return;
+		}
+
 		for(final Class<? extends ContextSensitiveHandler> type : this.handlerContextMap.keySet())
 		{
 			focusChanged(root,type);
 		}
 	}
-
-
+	
+	
 	private <T extends ContextSensitiveHandler> void focusChanged(final Component root,
 			final Class<T> type)
 	{
 		final T newHandler = getHandler(type,root);
-
+		
 		@SuppressWarnings("unchecked")
 		final ActionContext<T> actionContext = (ActionContext<T>)this.handlerContextMap.get(type);
 		if(newHandler != actionContext.handler)
@@ -245,8 +251,8 @@ public class XdevActionManager
 			}
 		}
 	}
-
-
+	
+	
 	private <T extends ContextSensitiveHandler> T getHandler(final Class<T> type,
 			final Component root)
 	{
@@ -257,20 +263,20 @@ public class XdevActionManager
 			{
 				return handler;
 			}
-
+			
 			handler = UIUtils.getNextParent(((Component)handler).getParent(),type);
 		}
-
+		
 		final T singleHandler = getSingleHandler(type,root.getUI());
 		if(singleHandler != null)
 		{
 			return singleHandler;
 		}
-
+		
 		return null;
 	}
-
-
+	
+	
 	private <T extends ContextSensitiveHandler> T getSingleHandler(final Class<T> type, final UI ui)
 	{
 		final List<T> handlers = new ArrayList<>();

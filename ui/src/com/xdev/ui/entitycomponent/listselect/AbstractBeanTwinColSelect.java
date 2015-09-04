@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -35,33 +35,33 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	 */
 	private static final long	serialVersionUID	= 897703398940222936L;
 	private boolean				autoQueryData		= true;
-	
-	
+
+
 	public AbstractBeanTwinColSelect()
 	{
 		super();
 	}
-	
-	
+
+
 	public AbstractBeanTwinColSelect(final String caption)
 	{
 		super(caption);
 	}
-	
-	
+
+
 	public AbstractBeanTwinColSelect(final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
 	}
-	
-	
+
+
 	public AbstractBeanTwinColSelect(final String caption,
 			final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public XdevBeanContainer<BEANTYPE> getContainerDataSource()
@@ -78,8 +78,8 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 		// }
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -98,8 +98,8 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 			super.setContainerDataSource(newDataSource);
 		}
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -110,8 +110,8 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	{
 		return this.autoQueryData;
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -122,8 +122,8 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	{
 		this.autoQueryData = autoQuery;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -132,8 +132,8 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	{
 		return this.getContainerDataSource().getItem(itemId);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -142,12 +142,16 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	{
 		return this.getContainerDataSource().getItem(this.getValue());
 	}
-	
-	
+
+
 	protected UIModelProvider<BEANTYPE> getModelProvider()
 	{
 		if(this.isAutoQueryData())
 		{
+			/*
+			 * TWINCOlSELECT does not precalculate viewport size and does not
+			 * set the row property!!!
+			 */
 			return new LazyLoadingUIModelProvider<BEANTYPE>(this.getRows(),false,false);
 		}
 		else

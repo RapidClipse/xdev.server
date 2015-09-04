@@ -14,18 +14,18 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.paging;
 
 
 import org.hibernate.ScrollableResults;
 
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
+import com.xdev.ui.entitycomponent.XdevBeanItemContainer;
 
 
-public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
-		PageableContainer<ET>
+public class PagedBeanItemContainer<ET> extends XdevBeanItemContainer<ET>
+		implements PageableContainer<ET>
 {
 	/**
 	 *
@@ -36,16 +36,16 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 	private int						currentPage						= LANDING_PAGE;
 	private int						pageLength						= 5;
 	private int						scrollableResultAddedItemCount	= 0;
-
-
+	
+	
 	public PagedBeanItemContainer(final ScrollableResults result, final Class<ET> entitytypeClass)
 	{
 		// this.result = new TransactionalScrollableResults(result);
 		super(entitytypeClass);
 		this.result = result;
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public int nextPage()
@@ -55,7 +55,7 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 			this.internalSetCurrentPage(++this.currentPage);
 			// this.prepareOtherPage();
 			int currentPageRecordIndex = this.getCurrentPage() * this.getPageLength();
-
+			
 			final int nextPageIndex = currentPageRecordIndex + this.getPageLength();
 			while(nextPageIndex > currentPageRecordIndex++)
 			{
@@ -68,8 +68,8 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 		}
 		throw new RuntimeException("Not able to scroll to next page");
 	}
-
-
+	
+	
 	// untyped hibernate API
 	@SuppressWarnings("unchecked")
 	@Override
@@ -81,7 +81,7 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 			// this.prepareOtherPage();
 			// FIXME Scrollen von zweite auf erste Seite führt zu 0 Ergebnis
 			int currentPageIndex = this.getCurrentPage() * this.getPageLength();
-
+			
 			final int previousPageIndex = currentPageIndex - this.getPageLength();
 			while(previousPageIndex < currentPageIndex--)
 			{
@@ -90,13 +90,13 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 					this.scrollBean((ET)this.result.get()[0]);
 				}
 			}
-
+			
 			return previousPageIndex;
 		}
 		throw new RuntimeException("Not able to scroll to previous page");
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public int lastPage()
@@ -107,19 +107,19 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 		{
 			this.scrollBean((ET)this.result.get()[0]);
 		}
-
+		
 		return this.result.getRowNumber() - this.getPageLength();
 	}
-
-
+	
+	
 	@Override
 	public int firstPage()
 	{
 		this.setCurrentPage(0);
 		return 0;
 	}
-
-
+	
+	
 	// untyped hibernate API
 	@SuppressWarnings("unchecked")
 	@Override
@@ -141,13 +141,13 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 			}
 		}
 	}
-
-
+	
+	
 	@Override
 	public int getTotalAmountOfPages()
 	{
 		this.result.last();
-
+		
 		if(this.result.getRowNumber() > 0)
 		{
 			if(this.result.getRowNumber() <= this.getPageLength())
@@ -163,8 +163,8 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 		}
 		return 0;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -175,7 +175,7 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 		// System.out.println("current page: " + currentPage);
 		// System.out.println("current index: " + this.getCurrentPage() *
 		// this.getPageLength());
-
+		
 		final int rowsLeft = this.getRealSize() - (this.getCurrentPage() * this.getPageLength());
 		if(rowsLeft > this.getPageLength())
 		{
@@ -188,8 +188,8 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 			return rowsLeft;
 		}
 	}
-
-
+	
+	
 	// FIXME consider transient items outside the scrollable resultset
 	public int getRealSize()
 	{
@@ -197,7 +197,7 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 		{
 			// System.out.println("current row: " + this.result.getRowNumber());
 			// System.out.println("super size: " + super.size());
-
+			
 			/*
 			 * include transient items but remove already added / persistent
 			 * items from scrollable result.
@@ -209,42 +209,42 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 		}
 		throw new RuntimeException("No last row found");
 	}
-
-
+	
+	
 	private int compareTransientWithScrollableResultItemSize()
 	{
 		final int transientItemCount = super.size() - this.scrollableResultAddedItemCount;
-
+		
 		if(transientItemCount > 0)
 		{
 			return transientItemCount;
 		}
-
+		
 		return 0;
 	}
-
-
+	
+	
 	@Override
 	public int getCurrentPage()
 	{
 		return this.currentPage;
 	}
-
-
+	
+	
 	@Override
 	public int getPageLength()
 	{
 		return this.pageLength;
 	}
-
-
+	
+	
 	@Override
 	public void setPageLength(final int pageLength)
 	{
 		this.pageLength = pageLength;
 	}
-
-
+	
+	
 	protected void internalSetCurrentPage(final int currentPage) throws RuntimeException
 	{
 		if(this.getCurrentPage() <= this.getTotalAmountOfPages() && this.getCurrentPage() >= 0)
@@ -256,15 +256,15 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 			throw new RuntimeException("Current page not within a valid page range");
 		}
 	}
-
-
+	
+	
 	@Override
 	public BeanItem<ET> scrollBean(final ET bean)
 	{
 		return this.lazyLoadBean(bean);
 	}
-
-
+	
+	
 	protected BeanItem<ET> lazyLoadBean(final ET bean)
 	{
 		final BeanItem<ET> beanItem = this.getItem(bean);
@@ -278,8 +278,8 @@ public class PagedBeanItemContainer<ET> extends BeanItemContainer<ET> implements
 			return beanItem;
 		}
 	}
-
-
+	
+	
 	@Override
 	public ScrollableResults getResults()
 	{

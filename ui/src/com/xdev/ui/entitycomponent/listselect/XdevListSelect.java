@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -21,9 +21,7 @@ package com.xdev.ui.entitycomponent.listselect;
 import java.util.Collection;
 
 import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
-import com.xdev.ui.entitycomponent.IDToBeanConverter;
-import com.xdev.ui.paging.LazyLoadingUIModelProvider;
-import com.xdev.ui.paging.XdevLazyEntityContainer;
+import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
 
 
@@ -63,54 +61,45 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings({"rawtypes","unchecked"})
 	@SafeVarargs
 	@Override
-	public final void setDataContainer(final Class<T> beanClass,
+	public final void setContainerDataSource(final Class<T> beanClass, final boolean autoQueryData,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
-		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
-				beanClass,nestedProperties);
+		this.setAutoQueryData(autoQueryData);
+		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
+				nestedProperties);
 				
-		// there is no vaadin multiselectable interface or something similar
-		// hence cant use strategies here.
-		if(this.isMultiSelect())
-		{
-			this.setConverter(new IDToBeanCollectionConverter(container));
-		}
-		else
-		{
-			this.setConverter(new IDToBeanConverter<T>(container));
-		}
-		this.setDataContainer(container);
-		
+		this.setContainerDataSource(container);
 	}
 	
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings({"rawtypes","unchecked"})
 	@SafeVarargs
 	@Override
-	public final void setDataContainer(final Class<T> beanClass, final Collection<T> data,
+	public final void setContainerDataSource(final Class<T> beanClass,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
-		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
-				beanClass,nestedProperties);
+		this.setContainerDataSource(beanClass,true,nestedProperties);
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@SafeVarargs
+	@Override
+	public final void setContainerDataSource(final Class<T> beanClass, final Collection<T> data,
+			final KeyValueType<?, ?>... nestedProperties)
+	{
+		this.setAutoQueryData(false);
+		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
+				nestedProperties);
 		container.addAll(data);
 		
-		// there is no vaadin multiselectable interface or something similar
-		// hence cant use strategies here.
-		if(this.isMultiSelect())
-		{
-			this.setConverter(new IDToBeanCollectionConverter(container));
-		}
-		else
-		{
-			this.setConverter(new IDToBeanConverter<T>(container));
-		}
-		this.setDataContainer(container);
+		this.setContainerDataSource(container);
 	}
 	
 	
@@ -124,16 +113,10 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	public void setMultiSelect(final boolean multiSelect)
 	{
 		super.setMultiSelect(multiSelect);
-		this.setConverter(new IDToBeanCollectionConverter(this.getDataContainer()));
+		if(this.isAutoQueryData())
+		{
+			this.setConverter(new IDToBeanCollectionConverter(this.getContainerDataSource()));
+		}
 	}
 	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected LazyLoadingUIModelProvider<T> getModelProvider()
-	{
-		return new LazyLoadingUIModelProvider<T>(this.getRows(),false,false);
-	}
 }

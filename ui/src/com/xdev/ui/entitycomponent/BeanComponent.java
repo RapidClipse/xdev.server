@@ -14,32 +14,59 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.entitycomponent;
 
 
 import java.util.Collection;
 
+import com.vaadin.data.Container.Viewer;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Component;
 import com.xdev.ui.util.KeyValueType;
 
 
-public interface BeanComponent<BEANTYPE> extends BeanViewer<BEANTYPE>, Component
+public interface BeanComponent<BEANTYPE>
+		extends Viewer, /* BeanViewer<BEANTYPE>, */ Component
 {
-	public void setDataContainer(Class<BEANTYPE> beanClass, KeyValueType<?, ?>... nestedProperties);
-
-
-	public void setDataContainer(Class<BEANTYPE> entityClass, Collection<BEANTYPE> data,
+	
+	public void setContainerDataSource(Class<BEANTYPE> beanClass,
 			KeyValueType<?, ?>... nestedProperties);
-
-
+			
+			
+	public void setContainerDataSource(Class<BEANTYPE> beanClass, boolean autoQueryData,
+			KeyValueType<?, ?>... nestedProperties);
+			
+			
+	public void setContainerDataSource(Class<BEANTYPE> entityClass, Collection<BEANTYPE> data,
+			KeyValueType<?, ?>... nestedProperties);
+			
+			
+	@Override
+	public XdevBeanContainer<BEANTYPE> getContainerDataSource();
+	
+	
+	/**
+	 * True means, a lazy query container is used as default table container
+	 * which queries data at starup. False means, the user is responsible for
+	 * using its own implementation or while invoking
+	 * {@link #setContainerDataSource(Class, KeyValueType...)} a
+	 * BeanItemContainer which must be explicitly filled with data is used.
+	 *
+	 * @param autoQuery
+	 */
+	public void setAutoQueryData(boolean autoQuery);
+	
+	
+	public boolean isAutoQueryData();
+	
+	
 	public BeanItem<BEANTYPE> getItem(Object id);
-
-
+	
+	
 	public BeanItem<BEANTYPE> getSelectedItem();
-
-
+	
+	
 	public void addValueChangeListener(Property.ValueChangeListener listener);
 }

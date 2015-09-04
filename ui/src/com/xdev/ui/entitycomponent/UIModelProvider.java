@@ -14,12 +14,10 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.entitycomponent;
 
 
-import com.vaadin.data.Container;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.AbstractSelect;
 import com.xdev.ui.util.KeyValueType;
 
@@ -28,29 +26,45 @@ import com.xdev.ui.util.KeyValueType;
  * + write javadoc to communicate that per default the bean itself is used as identifier see BeanItemContainer#BeanItemResolver */
 public interface UIModelProvider<BEANTYPE>
 {
-	
-	public Container getModel(AbstractSelect component, Class<BEANTYPE> entityClass,
-			KeyValueType<?, ?>... nestedProperties);
-	
-	
-	
+
+	public XdevBeanContainer<BEANTYPE> getModel(AbstractSelect component,
+			Class<BEANTYPE> entityClass, KeyValueType<?, ?>... nestedProperties);
+
+
+	public void setRelatedModelConverter(AbstractSelect component,
+			XdevBeanContainer<BEANTYPE> container);
+
+
+
 	public class Implementation<BEANTYPE> implements UIModelProvider<BEANTYPE>
 	{
-		
+
 		@Override
-		public BeanItemContainer<BEANTYPE> getModel(final AbstractSelect table,
+		public XdevBeanItemContainer<BEANTYPE> getModel(final AbstractSelect table,
 				final Class<BEANTYPE> entityClass, final KeyValueType<?, ?>... nestedProperties)
 		{
-			final BeanItemContainer<BEANTYPE> beanItemContainer = new BeanItemContainer<>(
+			final XdevBeanItemContainer<BEANTYPE> beanItemContainer = new XdevBeanItemContainer<>(
 					entityClass);
-			
+
 			for(final KeyValueType<?, ?> keyValuePair : nestedProperties)
 			{
 				beanItemContainer.addNestedContainerProperty(keyValuePair.getKey().toString());
 			}
-			
+
 			return beanItemContainer;
 		}
-		
+
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setRelatedModelConverter(final AbstractSelect component,
+				final XdevBeanContainer<BEANTYPE> container)
+		{
+			// BeanItemContainer uses Beans as IDs iteself, no conversion
+			// required
+		}
+
 	}
 }

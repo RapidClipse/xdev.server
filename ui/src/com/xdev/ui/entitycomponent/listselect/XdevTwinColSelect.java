@@ -20,11 +20,7 @@ package com.xdev.ui.entitycomponent.listselect;
 
 import java.util.Collection;
 
-import com.vaadin.data.util.converter.Converter;
-import com.vaadin.data.util.converter.ConverterUtil;
-import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
-import com.xdev.ui.paging.LazyLoadingUIModelProvider;
-import com.xdev.ui.paging.XdevLazyEntityContainer;
+import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
 
 
@@ -33,7 +29,7 @@ import com.xdev.ui.util.KeyValueType;
  * side for selected items.
  *
  * @author XDEV Software
- *		
+ * 		
  */
 public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 {
@@ -64,86 +60,62 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T>
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings({"rawtypes","unchecked"})
 	@SafeVarargs
 	@Override
-	public final void setDataContainer(final Class<T> beanClass,
+	public final void setContainerDataSource(final Class<T> beanClass, final boolean autoQueryData,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
-		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
-				beanClass,nestedProperties);
+		this.setAutoQueryData(autoQueryData);
+		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
+				nestedProperties);
 				
-		/*
-		 * vaadin api compiler warnings, cant define a converter with a set as
-		 * wrapper data type
-		 */
-		this.setConverter(new IDToBeanCollectionConverter(container));
-		this.setDataContainer(container);
-	}
-	
-	
-	@SuppressWarnings({"rawtypes","unchecked"})
-	@SafeVarargs
-	@Override
-	public final void setDataContainer(final Class<T> beanClass, final Collection<T> data,
-			final KeyValueType<?, ?>... nestedProperties)
-	{
-		final XdevLazyEntityContainer<T> container = this.getModelProvider().getModel(this,
-				beanClass,nestedProperties);
-		container.addAll(data);
-		
-		/*
-		 * vaadin api compiler warnings, cant define a converter with a set as
-		 * wrapper data type
-		 */
-		this.setConverter(new IDToBeanCollectionConverter(container));
-		this.setDataContainer(container);
+		// FIXME converter only working if container already set to component?
+		this.setContainerDataSource(container);
 	}
 	
 	
 	/**
 	 * {@inheritDoc}
 	 */
+	@SafeVarargs
 	@Override
-	protected LazyLoadingUIModelProvider<T> getModelProvider()
+	public final void setContainerDataSource(final Class<T> beanClass,
+			final KeyValueType<?, ?>... nestedProperties)
 	{
-		return new LazyLoadingUIModelProvider<T>(this.getRows(),false,false);
+		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
 	
 	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.vaadin.ui.AbstractField#setConverter(java.lang.Class)
-	 */
-	@SuppressWarnings("unchecked")
+	@SafeVarargs
 	@Override
-	public void setConverter(final Class<?> datamodelType)
+	public final void setContainerDataSource(final Class<T> beanClass, final Collection<T> data,
+			final KeyValueType<?, ?>... nestedProperties)
 	{
-		// set converter only if utils find a suitable one.
-		final Converter<Object, ?> c = (Converter<Object, ?>)ConverterUtil.getConverter(getType(),
-				datamodelType,getSession());
-		if(c != null)
-		{
-			setConverter(c);
-		}
+		this.setAutoQueryData(false);
+		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
+				nestedProperties);
+		container.addAll(data);
+		
+		this.setContainerDataSource(container);
 	}
 	
 	// /*
 	// * (non-Javadoc)
 	// *
-	// * @see com.vaadin.ui.AbstractSelect#getType()
+	// * @see com.vaadin.ui.AbstractField#setConverter(java.lang.Class)
 	// */
+	// @SuppressWarnings("unchecked")
 	// @Override
-	// public Class<?> getType()
+	// public void setConverter(final Class<?> datamodelType)
 	// {
-	// if(isMultiSelect())
+	// // set converter only if utils find a suitable one.
+	// final Converter<Object, ?> c = (Converter<Object,
+	// ?>)ConverterUtil.getConverter(getType(),
+	// datamodelType,getSession());
+	// if(c != null)
 	// {
-	// return Collection.class;
-	// }
-	// else
-	// {
-	// return Object.class;
+	// setConverter(c);
 	// }
 	// }
+	
 }

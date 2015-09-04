@@ -38,39 +38,39 @@ import com.xdev.util.HibernateEntityIDResolver;
 public class IDToBeanCollectionConverter<T>
 		implements Converter<Set<T>, Collection<? extends Object>>
 {
-	private final BeanContainer<T>	container;
-	private final EntityIDResolver	idResolver;
-	private Collection<T>			beanCollection	= new ArrayList<T>();
-	private Collection<Object>		idCollection	= new HashSet<>();
-
-
+	private final XdevBeanContainer<T>	container;
+	private final EntityIDResolver		idResolver;
+	private Collection<T>				beanCollection	= new ArrayList<T>();
+	private Collection<Object>			idCollection	= new HashSet<>();
+	
+	
 	/**
 	 *
 	 */
-	public IDToBeanCollectionConverter(final BeanContainer<T> container)
+	public IDToBeanCollectionConverter(final XdevBeanContainer<T> container)
 	{
 		this.container = container;
 		this.idResolver = new HibernateEntityIDResolver();
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Collection<? extends Object>> getModelType()
 	{
 		return (Class<Collection<? extends Object>>)this.idCollection.getClass();
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Set<T>> getPresentationType()
 	{
 		return (Class<Set<T>>)this.beanCollection.getClass();
-
+		
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -92,12 +92,12 @@ public class IDToBeanCollectionConverter<T>
 		{
 			this.beanCollection = new HashSet<>();
 		}
-		
+
 		if(itemIds != null)
 		{
 			for(final Object itemId : itemIds)
 			{
-				final BeanItem<T> item = this.container.getBeanItem(itemId);
+				final BeanItem<T> item = this.container.getItem(itemId);
 				if(item != null)
 				{
 					this.beanCollection.add(item.getBean());
@@ -105,11 +105,11 @@ public class IDToBeanCollectionConverter<T>
 			}
 			return this.beanCollection;
 		}
-		
+
 		return this.beanCollection;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -138,7 +138,7 @@ public class IDToBeanCollectionConverter<T>
 							.getEntityIDProperty(bean.getClass());
 					final Field idField = bean.getClass().getDeclaredField(idProperty.getName());
 					idField.setAccessible(true);
-
+					
 					this.idCollection.add(idField.get(bean));
 				}
 				catch(NoSuchFieldException | SecurityException | IllegalArgumentException
@@ -150,5 +150,5 @@ public class IDToBeanCollectionConverter<T>
 		}
 		return (Set<T>)this.idCollection;
 	}
-
+	
 }

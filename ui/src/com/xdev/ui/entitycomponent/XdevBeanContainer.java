@@ -14,30 +14,40 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.entitycomponent;
 
 
-import com.vaadin.data.Container.Viewer;
+import java.util.Collection;
+
+import com.vaadin.data.Container;
+import com.vaadin.data.util.BeanItem;
 
 
-public interface BeanViewer<BEANTYPE> extends Viewer
+public interface XdevBeanContainer<T> extends Container.Filterable
 {
+	
+	public BeanItem<T> addBean(final T bean) throws UnsupportedOperationException;
+	
+	
+	@Override
+	public BeanItem<T> getItem(Object itemId) throws UnsupportedOperationException;
+	
+	
+	public void addAll(Collection<? extends T> beans) throws UnsupportedOperationException;
+	
+	
+	public void removeAll() throws UnsupportedOperationException;
+	
+	
+	public void removeAll(Collection<? extends T> beans) throws UnsupportedOperationException;
+
 
 	/**
-	 * Sets the Container that serves as the data source of the viewer.
-	 *
-	 * @param newDataSource
-	 *            The new data source Item
+	 * refresh data for query implementations
 	 */
-	public void setDataContainer(XdevBeanContainer<BEANTYPE> newDataSource);
-
-
-	/**
-	 * Gets the Container serving as the data source of the viewer.
-	 *
-	 * @return data source Container
-	 */
-	public XdevBeanContainer<BEANTYPE> getDataContainer();
-
+	public void refresh();
+	
+	
+	public Class<? super T> getBeanType();
 }

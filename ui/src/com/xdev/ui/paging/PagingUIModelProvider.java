@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.paging;
 
 
@@ -22,22 +22,23 @@ import org.hibernate.ScrollableResults;
 
 import com.vaadin.ui.AbstractSelect;
 import com.xdev.ui.entitycomponent.UIModelProvider;
+import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
 
 
 public class PagingUIModelProvider<BEANTYPE> implements UIModelProvider<BEANTYPE>
 {
-	private final ScrollableResults	results;
-
-
+	private final ScrollableResults results;
+	
+	
 	public PagingUIModelProvider(final ScrollableResults results)
 	{
 		this.results = results;
 	}
-
-
+	
+	
 	@Override
-	public PagedBeanItemContainer<BEANTYPE> getModel(final AbstractSelect component,
+	public XdevBeanContainer<BEANTYPE> getModel(final AbstractSelect component,
 			final Class<BEANTYPE> entityClass, final KeyValueType<?, ?>... nestedProperties)
 	{
 		final PagedBeanItemContainer<BEANTYPE> beanItemContainer = new PagedBeanItemContainer<>(
@@ -46,7 +47,19 @@ public class PagingUIModelProvider<BEANTYPE> implements UIModelProvider<BEANTYPE
 		{
 			beanItemContainer.addNestedContainerProperty(keyValuePair.getKey().toString());
 		}
-
+		
 		return beanItemContainer;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setRelatedModelConverter(final AbstractSelect component,
+			final XdevBeanContainer<BEANTYPE> container)
+	{
+		// BeanItemContainer uses Beans as IDs iteself, no conversion
+		// required
 	}
 }

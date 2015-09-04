@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.paging;
 
 
@@ -23,16 +23,16 @@ public class XdevLazyEntityContainer<T> extends ExtendableLazyEntityContainer<T>
 	/**
 	 *
 	 */
-	private static final long	serialVersionUID	= -687747633245500730L;
-
-
+	private static final long serialVersionUID = -687747633245500730L;
+	
+	
 	public XdevLazyEntityContainer(final Class<T> entityClass, final int batchSize,
 			final Object idPropertyId)
 	{
 		super(entityClass,batchSize,idPropertyId,false,false);
 	}
-
-
+	
+	
 	public XdevLazyEntityContainer(final Class<T> entityClass, final int batchSize,
 			final Object idPropertyId, final Object[] sortPropertyIds,
 			final boolean[] sortPropertyAscendingStates)
@@ -40,18 +40,4 @@ public class XdevLazyEntityContainer<T> extends ExtendableLazyEntityContainer<T>
 		super(false,false,entityClass,batchSize,sortPropertyIds,sortPropertyAscendingStates,
 				idPropertyId);
 	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addContainerFilter(final Filter filter)
-	{
-		super.addContainerFilter(filter);
-		// TODO refresh required?
-		// super.refresh();
-		notifyItemSetChanged();
-	}
-
 }

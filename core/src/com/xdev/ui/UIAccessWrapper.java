@@ -48,28 +48,28 @@ import com.xdev.db.connection.EntityManagerFactoryProvider;
  * @see EntityManagerUtils
  * @see Conversation
  * @see ConversationUtils
- *		
+ * 		
  * @author XDEV Software
- *		
+ * 		
  */
 public class UIAccessWrapper implements Runnable
 {
 	private final Runnable runnable;
-
-
+	
+	
 	public UIAccessWrapper(final Runnable runnable)
 	{
 		this.runnable = runnable;
 	}
-
-
+	
+	
 	@Override
 	public void run()
 	{
 		try
 		{
 			preRun();
-
+			
 			this.runnable.run();
 		}
 		finally
@@ -77,8 +77,8 @@ public class UIAccessWrapper implements Runnable
 			postRun();
 		}
 	}
-
-
+	
+	
 	protected void preRun()
 	{
 		final EntityManagerFactory factory = getEntityManagerFactory();
@@ -95,8 +95,8 @@ public class UIAccessWrapper implements Runnable
 			}
 		}
 	}
-
-
+	
+	
 	protected void postRun()
 	{
 		final EntityManager em = EntityManagerUtils.getEntityManager();
@@ -152,11 +152,11 @@ public class UIAccessWrapper implements Runnable
 			}
 		}
 	}
-
-
+	
+	
 	protected EntityManagerFactory getEntityManagerFactory()
 	{
-		final EntityManagerFactory factory = EntityManagerUtils.getEntityManagerFactory();
+		EntityManagerFactory factory = EntityManagerUtils.getEntityManagerFactory();
 		if(factory == null)
 		{
 			try
@@ -164,7 +164,7 @@ public class UIAccessWrapper implements Runnable
 				final String hibernatePersistenceUnit = UI.getCurrent().getSession().getService()
 						.getDeploymentConfiguration().getApplicationOrSystemProperty(
 								XdevServletService.HIBERNATEUTIL_FILTER_INIT_PARAM,null);
-				EntityManagerUtils.initializeHibernateFactory(
+				factory = EntityManagerUtils.initializeHibernateFactory(
 						new EntityManagerFactoryProvider.Implementation(hibernatePersistenceUnit));
 			}
 			catch(final PersistenceException e)
@@ -172,20 +172,20 @@ public class UIAccessWrapper implements Runnable
 				Logger.getLogger(XdevServlet.class.getName()).log(Level.WARNING,e.getMessage(),e);
 			}
 		}
-		
+
 		return factory;
 	}
-
-
+	
+	
 	protected void startExclusiveWorkingUnit(final EntityManagerFactory factory)
 	{
 		final EntityManager manager = factory.createEntityManager();
-		
+
 		// instantiate conversationable wrapper with entity
 		// manager.
 		final Conversationable.Implementation conversationable = new Conversationable.Implementation();
 		conversationable.setEntityManager(manager);
-		
+
 		// Begin a database transaction, start the unit of
 		// work
 		manager.getTransaction().begin();

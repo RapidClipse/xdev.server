@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,6 +24,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 
 import com.googlecode.genericdao.dao.jpa.GenericDAO;
 import com.googlecode.genericdao.dao.jpa.JPABaseDAO;
@@ -75,10 +78,22 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 
 
-	public CriteriaQuery<T> buildCriteriaQuery(final Class<T> type)
+	public CriteriaQuery<T> buildCriteriaQuery(final Class<T> exampleType)
 	{
 		final CriteriaBuilder cb = em().getCriteriaBuilder();
-		return cb.createQuery(type);
+		return cb.createQuery(exampleType);
+	}
+
+
+	public Criteria buildHibernateCriteriaQuery(final Class<T> exampleType)
+	{
+		return em().unwrap(Session.class).createCriteria(exampleType);
+	}
+	
+	
+	public Criteria buildHibernateCriteriaQuery(final Class<T> exampleType, final String alias)
+	{
+		return em().unwrap(Session.class).createCriteria(exampleType,alias);
 	}
 
 

@@ -5,7 +5,7 @@
 
 	<artifactId>xdev-server-aa-ui</artifactId>
 	<version>0.8.0-SNAPSHOT</version>
-	<name>XDEV Server Authorization and Authentication UI</name>
+	<name>RapidClipse Framework Authorization and Authentication UI</name>
 
 	<parent>
 		<groupId>com.xdev-software</groupId>

@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -23,6 +23,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -381,12 +382,25 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 		if(filter instanceof Compare)
 		{
 			final Compare compare = (Compare)filter;
-			final Expression<Comparable> property = (Expression)getPropertyPath(root,
-					compare.getPropertyId());
+			final Path<Object> propertyPath = getPropertyPath(root,compare.getPropertyId());
+			final Expression property = propertyPath;
+			
 			switch(compare.getOperation())
 			{
 				case EQUAL:
-					return cb.equal(property,compare.getValue());
+					
+					if(Collection.class.isAssignableFrom(property.getJavaType()))
+					{
+						/*
+						 * passing concrete instance to compare collection
+						 * values
+						 */
+						return cb.isMember(compare.getValue(),property);
+					}
+					else
+					{
+						return cb.equal(property,compare.getValue());
+					}
 				case GREATER:
 					return cb.greaterThan(property,(Comparable)compare.getValue());
 				case GREATER_OR_EQUAL:

@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -30,23 +30,23 @@ import com.xdev.ui.util.KeyValueType;
 public interface BeanComponent<BEANTYPE>
 		extends Viewer, /* BeanViewer<BEANTYPE>, */ Component
 {
-	
+
 	public void setContainerDataSource(Class<BEANTYPE> beanClass,
 			KeyValueType<?, ?>... nestedProperties);
-			
-			
+
+
 	public void setContainerDataSource(Class<BEANTYPE> beanClass, boolean autoQueryData,
 			KeyValueType<?, ?>... nestedProperties);
-			
-			
+
+
 	public void setContainerDataSource(Class<BEANTYPE> entityClass, Collection<BEANTYPE> data,
 			KeyValueType<?, ?>... nestedProperties);
-			
-			
+
+
 	@Override
 	public XdevBeanContainer<BEANTYPE> getContainerDataSource();
-	
-	
+
+
 	/**
 	 * True means, a lazy query container is used as default table container
 	 * which queries data at starup. False means, the user is responsible for
@@ -57,16 +57,19 @@ public interface BeanComponent<BEANTYPE>
 	 * @param autoQuery
 	 */
 	public void setAutoQueryData(boolean autoQuery);
-	
-	
+
+
 	public boolean isAutoQueryData();
-	
-	
+
+
 	public BeanItem<BEANTYPE> getItem(Object id);
-	
-	
+
+
 	public BeanItem<BEANTYPE> getSelectedItem();
 	
 	
+	public void select(Object itemId);
+
+
 	public void addValueChangeListener(Property.ValueChangeListener listener);
 }

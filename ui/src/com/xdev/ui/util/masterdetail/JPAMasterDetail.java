@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,9 +32,9 @@ public interface JPAMasterDetail extends MasterDetail
 {
 	public void connectMasterDetail(BeanComponent master, BeanComponent detail, Class masterClass,
 			Class detailClass);
-			
-			
-			
+
+
+
 	public class Implementation extends MasterDetail.Implementation implements JPAMasterDetail
 	{
 		private final EntityIDResolver			idResolver;
@@ -68,8 +68,8 @@ public interface JPAMasterDetail extends MasterDetail
 		{
 			private static final long serialVersionUID = 3306467309764402175L;
 
-			private final BeanComponent	filter;
-			private final BeanComponent	detailContainer;
+			private final BeanComponent	filterComponent;
+			private final BeanComponent	detailComponent;
 			private final Object		detailProperty, filterProperty;
 
 
@@ -77,8 +77,8 @@ public interface JPAMasterDetail extends MasterDetail
 					final BeanComponent detailContainer, final Object filterProperty,
 					final Object detailProperty)
 			{
-				this.filter = filter;
-				this.detailContainer = detailContainer;
+				this.filterComponent = filter;
+				this.detailComponent = detailContainer;
 				this.detailProperty = detailProperty;
 				this.filterProperty = filterProperty;
 			}
@@ -87,16 +87,22 @@ public interface JPAMasterDetail extends MasterDetail
 			@Override
 			public void valueChange(final ValueChangeEvent event)
 			{
-				if(this.filter.getSelectedItem() != null)
+				// reset selection
+				detailComponent.select(null);
+				if(this.filterComponent.getSelectedItem() != null)
 				{
-					prepareFilter(this.detailContainer.getContainerDataSource(),this.detailProperty,
-							this.filter.getSelectedItem().getItemProperty(this.filterProperty)
-									.getValue().toString());
+					clearFiltering(this.detailComponent.getContainerDataSource(),
+							this.filterProperty);
+
+					prepareFilter(this.detailComponent.getContainerDataSource(),this.detailProperty,
+							this.filterComponent.getSelectedItem().getBean()
+					// .getItemProperty(this.filterProperty).getValue().toString(),
+					);
 				}
 				else
 				{
-					clearFiltering(this.detailContainer.getContainerDataSource(),
-							this.detailProperty);
+					clearFiltering(this.detailComponent.getContainerDataSource(),
+							this.filterProperty);
 				}
 			}
 		}

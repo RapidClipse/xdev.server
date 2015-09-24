@@ -5,16 +5,16 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.util.masterdetail;
 
 
@@ -33,8 +33,8 @@ public interface MasterDetail
 {
 	public void connectMasterDetail(AbstractSelect master, Filterable detailContainer,
 			Object filterProperty, Object detailProperty);
-	
-	
+
+
 	public <T> void connectForm(final BeanComponent<T> master, BeanFieldGroup<T> detail);
 
 
@@ -92,7 +92,7 @@ public interface MasterDetail
 
 		private class MasterDetailValueChangeListener implements ValueChangeListener
 		{
-			private static final long		serialVersionUID	= 3306467309764402175L;
+			private static final long serialVersionUID = 3306467309764402175L;
 
 			private final AbstractSelect	filter;
 			private final Filterable		detailContainer;
@@ -115,9 +115,7 @@ public interface MasterDetail
 			{
 				if(this.filter.getValue() != null)
 				{
-					prepareFilter(
-							this.detailContainer,
-							this.detailProperty,
+					prepareFilter(this.detailContainer,this.detailProperty,
 							this.filter.getItem(this.filter.getValue())
 									.getItemProperty(this.filterProperty).getValue().toString());
 				}

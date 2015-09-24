@@ -5,16 +5,16 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui.util;
 
 
@@ -25,7 +25,7 @@ public class NestedProperty<K, V> implements KeyValueType<K, V>
 	private final Class<V>	type;
 	
 	
-	public NestedProperty(K property, V value, Class<V> type)
+	public NestedProperty(final K property, final V value, final Class<V> type)
 	{
 		this.property = property;
 		this.type = type;
@@ -33,20 +33,27 @@ public class NestedProperty<K, V> implements KeyValueType<K, V>
 	}
 	
 	
-	public static <K, V> KeyValueType<K, V> of(K key, V value, Class<V> type)
+	public static <K, V> KeyValueType<K, V> of(final K key, final V value, final Class<V> type)
 	{
-		KeyValueType<K, V> pair = new NestedProperty<>(key,value,type);
+		final KeyValueType<K, V> pair = new NestedProperty<>(key,value,type);
 		return pair;
 	}
 	
 	
-	public static <K, V> KeyValueType<K, V> of(K key, Class<V> type)
+	public static <K, V> KeyValueType<K, V> of(final K key, final Class<V> type)
 	{
-		KeyValueType<K, V> pair = new NestedProperty<>(key,null,type);
+		final KeyValueType<K, V> pair = new NestedProperty<>(key,null,type);
 		return pair;
 	}
-	
-	
+
+
+	public static <K> KeyValueType<K, Object> of(final K key)
+	{
+		final KeyValueType<K, Object> pair = new NestedProperty<>(key,null,Object.class);
+		return pair;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */

@@ -5,16 +5,16 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.util;
 
 
@@ -33,65 +33,63 @@ import com.xdev.communication.EntityManagerUtils;
 
 /**
  * Returns a Vaadin Item property chain.
- * 
+ *
  */
 // TODO create VaadinItemPathConcatenator to avoid manual "." appending
 public class XdevEntityReferenceResolver implements EntityReferenceResolver
 {
-	private final Configuration		config;
-	private final EntityIDResolver	idResolver;
+	private final Configuration config;
+	// private final EntityIDResolver idResolver;
 	
 	
 	public XdevEntityReferenceResolver()
 	{
 		this.config = new Configuration();
-		Set<EntityType<?>> set = EntityManagerUtils.getEntityManager().getMetamodel()
+		final Set<EntityType<?>> set = EntityManagerUtils.getEntityManager().getMetamodel()
 				.getEntities();
-		
-		for(Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)
+				
+		for(final Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)
 		{
-			Class<?> eClazz = i.next().getJavaType();
+			final Class<?> eClazz = i.next().getJavaType();
 			try
 			{
 				this.config.addClass(eClazz);
 			}
-			catch(MappingException e)
+			catch(final MappingException e)
 			{
 				this.config.addAnnotatedClass(eClazz);
 			}
 		}
 		this.config.buildMappings();
-		this.idResolver = new HibernateEntityIDResolver();
+		// this.idResolver = new HibernateEntityIDResolver();
 	}
 	
 	
 	@Override
-	public String getReferenceEntityPropertyName(Class<?> referenceEntity, Class<?> entity)
-			throws RuntimeException
+	public String getReferenceEntityPropertyName(final Class<?> referenceEntity,
+			final Class<?> entity) throws RuntimeException
 	{
-		PersistentClass clazz = this.config.getClassMapping(entity.getName());
+		final PersistentClass clazz = this.config.getClassMapping(entity.getName());
 		Property ref = null;
 		
 		for(@SuppressWarnings("unchecked")
-		Iterator<Property> i = clazz.getReferenceablePropertyIterator(); i.hasNext();)
+		final Iterator<Property> i = clazz.getReferenceablePropertyIterator(); i.hasNext();)
 		{
-			Property it = i.next();
+			final Property it = i.next();
 			/*
 			 * not only referenceable properties are returned, hence a manual
 			 * check is required
 			 */
-			if(HibernateMetaDataUtils.getReferencablePropertyName(it.getValue()) != null)
+			
+			final String propertyName = HibernateMetaDataUtils
+					.getReferencablePropertyName(it.getValue());
+			if(propertyName != null)
 			{
 				ref = it;
-				String propertyName = HibernateMetaDataUtils.getReferencablePropertyName(ref
-						.getValue());
 				
-				if(propertyName != null)
+				if(propertyName.equals(referenceEntity.getName()))
 				{
-					if(propertyName.equals(referenceEntity.getName()))
-					{
-						return this.attachId(ref);
-					}
+					return ref.getName();
 				}
 			}
 		}
@@ -100,19 +98,19 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 	
 	
 	// look deeper into entity
-	protected String getReferenceEntityPropertyname(Class<?> referenceEntity,
+	protected String getReferenceEntityPropertyname(final Class<?> referenceEntity,
 			Class<?> previousClass, Property previousProperty) throws RuntimeException
 	{
 		if(previousProperty != null)
 		{
-			String name = previousProperty.getName() + ".";
+			final String name = previousProperty.getName() + ".";
 			previousClass = previousProperty.getType().getReturnedClass();
-			PersistentClass clazz = this.config.getClassMapping(previousClass.getName());
+			final PersistentClass clazz = this.config.getClassMapping(previousClass.getName());
 			
 			for(@SuppressWarnings("unchecked")
-			Iterator<Property> i = clazz.getReferenceablePropertyIterator(); i.hasNext();)
+			final Iterator<Property> i = clazz.getReferenceablePropertyIterator(); i.hasNext();)
 			{
-				Property it = i.next();
+				final Property it = i.next();
 				/*
 				 * not only referenceable properties are returned, hence a
 				 * manual check is required
@@ -120,14 +118,14 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 				if(HibernateMetaDataUtils.getReferencablePropertyName(it.getValue()) != null)
 				{
 					previousProperty = it;
-					String propertyName = HibernateMetaDataUtils
+					final String propertyName = HibernateMetaDataUtils
 							.getReferencablePropertyName(previousProperty.getValue());
-					
+							
 					if(propertyName != null)
 					{
 						if(propertyName.equals(referenceEntity.getName()))
 						{
-							return this.attachId(name,previousProperty);
+							return this.getPropertyName(name,previousProperty);
 						}
 					}
 				}
@@ -137,18 +135,14 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 	}
 	
 	
-	private String attachId(String itemPropertyPath, Property property)
+	private String getPropertyName(final String itemPropertyPath, final Property property)
 	{
-		Class<?> javaClass = property.getType().getReturnedClass();
-		return itemPropertyPath + property.getName() + "."
-				+ this.idResolver.getEntityIDProperty(javaClass).getName();
+		return itemPropertyPath + property.getName();
 	}
-	
-	
-	private String attachId(Property property)
-	{
-		Class<?> javaClass = property.getType().getReturnedClass();
-		return property.getName() + "." + this.idResolver.getEntityIDProperty(javaClass).getName();
-	}
-	
+	// private String attachId(final String propertyName, final Class<?>
+	// javaClass)
+	// {
+	// return propertyName + "." +
+	// this.idResolver.getEntityIDProperty(javaClass).getName();
+	// }
 }

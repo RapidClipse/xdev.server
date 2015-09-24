@@ -5,16 +5,16 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.util;
 
 
@@ -30,10 +30,10 @@ public class HibernateMetaDataUtils
 	public static String getReferencablePropertyName(final org.hibernate.mapping.Value value)
 	{
 		/*
-		 * there is no super type for each relation type e.g.
-		 * one-to-many many-to-many, one-to-one have are directly created are
-		 * not inherited from a type like relation, they are independently
-		 * inherited from value...
+		 * there is no super type for each relation type e.g. one-to-many
+		 * many-to-many, one-to-one have are directly created are not inherited
+		 * from a type like relation, they are independently inherited from
+		 * value...
 		 */
 
 		final OneToMany oneToMany = getOneToMany(value);
@@ -41,15 +41,16 @@ public class HibernateMetaDataUtils
 		{
 			return oneToMany.getReferencedEntityName();
 		}
-		else if(value instanceof ManyToOne)
-		{
-			final ManyToOne manyToOne = (ManyToOne)value;
-			return manyToOne.getReferencedEntityName();
-		}
 		else if(value instanceof OneToOne)
 		{
 			final OneToOne oneToOne = (OneToOne)value;
 			return oneToOne.getReferencedEntityName();
+		}
+		
+		final ManyToOne manyToOne = getManyToOne(value);
+		if(manyToOne != null)
+		{
+			return manyToOne.getReferencedEntityName();
 		}
 
 		return null;
@@ -66,6 +67,21 @@ public class HibernateMetaDataUtils
 		if(value instanceof OneToMany)
 		{
 			return (OneToMany)value;
+		}
+		return null;
+	}
+	
+	
+	private static ManyToOne getManyToOne(Value value)
+	{
+		// in case of wrapping because bidirectional
+		if(value instanceof Collection)
+		{
+			value = ((Collection)value).getElement();
+		}
+		if(value instanceof ManyToOne)
+		{
+			return (ManyToOne)value;
 		}
 		return null;
 	}

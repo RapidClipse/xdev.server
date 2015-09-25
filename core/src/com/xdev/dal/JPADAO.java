@@ -27,6 +27,7 @@ import javax.persistence.criteria.CriteriaQuery;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Example;
 
 import com.googlecode.genericdao.dao.jpa.GenericDAO;
 import com.googlecode.genericdao.dao.jpa.JPABaseDAO;
@@ -85,15 +86,30 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 
 
-	public Criteria buildHibernateCriteriaQuery(final Class<T> exampleType)
+	public Criteria buildHibernateCriteriaQuery(final Class<T> entityType)
 	{
-		return em().unwrap(Session.class).createCriteria(exampleType);
+		return em().unwrap(Session.class).createCriteria(entityType);
 	}
-	
-	
-	public Criteria buildHibernateCriteriaQuery(final Class<T> exampleType, final String alias)
+
+
+	public Criteria buildHibernateCriteriaQuery(final Class<T> entityType, final String alias)
 	{
-		return em().unwrap(Session.class).createCriteria(exampleType,alias);
+		return em().unwrap(Session.class).createCriteria(entityType,alias);
+	}
+
+
+	public List<T> findByExample(final Class<T> entityType, final Object example)
+	{
+		return em().unwrap(Session.class).createCriteria(entityType).add(Example.create(example))
+				.list();
+	}
+
+
+	public List<T> findByExample(final Class<T> entityType, final String alias,
+			final Object example)
+	{
+		return em().unwrap(Session.class).createCriteria(entityType,alias)
+				.add(Example.create(example)).list();
 	}
 
 

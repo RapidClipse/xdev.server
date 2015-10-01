@@ -5,12 +5,12 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,8 +29,8 @@ public class DAOs
 	// private static final Configuration config;
 	// private static final EntityFieldAnnotation annotationReader;
 	private static final SoftCache<Class<?>, GenericDAO<?, ?>> cache;
-	
-	
+
+
 	static
 	{
 		// config = new Configuration();
@@ -52,18 +52,18 @@ public class DAOs
 		// }
 		// config.buildMappings();
 		// annotationReader = new EntityFieldAnnotation();
-
+		
 		cache = new SoftCache<>();
 	}
-
-
+	
+	
 	public static <D extends GenericDAO<?, ?>> D get(final Class<D> daoType) throws RuntimeException
 	{
 		synchronized(cache)
 		{
 			@SuppressWarnings("unchecked")
 			D dao = (D)cache.get(daoType);
-
+			
 			if(dao == null)
 			{
 				try
@@ -76,14 +76,14 @@ public class DAOs
 					throw new RuntimeException(e);
 				}
 			}
-
+			
 			return dao;
 		}
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
-	public static <T, I extends Serializable> GenericDAO<T, I> get(final Object entity)
+	public static <T, I extends Serializable> GenericDAO<T, I> get(final T entity)
 			throws RuntimeException
 	{
 		final DAO dao = entity.getClass().getAnnotation(DAO.class);
@@ -91,11 +91,11 @@ public class DAOs
 		{
 			throw new RuntimeException("Not an entity");
 		}
-
+		
 		return (GenericDAO<T, I>)get(dao.daoClass());
 	}
-	
-	
+
+
 	public static <T, I extends Serializable> GenericDAO<T, I> getByEntityType(
 			final Class<T> entity) throws RuntimeException
 	{
@@ -108,7 +108,7 @@ public class DAOs
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	// @SuppressWarnings("unchecked")
 	// public static <T, I extends Serializable> GenericDAO<T, I>
 	// getByEntityType(
@@ -122,7 +122,7 @@ public class DAOs
 	//
 	// return (GenericDAO<T, I>)get(dao.daoClass());
 	// }
-
+	
 	// - just use get with dao type for now
 	// annotation types can not be generic
 	// @SuppressWarnings("unchecked")

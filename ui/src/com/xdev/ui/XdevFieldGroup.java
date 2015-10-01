@@ -5,16 +5,16 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.xdev.ui;
 
 
@@ -40,7 +40,7 @@ import com.xdev.ui.fieldgroup.ObjectLockedException;
  * </p>
  *
  * @author XDEV Software
- *
+ *		
  */
 public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 {
@@ -48,8 +48,8 @@ public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 	{
 		super(null);
 	}
-	
-	
+
+
 	/**
 	 * @param beanType
 	 */
@@ -57,9 +57,9 @@ public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 	{
 		super(beanType);
 	}
-	
-	
-	public void save() throws com.xdev.ui.fieldgroup.CommitException, ObjectLockedException
+
+
+	public T save() throws com.xdev.ui.fieldgroup.CommitException, ObjectLockedException
 	{
 		try
 		{
@@ -69,11 +69,13 @@ public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 		{
 			throw new com.xdev.ui.fieldgroup.CommitException(e);
 		}
-		
+
 		final T bean = getItemDataSource().getBean();
 		try
 		{
-			DAOs.get(bean).merge(bean);
+			final T persistentBean = DAOs.get(bean).save(bean);
+			this.setItemDataSource(persistentBean);
+			return persistentBean;
 		}
 		catch(final StaleObjectStateException e)
 		{

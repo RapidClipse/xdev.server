@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>xdev-server-aa-ui</artifactId>
-	<version>0.8.0-SNAPSHOT</version>
+	<version>0.9.0</version>
 	<name>RapidClipse Framework Authorization and Authentication UI</name>
 
 	<parent>

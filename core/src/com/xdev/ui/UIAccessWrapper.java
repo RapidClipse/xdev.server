@@ -48,28 +48,28 @@ import com.xdev.db.connection.EntityManagerFactoryProvider;
  * @see EntityManagerUtils
  * @see Conversation
  * @see ConversationUtils
- * 		
+ *
  * @author XDEV Software
- * 		
+ *
  */
 public class UIAccessWrapper implements Runnable
 {
 	private final Runnable runnable;
-	
-	
+
+
 	public UIAccessWrapper(final Runnable runnable)
 	{
 		this.runnable = runnable;
 	}
-	
-	
+
+
 	@Override
 	public void run()
 	{
 		try
 		{
 			preRun();
-			
+
 			this.runnable.run();
 		}
 		finally
@@ -77,26 +77,29 @@ public class UIAccessWrapper implements Runnable
 			postRun();
 		}
 	}
-	
-	
+
+
 	protected void preRun()
 	{
 		final EntityManagerFactory factory = getEntityManagerFactory();
-		final EntityManager em = EntityManagerUtils.getEntityManager();
-		if(em == null)
+		if(factory != null)
 		{
-			startExclusiveWorkingUnit(factory);
-		}
-		else
-		{
-			if(!em.isOpen())
+			final EntityManager em = EntityManagerUtils.getEntityManager();
+			if(em == null)
 			{
 				startExclusiveWorkingUnit(factory);
 			}
+			else
+			{
+				if(!em.isOpen())
+				{
+					startExclusiveWorkingUnit(factory);
+				}
+			}
 		}
 	}
-	
-	
+
+
 	protected void postRun()
 	{
 		final EntityManager em = EntityManagerUtils.getEntityManager();
@@ -152,8 +155,8 @@ public class UIAccessWrapper implements Runnable
 			}
 		}
 	}
-	
-	
+
+
 	protected EntityManagerFactory getEntityManagerFactory()
 	{
 		EntityManagerFactory factory = EntityManagerUtils.getEntityManagerFactory();
@@ -175,8 +178,8 @@ public class UIAccessWrapper implements Runnable
 
 		return factory;
 	}
-	
-	
+
+
 	protected void startExclusiveWorkingUnit(final EntityManagerFactory factory)
 	{
 		final EntityManager manager = factory.createEntityManager();

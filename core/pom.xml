@@ -23,7 +23,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>xdev-server-core</artifactId>
-	<version>0.9.2</version>
+	<version>0.9.3</version>
 	<name>RapidClipse Framework Core</name>
 
 	<parent>

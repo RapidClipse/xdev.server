@@ -29,7 +29,7 @@ import org.vaadin.addons.lazyquerycontainer.QueryView;
 import com.vaadin.data.Item;
 
 
-public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
+public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 {
 	/**
 	 * Java serialization version UID.
@@ -48,8 +48,8 @@ public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 	 * this list.
 	 */
 	private final Map<Object, Integer>	idIndexMap			= new HashMap<Object, Integer>();
-
-
+	
+	
 	/**
 	 * Constructor which sets composite LazyQueryView and ID of the item ID
 	 * property.
@@ -64,8 +64,8 @@ public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 		this.lazyQueryView = lazyQueryView;
 		this.idPropertyId = idPropertyId;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -74,8 +74,8 @@ public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 	{
 		return this.lazyQueryView.size();
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -89,11 +89,11 @@ public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 			itemIDArray[i] = this.lazyQueryView.getItem(i).getItemProperty(this.idPropertyId)
 					.getValue();
 		}
-
+		
 		return (T[])itemIDArray;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -102,8 +102,8 @@ public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 	{
 		throw new UnsupportedOperationException();
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -112,7 +112,7 @@ public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 	{
 		if(index != -1)
 		{
-			if(index > 0 || index <= this.lazyQueryView.size())
+			if(index >= 0 && index < this.lazyQueryView.size())
 			{
 				@SuppressWarnings("unchecked")
 				final T itemId = (T)this.lazyQueryView.getItem(index)
@@ -131,8 +131,8 @@ public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 		}
 		return null;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -140,8 +140,8 @@ public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 	{
 		throw new UnsupportedOperationException();
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -169,7 +169,8 @@ public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 		// Switching to brute forcing.
 		for(int i = addedItems.size(); i < this.lazyQueryView.size(); i++)
 		{
-			if(o.equals(this.lazyQueryView.getItem(i).getItemProperty(this.idPropertyId).getValue()))
+			if(o.equals(
+					this.lazyQueryView.getItem(i).getItemProperty(this.idPropertyId).getValue()))
 			{
 				return i;
 			}
@@ -177,8 +178,8 @@ public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 		// Not found.
 		return -1;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

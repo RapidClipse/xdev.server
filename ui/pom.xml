@@ -23,7 +23,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>xdev-server-ui</artifactId>
-	<version>0.9.2</version>
+	<version>0.9.3</version>
 	<name>RapidClipse Framework UI</name>
 
 	<parent>
@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>com.xdev-software</groupId>
 			<artifactId>xdev-server-core</artifactId>
-			<version>0.9.2</version>
+			<version>0.9.3</version>
 		</dependency>
 	</dependencies>
 	

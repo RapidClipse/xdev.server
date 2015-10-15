@@ -72,35 +72,45 @@ public class XdevHttpSessionListener implements HttpSessionListener
 
 		}
 
-		final Conversationable conversationable = (Conversationable)vSession
-				.getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
-		final EntityManager em = conversationable.getEntityManager();
+		if(vSession != null)
+		{
+			final Conversationable conversationable = (Conversationable)vSession
+					.getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
 
-		if(em.getTransaction().isActive())
-		{
-			try
+			if(conversationable != null)
 			{
-				// end unit of work
-				em.getTransaction().commit();
-			}
-			catch(final RollbackException e)
-			{
-				em.getTransaction().rollback();
-			}
-		}
+				final EntityManager em = conversationable.getEntityManager();
 
-		try
-		{
-			EntityManagerUtils.closeEntityManager();
-		}
-		catch(final Exception e)
-		{
-			if(em != null)
-			{
-				final EntityTransaction tx = EntityManagerUtils.getTransaction();
-				if(tx != null && tx.isActive())
+				if(em != null)
 				{
-					EntityManagerUtils.rollback();
+					if(em.getTransaction().isActive())
+					{
+						try
+						{
+							// end unit of work
+							em.getTransaction().commit();
+						}
+						catch(final RollbackException e)
+						{
+							em.getTransaction().rollback();
+						}
+					}
+
+					try
+					{
+						em.close();
+					}
+					catch(final Exception e)
+					{
+						if(em != null)
+						{
+							final EntityTransaction tx = em.getTransaction();
+							if(tx != null && tx.isActive())
+							{
+								em.getTransaction().rollback();
+							}
+						}
+					}
 				}
 			}
 		}

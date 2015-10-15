@@ -25,6 +25,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
 import com.vaadin.server.VaadinSession;
+import com.vaadin.server.VaadinSession.State;
 import com.xdev.db.connection.EntityManagerFactoryProvider;
 
 
@@ -57,19 +58,37 @@ public class EntityManagerUtils
 	}
 
 
+	private static boolean isSessionAccessible()
+	{
+		if(VaadinSession.getCurrent() != null)
+		{
+			if(VaadinSession.getCurrent().getState() == State.OPEN)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	public static EntityManager getEntityManager()
 	{
 		/*
 		 * TODO add provider to plug into entity manager administration for
 		 * Vaadin Session independency
 		 */
-		final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
-				.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
-		if(conversationable != null)
+		if(isSessionAccessible())
 		{
-			return conversationable.getEntityManager();
+			final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
+					.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
+			if(conversationable != null)
+			{
+				return conversationable.getEntityManager();
+			}
+
 		}
 		return null;
+
 	}
 
 
@@ -79,11 +98,14 @@ public class EntityManagerUtils
 		 * TODO add provider to plug into entity manager administration for
 		 * Vaadin Session independency
 		 */
-		final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
-				.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
-		if(conversationable != null)
+		if(isSessionAccessible())
 		{
-			return conversationable.getConversation();
+			final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
+					.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
+			if(conversationable != null)
+			{
+				return conversationable.getConversation();
+			}
 		}
 		return null;
 	}
@@ -107,32 +129,54 @@ public class EntityManagerUtils
 
 	public static void beginTransaction()
 	{
-		getEntityManager().getTransaction().begin();
+		final EntityManager em = getEntityManager();
+		if(em != null)
+		{
+			em.getTransaction().begin();
+		}
 	}
 
 
 	public static void rollback()
 	{
-		getEntityManager().getTransaction().rollback();
+		final EntityManager em = getEntityManager();
+		if(em != null)
+		{
+			em.getTransaction().rollback();
+		}
 	}
 
 
 	public static void commit()
 	{
-		getEntityManager().getTransaction().commit();
+		final EntityManager em = getEntityManager();
+		if(em != null)
+		{
+			em.getTransaction().commit();
+		}
 	}
 
 
 	public static EntityTransaction getTransaction()
 	{
-		return getEntityManager().getTransaction();
+		final EntityManager em = getEntityManager();
+		if(em != null)
+		{
+			return em.getTransaction();
+		}
+		return null;
 	}
 
 
 	public static <T> CriteriaQuery<T> getCriteriaQuery(final Class<T> type)
 	{
-		final CriteriaBuilder cb = EntityManagerUtils.getEntityManager().getCriteriaBuilder();
-		final CriteriaQuery<T> cq = cb.createQuery(type);
-		return cq;
+		final EntityManager em = getEntityManager();
+		if(em != null)
+		{
+			final CriteriaBuilder cb = em.getCriteriaBuilder();
+			final CriteriaQuery<T> cq = cb.createQuery(type);
+			return cq;
+		}
+		return null;
 	}
 }

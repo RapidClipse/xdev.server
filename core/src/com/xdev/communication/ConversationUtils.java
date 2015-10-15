@@ -20,9 +20,11 @@ package com.xdev.communication;
 
 import java.util.Map;
 
+import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 
 import com.vaadin.server.VaadinSession;
+import com.vaadin.server.VaadinSession.State;
 
 
 public class ConversationUtils
@@ -31,69 +33,116 @@ public class ConversationUtils
 	private final static String ENTITY_MANAGER_ATTRIBUTE = "EntityManager";
 
 
+	private static boolean isSessionAccessible()
+	{
+		if(VaadinSession.getCurrent() != null)
+		{
+			if(VaadinSession.getCurrent().getState() == State.OPEN)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	public static Conversation getConversation()
 	{
 		/*
 		 * TODO add provider to plug into entity manager administration for
 		 * Vaadin Session independency
 		 */
-		final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
-				.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
-		return conversationable.getConversation();
+		if(isSessionAccessible())
+		{
+			final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
+					.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
+			return conversationable.getConversation();
+		}
+		return null;
 	}
 
 
 	private static Conversation newConversation()
 	{
-		final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
-				.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
-		final Conversation conversation = new Conversation.Implementation();
-
-		try
+		if(isSessionAccessible())
 		{
-			conversationable.setConversation(conversation);
-		}
-		catch(final RuntimeException e)
-		{
-			return conversationable.getConversation();
-		}
+			final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
+					.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
+			final Conversation conversation = new Conversation.Implementation();
 
-		return conversation;
+			try
+			{
+				conversationable.setConversation(conversation);
+			}
+			catch(final RuntimeException e)
+			{
+				return conversationable.getConversation();
+			}
+
+			return conversation;
+		}
+		return null;
 	}
 
 
 	public static void startConversation()
 	{
-		newConversation().start();
+		final Conversation conversation = newConversation();
+		if(conversation != null)
+		{
+			conversation.start();
+		}
 	}
 
 
 	public static void startPessimisticConversation(final LockModeType lockMode)
 	{
 		final Conversation conversation = newConversation();
-		conversation.setPessimisticUnit(true,lockMode);
-		conversation.start();
+		if(conversation != null)
+		{
+			conversation.setPessimisticUnit(true,lockMode);
+			conversation.start();
+		}
 	}
 
 
 	public static void lockConversation(final Object entity)
 	{
-		EntityManagerUtils.getEntityManager().lock(entity,getConversation().getLockModeType());
+		final EntityManager em = EntityManagerUtils.getEntityManager();
+		if(em != null)
+		{
+			final Conversation conversation = getConversation();
+			if(conversation != null)
+			{
+				em.lock(entity,conversation.getLockModeType());
+			}
+		}
 	}
 
 
 	public static void lockConversation(final Object entity, final Map<String, Object> properties)
 	{
-		EntityManagerUtils.getEntityManager().lock(entity,getConversation().getLockModeType(),
-				properties);
+		final EntityManager em = EntityManagerUtils.getEntityManager();
+		if(em != null)
+		{
+			final Conversation conversation = getConversation();
+			if(conversation != null)
+			{
+				em.lock(entity,conversation.getLockModeType(),properties);
+			}
+		}
 	}
 
 
 	public static void releaseConversationLock()
 	{
-		if(EntityManagerUtils.getEntityManager().getTransaction().isActive())
+		final EntityManager em = EntityManagerUtils.getEntityManager();
+		if(em != null)
 		{
-			EntityManagerUtils.getEntityManager().getTransaction().commit();
+			if(em.getTransaction().isActive())
+			{
+				em.getTransaction().commit();
+			}
 		}
 	}
 
@@ -101,8 +150,11 @@ public class ConversationUtils
 	public static void startPessimisticConversation()
 	{
 		final Conversation conversation = newConversation();
-		conversation.setPessimisticUnit(true,LockModeType.WRITE);
-		conversation.start();
+		if(conversation != null)
+		{
+			conversation.setPessimisticUnit(true,LockModeType.WRITE);
+			conversation.start();
+		}
 	}
 
 
@@ -118,7 +170,12 @@ public class ConversationUtils
 
 	public static boolean isConversationActive()
 	{
-		return getConversation().isActive();
+		final Conversation conversation = getConversation();
+		if(conversation != null)
+		{
+			return conversation.isActive();
+		}
+		return false;
 	}
 
 }

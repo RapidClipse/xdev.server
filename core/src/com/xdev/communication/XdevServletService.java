@@ -36,7 +36,7 @@ import com.xdev.db.connection.EntityManagerFactoryProvider;
 
 /**
  * @author XDEV Software
- *		
+ *
  */
 public class XdevServletService extends VaadinServletService
 {
@@ -45,6 +45,14 @@ public class XdevServletService extends VaadinServletService
 	private boolean								hibernateFactoryInitialized	= false;
 	private final VaadinSessionStrategyProvider	sessionStrategyProvider;
 
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.vaadin.server.VaadinService#addSessionDestroyListener(com.vaadin.
+	 * server.SessionDestroyListener)
+	 */
 
 	public XdevServletService(final VaadinServlet servlet,
 			final DeploymentConfiguration deploymentConfiguration) throws ServiceException

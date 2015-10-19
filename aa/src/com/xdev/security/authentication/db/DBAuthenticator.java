@@ -84,7 +84,7 @@ public final class DBAuthenticator
 						if(!(hashedPassword[i] == entity.password()[i]))
 						{
 							this.hasPassedLogin = false;
-							break;
+							throw new AuthenticationFailedException();
 						}
 					}
 					this.hasPassedLogin = true;

@@ -48,8 +48,8 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 	 * this list.
 	 */
 	private final Map<Object, Integer>	idIndexMap			= new HashMap<Object, Integer>();
-	
-	
+
+
 	/**
 	 * Constructor which sets composite LazyQueryView and ID of the item ID
 	 * property.
@@ -64,8 +64,8 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 		this.lazyQueryView = lazyQueryView;
 		this.idPropertyId = idPropertyId;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -74,8 +74,8 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 	{
 		return this.lazyQueryView.size();
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -89,11 +89,11 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 			itemIDArray[i] = this.lazyQueryView.getItem(i).getItemProperty(this.idPropertyId)
 					.getValue();
 		}
-		
+
 		return (T[])itemIDArray;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -102,8 +102,8 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -111,41 +111,30 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 	@Override
 	public T get(final int index)
 	{
-		if(index != -1)
+		if(index < 0 || index >= this.lazyQueryView.size())
 		{
-			/*
-			 * TODO consider an itemcache size check to only load til item cache
-			 * is filled (15 default)
-			 */
-			if(index >= 0 && index < this.lazyQueryView.size())
+			throw new IndexOutOfBoundsException();
+		}
+
+		final Item item = this.lazyQueryView.getItem(index);
+		if(item != null)
+		{
+			final T itemId = (T)item.getItemProperty(this.idPropertyId).getValue();
+			// Do not put added item ids to id index map and make sure that
+			// existing item indexes start from 0 i.e. ignore added items as
+			// they
+			// are compensated for in indexOf method.
+			final int addedItemSize = this.lazyQueryView.getAddedItems().size();
+			if(index >= addedItemSize)
 			{
-				final Item item = this.lazyQueryView.getItem(index);
-				
-				T itemId = null;
-				
-				// itemcache already initialized?
-				if(item != null)
-				{
-					itemId = (T)item.getItemProperty(this.idPropertyId).getValue();
-					// Do not put added item ids to id index map and make sure
-					// that
-					// existing item indexes start from 0 i.e. ignore added
-					// items as
-					// they
-					// are compensated for in indexOf method.
-					final int addedItemSize = this.lazyQueryView.getAddedItems().size();
-					if(index >= addedItemSize)
-					{
-						this.idIndexMap.put(itemId,index - addedItemSize);
-					}
-					return itemId;
-				}
+				this.idIndexMap.put(itemId,index - addedItemSize);
 			}
+			return itemId;
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -153,8 +142,8 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -191,8 +180,8 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 		// Not found.
 		return -1;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

@@ -24,24 +24,24 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.AbstractSelect;
 import com.xdev.ui.entitycomponent.BeanComponent;
+import com.xdev.ui.util.filter.CompareBIDirect;
 
 
 public interface MasterDetail
 {
 	public void connectMasterDetail(AbstractSelect master, Filterable detailContainer,
 			Object filterProperty, Object detailProperty);
-
-
+			
+			
 	public <T> void connectForm(final BeanComponent<T> master, BeanFieldGroup<T> detail);
-
-
-
+	
+	
+	
 	public class Implementation implements MasterDetail
 	{
-
+		
 		@Override
 		public void connectMasterDetail(final AbstractSelect master,
 				final Filterable detailContainer, final Object filterProperty,
@@ -50,32 +50,32 @@ public interface MasterDetail
 			master.addValueChangeListener(new MasterDetailValueChangeListener(master,
 					detailContainer,filterProperty,detailProperty));
 		}
-
-
+		
+		
 		protected Filter prepareFilter(final Filterable detailContainer, final Object propertyId,
 				final Object value)
 		{
 			this.clearFiltering(detailContainer,propertyId);
-			final Filter masterDetailFilter = new Compare.Equal(propertyId,value);
+			final Filter masterDetailFilter = new CompareBIDirect.Equal(propertyId,value);
 			detailContainer.addContainerFilter(masterDetailFilter);
-
+			
 			return masterDetailFilter;
 		}
-
-
+		
+		
 		@Override
 		public <T> void connectForm(final BeanComponent<T> master, final BeanFieldGroup<T> detail)
 		{
 			master.addValueChangeListener(e -> prepareFormData(master.getSelectedItem(),detail));
 		}
-
-
+		
+		
 		protected <T> void prepareFormData(final BeanItem<T> data, final BeanFieldGroup<T> detail)
 		{
 			detail.setItemDataSource(data);
 		}
-
-
+		
+		
 		protected void clearFiltering(final Filterable filteredContainer, final Object propertyId)
 		{
 			for(final Filter filter : filteredContainer.getContainerFilters())
@@ -87,18 +87,18 @@ public interface MasterDetail
 				}
 			}
 		}
-
-
-
+		
+		
+		
 		private class MasterDetailValueChangeListener implements ValueChangeListener
 		{
 			private static final long serialVersionUID = 3306467309764402175L;
-
+			
 			private final AbstractSelect	filter;
 			private final Filterable		detailContainer;
 			private final Object			detailProperty, filterProperty;
-
-
+			
+			
 			public MasterDetailValueChangeListener(final AbstractSelect filter,
 					final Filterable detailContainer, final Object filterProperty,
 					final Object detailProperty)
@@ -108,8 +108,8 @@ public interface MasterDetail
 				this.detailProperty = detailProperty;
 				this.filterProperty = filterProperty;
 			}
-
-
+			
+			
 			@Override
 			public void valueChange(final ValueChangeEvent event)
 			{

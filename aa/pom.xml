@@ -23,7 +23,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>xdev-server-aa</artifactId>
-	<version>0.9.4</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>RapidClipse Framework Authorization and Authentication</name>
 
 	<parent>
@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>com.xdev-software</groupId>
 			<artifactId>xdev-server-core</artifactId>
-			<version>0.9.4</version>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

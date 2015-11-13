@@ -19,20 +19,20 @@ package com.xdev.ui.util.wizard;
 
 
 import com.xdev.ui.entitycomponent.BeanComponent;
+import com.xdev.ui.util.masterdetail.EntityMasterDetail;
 import com.xdev.ui.util.masterdetail.JPAMasterDetail;
 
 
 public class XdevJPAComponentFilterBuilder implements JPAComponentFilterBuilder
 {
-	private BeanComponent<?>		masterComponent, detailComponent;
-	private Class<?>				masterEntity, detailEntity;
+	private BeanComponent<?>	masterComponent, detailComponent;
+	private Class<?>			masterEntity, detailEntity;
 
-	private final JPAMasterDetail	masterDetail;
+	private JPAMasterDetail masterDetail;
 
 
 	public XdevJPAComponentFilterBuilder()
 	{
-		// TODO customizable?
 		this.masterDetail = new JPAMasterDetail.Implementation();
 	}
 
@@ -56,6 +56,11 @@ public class XdevJPAComponentFilterBuilder implements JPAComponentFilterBuilder
 	public void setDetailComponent(final BeanComponent<?> detailComponent)
 	{
 		this.detailComponent = detailComponent;
+		if(!this.detailComponent.isAutoQueryData())
+		{
+			// swap master detail implementation
+			this.masterDetail = new EntityMasterDetail.Implementation();
+		}
 	}
 
 

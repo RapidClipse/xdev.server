@@ -36,13 +36,13 @@ import com.xdev.db.connection.EntityManagerFactoryProvider;
 
 /**
  * @author XDEV Software
- *
+ * 		
  */
 public class XdevServletService extends VaadinServletService
 {
-	public static final String HIBERNATEUTIL_FILTER_INIT_PARAM = "persistenceUnit";
+	public static final String					HIBERNATEUTIL_FILTER_INIT_PARAM	= "persistenceUnit";
 
-	private boolean								hibernateFactoryInitialized	= false;
+	private boolean								hibernateFactoryInitialized		= false;
 	private final VaadinSessionStrategyProvider	sessionStrategyProvider;
 
 
@@ -102,6 +102,22 @@ public class XdevServletService extends VaadinServletService
 
 		super.requestStart(request,response);
 	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.vaadin.server.VaadinService#createVaadinSession(com.vaadin.server.
+	 * VaadinRequest)
+	 */
+	@Override
+	protected VaadinSession createVaadinSession(final VaadinRequest request) throws ServiceException
+	{
+		final VaadinSession session = super.createVaadinSession(request);
+		session.setAttribute(ClientInfo.class,ClientInfo.get(request));
+		return session;
+	}
 
 
 	@Override
@@ -114,6 +130,5 @@ public class XdevServletService extends VaadinServletService
 		this.sessionStrategyProvider.getRequestEndVaadinSessionStrategy(request,this)
 				.requestEnd(request,this);
 		super.requestEnd(request,response,session);
-
 	}
 }

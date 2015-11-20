@@ -25,18 +25,43 @@ import com.vaadin.ui.AbstractSelect;
 import com.xdev.ui.entitycomponent.BeanComponent;
 
 
+/**
+ * Utility class to ease component connection for Master Detail and provides
+ * support complex databinding.
+ *
+ * @author Julian Will
+ * 		
+ */
 public final class XDEV
 {
 	// --------------- MASTER DETAIL -----------------------
-	
+
+	/**
+	 * Connect a master and a detail {@link BeanComponent} to achieve a Master
+	 * Detail relation.
+	 *
+	 * @param consumer
+	 *            {@link JPAComponentFilterBuilder} which requires the master
+	 *            and detail {@link BeanComponent} as well as their Entity type.
+	 */
 	public static void bindComponents(final Consumer<JPAComponentFilterBuilder> consumer)
 	{
 		final JPAComponentFilterBuilder builder = new XdevJPAComponentFilterBuilder();
 		consumer.accept(builder);
 		builder.execute();
 	}
-	
-	
+
+
+	/**
+	 * Connect a {@link BeanComponent} to display appropriate detail data in a
+	 * {@link BeanFieldGroup}.
+	 *
+	 * @param masterComponent
+	 *            the master {@link BeanComponent} to select data from
+	 * @param form
+	 *            the detail {@link BeanFieldGroup} to display appropriate data
+	 *            in
+	 */
 	public static <T> void bindForm(final BeanComponent<T> masterComponent,
 			final BeanFieldGroup<T> form)
 	{
@@ -45,16 +70,37 @@ public final class XDEV
 			formBinder.setMasterComponent(masterComponent);
 		});
 	}
-	
-	
+
+
+	/**
+	 * Connect a {@link BeanComponent} to display appropriate detail data in a
+	 * {@link BeanFieldGroup}.
+	 *
+	 * @param consumer
+	 *            {@link FormBuilder} which requires the master
+	 *            {@link BeanComponent} and a detail {@link BeanFieldGroup} with
+	 *            the same entity type.
+	 */
 	protected static <T> void bindForm(final Consumer<FormBuilder<T>> consumer)
 	{
 		final FormBuilder<T> builder = new FormBuilder.XdevFormBuilder<T>();
 		consumer.accept(builder);
 		builder.execute();
 	}
-	
-	
+
+
+	/**
+	 * Fills a Tree Component from the given Entitystructure. Structure can be
+	 * defined through {@link XdevFillTree#addRootGroup(Class)} and
+	 * {@link XdevFillTree#addGroup(Class, Class)} calls.
+	 *
+	 * @param consumer
+	 *            {@link XdevFillTree} utility which gathers its information
+	 *            from registered groups
+	 *            {@link XdevFillTree#addGroup(Class, Class)}.
+	 * @param tree
+	 *            the tree component to be filled.
+	 */
 	public static void buildTree(final Consumer<XdevFillTree> consumer, final AbstractSelect tree)
 	{
 		final XdevFillTree builder = new XdevFillTree(tree);

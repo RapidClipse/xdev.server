@@ -19,9 +19,13 @@ package com.xdev.dal;
 
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
@@ -88,28 +92,50 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 
 	public Criteria buildHibernateCriteriaQuery(final Class<T> entityType)
 	{
-		return em().unwrap(Session.class).createCriteria(entityType);
+		final Criteria crit = em().unwrap(Session.class).createCriteria(entityType);
+		if(EntityManagerUtils.isCacheEnabled())
+		{
+			crit.setCacheable(true);
+		}
+		return crit;
 	}
 
 
 	public Criteria buildHibernateCriteriaQuery(final Class<T> entityType, final String alias)
 	{
-		return em().unwrap(Session.class).createCriteria(entityType,alias);
+		final Criteria crit = em().unwrap(Session.class).createCriteria(entityType,alias);
+		if(EntityManagerUtils.isCacheEnabled())
+		{
+			crit.setCacheable(true);
+		}
+		return crit;
 	}
 
 
 	public List<T> findByExample(final Class<T> entityType, final Object example)
 	{
-		return em().unwrap(Session.class).createCriteria(entityType).add(Example.create(example))
-				.list();
+		final Criteria crit = em().unwrap(Session.class).createCriteria(entityType);
+
+		if(EntityManagerUtils.isCacheEnabled())
+		{
+			crit.setCacheable(true);
+		}
+
+		return crit.add(Example.create(example)).list();
 	}
 
 
 	public List<T> findByExample(final Class<T> entityType, final String alias,
 			final Object example)
 	{
-		return em().unwrap(Session.class).createCriteria(entityType,alias)
-				.add(Example.create(example)).list();
+		final Criteria crit = em().unwrap(Session.class).createCriteria(entityType,alias);
+
+		if(EntityManagerUtils.isCacheEnabled())
+		{
+			crit.setCacheable(true);
+		}
+
+		return crit.add(Example.create(example)).list();
 	}
 
 
@@ -135,6 +161,158 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	public T[] find(final ID... ids)
 	{
 		return _find(this.persistentClass,ids);
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.googlecode.genericdao.dao.jpa.JPABaseDAO#_all(java.lang.Class)
+	 */
+	@SuppressWarnings("hiding")
+	@Override
+	protected <T> List<T> _all(final Class<T> type)
+	{
+		final Query query = em().createQuery(
+				"select _it_ from " + getMetadataUtil().get(type).getEntityName() + " _it_");
+		if(EntityManagerUtils.isCacheEnabled())
+		{
+			query.setHint("org.hibernate.cacheable",true);
+		}
+		return query.getResultList();
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.googlecode.genericdao.dao.jpa.JPABaseDAO#_count(java.lang.Class)
+	 */
+	@Override
+	protected int _count(final Class<?> type)
+	{
+		final Query query = em().createQuery(
+				"select count(_it_) from " + getMetadataUtil().get(type).getEntityName() + " _it_");
+		return ((Number)query.getSingleResult()).intValue();
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.googlecode.genericdao.dao.jpa.JPABaseDAO#_exists(java.lang.Class,
+	 * java.io.Serializable)
+	 */
+	@Override
+	protected boolean _exists(final Class<?> type, final Serializable id)
+	{
+		if(type == null)
+		{
+			throw new NullPointerException("Type is null.");
+		}
+		if(!validId(id))
+		{
+			return false;
+		}
+
+		final Query query = em().createQuery("select _it_.id from "
+				+ getMetadataUtil().get(type).getEntityName() + " _it_ where _it_.id = :id");
+		if(EntityManagerUtils.isCacheEnabled())
+		{
+			query.setHint("org.hibernate.cacheable",true);
+		}
+		query.setParameter("id",id);
+		return query.getResultList().size() == 1;
+	}
+
+
+	private boolean validId(final Serializable id)
+	{
+		if(id == null)
+		{
+			return false;
+		}
+		if(id instanceof Number && ((Number)id).equals(0))
+		{
+			return false;
+		}
+		if(id instanceof String && "".equals(id))
+		{
+			return false;
+		}
+		return true;
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.googlecode.genericdao.dao.jpa.JPABaseDAO#_find(java.lang.Class,
+	 * java.io.Serializable[])
+	 */
+	@SuppressWarnings("hiding")
+	@Override
+	protected <T> T[] _find(final Class<T> type, final Serializable... ids)
+	{
+		final Object[] retList = (Object[])Array.newInstance(type,ids.length);
+		for(final Object entity : pullByIds("select _it_",type,ids))
+		{
+			final Serializable id = getMetadataUtil().getId(entity);
+
+			for(int i = 0; i < ids.length; i++)
+			{
+				if(id.equals(ids[i]))
+				{
+					retList[i] = entity;
+					// don't break. the same id could be in the list twice.
+				}
+			}
+		}
+
+		return (T[])retList;
+	}
+
+
+	private List<?> pullByIds(final String select, final Class<?> type, final Serializable[] ids)
+	{
+		final List<Serializable> nonNulls = new LinkedList<Serializable>();
+
+		final StringBuilder sb = new StringBuilder(select);
+		sb.append(" from ");
+		sb.append(getMetadataUtil().get(type).getEntityName());
+		sb.append(" _it_ where ");
+		for(final Serializable id : ids)
+		{
+			if(id != null)
+			{
+				if(nonNulls.size() == 0)
+				{
+					sb.append("_it_.id = ?1");
+				}
+				else
+				{
+					sb.append(" or _it_.id = ?").append(nonNulls.size() + 1);
+				}
+				nonNulls.add(id);
+			}
+		}
+		if(nonNulls.size() == 0)
+		{
+			return new ArrayList<Object>(0);
+		}
+
+		final Query query = em().createQuery(sb.toString());
+		if(EntityManagerUtils.isCacheEnabled())
+		{
+			query.setHint("org.hibernate.cacheable",true);
+		}
+		int idx = 1;
+		for(final Serializable id : nonNulls)
+		{
+			query.setParameter(idx++,id);
+		}
+		return query.getResultList();
 	}
 
 

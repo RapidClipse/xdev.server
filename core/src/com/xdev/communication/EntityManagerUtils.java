@@ -31,7 +31,8 @@ import com.xdev.db.connection.EntityManagerFactoryProvider;
 
 public class EntityManagerUtils
 {
-	public final static String ENTITY_MANAGER_ATTRIBUTE = "EntityManager";
+	public final static String	ENTITY_MANAGER_ATTRIBUTE	= "EntityManager";
+	public final static String	CACHE_ENABLED				= "cacheEnabled";
 
 	private static EntityManagerFactory emf;
 
@@ -55,6 +56,29 @@ public class EntityManagerUtils
 	public static EntityManagerFactoryProvider getEntityManagerFactoryProvider()
 	{
 		return hibernateUtil;
+	}
+
+
+	public static boolean isCacheEnabled()
+	{
+		if(isSessionAccessible())
+		{
+			final Object cacheEnabled = VaadinSession.getCurrent().getAttribute(CACHE_ENABLED);
+			if(cacheEnabled != null)
+			{
+				return (boolean)cacheEnabled;
+			}
+		}
+		return false;
+	}
+
+
+	public static void setCacheEnabled(final boolean cacheEnabled)
+	{
+		if(isSessionAccessible())
+		{
+			VaadinSession.getCurrent().setAttribute(CACHE_ENABLED,cacheEnabled);
+		}
 	}
 
 

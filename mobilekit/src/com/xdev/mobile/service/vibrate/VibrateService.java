@@ -1,0 +1,114 @@
+/*
+ * Copyright (C) 2013-2015 by XDEV Software, All Rights Reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.xdev.mobile.service.vibrate;
+
+
+import com.vaadin.annotations.JavaScript;
+import com.vaadin.server.AbstractClientConnector;
+import com.vaadin.server.Page;
+import com.xdev.mobile.service.MobileService;
+import com.xdev.mobile.ui.MobileUI;
+
+
+/**
+ * This service provides a way to vibrate the device.
+ *
+ * @author XDEV Software
+ *
+ */
+@JavaScript("vibrate.js")
+public class VibrateService extends MobileService
+{
+	/**
+	 * Returns the vibrate service.<br>
+	 * To activate the service it has to be registered in the mobile.xml.
+	 *
+	 * <pre>
+	 * {@code
+	 * ...
+	 * <service>com.xdev.mobile.service.vibrate.VibrateService</service>
+	 * ...
+	 * }
+	 * </pre>
+	 *
+	 * @see MobileUI#getMobileService(Class)
+	 * @return the vibrate service if available
+	 */
+	public static VibrateService getInstance()
+	{
+		return getServiceHelper(VibrateService.class);
+	}
+	
+	
+	public VibrateService(final AbstractClientConnector target)
+	{
+		super(target);
+	}
+	
+	
+	/**
+	 * Vibrates with the specified pattern.
+	 * <p>
+	 * Single vibration for one second:
+	 *
+	 * <pre>
+	 * {@code
+	 * vibrate(1000);
+	 * }
+	 * </pre>
+	 * <p>
+	 * Vibrate for one second,<br>
+	 * Pause for half a second,<br>
+	 * Vibrate for 200 milliseconds:
+	 *
+	 * <pre>
+	 * {@code
+	 * vibrate(1000,500,200);
+	 * }
+	 * </pre>
+	 *
+	 *
+	 * @param pattern
+	 *            time/pause pattern to vibrate in milliseconds
+	 */
+	public void vibrate(final int... pattern)
+	{
+		final StringBuilder js = new StringBuilder();
+		js.append("vibrate_vibrate(");
+		if(pattern.length == 1)
+		{
+			js.append(pattern[0]);
+		}
+		else
+		{
+			js.append('[');
+			for(int i = 0; i < pattern.length; i++)
+			{
+				if(i > 0)
+				{
+					js.append(',');
+				}
+				js.append(pattern[i]);
+			}
+			js.append(']');
+		}
+		js.append(");");
+		
+		Page.getCurrent().getJavaScript().execute(js.toString());
+	}
+}

@@ -28,7 +28,6 @@ import com.vaadin.server.ServiceException;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletService;
-import com.vaadin.server.WebBrowser;
 
 
 /**
@@ -48,24 +47,23 @@ public class XdevServlet extends VaadinServlet
 		servletService.init();
 		return servletService;
 	}
-
-
+	
+	
 	@Override
 	protected void servletInitialized() throws ServletException
 	{
 		super.servletInitialized();
-
+		
 		getService().addSessionInitListener(event -> initSession(event));
 	}
-
-
+	
+	
 	protected void initSession(final SessionInitEvent event)
 	{
 		event.getSession().setAttribute(URLParameterRegistry.class,new URLParameterRegistry());
-
-		final WebBrowser browser = new WebBrowser();
-		browser.updateRequestDetails(event.getRequest());
-		if(browser.isAndroid() || browser.isIOS() || browser.isWindowsPhone())
+		
+		final ClientInfo clientInfo = ClientInfo.get(event.getRequest());
+		if(clientInfo.isMobile() || clientInfo.isTablet())
 		{
 			event.getSession().addBootstrapListener(new BootstrapListener()
 			{
@@ -77,8 +75,8 @@ public class XdevServlet extends VaadinServlet
 					// + ", maximum-scale=1.0, user-scalable=0"
 					);
 				}
-
-
+				
+				
 				@Override
 				public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
 				{

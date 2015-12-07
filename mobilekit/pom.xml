@@ -26,10 +26,47 @@
 			<artifactId>xdev-server-ui</artifactId>
 			<version>1.0.1</version>
 		</dependency>
-        <dependency>
-          <groupId>com.google.code.gson</groupId>
-          <artifactId>gson</artifactId>
-          <version>2.5</version>
-        </dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.5</version>
+		</dependency>
 	</dependencies>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>uglifyjs-maven-plugin</id>
+			<url>https://raw.github.com/tqh/uglifyjs-maven-plugin/master/repo</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>WebContent</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>net.tqh.plugins</groupId>
+				<artifactId>uglifyjs-maven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<id>uglify-js</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>uglify</goal>
+						</goals>
+						<configuration>
+							<skip>false</skip>
+							<sourceDirectory>cordova</sourceDirectory>
+							<outputDirectory>WebContent/VAADIN/cordova</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

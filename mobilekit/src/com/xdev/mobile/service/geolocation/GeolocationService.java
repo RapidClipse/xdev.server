@@ -79,7 +79,24 @@ public class GeolocationService extends MobileService
 		}
 	}
 	
-	private final Map<String, GetCall>	getCalls	= new HashMap<>();
+	
+	
+	private static class WatchCall
+	{
+		final Consumer<Geolocation>			successCallback;
+		final Consumer<MobileServiceError>	errorCallback;
+		
+		
+		WatchCall(final Consumer<Geolocation> successCallback,
+				final Consumer<MobileServiceError> errorCallback)
+		{
+			this.successCallback = successCallback;
+			this.errorCallback = errorCallback;
+		}
+	}
+
+	private final Map<String, GetCall>		getCalls	= new HashMap<>();
+	private final Map<String, WatchCall>	watchcalls	= new HashMap<>();
 	
 	
 	public GeolocationService(final AbstractClientConnector connector)
@@ -88,6 +105,9 @@ public class GeolocationService extends MobileService
 		
 		this.addFunction("geolocation_get_success",this::geolocation_get_success);
 		this.addFunction("geolocation_get_error",this::geolocation_get_error);
+		
+		this.addFunction("geolocation_watch_success",this::geolocation_watch_success);
+		this.addFunction("geolocation_watch_error",this::geolocation_watch_error);
 
 		this.addFunction("geolocation_get_future_success",this::geolocation_get_future_success);
 		this.addFunction("geolocation_get_future_error",this::geolocation_get_future_error);
@@ -136,40 +156,74 @@ public class GeolocationService extends MobileService
 		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	Map<String, Position>	waitMap	= new HashMap<>();
-	
-	
-	public synchronized Position getFutureGeolocation()
+
+
+	public synchronized void watch(final Consumer<Geolocation> successCallback,
+			final Consumer<MobileServiceError> errorCallback, final int timeout)
 	{
+		final String id = generateCallerID();
+		final WatchCall call = new WatchCall(successCallback,errorCallback);
+		this.watchcalls.put(id,call);
 		
 		final StringBuilder js = new StringBuilder();
-		js.append("geolocation_get_future();");
+		js.append("geolocation_watch('").append(id).append("',");
+		appendTimeout(js,timeout);
+		js.append(");");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
-		
-		final Thread thread = new Thread();
-		
-		this.waitMap.put(thread.toString(),null);
-		
-		// registrieren in map, wait auf ...
-
-		while(this.waitMap.get(this) == null)
-		{
-			try
-			{
-				this.wait(1000);
-			}
-			catch(final InterruptedException e)
-			{
-				System.out.println(e);
-				e.printStackTrace();
-			}
-		}
-		
-		return this.waitMap.get(this);
 	}
 	
 	
+	private void appendTimeout(final StringBuilder js, final int timeout)
+	{
+		js.append("{ ");
+		js.append("timeout: ").append(timeout).append(" }");
+	}
+
+
+	private void geolocation_watch_success(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final WatchCall call = this.watchcalls.get(id);
+		if(call == null || call.successCallback == null)
+		{
+			return;
+		}
+		
+		final Gson gson = new Gson();
+		final JsonObject jsonObject = arguments.getObject(1);
+		final Position position = gson.fromJson(jsonObject.toJson(),Position.class);
+		final double watchID = arguments.getNumber(2);
+		final Geolocation geolocation = new Geolocation(position,watchID);
+		
+		call.successCallback.accept(geolocation);
+	}
+	
+	
+	private void geolocation_watch_error(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final WatchCall call = this.watchcalls.get(id);
+		if(call == null || call.errorCallback == null)
+		{
+			return;
+		}
+		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
+	}
+
+
+	public void clearWatch(final double watchID)
+	{
+		final StringBuilder js = new StringBuilder();
+		js.append("geolocation_clear_watch(");
+		js.append(watchID).append(");");
+		
+		Page.getCurrent().getJavaScript().execute(js.toString());
+	}
+
+	Map<String, Position>	waitMap	= new HashMap<>();
+
+
 	private void geolocation_get_future_success(final JsonArray arguments)
 	{
 		final Gson gson = new Gson();
@@ -185,5 +239,4 @@ public class GeolocationService extends MobileService
 	{
 		System.out.println(arguments.getString(1));
 	}
-	
 }

@@ -13,7 +13,34 @@ com_xdev_mobile_service_geolocation_GeolocationService = function() {
 	window.geolocation_get_future_error = function(error) {
 		connector.geolocation_get_future_error(error);
 	};
+	
+	window.geolocation_watch_success = function(caller, position, watchID) {
+		connector.geolocation_watch_success(caller, position, watchID);
+	};
+	window.geolocation_watch_error = function(caller, error, watchID) {
+		connector.geolocation_watch_error(caller, error, watchID);
+	};
 };
+
+
+function geolocation_watch(caller, timeout) {
+	var success = function(position) {
+		window.geolocation_watch_success(caller, position, watchID);
+	};
+
+	var error = function(error) {
+		window.geolocation_watch_error(caller, error, watchID);
+	};
+
+	var watchID = navigator.geolocation.watchPosition(success, error, timeout);
+}
+
+
+function geolocation_clear_watch(watchID){
+	navigator.geolocation.clearWatch(watchID);
+	watchID = null;
+}
+
 
 function geolocation_get(caller) {
 

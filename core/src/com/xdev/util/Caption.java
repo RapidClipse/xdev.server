@@ -24,9 +24,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
-@Target({ElementType.FIELD,ElementType.METHOD})
+@Target({ElementType.TYPE,ElementType.FIELD,ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Caption
 {
-	// public String name();
+	public String value() default "";
 }

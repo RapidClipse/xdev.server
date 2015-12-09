@@ -18,11 +18,18 @@
 package com.xdev.util;
 
 
+import javax.persistence.EntityManager;
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
+
 import org.hibernate.mapping.Collection;
 import org.hibernate.mapping.ManyToOne;
 import org.hibernate.mapping.OneToMany;
 import org.hibernate.mapping.OneToOne;
 import org.hibernate.mapping.Value;
+
+import com.xdev.communication.EntityManagerUtils;
 
 
 public class HibernateMetaDataUtils
@@ -35,7 +42,7 @@ public class HibernateMetaDataUtils
 		 * from a type like relation, they are independently inherited from
 		 * value...
 		 */
-
+		
 		final OneToMany oneToMany = getOneToMany(value);
 		if(oneToMany != null)
 		{
@@ -46,17 +53,17 @@ public class HibernateMetaDataUtils
 			final OneToOne oneToOne = (OneToOne)value;
 			return oneToOne.getReferencedEntityName();
 		}
-		
+
 		final ManyToOne manyToOne = getManyToOne(value);
 		if(manyToOne != null)
 		{
 			return manyToOne.getReferencedEntityName();
 		}
-
+		
 		return null;
 	}
-
-
+	
+	
 	private static OneToMany getOneToMany(Value value)
 	{
 		// in case of wrapping because bidirectional
@@ -70,8 +77,8 @@ public class HibernateMetaDataUtils
 		}
 		return null;
 	}
-	
-	
+
+
 	private static ManyToOne getManyToOne(Value value)
 	{
 		// in case of wrapping because bidirectional
@@ -84,5 +91,45 @@ public class HibernateMetaDataUtils
 			return (ManyToOne)value;
 		}
 		return null;
+	}
+	
+	
+	public static Attribute<?, ?> resolveAttribute(Class<?> entityClass, final String propertyPath)
+	{
+		final EntityManager entityManager = EntityManagerUtils.getEntityManager();
+		if(entityManager == null)
+		{
+			return null;
+		}
+
+		final Metamodel metamodel = entityManager.getMetamodel();
+		EntityType<?> entityType = metamodel.entity(entityClass);
+		if(entityType == null)
+		{
+			return null;
+		}
+
+		final String[] parts = propertyPath.split("\\.");
+		for(int i = 0; i < parts.length - 1; i++)
+		{
+			final String name = parts[i];
+			final Attribute<?, ?> attribute = entityType.getAttribute(name);
+			if(attribute == null)
+			{
+				return null;
+			}
+			entityClass = attribute.getJavaType();
+			if(entityClass == null)
+			{
+				return null;
+			}
+			entityType = metamodel.entity(entityClass);
+			if(entityType == null)
+			{
+				return null;
+			}
+		}
+
+		return entityType.getAttribute(parts[parts.length - 1]);
 	}
 }

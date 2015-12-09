@@ -50,6 +50,13 @@ public class XdevServlet extends VaadinServlet
 	
 	
 	@Override
+	public XdevServletService getService()
+	{
+		return (XdevServletService)super.getService();
+	}
+	
+	
+	@Override
 	protected void servletInitialized() throws ServletException
 	{
 		super.servletInitialized();

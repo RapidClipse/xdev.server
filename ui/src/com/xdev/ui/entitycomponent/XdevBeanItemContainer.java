@@ -19,13 +19,15 @@ package com.xdev.ui.entitycomponent;
 
 
 import java.util.Collection;
+import java.util.List;
 
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 
 
 /**
  * @author XDEV Software
- * 		
+ *
  */
 public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		implements XdevBeanContainer<BEANTYPE>
@@ -78,5 +80,31 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		{
 			this.removeItem(bean);
 		}
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.vaadin.data.util.AbstractInMemoryContainer#getAllItemIds()
+	 */
+	@Override
+	public List<BEANTYPE> getAllItemIds()
+	{
+		return super.getAllItemIds();
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.vaadin.data.util.AbstractBeanContainer#getUnfilteredItem(java.lang.
+	 * Object)
+	 */
+	@Override
+	public BeanItem<BEANTYPE> getUnfilteredItem(final Object itemId)
+	{
+		return super.getUnfilteredItem(itemId);
 	}
 }

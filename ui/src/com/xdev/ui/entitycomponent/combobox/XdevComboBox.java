@@ -20,38 +20,69 @@ package com.xdev.ui.entitycomponent.combobox;
 
 import java.util.Collection;
 
+import com.vaadin.data.util.BeanItem;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
+import com.xdev.util.Caption;
+import com.xdev.util.CaptionResolver;
+import com.xdev.util.CaptionUtils;
 
 
 public class XdevComboBox<T> extends AbstractBeanComboBox<T>
 {
-
+	
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -836170197198239894L;
-
-
+	private static final long	serialVersionUID			= -836170197198239894L;
+															
+	private boolean				itemCaptionFromAnnotation	= true;
+															
+															
 	public XdevComboBox()
 	{
 		super();
 	}
-
-
+	
+	
 	public XdevComboBox(final int pageLength)
 	{
 		super();
 		super.setPageLength(pageLength);
 	}
-
-
+	
+	
 	// init defaults
 	{
 		setImmediate(true);
 	}
 
 
+	/**
+	 * Sets if the item's caption should be derived from its {@link Caption}
+	 * annotation.
+	 *
+	 * @see CaptionResolver
+	 *
+	 * @param itemCaptionFromAnnotation
+	 *            the itemCaptionFromAnnotation to set
+	 */
+	public void setItemCaptionFromAnnotation(final boolean itemCaptionFromAnnotation)
+	{
+		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
+	}
+	
+	
+	/**
+	 * @return if the item's caption should be derived from its {@link Caption}
+	 *         annotation
+	 */
+	public boolean isItemCaptionFromAnnotation()
+	{
+		return this.itemCaptionFromAnnotation;
+	}
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -63,11 +94,11 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T>
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-
+				
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -78,8 +109,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T>
 	{
 		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
-
-
+	
+	
 	@SafeVarargs
 	@Override
 	public final void setContainerDataSource(final Class<T> beanClass, final Collection<T> data,
@@ -89,16 +120,39 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T>
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-
+		
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	@Override
 	public void setPageLength(final int pageLength)
 	{
 		// FIXME property change to create new model!
 		super.setPageLength(pageLength);
 	}
-
+	
+	
+	@Override
+	public String getItemCaption(final Object itemId)
+	{
+		if(isItemCaptionFromAnnotation())
+		{
+			final BeanItem<T> item = getItem(itemId);
+			if(item != null)
+			{
+				final T bean = item.getBean();
+				if(bean != null)
+				{
+					final String caption = CaptionUtils.resolveCaption(bean);
+					if(caption != null)
+					{
+						return caption;
+					}
+				}
+			}
+		}
+		
+		return super.getItemCaption(itemId);
+	}
 }

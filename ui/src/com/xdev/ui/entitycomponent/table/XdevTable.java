@@ -23,30 +23,31 @@ import java.util.Collection;
 import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
+import com.xdev.util.CaptionUtils;
 
 
 public class XdevTable<T> extends AbstractBeanTable<T>
 {
-
+	
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = -836170197198239894L;
-
-
+	
+	
 	public XdevTable()
 	{
 		super();
 	}
-
-
+	
+	
 	// init defaults
 	{
 		setSelectable(true);
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * Creates a new empty table with caption.
 	 *
@@ -56,15 +57,15 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public XdevTable(final int pageLength)
 	{
 		super();
 		super.setPageLength(pageLength);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -76,11 +77,11 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-
+				
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -91,8 +92,8 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 	{
 		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -105,11 +106,11 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-
+		
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -125,13 +126,29 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 			this.setConverter(new IDToBeanCollectionConverter(this.getContainerDataSource()));
 		}
 	}
-
-
+	
+	
 	@Override
 	public void setPageLength(final int pageLength)
 	{
 		// FIXME property change to create new model!
 		super.setPageLength(pageLength);
 	}
-
+	
+	
+	@Override
+	public String getColumnHeader(final Object propertyId)
+	{
+		String header = super.getColumnHeader(propertyId);
+		if(header.equals(propertyId.toString()))
+		{
+			// Header not set explicitly, resolve @Caption
+			final XdevBeanContainer<T> container = getContainerDataSource();
+			if(container != null)
+			{
+				header = CaptionUtils.resolveEntityMemberCaption(container.getBeanType(),header);
+			}
+		}
+		return header;
+	}
 }

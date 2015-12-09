@@ -47,7 +47,6 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.filter.And;
 import com.vaadin.data.util.filter.Between;
-import com.vaadin.data.util.filter.Compare;
 import com.vaadin.data.util.filter.IsNull;
 import com.vaadin.data.util.filter.Like;
 import com.vaadin.data.util.filter.Not;
@@ -83,8 +82,8 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 	 * The size of the query.
 	 */
 	private int							querySize			= -1;
-	
-	
+
+
 	/**
 	 * Constructor for configuring the query.
 	 *
@@ -403,9 +402,43 @@ public class RequisitioningEntityQuery<E> implements Query, Serializable
 			}
 		}
 		
-		if(filter instanceof Compare)
+		if(filter instanceof com.vaadin.data.util.filter.Compare)
 		{
-			final Compare compare = (Compare)filter;
+			final com.vaadin.data.util.filter.Compare compare = (com.vaadin.data.util.filter.Compare)filter;
+			final Path<Object> propertyPath = getPropertyPath(root,compare.getPropertyId());
+			final Expression property = propertyPath;
+			
+			switch(compare.getOperation())
+			{
+				case EQUAL:
+					
+					if(Collection.class.isAssignableFrom(property.getJavaType()))
+					{
+						/*
+						 * passing concrete instance to compare collection
+						 * values
+						 */
+						return cb.isMember(compare.getValue(),property);
+					}
+					else
+					{
+						return cb.equal(property,compare.getValue());
+					}
+				case GREATER:
+					return cb.greaterThan(property,(Comparable)compare.getValue());
+				case GREATER_OR_EQUAL:
+					return cb.greaterThanOrEqualTo(property,(Comparable)compare.getValue());
+				case LESS:
+					return cb.lessThan(property,(Comparable)compare.getValue());
+				case LESS_OR_EQUAL:
+					return cb.lessThanOrEqualTo(property,(Comparable)compare.getValue());
+				default:
+			}
+		}
+
+		if(filter instanceof com.xdev.data.util.filter.Compare)
+		{
+			final com.xdev.data.util.filter.Compare compare = (com.xdev.data.util.filter.Compare)filter;
 			final Path<Object> propertyPath = getPropertyPath(root,compare.getPropertyId());
 			final Expression property = propertyPath;
 			

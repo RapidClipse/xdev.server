@@ -20,9 +20,13 @@ package com.xdev.ui.entitycomponent.listselect;
 
 import java.util.Collection;
 
+import com.vaadin.data.util.BeanItem;
 import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
+import com.xdev.util.Caption;
+import com.xdev.util.CaptionResolver;
+import com.xdev.util.CaptionUtils;
 
 
 /**
@@ -30,10 +34,13 @@ import com.xdev.ui.util.KeyValueType;
  * lazyloading, and other advanced features.
  *
  * @author XDEV Software
- *		
+ *
  */
 public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 {
+	private boolean itemCaptionFromAnnotation = true;
+	
+	
 	/**
 	 *
 	 */
@@ -55,6 +62,31 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	// init defaults
 	{
 		setImmediate(true);
+	}
+	
+	
+	/**
+	 * Sets if the item's caption should be derived from its {@link Caption}
+	 * annotation.
+	 *
+	 * @see CaptionResolver
+	 *
+	 * @param itemCaptionFromAnnotation
+	 *            the itemCaptionFromAnnotation to set
+	 */
+	public void setItemCaptionFromAnnotation(final boolean itemCaptionFromAnnotation)
+	{
+		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
+	}
+	
+	
+	/**
+	 * @return if the item's caption should be derived from its {@link Caption}
+	 *         annotation
+	 */
+	public boolean isItemCaptionFromAnnotation()
+	{
+		return this.itemCaptionFromAnnotation;
 	}
 	
 	
@@ -118,5 +150,28 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 			this.setConverter(new IDToBeanCollectionConverter(this.getContainerDataSource()));
 		}
 	}
-	
+
+
+	@Override
+	public String getItemCaption(final Object itemId)
+	{
+		if(isItemCaptionFromAnnotation())
+		{
+			final BeanItem<T> item = getItem(itemId);
+			if(item != null)
+			{
+				final T bean = item.getBean();
+				if(bean != null)
+				{
+					final String caption = CaptionUtils.resolveCaption(bean);
+					if(caption != null)
+					{
+						return caption;
+					}
+				}
+			}
+		}
+
+		return super.getItemCaption(itemId);
+	}
 }

@@ -15,23 +15,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.ui.filter;
+package com.xdev.ui.entitycomponent;
+
+
+import com.vaadin.data.Container.Filterable;
 
 
 /**
- * @author XDEV Software
- *		
+ * @author Julian Will
+ * 		
  */
-public interface FilterSettings
+public interface DTOBeanContainer extends Filterable
 {
-	public boolean isCaseSensitive();
-	
-	
-	public char getWildcard();
+	public void preloadRelevantData();
 
 
-	public Object[] getSearchableProperties();
-	
-	
-	public Object[] getFilterableProperties();
+	public void preloadRelevantData(Object... propertyIds);
+
+
+	public void preloadRelevantData(Object itemID, Object... propertyIds);
 }

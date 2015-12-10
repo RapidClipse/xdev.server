@@ -19,20 +19,29 @@ package com.xdev.ui.entitycomponent;
 
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.persistence.Entity;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.xdev.util.EntityIDResolver;
+import com.xdev.util.HibernateEntityIDResolver;
+import com.xdev.util.HibernateMetaDataUtils;
 
 
 /**
- * @author XDEV Software
- *
+ * @author Julian Will
+ *		
  */
 public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
-		implements XdevBeanContainer<BEANTYPE>
+		implements XdevBeanContainer<BEANTYPE>, DTOBeanContainer
 {
-
+	
+	private final EntityIDResolver idResolver;
+	
+	
 	/**
 	 * @param type
 	 * @throws IllegalArgumentException
@@ -40,9 +49,10 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	public XdevBeanItemContainer(final Class<? super BEANTYPE> type) throws IllegalArgumentException
 	{
 		super(type);
+		this.idResolver = new HibernateEntityIDResolver();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -53,8 +63,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		this.removeAllItems();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -65,8 +75,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		// no need to synchronize
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -81,8 +91,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 			this.removeItem(bean);
 		}
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -93,8 +103,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		return super.getAllItemIds();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -106,5 +116,137 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	public BeanItem<BEANTYPE> getUnfilteredItem(final Object itemId)
 	{
 		return super.getUnfilteredItem(itemId);
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addAll(final Collection<? extends BEANTYPE> collection)
+	{
+		super.addAll(collection);
+		this.preloadRelevantData();
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public BeanItem<BEANTYPE> addBean(final BEANTYPE bean)
+	{
+		final BeanItem<BEANTYPE> item = super.addBean(bean);
+		// addBean id is bean itself
+		preloadRelevantData(item,this.getContainerPropertyIds().toArray());
+		return item;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public BeanItem<BEANTYPE> addItem(final Object itemId)
+	{
+		final BeanItem<BEANTYPE> item = super.addItem(itemId);
+		preloadRelevantData(itemId,this.getContainerPropertyIds().toArray());
+		return item;
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.xdev.ui.entitycomponent.DTOBeanContainer#preloadRelevantData()
+	 */
+	@Override
+	public void preloadRelevantData()
+	{
+		this.preloadRelevantData(this.getContainerPropertyIds().toArray());
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void preloadRelevantData(final Object... propertyIds)
+	{
+		final Iterator<?> it = this.getItemIds().iterator();
+		Object itemId = null;
+		
+		// TODO if is lazy property
+		while(it.hasNext())
+		{
+			itemId = it.next();
+			for(final Object propertyID : propertyIds)
+			{
+				final BEANTYPE entity = this.getItem(itemId).getBean();
+				
+				final Object propertyValue = HibernateMetaDataUtils.resolveAttributeValue(entity,
+						propertyID.toString());
+				if(propertyValue != null)
+				{
+					// force lazy loading
+					if(propertyValue instanceof Collection<?>)
+					{
+						final Collection<?> collection = (Collection<?>)propertyValue;
+						for(final Object object : collection)
+						{
+							if(object.getClass().getAnnotation(Entity.class) != null)
+							{
+								// TODO check - really required to force lazy
+								// loading?
+								this.idResolver.getEntityIDPropertyValue(object);
+							}
+						}
+					}
+					else if(propertyValue.getClass().getAnnotation(Entity.class) != null)
+					{
+						// TODO check - really required to force lazy loading?
+						this.idResolver.getEntityIDPropertyValue(propertyValue);
+					}
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void preloadRelevantData(final Object itemID, final Object... propertyIds)
+	{
+		for(final Object propertyID : propertyIds)
+		{
+			final BEANTYPE entity = this.getItem(itemID).getBean();
+			
+			final Object propertyValue = HibernateMetaDataUtils.resolveAttributeValue(entity,
+					propertyID.toString());
+			if(propertyValue != null)
+			{
+				// force lazy loading
+				if(propertyValue instanceof Collection<?>)
+				{
+					final Collection<?> collection = (Collection<?>)propertyValue;
+					for(final Object object : collection)
+					{
+						if(object.getClass().getAnnotation(Entity.class) != null)
+						{
+							// TODO check - really required to force lazy
+							// loading?
+							this.idResolver.getEntityIDPropertyValue(object);
+						}
+					}
+				}
+				else if(propertyValue.getClass().getAnnotation(Entity.class) != null)
+				{
+					// TODO check - really required to force lazy loading?
+					this.idResolver.getEntityIDPropertyValue(propertyValue);
+				}
+			}
+		}
 	}
 }

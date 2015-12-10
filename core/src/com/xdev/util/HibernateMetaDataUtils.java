@@ -18,6 +18,11 @@
 package com.xdev.util;
 
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
@@ -42,7 +47,7 @@ public class HibernateMetaDataUtils
 		 * from a type like relation, they are independently inherited from
 		 * value...
 		 */
-		
+
 		final OneToMany oneToMany = getOneToMany(value);
 		if(oneToMany != null)
 		{
@@ -59,11 +64,11 @@ public class HibernateMetaDataUtils
 		{
 			return manyToOne.getReferencedEntityName();
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	private static OneToMany getOneToMany(Value value)
 	{
 		// in case of wrapping because bidirectional
@@ -92,8 +97,8 @@ public class HibernateMetaDataUtils
 		}
 		return null;
 	}
-	
-	
+
+
 	public static Attribute<?, ?> resolveAttribute(Class<?> entityClass, final String propertyPath)
 	{
 		final EntityManager entityManager = EntityManagerUtils.getEntityManager();
@@ -131,5 +136,88 @@ public class HibernateMetaDataUtils
 		}
 
 		return entityType.getAttribute(parts[parts.length - 1]);
+	}
+	
+	
+	public static Object resolveAttributeValue(Object entity, final String propertyPath)
+	{
+		final EntityManager entityManager = EntityManagerUtils.getEntityManager();
+		Object propertyValue = null;
+		if(entityManager == null)
+		{
+			return null;
+		}
+
+		final Metamodel metamodel = entityManager.getMetamodel();
+		EntityType<?> entityType = null;
+
+		final String[] parts = propertyPath.split("\\.");
+		for(int i = 0; i < parts.length; i++)
+		{
+			Class<?> entityClass = entity.getClass();
+			entityType = metamodel.entity(entity.getClass());
+			if(entityType == null)
+			{
+				return null;
+			}
+
+			final String name = parts[i];
+			final Attribute<?, ?> attribute = entityType.getAttribute(name);
+			if(attribute == null)
+			{
+				return null;
+			}
+			entityClass = attribute.getJavaType();
+			if(entityClass == null)
+			{
+				return null;
+			}
+			if(entityClass.getAnnotation(Entity.class) != null)
+			{
+				entityType = metamodel.entity(entityClass);
+				if(entityType == null)
+				{
+					return null;
+				}
+			}
+
+			if(attribute.getJavaMember() instanceof Field)
+			{
+				try
+				{
+					propertyValue = ((Field)attribute.getJavaMember()).get(entity);
+					if(propertyValue != null
+							&& propertyValue.getClass().getAnnotation(Entity.class) != null)
+					{
+						entity = propertyValue;
+					}
+				}
+				catch(IllegalArgumentException | IllegalAccessException e)
+				{
+					throw new RuntimeException(e);
+				}
+			}
+			else if(attribute.getJavaMember() instanceof Method)
+			{
+				// invoke getter
+				try
+				{
+					propertyValue = ((Method)attribute.getJavaMember()).invoke(entity);
+					if(propertyValue != null
+							&& propertyValue.getClass().getAnnotation(Entity.class) != null)
+					{
+						entity = propertyValue;
+					}
+				}
+				catch(IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e)
+				{
+					throw new RuntimeException(e);
+				}
+			}
+		}
+
+		// return entityType.getAttribute(parts[parts.length - 1]);
+		return propertyValue;
 	}
 }

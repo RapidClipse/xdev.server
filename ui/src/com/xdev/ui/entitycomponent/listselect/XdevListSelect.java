@@ -34,13 +34,13 @@ import com.xdev.util.CaptionUtils;
  * lazyloading, and other advanced features.
  *
  * @author XDEV Software
- *
+ *		
  */
 public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 {
 	private boolean itemCaptionFromAnnotation = true;
-	
-	
+
+
 	/**
 	 *
 	 */
@@ -48,8 +48,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 */
@@ -57,20 +57,20 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	{
 		super(caption);
 	}
-	
-	
+
+
 	// init defaults
 	{
 		setImmediate(true);
 	}
-	
-	
+
+
 	/**
 	 * Sets if the item's caption should be derived from its {@link Caption}
 	 * annotation.
 	 *
 	 * @see CaptionResolver
-	 *
+	 *		
 	 * @param itemCaptionFromAnnotation
 	 *            the itemCaptionFromAnnotation to set
 	 */
@@ -78,8 +78,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	{
 		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
 	}
-	
-	
+
+
 	/**
 	 * @return if the item's caption should be derived from its {@link Caption}
 	 *         annotation
@@ -88,8 +88,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	{
 		return this.itemCaptionFromAnnotation;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -101,11 +101,11 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-				
+
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -116,8 +116,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	{
 		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -130,11 +130,11 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-		
+
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -150,8 +150,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 			this.setConverter(new IDToBeanCollectionConverter(this.getContainerDataSource()));
 		}
 	}
-
-
+	
+	
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
@@ -161,7 +161,7 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 			if(item != null)
 			{
 				final T bean = item.getBean();
-				if(bean != null)
+				if(bean != null && CaptionUtils.hasCaptionAnnotationValue(bean.getClass()))
 				{
 					final String caption = CaptionUtils.resolveCaption(bean);
 					if(caption != null)
@@ -171,7 +171,7 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 				}
 			}
 		}
-
+		
 		return super.getItemCaption(itemId);
 	}
 }

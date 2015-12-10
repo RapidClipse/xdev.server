@@ -24,123 +24,151 @@ import com.vaadin.data.Container.Filter;
 import com.vaadin.data.util.filter.Not;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.xdev.data.util.filter.Compare;
+import com.xdev.res.StringResourceUtils;
 
 
 /**
  * @author XDEV Software
- *
+ *		
  */
-public interface OperatorHandler
+public interface FilterOperator
 {
-	public static class FilterContext
-	{
-		private final Object					propertyId;
-		private final ContainerFilterComponent	component;
-												
-												
-		public FilterContext(final Object propertyId, final ContainerFilterComponent component)
-		{
-			this.propertyId = propertyId;
-			this.component = component;
-		}
-		
-		
-		public Object getPropertyId()
-		{
-			return this.propertyId;
-		}
-		
-		
-		public ContainerFilterComponent getComponent()
-		{
-			return this.component;
-		}
-	}
-	
-	
+	public String getKey();
+
+
+	public String getName();
+
+
 	public boolean isPropertyTypeSupported(final Class<?> type);
-	
-	
+
+
 	public FilterField<?>[] createValueEditors(FilterContext context, Class<?> propertyType);
-	
-	
+
+
 	public Filter createFilter(FilterContext context, FilterField<?>[] editors);
 	
 	
 	
-	public static abstract class Abstract implements OperatorHandler
+	public static abstract class Abstract implements FilterOperator
 	{
+		protected final String	key;
+		protected final String	name;
+
+
+		Abstract(final String key)
+		{
+			this(key,StringResourceUtils.getResourceString(
+					"ContainerFilterComponent.Operator." + key,FilterOperator.class));
+		}
+
+
+		protected Abstract(final String key, final String name)
+		{
+			this.key = key;
+			this.name = name;
+		}
+
+
+		@Override
+		public String getKey()
+		{
+			return this.key;
+		}
+
+
+		@Override
+		public String getName()
+		{
+			return this.name;
+		}
+
+
 		protected boolean isNumberOrDate(final Class<?> type)
 		{
 			return isNumber(type) || isDate(type);
 		}
-		
-		
+
+
 		protected boolean isNumber(final Class<?> type)
 		{
 			return Number.class.isAssignableFrom(type) || type == int.class || type == double.class
 					|| type == float.class || type == long.class || type == short.class
 					|| type == byte.class;
 		}
-		
-		
+
+
 		protected boolean isDate(final Class<?> type)
 		{
 			return Date.class.isAssignableFrom(type);
 		}
-		
-		
+
+
 		protected boolean isBoolean(final Class<?> type)
 		{
 			return type == Boolean.class || type == boolean.class;
 		}
 		
 		
+		protected FilterField<?> createStringField()
+		{
+			return new TextFilterField();
+		}
+
+
 		protected FilterField<?> createNumberField(final Class<?> numberType)
 		{
 			return new TextFilterField(numberType);
 		}
-		
-		
+
+
 		protected FilterField<?> createDateField(final Class<?> dateType)
 		{
 			return new DateFilterField();
 		}
-		
-		
+
+
 		protected FilterField<?> createBooleanField()
 		{
 			return new BooleanFilterField();
 		}
-		
-		
+
+
 		@SuppressWarnings({"rawtypes","unchecked"})
-		protected FilterField<?> createReferenceEditor(final FilterContext context,
+		protected FilterField<?> createChoiceField(final FilterContext context,
 				final Class<?> propertyType)
 		{
 			return new ChoiceFilterField(context,propertyType);
 		}
 	}
-	
-	
-	
+
+
+
 	public static class Equals extends Abstract
 	{
+		public final static String KEY = "EQUALS";
+
+
+		public Equals()
+		{
+			super(KEY);
+		}
+
+
 		@Override
 		public boolean isPropertyTypeSupported(final Class<?> type)
 		{
 			return type == String.class;
 		}
-		
-		
+
+
 		@Override
 		public FilterField<?>[] createValueEditors(final FilterContext context,
 				final Class<?> propertyType)
 		{
-			return new FilterField<?>[]{new TextFilterField()};
+			return new FilterField<?>[]{createStringField()};
 		}
-		
-		
+
+
 		@Override
 		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
 		{
@@ -149,37 +177,46 @@ public interface OperatorHandler
 			{
 				return null;
 			}
-			
+
 			value = value.trim();
 			if(value.length() == 0)
 			{
 				return null;
 			}
-			
-			return SearchFilterGenerator.Default.createWordFilter(context.getComponent(),value,
-					context.getPropertyId());
+
+			return SearchFilterGenerator.Default.createWordFilter(value,context.getPropertyId(),
+					context.getSettings());
 		}
 	}
-	
-	
-	
+
+
+
 	public static class StartsWith extends Abstract
 	{
+		public final static String KEY = "STARTS_WITH";
+
+
+		public StartsWith()
+		{
+			super(KEY);
+		}
+		
+		
 		@Override
 		public boolean isPropertyTypeSupported(final Class<?> type)
 		{
 			return type == String.class;
 		}
-		
-		
+
+
 		@Override
 		public FilterField<?>[] createValueEditors(final FilterContext context,
 				final Class<?> propertyType)
 		{
-			return new FilterField<?>[]{new TextFilterField()};
+			return new FilterField<?>[]{createStringField()};
 		}
-		
-		
+
+
 		@Override
 		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
 		{
@@ -188,29 +225,44 @@ public interface OperatorHandler
 			{
 				return null;
 			}
-			
+
 			value = value.trim();
 			if(value.length() == 0)
 			{
 				return null;
 			}
-			
+
 			return new SimpleStringFilter(context.getPropertyId(),value,
-					!context.getComponent().isCaseSensitive(),true);
+					!context.getSettings().isCaseSensitive(),true);
 		}
 	}
-	
-	
-	
+
+
+
 	public static class Is extends Abstract
 	{
+		public final static String KEY = "IS";
+
+
+		public Is()
+		{
+			this(KEY);
+		}
+
+
+		protected Is(final String key)
+		{
+			super(key);
+		}
+
+
 		@Override
 		public boolean isPropertyTypeSupported(final Class<?> type)
 		{
 			return type != String.class;
 		}
-		
-		
+
+
 		@Override
 		public FilterField<?>[] createValueEditors(final FilterContext context,
 				final Class<?> propertyType)
@@ -230,13 +282,13 @@ public interface OperatorHandler
 			}
 			else
 			{
-				editor = createReferenceEditor(context,propertyType);
+				editor = createChoiceField(context,propertyType);
 			}
-			
+
 			return new FilterField<?>[]{editor};
 		}
-		
-		
+
+
 		@Override
 		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
 		{
@@ -245,15 +297,24 @@ public interface OperatorHandler
 			{
 				return null;
 			}
-			
+
 			return new Compare.Equal(context.getPropertyId(),value);
 		}
 	}
-	
-	
-	
+
+
+
 	public static class IsNot extends Is
 	{
+		public final static String KEY = "IS_NOT";
+
+
+		public IsNot()
+		{
+			super(KEY);
+		}
+
+
 		@Override
 		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
 		{
@@ -261,18 +322,27 @@ public interface OperatorHandler
 			return filter != null ? new Not(filter) : null;
 		}
 	}
-	
-	
-	
+
+
+
 	public static class Greater extends Abstract
 	{
+		public final static String KEY = "GREATER";
+
+
+		public Greater()
+		{
+			super(KEY);
+		}
+
+
 		@Override
 		public boolean isPropertyTypeSupported(final Class<?> type)
 		{
 			return isNumberOrDate(type);
 		}
-		
-		
+
+
 		@Override
 		public FilterField<?>[] createValueEditors(final FilterContext context,
 				final Class<?> propertyType)
@@ -281,8 +351,8 @@ public interface OperatorHandler
 					: createDateField(propertyType);
 			return new FilterField[]{editor};
 		}
-		
-		
+
+
 		@Override
 		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
 		{
@@ -291,22 +361,31 @@ public interface OperatorHandler
 			{
 				return null;
 			}
-			
+
 			return new Compare.Greater(context.getPropertyId(),value);
 		}
 	}
-	
-	
-	
+
+
+
 	public static class Less extends Abstract
 	{
+		public final static String KEY = "LESS";
+
+
+		public Less()
+		{
+			super(KEY);
+		}
+
+
 		@Override
 		public boolean isPropertyTypeSupported(final Class<?> type)
 		{
 			return isNumberOrDate(type);
 		}
-		
-		
+
+
 		@Override
 		public FilterField<?>[] createValueEditors(final FilterContext context,
 				final Class<?> propertyType)
@@ -315,8 +394,8 @@ public interface OperatorHandler
 					: createDateField(propertyType);
 			return new FilterField<?>[]{editor};
 		}
-		
-		
+
+
 		@Override
 		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
 		{
@@ -325,22 +404,31 @@ public interface OperatorHandler
 			{
 				return null;
 			}
-			
+
 			return new Compare.Less(context.getPropertyId(),value);
 		}
 	}
-	
-	
-	
+
+
+
 	public static class GreaterEqual extends Abstract
 	{
+		public final static String KEY = "GREATER_EQUAL";
+
+
+		public GreaterEqual()
+		{
+			super(KEY);
+		}
+
+
 		@Override
 		public boolean isPropertyTypeSupported(final Class<?> type)
 		{
 			return isNumberOrDate(type);
 		}
-		
-		
+
+
 		@Override
 		public FilterField<?>[] createValueEditors(final FilterContext context,
 				final Class<?> propertyType)
@@ -349,8 +437,8 @@ public interface OperatorHandler
 					: createDateField(propertyType);
 			return new FilterField<?>[]{editor};
 		}
-		
-		
+
+
 		@Override
 		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
 		{
@@ -359,22 +447,31 @@ public interface OperatorHandler
 			{
 				return null;
 			}
-			
+
 			return new Compare.GreaterOrEqual(context.getPropertyId(),value);
 		}
 	}
-	
-	
-	
+
+
+
 	public static class LessEqual extends Abstract
 	{
+		public final static String KEY = "LESS_EQUAL";
+
+
+		public LessEqual()
+		{
+			super(KEY);
+		}
+
+
 		@Override
 		public boolean isPropertyTypeSupported(final Class<?> type)
 		{
 			return isNumberOrDate(type);
 		}
-		
-		
+
+
 		@Override
 		public FilterField<?>[] createValueEditors(final FilterContext context,
 				final Class<?> propertyType)
@@ -383,8 +480,8 @@ public interface OperatorHandler
 					: createDateField(propertyType);
 			return new FilterField<?>[]{editor};
 		}
-		
-		
+
+
 		@Override
 		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
 		{
@@ -393,22 +490,31 @@ public interface OperatorHandler
 			{
 				return null;
 			}
-			
+
 			return new Compare.LessOrEqual(context.getPropertyId(),value);
 		}
 	}
-	
-	
-	
+
+
+
 	public static class Between extends Abstract
 	{
+		public final static String KEY = "BETWEEN";
+
+
+		public Between()
+		{
+			super(KEY);
+		}
+
+
 		@Override
 		public boolean isPropertyTypeSupported(final Class<?> type)
 		{
 			return isNumberOrDate(type);
 		}
-		
-		
+
+
 		@Override
 		public FilterField<?>[] createValueEditors(final FilterContext context,
 				final Class<?> propertyType)
@@ -417,15 +523,15 @@ public interface OperatorHandler
 			final FilterField<?> to = createValueEditor(propertyType);
 			return new FilterField<?>[]{from,to};
 		}
-		
-		
+
+
 		protected FilterField<?> createValueEditor(final Class<?> propertyType)
 		{
 			return isNumber(propertyType) ? createNumberField(propertyType)
 					: createDateField(propertyType);
 		}
-		
-		
+
+
 		@Override
 		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
 		{
@@ -434,13 +540,13 @@ public interface OperatorHandler
 			{
 				return null;
 			}
-			
+
 			final Comparable<?> endValue = (Comparable<?>)editors[1].getFilterValue();
 			if(endValue == null)
 			{
 				return null;
 			}
-			
+
 			return new com.vaadin.data.util.filter.Between(context.getPropertyId(),startValue,
 					endValue);
 		}

@@ -34,16 +34,15 @@ import com.vaadin.data.util.filter.SimpleStringFilter;
  */
 public interface SearchFilterGenerator
 {
-	public Filter createSearchFilter(ContainerFilterComponent component);
+	public Filter createSearchFilter(String searchText, FilterSettings settings);
 	
 	
 	
 	public static class Default implements SearchFilterGenerator
 	{
 		@Override
-		public Filter createSearchFilter(final ContainerFilterComponent component)
+		public Filter createSearchFilter(final String searchText, final FilterSettings settings)
 		{
-			final String searchText = component.getSearchText().trim();
 			if(searchText.length() == 0)
 			{
 				return null;
@@ -53,23 +52,23 @@ public interface SearchFilterGenerator
 			
 			if(words.length == 1)
 			{
-				return createSingleWordSearchFilter(component,words[0]);
+				return createSingleWordSearchFilter(words[0],settings);
 			}
 			
-			return createMultiWordSearchFilter(component,words);
+			return createMultiWordSearchFilter(words,settings);
 		}
 		
 		
-		protected Filter createSingleWordSearchFilter(final ContainerFilterComponent component,
-				final String word)
+		protected Filter createSingleWordSearchFilter(final String word,
+				final FilterSettings settings)
 		{
 			final List<Filter> propertyFilters = new ArrayList<>();
 			
-			for(final Object searchableProperty : component.getSearchableProperties())
+			for(final Object searchableProperty : settings.getSearchableProperties())
 			{
-				propertyFilters.add(createWordFilter(component,word,searchableProperty));
+				propertyFilters.add(createWordFilter(word,searchableProperty,settings));
 			}
-
+			
 			if(propertyFilters.isEmpty())
 			{
 				return null;
@@ -79,23 +78,23 @@ public interface SearchFilterGenerator
 		}
 		
 		
-		protected Filter createMultiWordSearchFilter(final ContainerFilterComponent component,
-				final String[] words)
+		protected Filter createMultiWordSearchFilter(final String[] words,
+				final FilterSettings settings)
 		{
 			final List<Filter> propertyFilters = new ArrayList<>();
 			
-			for(final Object searchableProperty : component.getSearchableProperties())
+			for(final Object searchableProperty : settings.getSearchableProperties())
 			{
 				final List<Filter> wordFilters = new ArrayList<>();
 				
 				for(final String word : words)
 				{
-					wordFilters.add(createWordFilter(component,word,searchableProperty));
+					wordFilters.add(createWordFilter(word,searchableProperty,settings));
 				}
 				
 				propertyFilters.add(new Or(wordFilters.toArray(new Filter[wordFilters.size()])));
 			}
-
+			
 			if(propertyFilters.isEmpty())
 			{
 				return null;
@@ -105,29 +104,23 @@ public interface SearchFilterGenerator
 		}
 		
 		
-		public static Filter createWordFilter(final ContainerFilterComponent component,
-				final String word, final Object searchableProperty)
+		public static Filter createWordFilter(final String word, final Object searchableProperty,
+				final FilterSettings settings)
 		{
-			final char wordWildcard = component.getWordWildcard();
-			final char letterWildcard = component.getLetterWildcard();
-			if(word.indexOf(wordWildcard) != -1 || word.indexOf(letterWildcard) != -1)
+			final char wildcard = settings.getWildcard();
+			if(word.indexOf(wildcard) != -1)
 			{
-				// replace search wildcards with SQL wildcards
+				// replace search wildcard with SQL wildcard
 				String pattern = word;
-				if(wordWildcard != '%')
+				if(wildcard != '%')
 				{
-					pattern = pattern.replace(wordWildcard,'%');
-				}
-				if(letterWildcard != '_')
-				{
-					pattern = pattern.replace(letterWildcard,'_');
+					pattern = pattern.replace(wildcard,'%');
 				}
 				
-				return new Like(searchableProperty,pattern,component.isCaseSensitive());
+				return new Like(searchableProperty,pattern,settings.isCaseSensitive());
 			}
 			
-			return new SimpleStringFilter(searchableProperty,word,!component.isCaseSensitive(),
-					true);
+			return new SimpleStringFilter(searchableProperty,word,!settings.isCaseSensitive(),true);
 		}
 	}
 }

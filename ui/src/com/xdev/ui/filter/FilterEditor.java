@@ -31,12 +31,11 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.themes.ValoTheme;
 import com.xdev.res.StringResourceUtils;
 import com.xdev.ui.filter.FilterField.FilterFieldChangeListener;
-import com.xdev.ui.filter.OperatorHandler.FilterContext;
 
 
 /**
  * @author XDEV Software
- *		
+ *
  */
 public class FilterEditor
 {
@@ -90,26 +89,26 @@ public class FilterEditor
 		}
 	}
 
-	private final ContainerFilterComponent	containerFilterComponent;
+	private final XdevContainerFilterComponent	containerFilterComponent;
 
-	private final ComboBox					propertyComboBox;
-	private final ComboBox					operatorComboBox;
+	private final ComboBox						propertyComboBox;
+	private final ComboBox						operatorComboBox;
 
-	private final FilterFieldChangeListener	filterFieldChangeListener;
-	private PropertyEntry					selectedPropertyEntry;
-	private Operator						selectedOperator;
-	private FilterField<?>[]				valueEditors;
+	private final FilterFieldChangeListener		filterFieldChangeListener;
+	private PropertyEntry						selectedPropertyEntry;
+	private FilterOperator						selectedOperator;
+	private FilterField<?>[]					valueEditors;
 
-	private final Button					removeFilterButton;
-	private final Button					addFilterButton;
+	private final Button						removeFilterButton;
+	private final Button						addFilterButton;
 
 
-	public FilterEditor(final ContainerFilterComponent containerFilterComponent)
+	public FilterEditor(final XdevContainerFilterComponent containerFilterComponent)
 	{
 		this.containerFilterComponent = containerFilterComponent;
 
 		final List<PropertyEntry> propertyEntries = getPropertyEntries();
-		
+
 		this.propertyComboBox = createPropertyComboBox();
 		this.propertyComboBox.addItems(propertyEntries);
 		this.propertyComboBox.addValueChangeListener(event -> propertySelectionChanged());
@@ -130,7 +129,7 @@ public class FilterEditor
 	}
 
 
-	protected ContainerFilterComponent getContainerFilterComponent()
+	protected XdevContainerFilterComponent getContainerFilterComponent()
 	{
 		return this.containerFilterComponent;
 	}
@@ -155,7 +154,19 @@ public class FilterEditor
 
 	protected ComboBox createOperatorComboBox()
 	{
-		final ComboBox operatorComboBox = new ComboBox();
+		final ComboBox operatorComboBox = new ComboBox()
+		{
+			@Override
+			public String getItemCaption(final Object itemId)
+			{
+				if(itemId instanceof FilterOperator)
+				{
+					return ((FilterOperator)itemId).getName();
+				}
+
+				return super.getItemCaption(itemId);
+			}
+		};
 		operatorComboBox.setTextInputAllowed(false);
 		operatorComboBox.setInputPrompt(StringResourceUtils
 				.getResourceString("ContainerFilterComponent.selectOption",this));
@@ -223,8 +234,8 @@ public class FilterEditor
 		{
 			this.selectedPropertyEntry = (PropertyEntry)value;
 			this.operatorComboBox.removeAllItems();
-			this.operatorComboBox.addItems(Arrays.stream(Operator.values())
-					.filter(op -> op.getHandler()
+			this.operatorComboBox.addItems(FilterOperatorRegistry.getFilterOperators().stream()
+					.filter(op -> op
 							.isPropertyTypeSupported(this.selectedPropertyEntry.getPropertyType()))
 					.collect(Collectors.toList()));
 			this.operatorComboBox.setVisible(true);
@@ -244,12 +255,13 @@ public class FilterEditor
 		final List<Object> lastValues = removeValueEditors();
 
 		final Object value = this.operatorComboBox.getValue();
-		if(value instanceof Operator)
+		if(value instanceof FilterOperator)
 		{
-			this.selectedOperator = (Operator)value;
-			final FilterContext context = new FilterContext(
-					this.selectedPropertyEntry.getPropertyId(),this.containerFilterComponent);
-			this.valueEditors = this.selectedOperator.getHandler().createValueEditors(context,
+			this.selectedOperator = (FilterOperator)value;
+			final FilterContext context = new FilterContext.Implementation(
+					this.containerFilterComponent,this.containerFilterComponent.getContainer(),
+					this.selectedPropertyEntry.getPropertyId());
+			this.valueEditors = this.selectedOperator.createValueEditors(context,
 					this.selectedPropertyEntry.getPropertyType());
 			for(int i = 0, c = Math.min(lastValues.size(),this.valueEditors.length); i < c; i++)
 			{
@@ -302,8 +314,9 @@ public class FilterEditor
 			return null;
 		}
 
-		final FilterContext context = new FilterContext(this.selectedPropertyEntry.getPropertyId(),
-				this.containerFilterComponent);
-		return this.selectedOperator.getHandler().createFilter(context,this.valueEditors);
+		final FilterContext context = new FilterContext.Implementation(
+				this.containerFilterComponent,this.containerFilterComponent.getContainer(),
+				this.selectedPropertyEntry.getPropertyId());
+		return this.selectedOperator.createFilter(context,this.valueEditors);
 	}
 }

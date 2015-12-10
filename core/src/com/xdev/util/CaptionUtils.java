@@ -18,6 +18,8 @@
 package com.xdev.util;
 
 
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Member;
 import java.util.Locale;
 
 import javax.persistence.metamodel.Attribute;
@@ -25,7 +27,7 @@ import javax.persistence.metamodel.Attribute;
 
 /**
  * @author XDEV Software
- *		
+ *
  */
 public final class CaptionUtils
 {
@@ -57,8 +59,8 @@ public final class CaptionUtils
 	{
 		return resolveCaption(element,Locale.getDefault());
 	}
-
-
+	
+	
 	public static String resolveCaption(final Object element, final Locale locale)
 	{
 		return getCaptionResolver().resolveCaption(element,locale);
@@ -74,7 +76,21 @@ public final class CaptionUtils
 		{
 			return propertyName;
 		}
-
-		return resolveCaption(attribute.getJavaMember());
+		
+		final Member javaMember = attribute.getJavaMember();
+		if(javaMember instanceof AnnotatedElement
+				&& hasCaptionAnnotationValue((AnnotatedElement)javaMember))
+		{
+			return resolveCaption(javaMember);
+		}
+		
+		return attribute.getName();
+	}
+	
+	
+	public static boolean hasCaptionAnnotationValue(final AnnotatedElement element)
+	{
+		final Caption annotation = element.getAnnotation(Caption.class);
+		return annotation != null && annotation.value().length() > 0;
 	}
 }

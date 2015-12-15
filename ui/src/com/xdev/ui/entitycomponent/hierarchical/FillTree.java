@@ -28,6 +28,8 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.ui.AbstractSelect;
+import com.xdev.util.Caption;
+import com.xdev.util.CaptionUtils;
 
 
 public interface FillTree
@@ -39,12 +41,33 @@ public interface FillTree
 	public AbstractSelect getHierarchicalReceiver();
 
 
-	// return void or group?
-	public <T> Group addRootGroup(Class<T> clazz, Field caption);
+	public <T> Group addRootGroup(Class<T> clazz);
 
 
-	// return void or group?
-	public Group addGroup(Class<?> clazz, Field parentReference, Field caption);
+	/**
+	 * @deprecated use {@link #addRootGroup(Class)} instead, caption is now
+	 *             handled by {@link Caption}
+	 */
+	@Deprecated
+	public default Group addRootGroup(final Class<?> clazz, final Field caption)
+	{
+		return addRootGroup(clazz);
+	}
+
+
+	public Group addGroup(Class<?> clazz, Field parentReference);
+
+
+	/**
+	 * @deprecated use {@link #addGroup(Class, Field)} instead, caption is now
+	 *             handled by {@link Caption}
+	 */
+	@Deprecated
+	public default Group addGroup(final Class<?> clazz, final Field parentReference,
+			final Field caption)
+	{
+		return addGroup(clazz,parentReference);
+	}
 
 
 	public <T> void setGroupData(Class<T> groupClass, Collection<T> data);
@@ -65,10 +88,10 @@ public interface FillTree
 
 
 		@Override
-		public <T> Group addRootGroup(final Class<T> clazz, final Field caption)
+		public <T> Group addRootGroup(final Class<T> clazz)
 		{
 			// TODO caption provider
-			final Group node = new Group.Implementation(clazz,null,caption);
+			final Group node = new Group.Implementation(clazz,null);
 
 			// TODO null as root identifier
 			this.treeReferenceMap.put(node,null);
@@ -78,9 +101,9 @@ public interface FillTree
 
 
 		@Override
-		public Group addGroup(final Class<?> clazz, final Field parentReference, final Field caption)
+		public Group addGroup(final Class<?> clazz, final Field parentReference)
 		{
-			final Group childNode = new Group.Implementation(clazz,parentReference,caption);
+			final Group childNode = new Group.Implementation(clazz,parentReference);
 
 			// to avoid concurrent modification exception
 			Group parentNode = null;
@@ -130,15 +153,14 @@ public interface FillTree
 				{
 					for(final Object childDataItem : childGroup.getGroupData())
 					{
-						if(parentDataItem.equals(this.getReferenceValue(childDataItem,
-								childGroup.getReference())))
+						if(parentDataItem.equals(
+								this.getReferenceValue(childDataItem,childGroup.getReference())))
 						{
 							/*
 							 * create parent item, child item and add child to
 							 * parent item
 							 */
-							final Object parentCaption = this.getCaptionValue(parentDataItem,
-									parentGroup);
+							final Object parentCaption = this.getCaptionValue(parentDataItem);
 							/*
 							 * it is possible that parent items may be already
 							 * child items from parents at a higher hierarchy so
@@ -146,8 +168,7 @@ public interface FillTree
 							 */
 							this.addItemIfNotExistent(container,parentCaption);
 
-							final Object childCaption = this.getCaptionValue(childDataItem,
-									childGroup);
+							final Object childCaption = this.getCaptionValue(childDataItem);
 							this.addItemIfNotExistent(container,childCaption);
 
 							container.setParent(childCaption,parentCaption);
@@ -231,33 +252,37 @@ public interface FillTree
 		}
 
 
-		// TODO create tailored exception type
-		private Object getCaptionValue(final Object item, final Group captionGroupInfo)
-				throws RuntimeException
+		private Object getCaptionValue(final Object item
+		// , final Group captionGroupInfo
+		)
+		// throws RuntimeException
 		{
-			if(captionGroupInfo.getCaption() != null)
-			{
-				try
-				{
-					/*
-					 * TODO add caption annotation to getter and safely access
-					 * annotated getter without the need to manipulate field
-					 * access rules
-					 */
-					captionGroupInfo.getCaption().setAccessible(true);
-					final Object captionValue = captionGroupInfo.getCaption().get(item);
-					return captionValue;
-				}
-				catch(IllegalArgumentException | IllegalAccessException e)
-				{
-					throw new RuntimeException(e);
-				}
-			}
-			else
-			{
-				// toString fallback
-				return item.toString();
-			}
+			return CaptionUtils.resolveCaption(item);
+
+			// if(captionGroupInfo.getCaption() != null)
+			// {
+			// try
+			// {
+			// /*
+			// * TODO add caption annotation to getter and safely access
+			// * annotated getter without the need to manipulate field
+			// * access rules
+			// */
+			// captionGroupInfo.getCaption().setAccessible(true);
+			// final Object captionValue =
+			// captionGroupInfo.getCaption().get(item);
+			// return captionValue;
+			// }
+			// catch(IllegalArgumentException | IllegalAccessException e)
+			// {
+			// throw new RuntimeException(e);
+			// }
+			// }
+			// else
+			// {
+			// // toString fallback
+			// return item.toString();
+			// }
 		}
 
 

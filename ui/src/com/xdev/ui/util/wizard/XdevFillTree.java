@@ -25,10 +25,8 @@ import com.vaadin.ui.AbstractSelect;
 import com.xdev.lang.ExecutableCommandObject;
 import com.xdev.ui.entitycomponent.hierarchical.FillTree;
 import com.xdev.ui.entitycomponent.hierarchical.Group;
-import com.xdev.util.Caption;
 import com.xdev.util.EntityReferenceResolver;
 import com.xdev.util.HibernateEntityReferenceResolver;
-import com.xdev.util.ReflectionUtils;
 
 
 //Just a Delegate to FillTree.Implementation for utility purpose
@@ -49,29 +47,25 @@ public class XdevFillTree implements ExecutableCommandObject
 		this.referenceResolver = new HibernateEntityReferenceResolver();
 	}
 
-
 	/*
 	 * --------------- UTILITY DELEGATORS -------------------
 	 */
 
-	// TODO create tailored exception type
+
 	public <T> Group addRootGroup(final Class<T> clazz) throws RuntimeException
 	{
-		return this.fillTreeComposite.addRootGroup(clazz,
-				ReflectionUtils.getAnnotatedField(clazz,Caption.class));
+		return this.fillTreeComposite.addRootGroup(clazz);
 	}
 
 
-	// TODO create tailored exception type
 	public Group addGroup(final Class<?> clazz, final Class<?> parentClazz) throws RuntimeException
 	{
 		// TODO check bidirectionals
-		final String propertyName = this.referenceResolver.getReferenceEntityPropertyName(
-				parentClazz,clazz);
+		final String propertyName = this.referenceResolver
+				.getReferenceEntityPropertyName(parentClazz,clazz);
 		try
 		{
-			return this.fillTreeComposite.addGroup(clazz,clazz.getDeclaredField(propertyName),
-					ReflectionUtils.getAnnotatedField(clazz,Caption.class));
+			return this.fillTreeComposite.addGroup(clazz,clazz.getDeclaredField(propertyName));
 		}
 		catch(NoSuchFieldException | SecurityException e)
 		{

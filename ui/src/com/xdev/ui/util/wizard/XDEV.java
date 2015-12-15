@@ -29,13 +29,13 @@ import com.xdev.ui.entitycomponent.BeanComponent;
  * Utility class to ease component connection for Master Detail and provides
  * support complex databinding.
  *
- * @author Julian Will
- * 		
+ * @author XDEV Software (JW)
+ *
  */
 public final class XDEV
 {
 	// --------------- MASTER DETAIL -----------------------
-
+	
 	/**
 	 * Connect a master and a detail {@link BeanComponent} to achieve a Master
 	 * Detail relation.
@@ -50,8 +50,8 @@ public final class XDEV
 		consumer.accept(builder);
 		builder.execute();
 	}
-
-
+	
+	
 	/**
 	 * Connect a {@link BeanComponent} to display appropriate detail data in a
 	 * {@link BeanFieldGroup}.
@@ -70,8 +70,8 @@ public final class XDEV
 			formBinder.setMasterComponent(masterComponent);
 		});
 	}
-
-
+	
+	
 	/**
 	 * Connect a {@link BeanComponent} to display appropriate detail data in a
 	 * {@link BeanFieldGroup}.
@@ -87,8 +87,8 @@ public final class XDEV
 		consumer.accept(builder);
 		builder.execute();
 	}
-
-
+	
+	
 	/**
 	 * Fills a Tree Component from the given Entitystructure. Structure can be
 	 * defined through {@link XdevFillTree#addRootGroup(Class)} and

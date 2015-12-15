@@ -34,13 +34,14 @@ import com.xdev.util.CaptionUtils;
  * lazyloading, and other advanced features.
  *
  * @author XDEV Software
- *		
+ *
  */
 public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 {
-	private boolean itemCaptionFromAnnotation = true;
-
-
+	private boolean	itemCaptionFromAnnotation	= true;
+	private String	itemCaptionValue			= null;
+												
+												
 	/**
 	 *
 	 */
@@ -70,7 +71,7 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	 * annotation.
 	 *
 	 * @see CaptionResolver
-	 *		
+	 *
 	 * @param itemCaptionFromAnnotation
 	 *            the itemCaptionFromAnnotation to set
 	 */
@@ -87,6 +88,31 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	public boolean isItemCaptionFromAnnotation()
 	{
 		return this.itemCaptionFromAnnotation;
+	}
+
+
+	/**
+	 * Sets a user defined caption value for the items to display.
+	 *
+	 * @see Caption
+	 * @see #setItemCaptionFromAnnotation(boolean)
+	 * @param itemCaptionValue
+	 *            the itemCaptionValue to set
+	 */
+	public void setItemCaptionValue(final String itemCaptionValue)
+	{
+		this.itemCaptionValue = itemCaptionValue;
+	}
+
+
+	/**
+	 * Returns the user defined caption value for the items to display
+	 *
+	 * @return the itemCaptionValue
+	 */
+	public String getItemCaptionValue()
+	{
+		return this.itemCaptionValue;
 	}
 
 
@@ -150,8 +176,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 			this.setConverter(new IDToBeanCollectionConverter(this.getContainerDataSource()));
 		}
 	}
-	
-	
+
+
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
@@ -163,15 +189,23 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 				final T bean = item.getBean();
 				if(bean != null && CaptionUtils.hasCaptionAnnotationValue(bean.getClass()))
 				{
-					final String caption = CaptionUtils.resolveCaption(bean);
-					if(caption != null)
-					{
-						return caption;
-					}
+					return CaptionUtils.resolveCaption(bean,getLocale());
 				}
 			}
 		}
-		
+		else if(this.itemCaptionValue != null)
+		{
+			final BeanItem<T> item = getItem(itemId);
+			if(item != null)
+			{
+				final T bean = item.getBean();
+				if(bean != null)
+				{
+					return CaptionUtils.resolveCaption(bean,this.itemCaptionValue,getLocale());
+				}
+			}
+		}
+
 		return super.getItemCaption(itemId);
 	}
 }

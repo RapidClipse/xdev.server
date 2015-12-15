@@ -44,8 +44,8 @@ public class FilterEditor
 		private final Object	propertyID;
 		private final Class<?>	propertyType;
 		private final String	caption;
-
-
+								
+								
 		public PropertyEntry(final Object propertyID, final Class<?> propertyType,
 				final String caption)
 		{
@@ -53,8 +53,8 @@ public class FilterEditor
 			this.propertyType = propertyType;
 			this.caption = caption;
 		}
-
-
+		
+		
 		/**
 		 * @return the propertyID
 		 */
@@ -62,8 +62,8 @@ public class FilterEditor
 		{
 			return this.propertyID;
 		}
-
-
+		
+		
 		/**
 		 * @return the propertyType
 		 */
@@ -71,8 +71,8 @@ public class FilterEditor
 		{
 			return this.propertyType;
 		}
-
-
+		
+		
 		/**
 		 * @return the caption
 		 */
@@ -80,78 +80,80 @@ public class FilterEditor
 		{
 			return this.caption;
 		}
-
-
+		
+		
 		@Override
 		public String toString()
 		{
 			return this.caption;
 		}
 	}
-
+	
 	private final XdevContainerFilterComponent	containerFilterComponent;
-
+												
 	private final ComboBox						propertyComboBox;
 	private final ComboBox						operatorComboBox;
-
+												
 	private final FilterFieldChangeListener		filterFieldChangeListener;
 	private PropertyEntry						selectedPropertyEntry;
 	private FilterOperator						selectedOperator;
 	private FilterField<?>[]					valueEditors;
-
+												
 	private final Button						removeFilterButton;
 	private final Button						addFilterButton;
-
-
+												
+												
 	public FilterEditor(final XdevContainerFilterComponent containerFilterComponent)
 	{
 		this.containerFilterComponent = containerFilterComponent;
-
+		
 		final List<PropertyEntry> propertyEntries = getPropertyEntries();
-
+		
 		this.propertyComboBox = createPropertyComboBox();
 		this.propertyComboBox.addItems(propertyEntries);
 		this.propertyComboBox.addValueChangeListener(event -> propertySelectionChanged());
-
+		
 		this.operatorComboBox = createOperatorComboBox();
 		this.operatorComboBox.addValueChangeListener(event -> operatorSelectionChanged());
 		this.operatorComboBox.setVisible(false);
-
+		
 		this.filterFieldChangeListener = event -> containerFilterComponent.updateContainerFilter();
-
+		
 		this.removeFilterButton = createRemoveFilterButton();
 		this.removeFilterButton
 				.addClickListener(event -> containerFilterComponent.removeFilterEditor(this));
-
+				
 		this.addFilterButton = createAddFilterButton();
 		this.addFilterButton
 				.addClickListener(event -> containerFilterComponent.addFilterEditorAfter(this));
 	}
-
-
+	
+	
 	protected XdevContainerFilterComponent getContainerFilterComponent()
 	{
 		return this.containerFilterComponent;
 	}
-
-
+	
+	
 	protected ComboBox createPropertyComboBox()
 	{
 		final ComboBox propertyComboBox = new ComboBox();
+		propertyComboBox.addStyleName(ValoTheme.COMBOBOX_SMALL);
+		propertyComboBox.addStyleName(XdevContainerFilterComponent.FILTER_COMBOBOX_CLASS);
 		propertyComboBox.setTextInputAllowed(false);
 		propertyComboBox.setInputPrompt(StringResourceUtils
 				.getResourceString("ContainerFilterComponent.selectOption",this));
 		propertyComboBox.setNullSelectionAllowed(false);
 		return propertyComboBox;
 	}
-
-
+	
+	
 	protected ComboBox getPropertyComboBox()
 	{
 		return this.propertyComboBox;
 	}
-
-
+	
+	
 	protected ComboBox createOperatorComboBox()
 	{
 		final ComboBox operatorComboBox = new ComboBox()
@@ -163,10 +165,12 @@ public class FilterEditor
 				{
 					return ((FilterOperator)itemId).getName();
 				}
-
+				
 				return super.getItemCaption(itemId);
 			}
 		};
+		operatorComboBox.addStyleName(ValoTheme.COMBOBOX_SMALL);
+		operatorComboBox.addStyleName(XdevContainerFilterComponent.FILTER_COMBOBOX_CLASS);
 		operatorComboBox.setTextInputAllowed(false);
 		operatorComboBox.setInputPrompt(StringResourceUtils
 				.getResourceString("ContainerFilterComponent.selectOption",this));
@@ -174,48 +178,50 @@ public class FilterEditor
 		operatorComboBox.setItemCaptionMode(ItemCaptionMode.ID_TOSTRING);
 		return operatorComboBox;
 	}
-
-
+	
+	
 	protected ComboBox getOperatorComboBox()
 	{
 		return this.operatorComboBox;
 	}
-
-
+	
+	
 	protected Button createRemoveFilterButton()
 	{
 		final Button removeFilterButton = new Button();
-		removeFilterButton.setIcon(FontAwesome.MINUS_SQUARE);
-		removeFilterButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+		removeFilterButton.setIcon(FontAwesome.MINUS);
+		removeFilterButton.addStyleName(ValoTheme.BUTTON_SMALL);
+		removeFilterButton.addStyleName(XdevContainerFilterComponent.FILTER_REMOVE_BUTTON_CLASS);
 		removeFilterButton.setDescription(StringResourceUtils
 				.getResourceString("ContainerFilterComponent.removeFilter",this));
 		return removeFilterButton;
 	}
-
-
+	
+	
 	protected Button getRemoveFilterButton()
 	{
 		return this.removeFilterButton;
 	}
-
-
+	
+	
 	protected Button createAddFilterButton()
 	{
 		final Button addFilterButton = new Button();
-		addFilterButton.setIcon(FontAwesome.PLUS_SQUARE);
-		addFilterButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+		addFilterButton.setIcon(FontAwesome.PLUS);
+		addFilterButton.addStyleName(ValoTheme.BUTTON_SMALL);
+		addFilterButton.addStyleName(XdevContainerFilterComponent.FILTER_ADD_BUTTON_CLASS);
 		addFilterButton.setDescription(
 				StringResourceUtils.getResourceString("ContainerFilterComponent.addFilter",this));
 		return addFilterButton;
 	}
-
-
+	
+	
 	protected Button getAddFilterButton()
 	{
 		return this.addFilterButton;
 	}
-
-
+	
+	
 	protected List<PropertyEntry> getPropertyEntries()
 	{
 		return Arrays.stream(this.containerFilterComponent.getFilterableProperties())
@@ -223,12 +229,12 @@ public class FilterEditor
 						this.containerFilterComponent.getPropertyCaption(id)))
 				.collect(Collectors.toList());
 	}
-
-
+	
+	
 	protected void propertySelectionChanged()
 	{
 		removeValueEditors();
-
+		
 		final Object value = this.propertyComboBox.getValue();
 		if(value instanceof PropertyEntry)
 		{
@@ -245,15 +251,15 @@ public class FilterEditor
 			this.selectedPropertyEntry = null;
 			this.operatorComboBox.setVisible(false);
 		}
-
+		
 		this.containerFilterComponent.layoutFilters();
 	}
-
-
+	
+	
 	protected void operatorSelectionChanged()
 	{
 		final List<Object> lastValues = removeValueEditors();
-
+		
 		final Object value = this.operatorComboBox.getValue();
 		if(value instanceof FilterOperator)
 		{
@@ -276,15 +282,15 @@ public class FilterEditor
 		{
 			this.selectedOperator = null;
 		}
-
+		
 		this.containerFilterComponent.layoutFilters();
 	}
-
-
+	
+	
 	private List<Object> removeValueEditors()
 	{
 		final List<Object> lastValues = new ArrayList<>();
-
+		
 		if(this.valueEditors != null)
 		{
 			for(final FilterField<?> valueEditor : this.valueEditors)
@@ -292,20 +298,20 @@ public class FilterEditor
 				lastValues.add(valueEditor.getFilterValue());
 				valueEditor.removeFilterFieldChangeListener(this.filterFieldChangeListener);
 			}
-
+			
 			this.valueEditors = null;
 		}
-
+		
 		return lastValues;
 	}
-
-
+	
+	
 	protected FilterField<?>[] getValueEditors()
 	{
 		return this.valueEditors;
 	}
-
-
+	
+	
 	public Filter getFilter()
 	{
 		if(this.selectedPropertyEntry == null || this.selectedOperator == null
@@ -313,7 +319,7 @@ public class FilterEditor
 		{
 			return null;
 		}
-
+		
 		final FilterContext context = new FilterContext.Implementation(
 				this.containerFilterComponent,this.containerFilterComponent.getContainer(),
 				this.selectedPropertyEntry.getPropertyId());

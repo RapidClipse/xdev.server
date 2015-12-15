@@ -23,11 +23,12 @@ import java.util.Date;
 import java.util.List;
 
 import com.vaadin.ui.PopupDateField;
+import com.vaadin.ui.themes.ValoTheme;
 
 
 /**
  * @author XDEV Software
- *
+ * 		
  */
 public class DateFilterField extends PopupDateField implements FilterField<Date>
 {
@@ -38,6 +39,8 @@ public class DateFilterField extends PopupDateField implements FilterField<Date>
 	public DateFilterField()
 	{
 		setImmediate(true);
+		addStyleName(ValoTheme.DATEFIELD_SMALL);
+		addStyleName(XdevContainerFilterComponent.FILTER_EDITOR_CLASS);
 		addValueChangeListener(event -> fireFilterFieldChanged(getConvertedValue()));
 	}
 

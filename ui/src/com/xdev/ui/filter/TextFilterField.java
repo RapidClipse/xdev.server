@@ -24,11 +24,12 @@ import java.util.List;
 import com.vaadin.data.util.converter.Converter.ConversionException;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 
 
 /**
  * @author XDEV Software
- * 		
+ *
  */
 public class TextFilterField extends TextField implements FilterField<String>
 {
@@ -41,6 +42,8 @@ public class TextFilterField extends TextField implements FilterField<String>
 	{
 		setImmediate(true);
 		addTextChangeListener(this::textChanged);
+		addStyleName(ValoTheme.TEXTFIELD_SMALL);
+		addStyleName(XdevContainerFilterComponent.FILTER_EDITOR_CLASS);
 	}
 
 
@@ -48,11 +51,53 @@ public class TextFilterField extends TextField implements FilterField<String>
 	{
 		this();
 
-		this.converterType = converterType;
+		this.converterType = _converterType(converterType);
 
-		setConverter(converterType);
+		setConverter(this.converterType);
 		setNullRepresentation("");
 		addValueChangeListener(event -> fireFilterFieldChanged(getConvertedValue()));
+	}
+	
+	
+	private Class<?> _converterType(final Class<?> t)
+	{
+		if(t.isPrimitive())
+		{
+			if(t == int.class)
+			{
+				return Integer.class;
+			}
+			if(t == double.class)
+			{
+				return Double.class;
+			}
+			if(t == boolean.class)
+			{
+				return Boolean.class;
+			}
+			if(t == long.class)
+			{
+				return Long.class;
+			}
+			if(t == float.class)
+			{
+				return Float.class;
+			}
+			if(t == short.class)
+			{
+				return Short.class;
+			}
+			if(t == char.class)
+			{
+				return Character.class;
+			}
+			if(t == byte.class)
+			{
+				return Byte.class;
+			}
+		}
+		
+		return t;
 	}
 
 

@@ -22,11 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.themes.ValoTheme;
 
 
 /**
  * @author XDEV Software
- *
+ * 		
  */
 public class BooleanFilterField extends CheckBox implements FilterField<Boolean>
 {
@@ -38,6 +39,8 @@ public class BooleanFilterField extends CheckBox implements FilterField<Boolean>
 	{
 		setImmediate(true);
 		addValueChangeListener(event -> fireFilterFieldChanged(getConvertedValue()));
+		addStyleName(ValoTheme.CHECKBOX_SMALL);
+		addStyleName(XdevContainerFilterComponent.FILTER_EDITOR_CLASS);
 	}
 	
 	

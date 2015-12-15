@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.vaadin.ui.themes.ValoTheme;
 import com.xdev.ui.entitycomponent.XdevBeanItemContainer;
 import com.xdev.ui.entitycomponent.combobox.XdevComboBox;
 import com.xdev.ui.paging.XdevEntityLazyQueryContainer;
@@ -30,7 +31,7 @@ import com.xdev.ui.paging.XdevEntityLazyQueryContainer;
 
 /**
  * @author XDEV Software
- *
+ * 		
  */
 public class ChoiceFilterField<T> extends XdevComboBox<T> implements FilterField<Object>
 {
@@ -44,6 +45,8 @@ public class ChoiceFilterField<T> extends XdevComboBox<T> implements FilterField
 		super();
 		
 		setImmediate(true);
+		addStyleName(ValoTheme.COMBOBOX_SMALL);
+		addStyleName(XdevContainerFilterComponent.FILTER_EDITOR_CLASS);
 		
 		final Filterable container = context.getContainer();
 		if(container instanceof XdevEntityLazyQueryContainer)

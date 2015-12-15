@@ -47,27 +47,33 @@ import com.xdev.util.HibernateMetaDataUtils;
 
 /**
  * @author XDEV Software
- *
+ *		
  */
 public class XdevContainerFilterComponent extends CustomComponent implements FilterSettings
 {
+	public final static String			FILTER_ADD_BUTTON_CLASS		= "x-containerfilter-add-button";
+	public final static String			FILTER_REMOVE_BUTTON_CLASS	= "x-containerfilter-remove-button";
+	public final static String			FILTER_SEARCHFIELD_CLASS	= "x-containerfilter-searchfield";
+	public final static String			FILTER_COMBOBOX_CLASS		= "x-containerfilter-combobox";
+	public final static String			FILTER_EDITOR_CLASS			= "x-containerfilter-editor";
+
 	private final VerticalLayout		rootLayout;
 	private final TextFilterField		searchTextField;
 	private final Button				addFilterButton;
 	private final XdevGridLayout		filterLayout;
 
 	private Container.Filterable		container;
-	private Collection<?>				filterableProperties	= Collections.emptyList();
-	private Collection<?>				searchableProperties	= Collections.emptyList();
+	private Collection<?>				filterableProperties		= Collections.emptyList();
+	private Collection<?>				searchableProperties		= Collections.emptyList();
 
-	private SearchFilterGenerator		searchFilterGenerator	= new SearchFilterGenerator.Default();
+	private SearchFilterGenerator		searchFilterGenerator		= new SearchFilterGenerator.Default();
 
-	private boolean						caseSensitive			= false;
-	private char						wildcard				= '*';
+	private boolean						caseSensitive				= false;
+	private char						wildcard					= '*';
 
-	private String						searchText				= "";
+	private String						searchText					= "";
 
-	private final List<FilterEditor>	filterEditors			= new ArrayList<>();
+	private final List<FilterEditor>	filterEditors				= new ArrayList<>();
 
 
 	/**
@@ -116,6 +122,7 @@ public class XdevContainerFilterComponent extends CustomComponent implements Fil
 	protected TextFilterField createSearchTextField()
 	{
 		final TextFilterField searchTextField = new TextFilterField();
+		searchTextField.addStyleName(FILTER_SEARCHFIELD_CLASS);
 		return searchTextField;
 	}
 
@@ -129,8 +136,9 @@ public class XdevContainerFilterComponent extends CustomComponent implements Fil
 	protected Button createAddFilterButton()
 	{
 		final Button addFilterButton = new Button();
-		addFilterButton.setIcon(FontAwesome.PLUS_SQUARE);
-		addFilterButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+		addFilterButton.setIcon(FontAwesome.PLUS);
+		addFilterButton.addStyleName(ValoTheme.BUTTON_SMALL);
+		addFilterButton.addStyleName(FILTER_ADD_BUTTON_CLASS);
 		addFilterButton.setDescription(
 				StringResourceUtils.getResourceString("ContainerFilterComponent.addFilter",this));
 		return addFilterButton;
@@ -207,6 +215,18 @@ public class XdevContainerFilterComponent extends CustomComponent implements Fil
 	public SearchFilterGenerator getSearchFilterGenerator()
 	{
 		return this.searchFilterGenerator;
+	}
+
+
+	public void setFilterEnabled(final boolean enabled)
+	{
+		this.addFilterButton.setVisible(enabled);
+	}
+
+
+	public boolean isFilterEnabled()
+	{
+		return this.addFilterButton.isVisible();
 	}
 
 
@@ -405,7 +425,7 @@ public class XdevContainerFilterComponent extends CustomComponent implements Fil
 					this.filterLayout.addComponent(hLayout,2,row);
 				}
 			}
-			
+
 			row++;
 		}
 

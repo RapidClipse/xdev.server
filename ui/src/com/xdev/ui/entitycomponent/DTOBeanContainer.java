@@ -22,16 +22,16 @@ import com.vaadin.data.Container.Filterable;
 
 
 /**
- * @author Julian Will
- * 		
+ * @author XDEV Software (JW)
+ *
  */
 public interface DTOBeanContainer extends Filterable
 {
 	public void preloadRelevantData();
-
-
+	
+	
 	public void preloadRelevantData(Object... propertyIds);
-
-
-	public void preloadRelevantData(Object itemID, Object... propertyIds);
+	
+	
+	public void preloadRelevantItemData(Object itemID, Object... propertyIds);
 }

@@ -36,11 +36,14 @@ import com.xdev.res.StringResourceUtils;
 
 /**
  * @author XDEV Software
- * 		
+ *
  */
 public interface CaptionResolver
 {
 	public String resolveCaption(Object element, Locale locale);
+	
+	
+	public String resolveCaption(Object element, String captionValue, Locale locale);
 	
 	
 	
@@ -50,7 +53,7 @@ public interface CaptionResolver
 		public String resolveCaption(final Object element, final Locale locale)
 		{
 			final Caption caption = getCaptionAnnotation(element);
-			String value = caption != null ? caption.value() : null;
+			final String value = caption != null ? caption.value() : null;
 			if(value == null || value.length() == 0)
 			{
 				if(element instanceof Class)
@@ -61,7 +64,7 @@ public interface CaptionResolver
 				{
 					return ((Member)element).getName();
 				}
-
+				
 				// avoid stack overflow
 				if(!isCallFromToString())
 				{
@@ -71,11 +74,16 @@ public interface CaptionResolver
 				return element.getClass().getName() + "@" + Integer.toHexString(element.hashCode());
 			}
 			
-			value = StringResourceUtils.localizeString(value,locale,element);
-			
-			value = format(value,element);
-			
-			return value;
+			return resolveCaption(element,value,locale);
+		}
+		
+		
+		@Override
+		public String resolveCaption(final Object element, final String captionValue,
+				final Locale locale)
+		{
+			final String caption = StringResourceUtils.localizeString(captionValue,locale,element);
+			return format(caption,element);
 		}
 		
 		
@@ -145,6 +153,13 @@ public interface CaptionResolver
 			if(element instanceof Member)
 			{
 				return parameter -> parameter;
+			}
+			
+			final Class<?> clazz = element.getClass();
+			if(HibernateMetaDataUtils.isManaged(clazz))
+			{
+				return parameter -> String
+						.valueOf(HibernateMetaDataUtils.resolveAttributeValue(element,parameter));
 			}
 			
 			return new BeanInfoParameterProvider(element);

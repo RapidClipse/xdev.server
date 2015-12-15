@@ -22,10 +22,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.hibernate.mapping.Collection;
@@ -47,7 +49,7 @@ public class HibernateMetaDataUtils
 		 * from a type like relation, they are independently inherited from
 		 * value...
 		 */
-
+		
 		final OneToMany oneToMany = getOneToMany(value);
 		if(oneToMany != null)
 		{
@@ -58,17 +60,17 @@ public class HibernateMetaDataUtils
 			final OneToOne oneToOne = (OneToOne)value;
 			return oneToOne.getReferencedEntityName();
 		}
-
+		
 		final ManyToOne manyToOne = getManyToOne(value);
 		if(manyToOne != null)
 		{
 			return manyToOne.getReferencedEntityName();
 		}
-
+		
 		return null;
 	}
-
-
+	
+	
 	private static OneToMany getOneToMany(Value value)
 	{
 		// in case of wrapping because bidirectional
@@ -82,8 +84,8 @@ public class HibernateMetaDataUtils
 		}
 		return null;
 	}
-
-
+	
+	
 	private static ManyToOne getManyToOne(Value value)
 	{
 		// in case of wrapping because bidirectional
@@ -97,8 +99,8 @@ public class HibernateMetaDataUtils
 		}
 		return null;
 	}
-
-
+	
+	
 	public static Attribute<?, ?> resolveAttribute(Class<?> entityClass, final String propertyPath)
 	{
 		final EntityManager entityManager = EntityManagerUtils.getEntityManager();
@@ -106,14 +108,14 @@ public class HibernateMetaDataUtils
 		{
 			return null;
 		}
-
+		
 		final Metamodel metamodel = entityManager.getMetamodel();
-		EntityType<?> entityType = metamodel.entity(entityClass);
+		ManagedType<?> entityType = metamodel.managedType(entityClass);
 		if(entityType == null)
 		{
 			return null;
 		}
-
+		
 		final String[] parts = propertyPath.split("\\.");
 		for(int i = 0; i < parts.length - 1; i++)
 		{
@@ -128,68 +130,68 @@ public class HibernateMetaDataUtils
 			{
 				return null;
 			}
-			entityType = metamodel.entity(entityClass);
+			entityType = metamodel.managedType(entityClass);
 			if(entityType == null)
 			{
 				return null;
 			}
 		}
-
+		
 		return entityType.getAttribute(parts[parts.length - 1]);
 	}
 	
 	
-	public static Object resolveAttributeValue(Object entity, final String propertyPath)
+	public static Object resolveAttributeValue(Object managedObject, final String propertyPath)
 	{
 		final EntityManager entityManager = EntityManagerUtils.getEntityManager();
-		Object propertyValue = null;
 		if(entityManager == null)
 		{
 			return null;
 		}
-
+		
+		Object propertyValue = null;
+		
 		final Metamodel metamodel = entityManager.getMetamodel();
-		EntityType<?> entityType = null;
-
+		ManagedType<?> managedType = null;
+		
 		final String[] parts = propertyPath.split("\\.");
 		for(int i = 0; i < parts.length; i++)
 		{
-			Class<?> entityClass = entity.getClass();
-			entityType = metamodel.entity(entity.getClass());
-			if(entityType == null)
+			Class<?> managedClass = managedObject.getClass();
+			managedType = metamodel.managedType(managedObject.getClass());
+			if(managedType == null)
 			{
 				return null;
 			}
-
+			
 			final String name = parts[i];
-			final Attribute<?, ?> attribute = entityType.getAttribute(name);
+			final Attribute<?, ?> attribute = managedType.getAttribute(name);
 			if(attribute == null)
 			{
 				return null;
 			}
-			entityClass = attribute.getJavaType();
-			if(entityClass == null)
+			managedClass = attribute.getJavaType();
+			if(managedClass == null)
 			{
 				return null;
 			}
-			if(entityClass.getAnnotation(Entity.class) != null)
+			if(isManaged(managedClass))
 			{
-				entityType = metamodel.entity(entityClass);
-				if(entityType == null)
+				managedType = metamodel.managedType(managedClass);
+				if(managedType == null)
 				{
 					return null;
 				}
 			}
-
+			
 			if(attribute.getJavaMember() instanceof Field)
 			{
 				try
 				{
-					propertyValue = ((Field)attribute.getJavaMember()).get(entity);
-					if(propertyValue != null
-							&& propertyValue.getClass().getAnnotation(Entity.class) != null)
+					propertyValue = ((Field)attribute.getJavaMember()).get(managedObject);
+					if(propertyValue != null && isManaged(propertyValue.getClass()))
 					{
-						entity = propertyValue;
+						managedObject = propertyValue;
 					}
 				}
 				catch(IllegalArgumentException | IllegalAccessException e)
@@ -202,11 +204,10 @@ public class HibernateMetaDataUtils
 				// invoke getter
 				try
 				{
-					propertyValue = ((Method)attribute.getJavaMember()).invoke(entity);
-					if(propertyValue != null
-							&& propertyValue.getClass().getAnnotation(Entity.class) != null)
+					propertyValue = ((Method)attribute.getJavaMember()).invoke(managedObject);
+					if(propertyValue != null && isManaged(propertyValue.getClass()))
 					{
-						entity = propertyValue;
+						managedObject = propertyValue;
 					}
 				}
 				catch(IllegalAccessException | IllegalArgumentException
@@ -216,8 +217,15 @@ public class HibernateMetaDataUtils
 				}
 			}
 		}
-
-		// return entityType.getAttribute(parts[parts.length - 1]);
+		
 		return propertyValue;
+	}
+	
+	
+	public static boolean isManaged(final Class<?> clazz)
+	{
+		return clazz.getAnnotation(Entity.class) != null
+				|| clazz.getAnnotation(Embeddable.class) != null
+				|| clazz.getAnnotation(MappedSuperclass.class) != null;
 	}
 }

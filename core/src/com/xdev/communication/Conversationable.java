@@ -18,35 +18,37 @@
 package com.xdev.communication;
 
 
+import java.io.Serializable;
+
 import javax.persistence.EntityManager;
 
 
 /**
  * @author XDEV Software
- *
+ *		
  */
 public interface Conversationable
 {
-
+	
 	public void setEntityManager(EntityManager em);
-
-
+	
+	
 	public EntityManager getEntityManager();
-
-
+	
+	
 	public void setConversation(Conversation conversation);
-
-
+	
+	
 	public Conversation getConversation();
-
-
-
-	public class Implementation implements Conversationable
+	
+	
+	
+	public class Implementation implements Conversationable, Serializable
 	{
 		private EntityManager	em;
 		private Conversation	conversation;
-
-
+								
+								
 		/*
 		 * (non-Javadoc)
 		 *
@@ -59,8 +61,8 @@ public interface Conversationable
 		{
 			this.em = em;
 		}
-
-
+		
+		
 		/*
 		 * (non-Javadoc)
 		 *
@@ -73,8 +75,8 @@ public interface Conversationable
 		{
 			return this.em;
 		}
-
-
+		
+		
 		/*
 		 * (non-Javadoc)
 		 *
@@ -102,8 +104,8 @@ public interface Conversationable
 				this.conversation = conversation;
 			}
 		}
-
-
+		
+		
 		/*
 		 * (non-Javadoc)
 		 *
@@ -116,7 +118,7 @@ public interface Conversationable
 		{
 			return this.conversation;
 		}
-
+		
 	}
-
+	
 }

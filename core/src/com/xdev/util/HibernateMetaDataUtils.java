@@ -18,25 +18,11 @@
 package com.xdev.util;
 
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.ManagedType;
-import javax.persistence.metamodel.Metamodel;
-
 import org.hibernate.mapping.Collection;
 import org.hibernate.mapping.ManyToOne;
 import org.hibernate.mapping.OneToMany;
 import org.hibernate.mapping.OneToOne;
 import org.hibernate.mapping.Value;
-
-import com.xdev.communication.EntityManagerUtils;
 
 
 public class HibernateMetaDataUtils
@@ -98,134 +84,5 @@ public class HibernateMetaDataUtils
 			return (ManyToOne)value;
 		}
 		return null;
-	}
-	
-	
-	public static Attribute<?, ?> resolveAttribute(Class<?> entityClass, final String propertyPath)
-	{
-		final EntityManager entityManager = EntityManagerUtils.getEntityManager();
-		if(entityManager == null)
-		{
-			return null;
-		}
-		
-		final Metamodel metamodel = entityManager.getMetamodel();
-		ManagedType<?> entityType = metamodel.managedType(entityClass);
-		if(entityType == null)
-		{
-			return null;
-		}
-		
-		final String[] parts = propertyPath.split("\\.");
-		for(int i = 0; i < parts.length - 1; i++)
-		{
-			final String name = parts[i];
-			final Attribute<?, ?> attribute = entityType.getAttribute(name);
-			if(attribute == null)
-			{
-				return null;
-			}
-			entityClass = attribute.getJavaType();
-			if(entityClass == null)
-			{
-				return null;
-			}
-			entityType = metamodel.managedType(entityClass);
-			if(entityType == null)
-			{
-				return null;
-			}
-		}
-		
-		return entityType.getAttribute(parts[parts.length - 1]);
-	}
-	
-	
-	public static Object resolveAttributeValue(Object managedObject, final String propertyPath)
-	{
-		final EntityManager entityManager = EntityManagerUtils.getEntityManager();
-		if(entityManager == null)
-		{
-			return null;
-		}
-		
-		Object propertyValue = null;
-		
-		final Metamodel metamodel = entityManager.getMetamodel();
-		ManagedType<?> managedType = null;
-		
-		final String[] parts = propertyPath.split("\\.");
-		for(int i = 0; i < parts.length; i++)
-		{
-			Class<?> managedClass = managedObject.getClass();
-			managedType = metamodel.managedType(managedObject.getClass());
-			if(managedType == null)
-			{
-				return null;
-			}
-			
-			final String name = parts[i];
-			final Attribute<?, ?> attribute = managedType.getAttribute(name);
-			if(attribute == null)
-			{
-				return null;
-			}
-			managedClass = attribute.getJavaType();
-			if(managedClass == null)
-			{
-				return null;
-			}
-			if(isManaged(managedClass))
-			{
-				managedType = metamodel.managedType(managedClass);
-				if(managedType == null)
-				{
-					return null;
-				}
-			}
-			
-			if(attribute.getJavaMember() instanceof Field)
-			{
-				try
-				{
-					propertyValue = ((Field)attribute.getJavaMember()).get(managedObject);
-					if(propertyValue != null && isManaged(propertyValue.getClass()))
-					{
-						managedObject = propertyValue;
-					}
-				}
-				catch(IllegalArgumentException | IllegalAccessException e)
-				{
-					throw new RuntimeException(e);
-				}
-			}
-			else if(attribute.getJavaMember() instanceof Method)
-			{
-				// invoke getter
-				try
-				{
-					propertyValue = ((Method)attribute.getJavaMember()).invoke(managedObject);
-					if(propertyValue != null && isManaged(propertyValue.getClass()))
-					{
-						managedObject = propertyValue;
-					}
-				}
-				catch(IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException e)
-				{
-					throw new RuntimeException(e);
-				}
-			}
-		}
-		
-		return propertyValue;
-	}
-	
-	
-	public static boolean isManaged(final Class<?> clazz)
-	{
-		return clazz.getAnnotation(Entity.class) != null
-				|| clazz.getAnnotation(Embeddable.class) != null
-				|| clazz.getAnnotation(MappedSuperclass.class) != null;
 	}
 }

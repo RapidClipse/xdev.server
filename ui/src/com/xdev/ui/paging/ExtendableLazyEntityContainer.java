@@ -19,14 +19,11 @@ package com.xdev.ui.paging;
 
 
 import java.util.Collection;
-import java.util.Iterator;
+
+import org.vaadin.addons.lazyquerycontainer.Query;
 
 import com.vaadin.data.util.BeanItem;
-import com.xdev.ui.entitycomponent.DTOBeanContainer;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
-import com.xdev.util.EntityIDResolver;
-import com.xdev.util.HibernateEntityIDResolver;
-import com.xdev.util.HibernateMetaDataUtils;
 
 
 /**
@@ -39,13 +36,13 @@ import com.xdev.util.HibernateMetaDataUtils;
  */
 // copied from EntityContainer to become extendable
 public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContainer
-		implements XdevBeanContainer<T>, DTOBeanContainer
+		implements XdevBeanContainer<T>
 {
-	private static final long		serialVersionUID	= 1L;
-	private final Class<T>			entityType;
-	private final EntityIDResolver	idResolver;
-
-
+	private static final long	serialVersionUID	= 1L;
+	private final Class<T>		entityType;
+	private Object[]			requiredProperties;
+								
+								
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
 	 *
@@ -70,7 +67,7 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 				detachedEntities,false,entityClass,batchSize,idPropertyId),
 				new RequisitioningEntityQueryFactory<T>());
 		this.entityType = entityClass;
-		this.idResolver = new HibernateEntityIDResolver();
+
 	}
 
 
@@ -108,7 +105,6 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 				defaultSortPropertyAscendingStates);
 
 		this.entityType = entityClass;
-		this.idResolver = new HibernateEntityIDResolver();
 	}
 
 
@@ -198,82 +194,39 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	@Override
 	public BeanItem<T> getItem(final Object itemId)
 	{
-		final BeanItem<T> item = (BeanItem<T>)super.getItem(itemId);
-		if(item != null)
-		{
-			preloadRelevantEntityData(item.getBean(),this.getContainerPropertyIds().toArray());
-		}
-		return item;
+		return (BeanItem<T>)super.getItem(itemId);
 	}
 
 
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see com.xdev.ui.entitycomponent.DTOBeanContainer#preloadRelevantData()
+	 * @see
+	 * com.xdev.ui.entitycomponent.XdevBeanContainer#setRequiredProperties(java.
+	 * lang.Object[])
 	 */
 	@Override
-	public void preloadRelevantData()
+	public void setRequiredProperties(final Object... propertyIDs)
 	{
-		this.preloadRelevantData(this.getContainerPropertyIds().toArray());
-	}
+		this.requiredProperties = propertyIDs;
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void preloadRelevantData(final Object... propertyIds)
-	{
-		final Iterator<?> it = this.getItemIds().iterator();
-		while(it.hasNext())
+		final Query query = getQueryView().getQuery();
+		if(query instanceof XdevEntityQuery)
 		{
-			final Object itemId = it.next();
-			preloadRelevantItemData(itemId,propertyIds);
+			((XdevEntityQuery)query).setRequiredProperties(propertyIDs);
 		}
 	}
 
 
-	/**
-	 * {@inheritDoc}
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.xdev.ui.entitycomponent.XdevBeanContainer#getRequiredProperties()
 	 */
 	@Override
-	public void preloadRelevantItemData(final Object itemID, final Object... propertyIds)
+	public Object[] getRequiredProperties()
 	{
-		final T entity = this.getItem(itemID).getBean();
-		preloadRelevantEntityData(entity,propertyIds);
-	}
-
-
-	protected void preloadRelevantEntityData(final T entity, final Object... propertyIds)
-	{
-		// TODO if is lazy property
-		for(final Object propertyID : propertyIds)
-		{
-			final Object propertyValue = HibernateMetaDataUtils.resolveAttributeValue(entity,
-					propertyID.toString());
-			if(propertyValue != null)
-			{
-				// force lazy loading
-				if(propertyValue instanceof Collection<?>)
-				{
-					final Collection<?> collection = (Collection<?>)propertyValue;
-					for(final Object object : collection)
-					{
-						if(HibernateMetaDataUtils.isManaged(object.getClass()))
-						{
-							// TODO check - really required to force lazy
-							// loading?
-							this.idResolver.getEntityIDPropertyValue(object);
-						}
-					}
-				}
-				else if(HibernateMetaDataUtils.isManaged(propertyValue.getClass()))
-				{
-					// TODO check - really required to force lazy loading?
-					this.idResolver.getEntityIDPropertyValue(propertyValue);
-				}
-			}
-		}
+		return this.requiredProperties;
 	}
 }

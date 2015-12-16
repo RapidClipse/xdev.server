@@ -41,8 +41,10 @@ import com.vaadin.data.util.filter.Compare.LessOrEqual;
  * The reference and actual values must implement {@link Comparable} and the
  * class of the actual property value must be assignable from the class of the
  * reference value.
+ * <p>
  *
- * @since 6.6
+ * @noapi <strong>For internal use only. This class is subject to change in the
+ *        future.</strong>
  */
 public abstract class CompareBIDirect implements Filter
 {

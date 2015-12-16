@@ -19,14 +19,13 @@ package com.xdev.ui.entitycomponent;
 
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.xdev.util.DTOUtils;
 import com.xdev.util.EntityIDResolver;
 import com.xdev.util.HibernateEntityIDResolver;
-import com.xdev.util.HibernateMetaDataUtils;
 
 
 /**
@@ -34,10 +33,10 @@ import com.xdev.util.HibernateMetaDataUtils;
  * 		
  */
 public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
-		implements XdevBeanContainer<BEANTYPE>, DTOBeanContainer
+		implements XdevBeanContainer<BEANTYPE>
 {
-
-	private final EntityIDResolver idResolver;
+	private Object[]			requiredProperties;
+	private EntityIDResolver	idResolver;
 
 
 	/**
@@ -47,7 +46,6 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	public XdevBeanItemContainer(final Class<? super BEANTYPE> type) throws IllegalArgumentException
 	{
 		super(type);
-		this.idResolver = new HibernateEntityIDResolver();
 	}
 
 
@@ -78,6 +76,38 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	/*
 	 * (non-Javadoc)
 	 *
+	 * @see
+	 * com.xdev.ui.entitycomponent.XdevBeanContainer#setRequiredProperties(java.
+	 * lang.Object[])
+	 */
+	@Override
+	public void setRequiredProperties(final Object... propertyIDs)
+	{
+		this.requiredProperties = propertyIDs;
+
+		for(final BEANTYPE bean : getAllItemIds())
+		{
+			preload(bean);
+		}
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.xdev.ui.entitycomponent.XdevBeanContainer#getRequiredProperties()
+	 */
+	@Override
+	public Object[] getRequiredProperties()
+	{
+		return this.requiredProperties;
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see com.xdev.ui.entitycomponent.XdevBeanContainer#removeAll(java.util.
 	 * Collection)
 	 */
@@ -89,8 +119,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 			this.removeItem(bean);
 		}
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -101,8 +131,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		return super.getAllItemIds();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -124,7 +154,14 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	public void addAll(final Collection<? extends BEANTYPE> collection)
 	{
 		super.addAll(collection);
-		this.preloadRelevantData();
+
+		if(!collection.isEmpty())
+		{
+			for(final BEANTYPE bean : collection)
+			{
+				preload(bean);
+			}
+		}
 	}
 
 
@@ -136,7 +173,7 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		final BeanItem<BEANTYPE> item = super.addBean(bean);
 		// addBean id is bean itself
-		preloadRelevantItemData(item,this.getContainerPropertyIds().toArray());
+		preload(item.getBean());
 		return item;
 	}
 
@@ -148,78 +185,29 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	public BeanItem<BEANTYPE> addItem(final Object itemId)
 	{
 		final BeanItem<BEANTYPE> item = super.addItem(itemId);
-		preloadRelevantItemData(itemId,this.getContainerPropertyIds().toArray());
+		preload(item.getBean());
 		return item;
 	}
 
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.xdev.ui.entitycomponent.DTOBeanContainer#preloadRelevantData()
-	 */
-	@Override
-	public void preloadRelevantData()
+	protected void preload(final BEANTYPE bean)
 	{
-		this.preloadRelevantData(this.getContainerPropertyIds().toArray());
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void preloadRelevantData(final Object... propertyIds)
-	{
-		final Iterator<?> it = this.getItemIds().iterator();
-		while(it.hasNext())
+		if(this.requiredProperties == null || this.requiredProperties.length == 0)
 		{
-			final Object itemId = it.next();
-			preloadRelevantItemData(itemId,propertyIds);
+			return;
 		}
-	}
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void preloadRelevantItemData(final Object itemID, final Object... propertyIds)
-	{
-		final BEANTYPE bean = this.getItem(itemID).getBean();
-		preloadRelevantBeanData(bean,propertyIds);
-	}
-
-
-	protected void preloadRelevantBeanData(final BEANTYPE bean, final Object... propertyIds)
-	{
-		// TODO if is lazy property
-		for(final Object propertyID : propertyIds)
+		final String[] properties = new String[this.requiredProperties.length];
+		for(int i = 0; i < properties.length; i++)
 		{
-			final Object propertyValue = HibernateMetaDataUtils.resolveAttributeValue(bean,
-					propertyID.toString());
-			if(propertyValue != null)
-			{
-				// force lazy loading
-				if(propertyValue instanceof Collection<?>)
-				{
-					final Collection<?> collection = (Collection<?>)propertyValue;
-					for(final Object object : collection)
-					{
-						if(HibernateMetaDataUtils.isManaged(object.getClass()))
-						{
-							// TODO check - really required to force lazy
-							// loading?
-							this.idResolver.getEntityIDPropertyValue(object);
-						}
-					}
-				}
-				else if(HibernateMetaDataUtils.isManaged(propertyValue.getClass()))
-				{
-					// TODO check - really required to force lazy loading?
-					this.idResolver.getEntityIDPropertyValue(propertyValue);
-				}
-			}
+			properties[i] = this.requiredProperties[i].toString();
 		}
+
+		if(this.idResolver == null)
+		{
+			this.idResolver = new HibernateEntityIDResolver();
+		}
+
+		DTOUtils.preload(bean,this.idResolver,properties);
 	}
 }

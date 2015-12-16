@@ -26,7 +26,6 @@ import com.vaadin.data.util.BeanItem;
 
 public interface XdevBeanContainer<T> extends Container.Filterable
 {
-	
 	public BeanItem<T> addBean(final T bean) throws UnsupportedOperationException;
 	
 	
@@ -50,4 +49,10 @@ public interface XdevBeanContainer<T> extends Container.Filterable
 	
 	
 	public Class<? super T> getBeanType();
+	
+	
+	public void setRequiredProperties(Object... propertyIDs);
+
+
+	public Object[] getRequiredProperties();
 }

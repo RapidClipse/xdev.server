@@ -18,6 +18,8 @@
 package com.xdev.communication;
 
 
+import java.util.Map;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -32,61 +34,37 @@ import com.xdev.db.connection.EntityManagerFactoryProvider;
 /**
  *
  * @author XDEV Software (JW)
- *		
+ *
  */
 public class EntityManagerUtils
 {
-	public final static String	ENTITY_MANAGER_ATTRIBUTE	= "EntityManager";
-	public final static String	CACHE_ENABLED				= "cacheEnabled";
-	
-	private static EntityManagerFactory emf;
-	
-	
+	public final static String			ENTITY_MANAGER_ATTRIBUTE	= "EntityManager";
+
+	private static EntityManagerFactory	emf;
+
+
 	public static EntityManagerFactory getEntityManagerFactory()
 	{
 		return emf;
 	}
-	
+
 	private static EntityManagerFactoryProvider hibernateUtil;
-	
-	
+
+
 	public static EntityManagerFactory initializeHibernateFactory(
 			final EntityManagerFactoryProvider hibernateUtil)
 	{
 		EntityManagerUtils.hibernateUtil = hibernateUtil;
 		return emf = hibernateUtil.getEntityManagerFactory();
 	}
-	
-	
+
+
 	public static EntityManagerFactoryProvider getEntityManagerFactoryProvider()
 	{
 		return hibernateUtil;
 	}
-	
-	
-	public static boolean isCacheEnabled()
-	{
-		if(isSessionAccessible())
-		{
-			final Object cacheEnabled = VaadinSession.getCurrent().getAttribute(CACHE_ENABLED);
-			if(cacheEnabled != null)
-			{
-				return (boolean)cacheEnabled;
-			}
-		}
-		return false;
-	}
-	
-	
-	public static void setCacheEnabled(final boolean cacheEnabled)
-	{
-		if(isSessionAccessible())
-		{
-			VaadinSession.getCurrent().setAttribute(CACHE_ENABLED,cacheEnabled);
-		}
-	}
-	
-	
+
+
 	private static boolean isSessionAccessible()
 	{
 		if(VaadinSession.getCurrent() != null)
@@ -98,8 +76,8 @@ public class EntityManagerUtils
 		}
 		return false;
 	}
-	
-	
+
+
 	public static EntityManager getEntityManager()
 	{
 		/*
@@ -114,13 +92,13 @@ public class EntityManagerUtils
 			{
 				return conversationable.getEntityManager();
 			}
-			
+
 		}
 		return null;
-		
+
 	}
-	
-	
+
+
 	public static Conversation getConversation()
 	{
 		/*
@@ -138,8 +116,8 @@ public class EntityManagerUtils
 		}
 		return null;
 	}
-	
-	
+
+
 	public static void closeEntityManager()
 	{
 		final EntityManager entityManager = getEntityManager();
@@ -148,14 +126,14 @@ public class EntityManagerUtils
 			entityManager.close();
 		}
 	}
-	
-	
+
+
 	public static void closeEntityManagerFactory()
 	{
 		emf.close();
 	}
-	
-	
+
+
 	public static void beginTransaction()
 	{
 		final EntityManager em = getEntityManager();
@@ -164,8 +142,8 @@ public class EntityManagerUtils
 			em.getTransaction().begin();
 		}
 	}
-	
-	
+
+
 	public static void rollback()
 	{
 		final EntityManager em = getEntityManager();
@@ -174,8 +152,8 @@ public class EntityManagerUtils
 			em.getTransaction().rollback();
 		}
 	}
-	
-	
+
+
 	public static void commit()
 	{
 		final EntityManager em = getEntityManager();
@@ -184,8 +162,8 @@ public class EntityManagerUtils
 			em.getTransaction().commit();
 		}
 	}
-	
-	
+
+
 	public static EntityTransaction getTransaction()
 	{
 		final EntityManager em = getEntityManager();
@@ -195,8 +173,8 @@ public class EntityManagerUtils
 		}
 		return null;
 	}
-	
-	
+
+
 	public static <T> CriteriaQuery<T> getCriteriaQuery(final Class<T> type)
 	{
 		final EntityManager em = getEntityManager();
@@ -207,5 +185,14 @@ public class EntityManagerUtils
 			return cq;
 		}
 		return null;
+	}
+
+
+	public static boolean isQueryCacheEnabled(final EntityManager entityManager)
+	{
+		final Map<String, Object> properties = entityManager.getEntityManagerFactory()
+				.getProperties();
+		final Object queryCacheProperty = properties.get("hibernate.cache.use_query_cache");
+		return "true".equals(queryCacheProperty);
 	}
 }

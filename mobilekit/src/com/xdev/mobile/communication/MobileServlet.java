@@ -41,18 +41,19 @@ import com.xdev.mobile.service.MobileService;
 
 
 /**
- * Extended {@link XdevServlet} which adds support for hybrid apps.
+ * Servlet optimized for mobile clients. Also provides cordova and bridge
+ * scripts for hybrid apps.
  *
  * @author XDEV Software
- * 		
+ *
  */
 public class MobileServlet extends XdevServlet
 {
 	private static Logger		LOG	= Logger.getLogger(MobileServlet.class.getName());
-
+	
 	private MobileConfiguration	mobileConfiguration;
-
-
+	
+	
 	@Override
 	protected void servletInitialized() throws ServletException
 	{
@@ -111,8 +112,8 @@ public class MobileServlet extends XdevServlet
 									}
 									else
 									{
-										throw new IllegalArgumentException(
-												className + " is not a MobileService");
+										throw new IllegalArgumentException(className
+												+ " is not a MobileService");
 									}
 								}
 								catch(final Exception e)
@@ -172,6 +173,12 @@ public class MobileServlet extends XdevServlet
 						response.getDocument().body().prependElement("script")
 								.attr("type","text/javascript")
 								.attr("src","VAADIN/cordova/android/cordova.js");
+					}
+					else if(clientInfo.isIOS())
+					{
+						response.getDocument().body().prependElement("script")
+								.attr("type","text/javascript")
+								.attr("src","VAADIN/cordova/ios/cordova.js");
 					}
 				}
 			}

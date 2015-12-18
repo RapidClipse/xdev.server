@@ -163,7 +163,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 				return -1;
 			}
 
-			final CriteriaBuilder cb = em().getCriteriaBuilder();
+			final EntityManager entityManager = em();
+			final CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			final CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 			final Root<E> root = cq.from(this.entityClass);
 
@@ -173,7 +174,11 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 
 			// setOrderClause(cb, cq, root);
 
-			final javax.persistence.Query query = em().createQuery(cq);
+			final javax.persistence.Query query = entityManager.createQuery(cq);
+			if(EntityManagerUtils.isQueryCacheEnabled(entityManager))
+			{
+				query.setHint("org.hibernate.cacheable",true);
+			}
 
 			this.querySize = ((Number)query.getSingleResult()).intValue();
 
@@ -207,9 +212,12 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		setOrderClause(cb,cq,root);
 
 		final javax.persistence.TypedQuery<E> query = entityManager.createQuery(cq);
-
 		query.setFirstResult(startIndex);
 		query.setMaxResults(count);
+		if(EntityManagerUtils.isQueryCacheEnabled(entityManager))
+		{
+			query.setHint("org.hibernate.cacheable",true);
+		}
 
 		final List<?> entities = query.getResultList();
 		final List<Item> items = new ArrayList<Item>();
@@ -706,6 +714,10 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			setOrderClause(cb,cq,root);
 
 			final javax.persistence.TypedQuery<E> query = entityManager.createQuery(cq);
+			if(EntityManagerUtils.isQueryCacheEnabled(entityManager))
+			{
+				query.setHint("org.hibernate.cacheable",true);
+			}
 
 			final List<?> entities = query.getResultList();
 			for(final Object entity : entities)

@@ -33,16 +33,16 @@ import com.xdev.util.HibernateEntityIDResolver;
 
 
 /**
- * @author XDEV Software
- * 		
+ * @author XDEV Software Julian Will
+ *
  */
 public class URLParameterRegistry
 {
 	private final Map<URLKeyDescriptor, URLParameterRegistryValue>	internal;
 	private Set<EntityType<?>>										entities;
 	private HibernateEntityIDResolver								idResolver;
-
-
+	
+	
 	public Set<EntityType<?>> getEntities()
 	{
 		if(this.entities == null)
@@ -53,11 +53,11 @@ public class URLParameterRegistry
 				this.entities = entityManager.getMetamodel().getEntities();
 			}
 		}
-
+		
 		return this.entities;
 	}
-
-
+	
+	
 	public HibernateEntityIDResolver getIdResolver()
 	{
 		if(this.idResolver != null)
@@ -70,8 +70,8 @@ public class URLParameterRegistry
 			return this.idResolver;
 		}
 	}
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -80,8 +80,8 @@ public class URLParameterRegistry
 		super();
 		this.internal = new HashMap<>();
 	}
-
-
+	
+	
 	/*
 	 * Key muss aus propertyname+view bestehen damit sich view properties
 	 * gegenseitig nicht überschreiben können
@@ -111,29 +111,29 @@ public class URLParameterRegistry
 				return new URLParameterDescriptor(value.getClass(),parameterKey.getPropertyName());
 			}
 		}
-
+		
 		this.internal.put(parameterKey,new URLParameterRegistryValue(value.getClass(),value,null,
 				parameterKey.getPropertyName()));
 		return new URLParameterDescriptor(value.getClass(),parameterKey.getPropertyName());
 	}
-
-
+	
+	
 	public URLParameterRegistryValue get(final URLKeyDescriptor key)
 	{
 		return this.internal.get(key);
 	}
-
-
+	
+	
 	public URLParameterRegistryValue get(final String viewName, final String parameterName)
 	{
 		return this.internal.get(new URLKeyDescriptor(viewName,parameterName));
 	}
-
-
+	
+	
 	public Collection<URLParameterRegistryValue> getValues(final String viewName)
 	{
 		final Collection<URLParameterRegistryValue> valuesForView = new ArrayList<>();
-
+		
 		for(final URLKeyDescriptor key : this.internal.keySet())
 		{
 			if(key.getViewName().equals(viewName))
@@ -141,8 +141,8 @@ public class URLParameterRegistry
 				valuesForView.add(this.internal.get(key));
 			}
 		}
-
+		
 		return valuesForView;
 	}
-
+	
 }

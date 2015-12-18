@@ -27,9 +27,14 @@ import java.lang.annotation.Target;
 import com.googlecode.genericdao.dao.jpa.GenericDAO;
 
 
+/**
+ *
+ * @author XDEV Software Julian Will
+ *		
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DAO
 {
-	public Class<? extends GenericDAO<?, ? extends Serializable>> daoClass();
+	public Class<? extends GenericDAO<?, ? extends Serializable>>daoClass();
 }

@@ -36,28 +36,28 @@ import com.vaadin.server.VaadinSession;
 /**
  * Manages Session propagation.
  *
- * @author XDEV Software
- * 		
+ * @author XDEV Software Julian Will
+ *
  */
 public interface VaadinSessionStrategy
 {
 	public void handleRequest(VaadinRequest request, VaadinService service);
-
-
+	
+	
 	public void requestEnd(VaadinRequest request, VaadinService service);
-
-
-
+	
+	
+	
 	/**
 	 * Request / Response propagation to avoid session per operation anti
 	 * pattern.
 	 *
 	 * @author XDEV Software
-	 * 		
+	 *
 	 */
 	public class PerRequest implements VaadinSessionStrategy
 	{
-
+		
 		/*
 		 * (non-Javadoc)
 		 *
@@ -78,21 +78,21 @@ public interface VaadinSessionStrategy
 			{
 				throw new RuntimeException(e);
 			}
-
+			
 			final EntityManager manager = factory.createEntityManager();
-
+			
 			// instantiate conversationable wrapper with entity manager.
 			final Conversationable.Implementation conversationable = new Conversationable.Implementation();
 			conversationable.setEntityManager(manager);
-
+			
 			// Begin a database transaction, start the unit of work
 			manager.getTransaction().begin();
-
+			
 			// Add the EntityManager to the vaadin session
 			session.setAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE,conversationable);
 		}
-
-
+		
+		
 		/*
 		 * (non-Javadoc)
 		 *
@@ -133,7 +133,7 @@ public interface VaadinSessionStrategy
 				}
 				else
 				{
-
+					
 					if(em.getTransaction().isActive())
 					{
 						try
@@ -146,7 +146,7 @@ public interface VaadinSessionStrategy
 							em.getTransaction().rollback();
 						}
 					}
-
+					
 					try
 					{
 						EntityManagerUtils.closeEntityManager();
@@ -164,17 +164,17 @@ public interface VaadinSessionStrategy
 					}
 				}
 			}
-
+			
 		}
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 * 		
+	 *
 	 */
 	public class PerConversation implements VaadinSessionStrategy
 	{
@@ -194,8 +194,8 @@ public interface VaadinSessionStrategy
 				em.unwrap(Session.class).setFlushMode(FlushMode.MANUAL);
 			}
 		}
-
-
+		
+		
 		/*
 		 * (non-Javadoc)
 		 *
@@ -215,8 +215,8 @@ public interface VaadinSessionStrategy
 				em.getTransaction().begin();
 			}
 		}
-
-
+		
+		
 		@Override
 		public void requestEnd(final VaadinRequest request, final VaadinService service)
 		{
@@ -238,7 +238,7 @@ public interface VaadinSessionStrategy
 							em.getTransaction().rollback();
 						}
 					}
-
+					
 				}
 				else
 				{
@@ -263,14 +263,14 @@ public interface VaadinSessionStrategy
 			}
 		}
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 * 		
+	 *
 	 */
 	public class PerConversationPessimistic implements VaadinSessionStrategy
 	{
@@ -295,8 +295,8 @@ public interface VaadinSessionStrategy
 				em.getTransaction().begin();
 			}
 		}
-
-
+		
+		
 		/*
 		 * (non-Javadoc)
 		 *
@@ -315,8 +315,8 @@ public interface VaadinSessionStrategy
 				}
 			}
 		}
-
-
+		
+		
 		/*
 		 * (non-Javadoc)
 		 *
@@ -338,7 +338,7 @@ public interface VaadinSessionStrategy
 					 * commit, close
 					 */
 					em.flush();
-
+					
 					final EntityTransaction transaction = em.getTransaction();
 					if(transaction.isActive())
 					{
@@ -356,5 +356,5 @@ public interface VaadinSessionStrategy
 			}
 		}
 	}
-
+	
 }

@@ -17,27 +17,38 @@
 
 package com.xdev.db.connection;
 
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+
+/**
+ *
+ * @author XDEV Software Julian Will
+ *		
+ */
 public interface EntityManagerFactoryProvider
 {
 	public EntityManagerFactory getEntityManagerFactory();
 	
+	
+	
 	public class Implementation implements EntityManagerFactoryProvider
 	{
-		private final EntityManagerFactory	entityManagerFactory;
+		private final EntityManagerFactory entityManagerFactory;
 		
-		public Implementation(String persistenceUnit)
+		
+		public Implementation(final String persistenceUnit)
 		{
 			entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit);
 		}
-		
-		
+
+
+		@Override
 		public EntityManagerFactory getEntityManagerFactory()
 		{
 			return entityManagerFactory;
 		}
-		
+
 	}
 }

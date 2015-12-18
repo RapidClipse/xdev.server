@@ -22,8 +22,8 @@ import javax.persistence.LockModeType;
 
 
 /**
- * @author XDEV Software
- *
+ * @author XDEV Software Julian Will
+ * 		
  */
 public interface Conversation
 {

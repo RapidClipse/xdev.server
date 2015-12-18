@@ -22,8 +22,8 @@ import java.io.Serializable;
 
 
 /**
- * @author XDEV Software
- *		
+ * @author XDEV Software Julian Will
+ * 		
  */
 public class URLParameterRegistryValue
 {
@@ -31,17 +31,17 @@ public class URLParameterRegistryValue
 	 * persistent id stays null if not an persistent entity.
 	 */
 	private Serializable persistentID;
-	
+
 	private Class<?> type;
-	
+
 	/**
 	 * value stays null if persistent entity to avoid performance issues.
 	 */
 	private Object value;
-	
+
 	private final String propertyName;
-	
-	
+
+
 	/**
 	 *
 	 */
@@ -53,44 +53,44 @@ public class URLParameterRegistryValue
 		this.value = value;
 		this.propertyName = propertyName;
 	}
-	
-	
+
+
 	public String getPropertyName()
 	{
 		return this.propertyName;
 	}
-	
-	
+
+
 	public Serializable getPersistentID()
 	{
 		return this.persistentID;
 	}
-	
-	
+
+
 	public void setPersistentID(final Serializable persistentID)
 	{
 		this.persistentID = persistentID;
 	}
-	
-	
+
+
 	public Class<?> getType()
 	{
 		return this.type;
 	}
-	
-	
+
+
 	public void setType(final Class<?> type)
 	{
 		this.type = type;
 	}
-	
-	
+
+
 	public Object getValue()
 	{
 		return this.value;
 	}
-	
-	
+
+
 	public void setValue(final Object value)
 	{
 		this.value = value;

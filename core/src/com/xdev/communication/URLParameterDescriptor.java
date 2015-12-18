@@ -19,15 +19,15 @@ package com.xdev.communication;
 
 
 /**
- * @author XDEV Software
- *
+ * @author XDEV Software Julian Will
+ *		
  */
 public class URLParameterDescriptor
 {
 	private final Class<?>	parameterType;
 	private final String	propertyName;
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -36,14 +36,14 @@ public class URLParameterDescriptor
 		this.propertyName = propertyName;
 		this.parameterType = parameterType;
 	}
-
-
+	
+	
 	public String getViewPropertyName()
 	{
 		return this.propertyName;
 	}
-
-
+	
+	
 	public Class<?> getParameterType()
 	{
 		return this.parameterType;

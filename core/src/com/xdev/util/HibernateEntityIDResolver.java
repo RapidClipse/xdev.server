@@ -32,17 +32,22 @@ import org.hibernate.mapping.Property;
 import com.xdev.communication.EntityManagerUtils;
 
 
+/**
+ *
+ * @author XDEV Software Julian Will
+ *		
+ */
 public class HibernateEntityIDResolver implements EntityIDResolver
 {
 	private final Configuration config;
-	
-	
+
+
 	public HibernateEntityIDResolver()
 	{
 		this.config = new Configuration();
 		final Set<EntityType<?>> set = EntityManagerUtils.getEntityManager().getMetamodel()
 				.getEntities();
-				
+
 		for(final Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)
 		{
 			final Class<?> eClazz = i.next().getJavaType();
@@ -57,8 +62,8 @@ public class HibernateEntityIDResolver implements EntityIDResolver
 		}
 		this.config.buildMappings();
 	}
-	
-	
+
+
 	@Override
 	public Property getEntityIDProperty(final Class<?> entityClass)
 	{
@@ -69,19 +74,19 @@ public class HibernateEntityIDResolver implements EntityIDResolver
 		}
 		final PersistentClass clazz = this.config.getClassMapping(className);
 		final Property idProperty = clazz.getDeclaredIdentifierProperty();
-		
+
 		return idProperty;
 	}
-	
-	
+
+
 	public Property getEntityReferenceProperty(final Class<?> entityClassA,
 			final Class<?> entityClassB)
 	{
-		
+
 		return null;
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *

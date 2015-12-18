@@ -27,12 +27,16 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.server.VaadinSession.State;
 
 
+/**
+ * @author XDEV Software Julian Will
+ *		
+ */
 public class ConversationUtils
 {
-
+	
 	private final static String ENTITY_MANAGER_ATTRIBUTE = "EntityManager";
-
-
+	
+	
 	private static boolean isSessionAccessible()
 	{
 		if(VaadinSession.getCurrent() != null)
@@ -44,8 +48,8 @@ public class ConversationUtils
 		}
 		return false;
 	}
-
-
+	
+	
 	public static Conversation getConversation()
 	{
 		/*
@@ -60,8 +64,8 @@ public class ConversationUtils
 		}
 		return null;
 	}
-
-
+	
+	
 	private static Conversation newConversation()
 	{
 		if(isSessionAccessible())
@@ -69,7 +73,7 @@ public class ConversationUtils
 			final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
 					.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
 			final Conversation conversation = new Conversation.Implementation();
-
+			
 			try
 			{
 				conversationable.setConversation(conversation);
@@ -78,13 +82,13 @@ public class ConversationUtils
 			{
 				return conversationable.getConversation();
 			}
-
+			
 			return conversation;
 		}
 		return null;
 	}
-
-
+	
+	
 	public static void startConversation()
 	{
 		final Conversation conversation = newConversation();
@@ -93,8 +97,8 @@ public class ConversationUtils
 			conversation.start();
 		}
 	}
-
-
+	
+	
 	public static void startPessimisticConversation(final LockModeType lockMode)
 	{
 		final Conversation conversation = newConversation();
@@ -104,8 +108,8 @@ public class ConversationUtils
 			conversation.start();
 		}
 	}
-
-
+	
+	
 	public static void lockConversation(final Object entity)
 	{
 		final EntityManager em = EntityManagerUtils.getEntityManager();
@@ -118,8 +122,8 @@ public class ConversationUtils
 			}
 		}
 	}
-
-
+	
+	
 	public static void lockConversation(final Object entity, final Map<String, Object> properties)
 	{
 		final EntityManager em = EntityManagerUtils.getEntityManager();
@@ -132,8 +136,8 @@ public class ConversationUtils
 			}
 		}
 	}
-
-
+	
+	
 	public static void releaseConversationLock()
 	{
 		final EntityManager em = EntityManagerUtils.getEntityManager();
@@ -145,8 +149,8 @@ public class ConversationUtils
 			}
 		}
 	}
-
-
+	
+	
 	public static void startPessimisticConversation()
 	{
 		final Conversation conversation = newConversation();
@@ -156,8 +160,8 @@ public class ConversationUtils
 			conversation.start();
 		}
 	}
-
-
+	
+	
 	public static void endConversation()
 	{
 		final Conversation conversation = getConversation();
@@ -166,8 +170,8 @@ public class ConversationUtils
 			conversation.end();
 		}
 	}
-
-
+	
+	
 	public static boolean isConversationActive()
 	{
 		final Conversation conversation = getConversation();
@@ -177,5 +181,5 @@ public class ConversationUtils
 		}
 		return false;
 	}
-
+	
 }

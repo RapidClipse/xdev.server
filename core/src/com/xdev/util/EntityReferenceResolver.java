@@ -18,6 +18,11 @@
 package com.xdev.util;
 
 
+/**
+ *
+ * @author XDEV Software Julian Will
+ *		
+ */
 public interface EntityReferenceResolver
 {
 	public String getReferenceEntityPropertyName(Class<?> referenceEntity, Class<?> entity);

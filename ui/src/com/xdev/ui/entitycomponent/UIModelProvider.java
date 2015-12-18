@@ -22,39 +22,48 @@ import com.vaadin.ui.AbstractSelect;
 import com.xdev.ui.util.KeyValueType;
 
 
-/* TODO implementation for custom beanidresolver with <IDTYPE> generic for enhanced use cases
- * + write javadoc to communicate that per default the bean itself is used as identifier see BeanItemContainer#BeanItemResolver */
+/**
+ *
+ * @author XDEV Software (JW)
+ *		
+ * @param <BEANTYPE>
+ */
+/*
+ * TODO implementation for custom beanidresolver with <IDTYPE> generic for
+ * enhanced use cases + write javadoc to communicate that per default the bean
+ * itself is used as identifier see BeanItemContainer#BeanItemResolver
+ */
 public interface UIModelProvider<BEANTYPE>
 {
-
+	
 	public XdevBeanContainer<BEANTYPE> getModel(AbstractSelect component,
 			Class<BEANTYPE> entityClass, KeyValueType<?, ?>... nestedProperties);
-
-
+			
+			
 	public void setRelatedModelConverter(AbstractSelect component,
 			XdevBeanContainer<BEANTYPE> container);
-
-
-
+			
+			
+			
 	public class Implementation<BEANTYPE> implements UIModelProvider<BEANTYPE>
 	{
-
+		
 		@Override
 		public XdevBeanItemContainer<BEANTYPE> getModel(final AbstractSelect table,
 				final Class<BEANTYPE> entityClass, final KeyValueType<?, ?>... nestedProperties)
 		{
 			final XdevBeanItemContainer<BEANTYPE> beanItemContainer = new XdevBeanItemContainer<>(
 					entityClass);
-
+					
 			for(final KeyValueType<?, ?> keyValuePair : nestedProperties)
 			{
 				beanItemContainer.addNestedContainerProperty(keyValuePair.getKey().toString());
 			}
-
+			
 			return beanItemContainer;
 		}
-
-
+		
+		
 		/**
 		 * {@inheritDoc}
 		 */
@@ -74,6 +83,6 @@ public interface UIModelProvider<BEANTYPE>
 				component.setConverter(new BeanToBeanConverter(container));
 			}
 		}
-
+		
 	}
 }

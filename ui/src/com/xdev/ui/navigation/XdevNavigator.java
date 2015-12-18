@@ -43,6 +43,8 @@ import com.vaadin.ui.UI;
  * <p>
  * Note that {@link XdevNavigator} is not a component itself but uses a
  * {@link ViewDisplay} to update contents based on the state.
+ *
+ * @author XDEV Software (JW)
  */
 public class XdevNavigator extends Navigator
 {
@@ -71,8 +73,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,container);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator.
 	 * <p>
@@ -99,8 +101,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,stateManager,display);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI and replacing the contents of
@@ -124,8 +126,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,container);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI.
@@ -145,8 +147,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,display);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

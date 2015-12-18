@@ -41,28 +41,27 @@ import com.xdev.mobile.service.MobileService;
 
 
 /**
- * Servlet optimized for mobile clients. Also provides cordova and bridge
- * scripts for hybrid apps.
+ * Extended {@link XdevServlet} which adds support for hybrid apps.
  *
  * @author XDEV Software
- *		
+ * 		
  */
 public class MobileServlet extends XdevServlet
 {
 	private static Logger		LOG	= Logger.getLogger(MobileServlet.class.getName());
-									
+
 	private MobileConfiguration	mobileConfiguration;
-								
-								
+
+
 	@Override
 	protected void servletInitialized() throws ServletException
 	{
 		super.servletInitialized();
-		
+
 		this.mobileConfiguration = readMobileConfiguration();
 	}
-	
-	
+
+
 	/**
 	 * @return the mobileConfiguration
 	 */
@@ -70,13 +69,13 @@ public class MobileServlet extends XdevServlet
 	{
 		return this.mobileConfiguration;
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	protected MobileConfiguration readMobileConfiguration()
 	{
 		final MobileConfiguration.Default config = new MobileConfiguration.Default();
-		
+
 		try
 		{
 			final URL url = findMobileXML();
@@ -95,7 +94,7 @@ public class MobileServlet extends XdevServlet
 					if(servicesElement != null)
 					{
 						final ClassLoader classLoader = getClass().getClassLoader();
-						
+
 						final List<Class<? extends MobileService>> services = new ArrayList<>();
 						for(final Object serviceObject : servicesElement.elements("service"))
 						{
@@ -131,11 +130,11 @@ public class MobileServlet extends XdevServlet
 		{
 			LOG.log(Level.SEVERE,e.getMessage(),e);
 		}
-		
+
 		return config;
 	}
-	
-	
+
+
 	private URL findMobileXML() throws MalformedURLException
 	{
 		URL resourceUrl = getServletContext().getResource("/mobile.xml");
@@ -150,13 +149,13 @@ public class MobileServlet extends XdevServlet
 		}
 		return resourceUrl;
 	}
-	
-	
+
+
 	@Override
 	protected void initSession(final SessionInitEvent event)
 	{
 		super.initSession(event);
-		
+
 		event.getSession().addBootstrapListener(new BootstrapListener()
 		{
 			@Override
@@ -176,16 +175,16 @@ public class MobileServlet extends XdevServlet
 					}
 				}
 			}
-			
-			
+
+
 			@Override
 			public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
 			{
 			}
 		});
 	}
-	
-	
+
+
 	/**
 	 * Provides the content security policy which will be written into the
 	 * default html page.

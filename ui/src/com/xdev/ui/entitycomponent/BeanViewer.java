@@ -21,9 +21,15 @@ package com.xdev.ui.entitycomponent;
 import com.vaadin.data.Container.Viewer;
 
 
+/**
+ *
+ * @author XDEV Software Julian Will
+ *		
+ * @param <BEANTYPE>
+ */
 public interface BeanViewer<BEANTYPE> extends Viewer
 {
-
+	
 	/**
 	 * Sets the Container that serves as the data source of the viewer.
 	 *
@@ -31,13 +37,13 @@ public interface BeanViewer<BEANTYPE> extends Viewer
 	 *            The new data source Item
 	 */
 	public void setDataContainer(XdevBeanContainer<BEANTYPE> newDataSource);
-
-
+	
+	
 	/**
 	 * Gets the Container serving as the data source of the viewer.
 	 *
 	 * @return data source Container
 	 */
 	public XdevBeanContainer<BEANTYPE> getDataContainer();
-
+	
 }

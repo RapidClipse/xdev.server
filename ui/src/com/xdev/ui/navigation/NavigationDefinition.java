@@ -21,18 +21,23 @@ package com.xdev.ui.navigation;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 
 
+/**
+ *
+ * @author XDEV Software Julian Will
+ *		
+ */
 public interface NavigationDefinition
 {
-
+	
 	public NavigationDefinition to(String viewName);
-
-
+	
+	
 	public NavigationDefinition parameter(String parameterName, Object parameterValue);
-
-
+	
+	
 	public void navigate();
-
-
+	
+	
 	public <T> T getParameter(ViewChangeEvent navigationEvent, String parameterName, Class<T> type);
-
+	
 }

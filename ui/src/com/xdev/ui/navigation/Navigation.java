@@ -22,18 +22,18 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 
 
 /**
- * @author XDEV Software
- * 		
+ * @author XDEV Software Julian Will
+ *
  */
 public class Navigation
 {
-
+	
 	public static NavigationDefinition to(final String viewName)
 	{
 		return new XdevNavigation().to(viewName);
 	}
-	
-	
+
+
 	public static <T> T getParameter(final ViewChangeEvent navigationEvent,
 			final String parameterName, final Class<T> type)
 	{

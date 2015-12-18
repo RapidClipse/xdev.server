@@ -24,30 +24,36 @@ import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItem;
 
 
+/**
+ *
+ * @author XDEV Software Julian Will
+ *		
+ * @param <T>
+ */
 public interface XdevBeanContainer<T> extends Container.Filterable
 {
-	
+
 	public BeanItem<T> addBean(final T bean) throws UnsupportedOperationException;
-	
-	
+
+
 	@Override
 	public BeanItem<T> getItem(Object itemId) throws UnsupportedOperationException;
-	
-	
+
+
 	public void addAll(Collection<? extends T> beans) throws UnsupportedOperationException;
-	
-	
+
+
 	public void removeAll() throws UnsupportedOperationException;
-	
-	
+
+
 	public void removeAll(Collection<? extends T> beans) throws UnsupportedOperationException;
-
-
+	
+	
 	/**
 	 * refresh data for query implementations
 	 */
 	public void refresh();
-	
-	
+
+
 	public Class<? super T> getBeanType();
 }

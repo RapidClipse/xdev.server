@@ -32,16 +32,16 @@ import com.xdev.util.HibernateMetaDataUtils;
 
 
 /**
- * @author Julian Will
- *		
+ * @author XDEV Software Julian Will
+ * 		
  */
 public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		implements XdevBeanContainer<BEANTYPE>, DTOBeanContainer
 {
-	
+
 	private final EntityIDResolver idResolver;
-	
-	
+
+
 	/**
 	 * @param type
 	 * @throws IllegalArgumentException
@@ -51,8 +51,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		super(type);
 		this.idResolver = new HibernateEntityIDResolver();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -63,8 +63,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		this.removeAllItems();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -75,8 +75,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		// no need to synchronize
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -91,8 +91,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 			this.removeItem(bean);
 		}
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -103,8 +103,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		return super.getAllItemIds();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -117,8 +117,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		return super.getUnfilteredItem(itemId);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -128,8 +128,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		super.addAll(collection);
 		this.preloadRelevantData();
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -141,8 +141,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		preloadRelevantData(item,this.getContainerPropertyIds().toArray());
 		return item;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -153,8 +153,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		preloadRelevantData(itemId,this.getContainerPropertyIds().toArray());
 		return item;
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -165,8 +165,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		this.preloadRelevantData(this.getContainerPropertyIds().toArray());
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -175,7 +175,7 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		final Iterator<?> it = this.getItemIds().iterator();
 		Object itemId = null;
-		
+
 		// TODO if is lazy property
 		while(it.hasNext())
 		{
@@ -183,7 +183,7 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 			for(final Object propertyID : propertyIds)
 			{
 				final BEANTYPE entity = this.getItem(itemId).getBean();
-				
+
 				final Object propertyValue = HibernateMetaDataUtils.resolveAttributeValue(entity,
 						propertyID.toString());
 				if(propertyValue != null)
@@ -211,8 +211,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -222,7 +222,7 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		for(final Object propertyID : propertyIds)
 		{
 			final BEANTYPE entity = this.getItem(itemID).getBean();
-			
+
 			final Object propertyValue = HibernateMetaDataUtils.resolveAttributeValue(entity,
 					propertyID.toString());
 			if(propertyValue != null)

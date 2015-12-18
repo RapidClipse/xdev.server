@@ -22,6 +22,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 
+/**
+ *
+ * @author XDEV Software Julian Will
+ *		
+ */
 @Retention(RetentionPolicy.SOURCE)
 public @interface NavigationParameter
 {

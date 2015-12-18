@@ -18,6 +18,7 @@
 package com.xdev.communication;
 
 
+import java.io.Serializable;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -36,11 +37,11 @@ import eu.bitwalker.useragentutils.UserAgent;
  * browser details.
  *
  * @author XDEV Software
- * 		
+ *
  * @see WebBrowser
  * @see UserAgent
  */
-public class ClientInfo
+public class ClientInfo implements Serializable
 {
 	/**
 	 * Gets the currently used session's client info.
@@ -52,8 +53,8 @@ public class ClientInfo
 		final VaadinSession session = VaadinSession.getCurrent();
 		return session != null ? session.getAttribute(ClientInfo.class) : null;
 	}
-
-
+	
+	
 	/**
 	 * Gets the appropriate {@link ClientInfo} for the client request.
 	 */
@@ -61,20 +62,20 @@ public class ClientInfo
 	{
 		return new ClientInfo(request);
 	}
-
+	
 	private final UserAgent		userAgent;
 	private final WebBrowser	weBrowser;
-
-
+								
+								
 	private ClientInfo(final VaadinRequest request)
 	{
 		this.userAgent = UserAgent.parseUserAgentString(request.getHeader("user-agent"));
-
+		
 		this.weBrowser = new WebBrowser();
 		this.weBrowser.updateRequestDetails(request);
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is a standard desktop or laptop computer
 	 *
@@ -85,8 +86,8 @@ public class ClientInfo
 	{
 		return this.userAgent.getOperatingSystem().getDeviceType() == DeviceType.COMPUTER;
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is a small tablet type computer
 	 *
@@ -97,8 +98,8 @@ public class ClientInfo
 	{
 		return this.userAgent.getOperatingSystem().getDeviceType() == DeviceType.TABLET;
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is a mobile phone or similar small mobile device
 	 *
@@ -109,8 +110,8 @@ public class ClientInfo
 	{
 		return this.userAgent.getOperatingSystem().getDeviceType() == DeviceType.MOBILE;
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is run on Android.
 	 */
@@ -118,8 +119,8 @@ public class ClientInfo
 	{
 		return isOperatingSystem(OperatingSystem.ANDROID);
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is run on iOS.
 	 */
@@ -127,8 +128,8 @@ public class ClientInfo
 	{
 		return isOperatingSystem(OperatingSystem.IOS);
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is run on MacOS-X.
 	 */
@@ -136,8 +137,8 @@ public class ClientInfo
 	{
 		return isOperatingSystem(OperatingSystem.MAC_OS_X);
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is run on Windows.
 	 */
@@ -145,8 +146,8 @@ public class ClientInfo
 	{
 		return isOperatingSystem(OperatingSystem.WINDOWS);
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is run on Linux.
 	 */
@@ -154,15 +155,15 @@ public class ClientInfo
 	{
 		return isOperatingSystem(OperatingSystem.LINUX);
 	}
-
-
+	
+	
 	private boolean isOperatingSystem(final OperatingSystem test)
 	{
 		final OperatingSystem os = this.userAgent.getOperatingSystem();
 		return os == test || os.getGroup() == test;
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is using the Chrome browser.
 	 */
@@ -170,8 +171,8 @@ public class ClientInfo
 	{
 		return isBrowser(Browser.CHROME);
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is using the Firefox browser.
 	 */
@@ -179,8 +180,8 @@ public class ClientInfo
 	{
 		return isBrowser(Browser.FIREFOX);
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is using the Internet Explorer browser.
 	 */
@@ -188,8 +189,8 @@ public class ClientInfo
 	{
 		return isBrowser(Browser.IE);
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is using the Edge browser.
 	 */
@@ -197,8 +198,8 @@ public class ClientInfo
 	{
 		return isBrowser(Browser.EDGE);
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is using the Safari browser.
 	 */
@@ -206,8 +207,8 @@ public class ClientInfo
 	{
 		return isBrowser(Browser.SAFARI);
 	}
-
-
+	
+	
 	/**
 	 * Detects if the client is using the Operabrowser.
 	 */
@@ -215,15 +216,15 @@ public class ClientInfo
 	{
 		return isBrowser(Browser.OPERA);
 	}
-
-
+	
+	
 	private boolean isBrowser(final Browser test)
 	{
 		final Browser browser = this.userAgent.getBrowser();
 		return browser == test || browser.getGroup() == test;
 	}
-
-
+	
+	
 	/**
 	 * Gets the height of the screen in pixels. This is the full screen
 	 * resolution and not the height available for the application.
@@ -234,8 +235,8 @@ public class ClientInfo
 	{
 		return this.weBrowser.getScreenHeight();
 	}
-
-
+	
+	
 	/**
 	 * Gets the width of the screen in pixels. This is the full screen
 	 * resolution and not the width available for the application.
@@ -246,8 +247,8 @@ public class ClientInfo
 	{
 		return this.weBrowser.getScreenWidth();
 	}
-
-
+	
+	
 	/**
 	 * Returns the IP-address of the client. If the application is running
 	 * inside a portlet, this method will return null. *
@@ -256,8 +257,8 @@ public class ClientInfo
 	{
 		return this.weBrowser.getAddress();
 	}
-
-
+	
+	
 	/**
 	 * Returns the locale of the client browser.
 	 */
@@ -265,8 +266,8 @@ public class ClientInfo
 	{
 		return this.weBrowser.getLocale();
 	}
-
-
+	
+	
 	/**
 	 * Returns the browser-reported TimeZone offset in milliseconds from GMT.
 	 * This includes possible daylight saving adjustments, to figure out which
@@ -280,8 +281,8 @@ public class ClientInfo
 	{
 		return this.weBrowser.getTimezoneOffset();
 	}
-
-
+	
+	
 	/**
 	 * Returns the browser-reported TimeZone offset in milliseconds from GMT
 	 * ignoring possible daylight saving adjustments that may be in effect in
@@ -303,8 +304,8 @@ public class ClientInfo
 	{
 		return this.weBrowser.getRawTimezoneOffset();
 	}
-
-
+	
+	
 	/**
 	 * Returns the offset in milliseconds between the browser's GMT TimeZone and
 	 * DST.

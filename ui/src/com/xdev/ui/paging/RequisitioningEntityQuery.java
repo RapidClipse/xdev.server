@@ -52,7 +52,8 @@ import com.vaadin.data.util.filter.Not;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.xdev.communication.EntityManagerUtils;
-import com.xdev.ui.util.filter.CompareBIDirect;
+import com.xdev.data.util.filter.CaptionStringFilter;
+import com.xdev.data.util.filter.CompareBIDirect;
 import com.xdev.util.DTOUtils;
 import com.xdev.util.EntityIDResolver;
 import com.xdev.util.HibernateEntityIDResolver;
@@ -528,14 +529,51 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 
 		if(filter instanceof SimpleStringFilter)
 		{
-			final SimpleStringFilter simpleStringFilter = (SimpleStringFilter)filter;
-			final Expression<String> property = (Expression)getPropertyPath(root,
-					simpleStringFilter.getPropertyId());
-			return cb.like(property,"%" + simpleStringFilter.getFilterString() + "%");
+			final SimpleStringFilter stringFilter = (SimpleStringFilter)filter;
+			return createLike(cb,root,stringFilter.getPropertyId(),stringFilter.isIgnoreCase(),
+					stringFilter.isOnlyMatchPrefix(),stringFilter.getFilterString());
+		}
+
+		if(filter instanceof CaptionStringFilter)
+		{
+			final CaptionStringFilter stringFilter = (CaptionStringFilter)filter;
+			return createLike(cb,root,stringFilter.getPropertyId(),stringFilter.isIgnoreCase(),
+					stringFilter.isOnlyMatchPrefix(),stringFilter.getFilterString());
 		}
 
 		throw new UnsupportedOperationException(
 				"Vaadin filter: " + filter.getClass().getName() + " is not supported.");
+	}
+
+
+	private Predicate createLike(final CriteriaBuilder cb, final Root<?> root,
+			final Object propertyId, final boolean ignoreCase, final boolean onlyMatchPrefix,
+			final String filterString)
+	{
+		@SuppressWarnings("rawtypes")
+		final Expression<String> property = (Expression)getPropertyPath(root,propertyId);
+		if(ignoreCase)
+		{
+			final StringBuilder pattern = new StringBuilder();
+			if(!onlyMatchPrefix)
+			{
+				pattern.append("%");
+			}
+			pattern.append(filterString.toUpperCase());
+			pattern.append("%");
+			return cb.like(cb.upper(property),pattern.toString());
+		}
+		else
+		{
+			final StringBuilder pattern = new StringBuilder();
+			if(!onlyMatchPrefix)
+			{
+				pattern.append("%");
+			}
+			pattern.append(filterString);
+			pattern.append("%");
+			return cb.like(property,pattern.toString());
+		}
 	}
 
 

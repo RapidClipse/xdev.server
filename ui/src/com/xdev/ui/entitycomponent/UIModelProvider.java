@@ -58,12 +58,21 @@ public interface UIModelProvider<BEANTYPE>
 		/**
 		 * {@inheritDoc}
 		 */
+		@SuppressWarnings({"rawtypes","unchecked"})
 		@Override
 		public void setRelatedModelConverter(final AbstractSelect component,
 				final XdevBeanContainer<BEANTYPE> container)
 		{
-			// BeanItemContainer uses Beans as IDs iteself, no conversion
-			// required
+			// there is no vaadin multiselectable interface or something similar
+			// hence cant use strategies here.
+			if(component.isMultiSelect())
+			{
+				component.setConverter(new BeanToBeanCollectionConverter(container));
+			}
+			else
+			{
+				component.setConverter(new BeanToBeanConverter(container));
+			}
 		}
 
 	}

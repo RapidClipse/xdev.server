@@ -18,6 +18,11 @@
 package com.xdev.ui.entitycomponent.table;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Table;
@@ -32,9 +37,9 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 897703398940222936L;
+	private static final long	serialVersionUID	= 897703398940222936L;
 
-	private boolean autoQueryData = true;
+	private boolean				autoQueryData		= true;
 
 
 	public AbstractBeanTable()
@@ -146,6 +151,27 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 			return this.getContainerDataSource().getItem(this.getValue());
 		}
 		return null;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<BeanItem<BEANTYPE>> getSelectedItems()
+	{
+		if(this.isMultiSelect())
+		{
+			final XdevBeanContainer<BEANTYPE> container = this.getContainerDataSource();
+			return ((Collection<?>)this.getValue()).stream().map(id -> container.getItem(id))
+					.collect(Collectors.toList());
+		}
+		else
+		{
+			final List<BeanItem<BEANTYPE>> list = new ArrayList<>(1);
+			list.add(getSelectedItem());
+			return list;
+		}
 	}
 
 

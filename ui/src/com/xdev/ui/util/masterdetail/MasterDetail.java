@@ -18,9 +18,6 @@
 package com.xdev.ui.util.masterdetail;
 
 
-import org.hibernate.LockOptions;
-import org.hibernate.Session;
-
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -28,9 +25,9 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.AbstractSelect;
-import com.xdev.communication.EntityManagerUtils;
+import com.xdev.dal.DAOs;
+import com.xdev.data.util.filter.CompareBIDirect;
 import com.xdev.ui.entitycomponent.BeanComponent;
-import com.xdev.ui.util.filter.CompareBIDirect;
 
 
 public interface MasterDetail
@@ -75,12 +72,14 @@ public interface MasterDetail
 
 
 		protected <T> void prepareFormData(final BeanItem<T> data, final BeanFieldGroup<T> detail)
+		// reatach data
 		{
-			// reatach data
-			final Session session = EntityManagerUtils.getEntityManager().unwrap(Session.class);
-			// session.saveOrUpdate(data.getBean());
-			session.buildLockRequest(LockOptions.NONE).lock(data.getBean());
-			detail.setItemDataSource(data);
+			T bean;
+			if(data != null && (bean = data.getBean()) != null)
+			{
+				DAOs.get(bean).reattach(bean);
+				detail.setItemDataSource(data);
+			}
 		}
 
 
@@ -100,7 +99,7 @@ public interface MasterDetail
 
 		private class MasterDetailValueChangeListener implements ValueChangeListener
 		{
-			private static final long serialVersionUID = 3306467309764402175L;
+			private static final long		serialVersionUID	= 3306467309764402175L;
 
 			private final AbstractSelect	filter;
 			private final Filterable		detailContainer;

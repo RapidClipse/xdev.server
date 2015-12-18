@@ -18,6 +18,9 @@
 package com.xdev.ui.entitycomponent.combobox;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.ComboBox;
@@ -35,32 +38,32 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	 */
 	private static final long	serialVersionUID	= 897703398940222936L;
 	private boolean				autoQueryData		= true;
-
-
+													
+													
 	public AbstractBeanComboBox()
 	{
 		super();
 	}
-
-
+	
+	
 	public AbstractBeanComboBox(final String caption)
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public AbstractBeanComboBox(final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
 	}
-
-
+	
+	
 	public AbstractBeanComboBox(final String caption, final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public XdevBeanContainer<BEANTYPE> getContainerDataSource()
@@ -77,8 +80,8 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 		// }
 		return null;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -97,8 +100,8 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 			super.setContainerDataSource(newDataSource);
 		}
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -107,8 +110,8 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	{
 		return this.getContainerDataSource().getItem(itemId);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -117,8 +120,20 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	{
 		return this.getContainerDataSource().getItem(this.getValue());
 	}
-
-
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<BeanItem<BEANTYPE>> getSelectedItems()
+	{
+		final List<BeanItem<BEANTYPE>> list = new ArrayList<>(1);
+		list.add(getSelectedItem());
+		return list;
+	}
+	
+	
 	protected UIModelProvider<BEANTYPE> getModelProvider()
 	{
 		if(this.isAutoQueryData())
@@ -131,8 +146,8 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 			return new UIModelProvider.Implementation<BEANTYPE>();
 		}
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -143,8 +158,8 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	{
 		return this.autoQueryData;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *

@@ -18,6 +18,11 @@
 package com.xdev.ui.entitycomponent.listselect;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.TwinColSelect;
@@ -35,33 +40,33 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	 */
 	private static final long	serialVersionUID	= 897703398940222936L;
 	private boolean				autoQueryData		= true;
-
-
+													
+													
 	public AbstractBeanTwinColSelect()
 	{
 		super();
 	}
-
-
+	
+	
 	public AbstractBeanTwinColSelect(final String caption)
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public AbstractBeanTwinColSelect(final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
 	}
-
-
+	
+	
 	public AbstractBeanTwinColSelect(final String caption,
 			final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public XdevBeanContainer<BEANTYPE> getContainerDataSource()
@@ -78,8 +83,8 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 		// }
 		return null;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -98,8 +103,8 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 			super.setContainerDataSource(newDataSource);
 		}
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -110,8 +115,8 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	{
 		return this.autoQueryData;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -122,8 +127,8 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	{
 		this.autoQueryData = autoQuery;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -132,8 +137,8 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	{
 		return this.getContainerDataSource().getItem(itemId);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -142,8 +147,29 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	{
 		return this.getContainerDataSource().getItem(this.getValue());
 	}
-
-
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<BeanItem<BEANTYPE>> getSelectedItems()
+	{
+		if(this.isMultiSelect())
+		{
+			final XdevBeanContainer<BEANTYPE> container = this.getContainerDataSource();
+			return ((Collection<?>)this.getValue()).stream().map(id -> container.getItem(id))
+					.collect(Collectors.toList());
+		}
+		else
+		{
+			final List<BeanItem<BEANTYPE>> list = new ArrayList<>(1);
+			list.add(getSelectedItem());
+			return list;
+		}
+	}
+	
+	
 	protected UIModelProvider<BEANTYPE> getModelProvider()
 	{
 		if(this.isAutoQueryData())

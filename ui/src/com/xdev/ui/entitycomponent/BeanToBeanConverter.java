@@ -19,16 +19,13 @@ package com.xdev.ui.entitycomponent;
 
 
 import java.util.Locale;
-import java.util.Set;
 
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
 import com.xdev.util.EntityIDResolver;
 import com.xdev.util.HibernateEntityIDResolver;
 
 
-//TODO check if object as ID type is always suitable
-public class IDToBeanConverter<T> implements Converter<Object, T>
+public class BeanToBeanConverter<T> implements Converter<T, T>
 {
 	private final XdevBeanContainer<T>	container;
 	private final EntityIDResolver		idResolver;
@@ -37,7 +34,7 @@ public class IDToBeanConverter<T> implements Converter<Object, T>
 	/**
 	 *
 	 */
-	public IDToBeanConverter(final XdevBeanContainer<T> container)
+	public BeanToBeanConverter(final XdevBeanContainer<T> container)
 	{
 		this.container = container;
 		this.idResolver = new HibernateEntityIDResolver();
@@ -45,37 +42,29 @@ public class IDToBeanConverter<T> implements Converter<Object, T>
 	
 	
 	@Override
-	public T convertToModel(final Object itemID, final Class<? extends T> targetType,
-			final Locale locale) throws Converter.ConversionException
+	public T convertToModel(final T bean, final Class<? extends T> targetType, final Locale locale)
+			throws Converter.ConversionException
 	{
-		if(itemID == null)
-		{
-			return null;
-		}
-		
-		// multi selection
-		if(!(itemID instanceof Set))
-		{
-			final BeanItem<T> item = this.container.getItem(itemID);
-			if(item != null)
-			{
-				return item.getBean();
-			}
-		}
-		
-		return null;
+		return bean;
 	}
 	
 	
 	@Override
-	public Object convertToPresentation(final T value, final Class<? extends Object> targetType,
+	public T convertToPresentation(final T value, final Class<? extends T> targetType,
 			final Locale locale) throws Converter.ConversionException
 	{
-		if(value != null)
+		if(value == null)
 		{
-			return this.idResolver.getEntityIDPropertyValue(value);
+			return null;
 		}
-		return null;
+		
+		final Object id = this.idResolver.getEntityIDPropertyValue(value);
+		final T containerValue = this.container.getItemIds().stream()
+				.map(propertyId -> this.container.getItem(propertyId).getBean())
+				.filter(bean -> bean.equals(value) || (id != null
+						&& id.equals(this.idResolver.getEntityIDPropertyValue(bean))))
+				.findFirst().orElse(null);
+		return containerValue != null ? containerValue : value;
 	}
 	
 	
@@ -87,9 +76,10 @@ public class IDToBeanConverter<T> implements Converter<Object, T>
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public Class<Object> getPresentationType()
+	public Class<T> getPresentationType()
 	{
-		return Object.class;
+		return (Class<T>)this.container.getBeanType();
 	}
 }

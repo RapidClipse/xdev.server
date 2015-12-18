@@ -18,6 +18,11 @@
 package com.xdev.ui.entitycomponent.listselect;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.ListSelect;
@@ -35,33 +40,33 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 	 */
 	private static final long	serialVersionUID	= 897703398940222936L;
 	private boolean				autoQueryData		= true;
-
-
+													
+													
 	public AbstractBeanListSelect()
 	{
 		super();
 	}
-
-
+	
+	
 	public AbstractBeanListSelect(final String caption)
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public AbstractBeanListSelect(final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
 	}
-
-
+	
+	
 	public AbstractBeanListSelect(final String caption,
 			final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public XdevBeanContainer<BEANTYPE> getContainerDataSource()
@@ -78,8 +83,8 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 		// }
 		return null;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -97,10 +102,10 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 		{
 			super.setContainerDataSource(newDataSource);
 		}
-
+		
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -111,8 +116,8 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 	{
 		this.autoQueryData = autoQuery;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -123,8 +128,8 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 	{
 		return this.autoQueryData;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -133,8 +138,8 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 	{
 		return this.getContainerDataSource().getItem(itemId);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -143,8 +148,29 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 	{
 		return this.getContainerDataSource().getItem(this.getValue());
 	}
-
-
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<BeanItem<BEANTYPE>> getSelectedItems()
+	{
+		if(this.isMultiSelect())
+		{
+			final XdevBeanContainer<BEANTYPE> container = this.getContainerDataSource();
+			return ((Collection<?>)this.getValue()).stream().map(id -> container.getItem(id))
+					.collect(Collectors.toList());
+		}
+		else
+		{
+			final List<BeanItem<BEANTYPE>> list = new ArrayList<>(1);
+			list.add(getSelectedItem());
+			return list;
+		}
+	}
+	
+	
 	protected UIModelProvider<BEANTYPE> getModelProvider()
 	{
 		if(this.isAutoQueryData())
@@ -156,5 +182,5 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 			return new UIModelProvider.Implementation<BEANTYPE>();
 		}
 	}
-
+	
 }

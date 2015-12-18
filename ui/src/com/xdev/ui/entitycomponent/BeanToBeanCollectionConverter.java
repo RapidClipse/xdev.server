@@ -18,7 +18,6 @@
 package com.xdev.ui.entitycomponent;
 
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,28 +25,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.hibernate.mapping.Property;
-
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
 import com.xdev.util.EntityIDResolver;
 import com.xdev.util.HibernateEntityIDResolver;
 
 
-//TODO check if object as ID type is always suitable
-public class IDToBeanCollectionConverter<T>
-		implements Converter<Set<T>, Collection<? extends Object>>
+public class BeanToBeanCollectionConverter<T> implements Converter<Set<T>, Collection<? extends T>>
 {
 	private final XdevBeanContainer<T>	container;
 	private final EntityIDResolver		idResolver;
-	private Collection<T>				beanCollection	= new ArrayList<T>();
-	private Collection<Object>			idCollection	= new HashSet<>();
-														
-														
+	private Collection<T>				modelCollection			= new ArrayList<T>();
+	private Collection<Object>			presentationCollection	= new HashSet<>();
+
+
 	/**
 	 *
 	 */
-	public IDToBeanCollectionConverter(final XdevBeanContainer<T> container)
+	public BeanToBeanCollectionConverter(final XdevBeanContainer<T> container)
 	{
 		this.container = container;
 		this.idResolver = new HibernateEntityIDResolver();
@@ -56,9 +50,9 @@ public class IDToBeanCollectionConverter<T>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Class<Collection<? extends Object>> getModelType()
+	public Class<Collection<? extends T>> getModelType()
 	{
-		return (Class<Collection<? extends Object>>)this.idCollection.getClass();
+		return (Class<Collection<? extends T>>)this.presentationCollection.getClass();
 	}
 
 
@@ -66,8 +60,7 @@ public class IDToBeanCollectionConverter<T>
 	@Override
 	public Class<Set<T>> getPresentationType()
 	{
-		return (Class<Set<T>>)this.beanCollection.getClass();
-
+		return (Class<Set<T>>)this.modelCollection.getClass();
 	}
 
 
@@ -79,34 +72,26 @@ public class IDToBeanCollectionConverter<T>
 	 * java.lang.Class, java.util.Locale)
 	 */
 	@Override
-	public Collection<? extends Object> convertToModel(final Set<T> itemIds,
-			final Class<? extends Collection<? extends Object>> targetType, final Locale locale)
+	public Collection<? extends T> convertToModel(final Set<T> itemIds,
+			final Class<? extends Collection<? extends T>> targetType, final Locale locale)
 					throws Converter.ConversionException
 	{
 		// TODO create suitable type provider
 		if(targetType.isAssignableFrom(List.class))
 		{
-			this.beanCollection = new ArrayList<>();
+			this.modelCollection = new ArrayList<>();
 		}
 		else
 		{
-			this.beanCollection = new HashSet<>();
+			this.modelCollection = new HashSet<>();
 		}
-		
+
 		if(itemIds != null)
 		{
-			for(final Object itemId : itemIds)
-			{
-				final BeanItem<T> item = this.container.getItem(itemId);
-				if(item != null)
-				{
-					this.beanCollection.add(item.getBean());
-				}
-			}
-			return this.beanCollection;
+			this.modelCollection.addAll(itemIds);
 		}
-		
-		return this.beanCollection;
+
+		return this.modelCollection;
 	}
 
 
@@ -119,36 +104,37 @@ public class IDToBeanCollectionConverter<T>
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Set<T> convertToPresentation(final Collection<? extends Object> values,
+	public Set<T> convertToPresentation(final Collection<? extends T> values,
 			final Class<? extends Set<T>> targetType, final Locale locale)
 					throws Converter.ConversionException
 	{
-		this.idCollection = new HashSet<>();
+		this.presentationCollection = new HashSet<>();
+
 		if(values != null)
 		{
-			for(final Object bean : values)
+			for(final T bean : values)
 			{
-				try
-				{
-					/*
-					 * TODO rather make entity manager accesible within
-					 * entitycontainer and use it for this purpose
-					 */
-					final Property idProperty = this.idResolver
-							.getEntityIDProperty(bean.getClass());
-					final Field idField = bean.getClass().getDeclaredField(idProperty.getName());
-					idField.setAccessible(true);
-
-					this.idCollection.add(idField.get(bean));
-				}
-				catch(NoSuchFieldException | SecurityException | IllegalArgumentException
-						| IllegalAccessException e)
-				{
-					throw new RuntimeException(e);
-				}
+				this.presentationCollection.add(convertToPresentation(bean));
 			}
 		}
-		return (Set<T>)this.idCollection;
+
+		return (Set<T>)this.presentationCollection;
 	}
 
+
+	protected T convertToPresentation(final T value)
+	{
+		if(value == null)
+		{
+			return null;
+		}
+
+		final Object id = this.idResolver.getEntityIDPropertyValue(value);
+		final T containerValue = this.container.getItemIds().stream()
+				.map(propertyId -> this.container.getItem(propertyId).getBean())
+				.filter(bean -> bean.equals(value) || (id != null
+						&& id.equals(this.idResolver.getEntityIDPropertyValue(bean))))
+				.findFirst().orElse(null);
+		return containerValue != null ? containerValue : value;
+	}
 }

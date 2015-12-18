@@ -21,6 +21,8 @@ package com.xdev.ui.entitycomponent.combobox;
 import java.util.Collection;
 
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.shared.ui.combobox.FilteringMode;
+import com.xdev.data.util.filter.CaptionStringFilter;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
 import com.xdev.util.Caption;
@@ -64,7 +66,7 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T>
 	 * annotation.
 	 *
 	 * @see CaptionResolver
-	 *		
+	 * 		
 	 * @param itemCaptionFromAnnotation
 	 *            the itemCaptionFromAnnotation to set
 	 */
@@ -188,5 +190,55 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T>
 		}
 		
 		return super.getItemCaption(itemId);
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.vaadin.ui.ComboBox#buildFilter(java.lang.String,
+	 * com.vaadin.shared.ui.combobox.FilteringMode)
+	 */
+	@Override
+	protected Filter buildFilter(final String filterString, final FilteringMode filteringMode)
+	{
+		if(isItemCaptionFromAnnotation())
+		{
+			return buildCaptionFilter(filterString,filteringMode,null);
+		}
+		else if(this.itemCaptionValue != null)
+		{
+			return buildCaptionFilter(filterString,filteringMode,this.itemCaptionValue);
+		}
+		
+		return super.buildFilter(filterString,filteringMode);
+	}
+	
+	
+	protected Filter buildCaptionFilter(final String filterString,
+			final FilteringMode filteringMode, final String itemCaptionValue)
+	{
+		Filter filter = null;
+		
+		if(null != filterString && !"".equals(filterString))
+		{
+			switch(filteringMode)
+			{
+				case OFF:
+				break;
+				
+				case STARTSWITH:
+					filter = new CaptionStringFilter(getItemCaptionPropertyId(),filterString,true,
+							true,itemCaptionValue);
+				break;
+				
+				case CONTAINS:
+					filter = new CaptionStringFilter(getItemCaptionPropertyId(),filterString,true,
+							false,itemCaptionValue);
+				break;
+			}
+		}
+
+		return filter;
 	}
 }

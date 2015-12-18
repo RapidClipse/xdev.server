@@ -31,43 +31,49 @@ import org.hibernate.mapping.Property;
 import com.xdev.communication.EntityManagerUtils;
 
 
+/**
+ *
+ * @author XDEV Software (JW)
+ *		
+ */
 public class HibernateEntityReferenceResolver implements EntityReferenceResolver
 {
-	private final Configuration	config;
-	
-	
+	private final Configuration config;
+
+
 	public HibernateEntityReferenceResolver()
 	{
 		this.config = new Configuration();
-		Set<EntityType<?>> set = EntityManagerUtils.getEntityManager().getMetamodel()
+		final Set<EntityType<?>> set = EntityManagerUtils.getEntityManager().getMetamodel()
 				.getEntities();
-		
-		for(Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)
+				
+		for(final Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)
 		{
-			Class<?> eClazz = i.next().getJavaType();
+			final Class<?> eClazz = i.next().getJavaType();
 			try
 			{
 				this.config.addClass(eClazz);
 			}
-			catch(MappingException e)
+			catch(final MappingException e)
 			{
 				this.config.addAnnotatedClass(eClazz);
 			}
 		}
 		this.config.buildMappings();
 	}
-	
-	
+
+
 	@Override
-	public String getReferenceEntityPropertyName(Class<?> referenceEntity, Class<?> entity)
+	public String getReferenceEntityPropertyName(final Class<?> referenceEntity,
+			final Class<?> entity)
 	{
-		PersistentClass clazz = this.config.getClassMapping(entity.getName());
+		final PersistentClass clazz = this.config.getClassMapping(entity.getName());
 		Property ref = null;
-		
+
 		for(@SuppressWarnings("unchecked")
-		Iterator<Property> i = clazz.getReferenceablePropertyIterator(); i.hasNext();)
+		final Iterator<Property> i = clazz.getReferenceablePropertyIterator(); i.hasNext();)
 		{
-			Property it = i.next();
+			final Property it = i.next();
 			/*
 			 * TODO not only referenceable properties are returned, hence a
 			 * manual check is required
@@ -75,9 +81,9 @@ public class HibernateEntityReferenceResolver implements EntityReferenceResolver
 			if(HibernateMetaDataUtils.getReferencablePropertyName(it.getValue()) != null)
 			{
 				ref = it;
-				String propertyName = HibernateMetaDataUtils.getReferencablePropertyName(ref
-						.getValue());
-				
+				final String propertyName = HibernateMetaDataUtils
+						.getReferencablePropertyName(ref.getValue());
+						
 				if(propertyName != null)
 				{
 					if(propertyName.equals(referenceEntity.getName()))

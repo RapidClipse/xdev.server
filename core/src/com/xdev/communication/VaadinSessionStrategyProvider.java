@@ -26,25 +26,25 @@ import com.vaadin.server.VaadinSession;
 
 
 /**
- * @author XDEV Software
- *		
+ * @author XDEV Software (JW)
+ * 		
  */
 public interface VaadinSessionStrategyProvider
 {
 	public VaadinSessionStrategy getRequestStartVaadinSessionStrategy(final VaadinRequest request,
 			final VaadinService service);
-
-
+			
+			
 	public VaadinSessionStrategy getRequestEndVaadinSessionStrategy(final VaadinRequest request,
 			final VaadinService service);
-
-
-
+			
+			
+			
 	public class Implementation implements VaadinSessionStrategyProvider
 	{
 		private VaadinSessionStrategy currentStrategy;
-
-
+		
+		
 		private VaadinSessionStrategy getSessionStrategy(
 				final Class<? extends VaadinSessionStrategy> strategy)
 		{
@@ -77,11 +77,11 @@ public interface VaadinSessionStrategyProvider
 			{
 				throw new RuntimeException(e);
 			}
-
+			
 			return this.currentStrategy;
 		}
-
-
+		
+		
 		/*
 		 * (non-Javadoc)
 		 *
@@ -102,10 +102,10 @@ public interface VaadinSessionStrategyProvider
 			{
 				throw new RuntimeException(e);
 			}
-
+			
 			final Conversationable conversationable = (Conversationable)session
 					.getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
-
+					
 			if(conversationable != null)
 			{
 				if(conversationable.getConversation() != null)
@@ -125,12 +125,12 @@ public interface VaadinSessionStrategyProvider
 					}
 				}
 			}
-
+			
 			// return default strategy
 			return this.getSessionStrategy(VaadinSessionStrategy.PerRequest.class);
 		}
-
-
+		
+		
 		/*
 		 * (non-Javadoc)
 		 *
@@ -161,10 +161,10 @@ public interface VaadinSessionStrategyProvider
 				{
 					throw new RuntimeException(e);
 				}
-
+				
 				final Conversationable conversationable = (Conversationable)session
 						.getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
-
+						
 				if(conversationable != null)
 				{
 					if(conversationable.getConversation() != null)

@@ -30,12 +30,12 @@ import com.vaadin.server.VaadinSession;
 
 
 /**
- * @author XDEV Software
- * 		
+ * @author XDEV Software (JW)
+ *
  */
 public class XdevHttpSessionListener implements HttpSessionListener
 {
-
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -47,8 +47,8 @@ public class XdevHttpSessionListener implements HttpSessionListener
 	public void sessionCreated(final HttpSessionEvent se)
 	{
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -61,7 +61,7 @@ public class XdevHttpSessionListener implements HttpSessionListener
 	{
 		VaadinSession vSession = null;
 		final Enumeration<String> attributeNames = se.getSession().getAttributeNames();
-
+		
 		while(attributeNames.hasMoreElements())
 		{
 			final Object attribute = se.getSession().getAttribute(attributeNames.nextElement());
@@ -69,18 +69,18 @@ public class XdevHttpSessionListener implements HttpSessionListener
 			{
 				vSession = (VaadinSession)attribute;
 			}
-
+			
 		}
-
+		
 		if(vSession != null)
 		{
 			final Conversationable conversationable = (Conversationable)vSession
 					.getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
-
+					
 			if(conversationable != null)
 			{
 				final EntityManager em = conversationable.getEntityManager();
-
+				
 				if(em != null)
 				{
 					if(em.getTransaction().isActive())
@@ -95,7 +95,7 @@ public class XdevHttpSessionListener implements HttpSessionListener
 							em.getTransaction().rollback();
 						}
 					}
-
+					
 					try
 					{
 						em.close();
@@ -115,5 +115,5 @@ public class XdevHttpSessionListener implements HttpSessionListener
 			}
 		}
 	}
-
+	
 }

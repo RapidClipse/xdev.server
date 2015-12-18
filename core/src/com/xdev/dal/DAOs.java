@@ -20,7 +20,6 @@ package com.xdev.dal;
 
 import java.io.Serializable;
 
-import com.googlecode.genericdao.dao.jpa.GenericDAO;
 import com.xdev.util.SoftCache;
 
 
@@ -28,9 +27,9 @@ public class DAOs
 {
 	// private static final Configuration config;
 	// private static final EntityFieldAnnotation annotationReader;
-	private static final SoftCache<Class<?>, GenericDAO<?, ?>> cache;
-
-
+	private static final SoftCache<Class<?>, JPADAO<?, ?>> cache;
+	
+	
 	static
 	{
 		// config = new Configuration();
@@ -52,18 +51,18 @@ public class DAOs
 		// }
 		// config.buildMappings();
 		// annotationReader = new EntityFieldAnnotation();
-		
+
 		cache = new SoftCache<>();
 	}
-	
-	
-	public static <D extends GenericDAO<?, ?>> D get(final Class<D> daoType) throws RuntimeException
+
+
+	public static <D extends JPADAO<?, ?>> D get(final Class<D> daoType) throws RuntimeException
 	{
 		synchronized(cache)
 		{
 			@SuppressWarnings("unchecked")
 			D dao = (D)cache.get(daoType);
-			
+
 			if(dao == null)
 			{
 				try
@@ -76,14 +75,14 @@ public class DAOs
 					throw new RuntimeException(e);
 				}
 			}
-			
+
 			return dao;
 		}
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
-	public static <T, I extends Serializable> GenericDAO<T, I> get(final T entity)
+	public static <T, I extends Serializable> JPADAO<T, I> get(final T entity)
 			throws RuntimeException
 	{
 		final DAO dao = entity.getClass().getAnnotation(DAO.class);
@@ -91,13 +90,13 @@ public class DAOs
 		{
 			throw new RuntimeException("Not an entity");
 		}
-		
-		return (GenericDAO<T, I>)get(dao.daoClass());
+
+		return (JPADAO<T, I>)get(dao.daoClass());
 	}
-
-
-	public static <T, I extends Serializable> GenericDAO<T, I> getByEntityType(
-			final Class<T> entity) throws RuntimeException
+	
+	
+	public static <T, I extends Serializable> JPADAO<T, I> getByEntityType(final Class<T> entity)
+			throws RuntimeException
 	{
 		try
 		{
@@ -108,7 +107,7 @@ public class DAOs
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	// @SuppressWarnings("unchecked")
 	// public static <T, I extends Serializable> GenericDAO<T, I>
 	// getByEntityType(
@@ -122,7 +121,7 @@ public class DAOs
 	//
 	// return (GenericDAO<T, I>)get(dao.daoClass());
 	// }
-	
+
 	// - just use get with dao type for now
 	// annotation types can not be generic
 	// @SuppressWarnings("unchecked")

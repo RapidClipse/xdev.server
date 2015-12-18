@@ -30,6 +30,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
 import org.hibernate.Criteria;
+import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 
@@ -464,5 +466,13 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	public Filter getFilterFromExample(final T example, final ExampleOptions options)
 	{
 		return _getFilterFromExample(example,options);
+	}
+
+
+	public T reattach(final T object)
+	{
+		final Session session = em().unwrap(Session.class);
+		session.refresh(object,new LockOptions(LockMode.NONE));
+		return object;
 	}
 }

@@ -24,5 +24,17 @@ package com.xdev.mobile.service.geolocation;
  */
 public class PositionError
 {
+	// TODO
 	
+	// var PositionError = function(code, message) {
+	// this.code = code || null;
+	// this.message = message || '';
+	// };
+	//
+	// PositionError.prototype.PERMISSION_DENIED =
+	// PositionError.PERMISSION_DENIED = 1;
+	// PositionError.prototype.POSITION_UNAVAILABLE =
+	// PositionError.POSITION_UNAVAILABLE = 2;
+	// PositionError.prototype.TIMEOUT = PositionError.TIMEOUT = 3;
+
 }

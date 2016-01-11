@@ -24,10 +24,10 @@ package com.xdev.mobile.service.file;
  */
 public class DirectoryEntry extends Entry
 {
-
+	
 	public static String	DIRECTORYENTRY	= "DIRECTORYENTRY";
-	
-	
+
+
 	/**
 	 *
 	 */
@@ -35,8 +35,8 @@ public class DirectoryEntry extends Entry
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param isFile
 	 * @param isDirectory
@@ -47,7 +47,5 @@ public class DirectoryEntry extends Entry
 			final String fullPath)
 	{
 		super(isFile,isDirectory,name,fullPath);
-		// TODO Auto-generated constructor stub
 	}
-
 }

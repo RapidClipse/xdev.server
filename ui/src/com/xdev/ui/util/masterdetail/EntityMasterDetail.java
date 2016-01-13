@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2016 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,8 @@ import java.util.Collection;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.BeanItem;
+import com.xdev.dal.DAOs;
 import com.xdev.ui.entitycomponent.BeanComponent;
 import com.xdev.util.EntityReferenceResolver;
 import com.xdev.util.XdevEntityReferenceResolver;
@@ -34,23 +36,23 @@ public interface EntityMasterDetail extends JPAMasterDetail
 	@Override
 	public void connectMasterDetail(BeanComponent master, BeanComponent detail, Class masterClass,
 			Class detailClass);
-			
-			
-			
+
+
+
 	public class Implementation extends MasterDetail.Implementation implements EntityMasterDetail
 	{
 		// private final EntityIDResolver idResolver;
 		private final EntityReferenceResolver referenceResolver;
-		
-		
+
+
 		public Implementation()
 		{
 			super();
 			// this.idResolver = new HibernateEntityIDResolver();
 			this.referenceResolver = new XdevEntityReferenceResolver();
 		}
-		
-		
+
+
 		@Override
 		public void connectMasterDetail(final BeanComponent master,
 				final BeanComponent detailContainer, final Class masterClass,
@@ -65,18 +67,18 @@ public interface EntityMasterDetail extends JPAMasterDetail
 					this.referenceResolver.getReferenceEntityPropertyName(masterClass,
 							detailClass)));
 		}
-		
-		
-		
+
+
+
 		private class MasterDetailValueChangeListener implements ValueChangeListener
 		{
-			private static final long serialVersionUID = 3306467309764402175L;
-			
+			private static final long	serialVersionUID	= 3306467309764402175L;
+
 			private final BeanComponent	masterComponent;
 			private final BeanComponent	detailComponent;
 			private final Object		masterProperty;
-			
-			
+
+
 			public MasterDetailValueChangeListener(final BeanComponent filter,
 					final BeanComponent detailContainer, final Object masterProperty,
 					final Object detailProperty)
@@ -86,38 +88,45 @@ public interface EntityMasterDetail extends JPAMasterDetail
 				// this.detailProperty = detailProperty;
 				this.masterProperty = masterProperty;
 			}
-			
-			
+
+
 			@SuppressWarnings("unchecked")
 			@Override
 			public void valueChange(final ValueChangeEvent event)
 			{
 				// reset selection
 				detailComponent.getContainerDataSource().removeAll();
-				final Object selectedBean = masterComponent.getSelectedItem().getBean();
-				try
+				final BeanItem selectedItem = masterComponent.getSelectedItem();
+				Object selectedBean;
+				if(selectedItem != null && (selectedBean = selectedItem.getBean()) != null)
 				{
-					final Field f = selectedBean.getClass()
-							.getDeclaredField(this.masterProperty.toString());
-					f.setAccessible(true);
-					final Object value = f.get(selectedBean);
+					// reattach
+					DAOs.get(selectedBean).reattach(selectedBean);
 					
-					if(value instanceof Collection)
+					try
 					{
-						final Collection values = (Collection)value;
-						this.detailComponent.getContainerDataSource().addAll(values);
+						final Field f = selectedBean.getClass()
+								.getDeclaredField(this.masterProperty.toString());
+						f.setAccessible(true);
+						final Object value = f.get(selectedBean);
+
+						if(value instanceof Collection)
+						{
+							final Collection values = (Collection)value;
+							this.detailComponent.getContainerDataSource().addAll(values);
+						}
+						else
+						{
+							this.detailComponent.getContainerDataSource().addBean(value);
+						}
 					}
-					else
+					catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+							| SecurityException e)
 					{
-						this.detailComponent.getContainerDataSource().addBean(value);
+						e.printStackTrace();
 					}
 				}
-				catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException
-						| SecurityException e)
-				{
-					e.printStackTrace();
-				}
-				
+
 				// if(this.filterComponent.getSelectedItem() != null)
 				// {
 				// clearFiltering(this.detailComponent.getContainerDataSource(),

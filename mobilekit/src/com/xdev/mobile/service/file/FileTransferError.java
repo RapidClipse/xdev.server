@@ -28,15 +28,15 @@ public class FileTransferError
 	private String	source;
 	private String	target;
 	private double	http_status;
-
-
-
+	
+	
+	
 	enum FileTransferErrorEnum
 	{
 		FILE_NOT_FOUND_ERR, INVALID_URL_ERR, CONNECTION_ERR, ABORT_ERR;
 	}
-	
-	
+
+
 	/**
 	 * @param code
 	 * @param source
@@ -52,18 +52,17 @@ public class FileTransferError
 		this.target = target;
 		this.http_status = http_status;
 	}
-	
-	
+
+
 	/**
 	 *
 	 */
 	public FileTransferError()
 	{
 		super();
-		// TODO Auto-generated constructor stub
 	}
-	
-	
+
+
 	/**
 	 * @return the code
 	 */
@@ -71,8 +70,8 @@ public class FileTransferError
 	{
 		return this.code;
 	}
-	
-	
+
+
 	/**
 	 * @param code
 	 *            the code to set
@@ -81,8 +80,8 @@ public class FileTransferError
 	{
 		this.code = code;
 	}
-	
-	
+
+
 	/**
 	 * @return the source
 	 */
@@ -90,8 +89,8 @@ public class FileTransferError
 	{
 		return this.source;
 	}
-	
-	
+
+
 	/**
 	 * @param source
 	 *            the source to set
@@ -100,8 +99,8 @@ public class FileTransferError
 	{
 		this.source = source;
 	}
-	
-	
+
+
 	/**
 	 * @return the target
 	 */
@@ -109,8 +108,8 @@ public class FileTransferError
 	{
 		return this.target;
 	}
-	
-	
+
+
 	/**
 	 * @param target
 	 *            the target to set
@@ -119,8 +118,8 @@ public class FileTransferError
 	{
 		this.target = target;
 	}
-	
-	
+
+
 	/**
 	 * @return the http_status
 	 */
@@ -128,8 +127,8 @@ public class FileTransferError
 	{
 		return this.http_status;
 	}
-	
-	
+
+
 	/**
 	 * @param http_status
 	 *            the http_status to set
@@ -138,5 +137,5 @@ public class FileTransferError
 	{
 		this.http_status = http_status;
 	};
-	
+
 }

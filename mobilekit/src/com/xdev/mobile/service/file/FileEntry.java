@@ -35,17 +35,19 @@ public class FileEntry extends Entry
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param isFile
 	 * @param isDirectory
 	 * @param name
 	 * @param fullPath
+	 * @param nativeURL
+	 * @param fileSystem
 	 */
 	public FileEntry(final boolean isFile, final boolean isDirectory, final String name,
-			final String fullPath)
+			final String fullPath, final String nativeURL, final String fileSystem)
 	{
-		super(isFile,isDirectory,name,fullPath);
+		super(isFile,isDirectory,name,fullPath,nativeURL,fileSystem);
 	}
 }

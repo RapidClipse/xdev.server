@@ -35,9 +35,9 @@ import com.vaadin.data.util.filter.SimpleStringFilter;
 public interface SearchFilterGenerator
 {
 	public Filter createSearchFilter(String searchText, FilterSettings settings);
-	
-	
-	
+
+
+
 	public static class Default implements SearchFilterGenerator
 	{
 		@Override
@@ -47,63 +47,71 @@ public interface SearchFilterGenerator
 			{
 				return null;
 			}
-			
+
 			final String[] words = searchText.split(" ");
-			
+
 			if(words.length == 1)
 			{
 				return createSingleWordSearchFilter(words[0],settings);
 			}
-			
+
 			return createMultiWordSearchFilter(words,settings);
 		}
-		
-		
+
+
 		protected Filter createSingleWordSearchFilter(final String word,
 				final FilterSettings settings)
 		{
 			final List<Filter> propertyFilters = new ArrayList<>();
-			
+
 			for(final Object searchableProperty : settings.getSearchableProperties())
 			{
 				propertyFilters.add(createWordFilter(word,searchableProperty,settings));
 			}
-			
+
 			if(propertyFilters.isEmpty())
 			{
 				return null;
 			}
-			
+			if(propertyFilters.size() == 1)
+			{
+				return propertyFilters.get(0);
+			}
+
 			return new Or(propertyFilters.toArray(new Filter[propertyFilters.size()]));
 		}
-		
-		
+
+
 		protected Filter createMultiWordSearchFilter(final String[] words,
 				final FilterSettings settings)
 		{
 			final List<Filter> propertyFilters = new ArrayList<>();
-			
+
 			for(final Object searchableProperty : settings.getSearchableProperties())
 			{
 				final List<Filter> wordFilters = new ArrayList<>();
-				
+
 				for(final String word : words)
 				{
 					wordFilters.add(createWordFilter(word,searchableProperty,settings));
 				}
-				
+
 				propertyFilters.add(new Or(wordFilters.toArray(new Filter[wordFilters.size()])));
 			}
-			
+
 			if(propertyFilters.isEmpty())
 			{
 				return null;
 			}
-			
+			if(propertyFilters.size() == 1)
+			{
+				return propertyFilters.get(0);
+			}
+
 			return new And(propertyFilters.toArray(new Filter[propertyFilters.size()]));
 		}
-		
-		
+
+
 		public static Filter createWordFilter(final String word, final Object searchableProperty,
 				final FilterSettings settings)
 		{
@@ -116,10 +124,10 @@ public interface SearchFilterGenerator
 				{
 					pattern = pattern.replace(wildcard,'%');
 				}
-				
+
 				return new Like(searchableProperty,pattern,settings.isCaseSensitive());
 			}
-			
+
 			return new SimpleStringFilter(searchableProperty,word,!settings.isCaseSensitive(),true);
 		}
 	}

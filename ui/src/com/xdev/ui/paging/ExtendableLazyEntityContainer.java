@@ -20,8 +20,6 @@ package com.xdev.ui.paging;
 
 import java.util.Collection;
 
-import org.vaadin.addons.lazyquerycontainer.Query;
-
 import com.vaadin.data.util.BeanItem;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 
@@ -41,8 +39,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	private static final long	serialVersionUID	= 1L;
 	private final Class<T>		entityType;
 	private Object[]			requiredProperties;
-								
-								
+
+
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
 	 *
@@ -67,10 +65,10 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 				detachedEntities,false,entityClass,batchSize,idPropertyId),
 				new RequisitioningEntityQueryFactory<T>());
 		this.entityType = entityClass;
-
+		
 	}
-
-
+	
+	
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
 	 *
@@ -100,21 +98,21 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		super(new IntrospectionEntityQueryDefinition<T>(applicationManagedTransactions,
 				detachedEntities,false,entityClass,batchSize,idPropertyId),
 				new RequisitioningEntityQueryFactory<T>());
-
+				
 		getQueryView().getQueryDefinition().setDefaultSortState(defaultSortPropertyIds,
 				defaultSortPropertyAscendingStates);
-
+				
 		this.entityType = entityClass;
 	}
-
-
+	
+	
 	@Override
 	public Class<T> getBeanType()
 	{
 		return this.entityType;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -127,8 +125,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		}
 		this.commit();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -145,8 +143,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		// this.commit();
 		// notifyItemSetChanged();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -167,8 +165,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		// }
 		// this.commit();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -182,8 +180,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		this.commit();
 		return getItem(index);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -196,8 +194,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	{
 		return (BeanItem<T>)super.getItem(itemId);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -209,15 +207,11 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	public void setRequiredProperties(final Object... propertyIDs)
 	{
 		this.requiredProperties = propertyIDs;
-
-		final Query query = getQueryView().getQuery();
-		if(query instanceof XdevEntityQuery)
-		{
-			((XdevEntityQuery)query).setRequiredProperties(propertyIDs);
-		}
+		
+		getQueryView().setRequiredProperties(propertyIDs);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *

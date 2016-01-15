@@ -18,17 +18,17 @@
 package com.xdev.ui.paging;
 
 
-import org.vaadin.addons.lazyquerycontainer.Query;
+import org.vaadin.addons.lazyquerycontainer.QueryView;
 
 
 /**
  * @author XDEV Software
- * 		
+ *		
  */
-public interface XdevEntityQuery extends Query
+public interface XdevEntityQueryView extends QueryView
 {
 	public void setRequiredProperties(final Object... propertyIDs);
-
-
+	
+	
 	public Object[] getRequiredProperties();
 }

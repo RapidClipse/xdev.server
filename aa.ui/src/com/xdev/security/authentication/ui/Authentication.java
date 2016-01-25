@@ -18,73 +18,73 @@
 package com.xdev.security.authentication.ui;
 
 
+import com.vaadin.navigator.Navigator;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 import com.xdev.security.authorization.Subject;
 
 
-public class Authentication
+public final class Authentication
 {
-
+	private Authentication()
+	{
+	}
+	
+	private final static String AUTHENTICATION_RESULT = "AUTHENTICATION_RESULT";
+	
+	
 	public static Subject getUser()
 	{
-		final Subject subject = UI.getCurrent().getSession().getAttribute(Subject.class);
-		return subject;
+		return UI.getCurrent().getSession().getAttribute(Subject.class);
 	}
-
-
-	public static void setUser(final Subject user, final Object loginInfo)
+	
+	
+	public static void setUser(final Subject user, final Object authenticationResult)
 	{
-		// TODO enhance API to avoid type checks
-		// if(loginInfo.hasPassedLogin())
-		// {
-		// UI.getCurrent().getSession().setAttribute(Subject.class,user);
-		// }
-
-		if(loginInfo != null)
-		{
-			UI.getCurrent().getSession().setAttribute(Subject.class,user);
-		}
-		else if(loginInfo instanceof Boolean)
-		{
-			if((boolean)loginInfo)
-			{
-				UI.getCurrent().getSession().setAttribute(Subject.class,user);
-			}
-		}
+		final VaadinSession session = UI.getCurrent().getSession();
+		session.setAttribute(Subject.class,user);
+		session.setAttribute(AUTHENTICATION_RESULT,authenticationResult);
 	}
-
-
+	
+	
 	public static boolean isUserLoggedIn()
 	{
 		return Authentication.getUser() != null;
 	}
-
-
+	
+	
+	public static Object getAuthenticationResult()
+	{
+		return UI.getCurrent().getSession().getAttribute(AUTHENTICATION_RESULT);
+	}
+	
+	
 	public static void navigateToLoginView()
 	{
-		if(UI.getCurrent().getNavigator() instanceof XdevAuthenticationNavigator)
+		final Navigator navigator = UI.getCurrent().getNavigator();
+		if(navigator instanceof XdevAuthenticationNavigator)
 		{
-			((XdevAuthenticationNavigator)UI.getCurrent().getNavigator()).navigateToLoginView();
+			((XdevAuthenticationNavigator)navigator).navigateToLoginView();
 		}
 		else
 		{
-			throw new RuntimeException(
+			throw new IllegalStateException(
 					"Navigating to login view requires XDEVAuthenticationNavigator");
 		}
 	}
-
-
+	
+	
 	public static void navigateToRedirectView()
 	{
-		if(UI.getCurrent().getNavigator() instanceof XdevAuthenticationNavigator)
+		final Navigator navigator = UI.getCurrent().getNavigator();
+		if(navigator instanceof XdevAuthenticationNavigator)
 		{
-			((XdevAuthenticationNavigator)UI.getCurrent().getNavigator()).navigateToRedirectView();
+			((XdevAuthenticationNavigator)navigator).navigateToRedirectView();
 		}
 		else
 		{
-			throw new RuntimeException(
+			throw new IllegalStateException(
 					"Navigating to redirect view requires XDEVAuthenticationNavigator");
 		}
 	}
-
 }

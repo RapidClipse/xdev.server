@@ -42,8 +42,8 @@ public final class DTOUtils
 	private DTOUtils()
 	{
 	}
-
-
+	
+	
 	public static void preload(final Object bean, final EntityIDResolver idResolver,
 			final String... requiredProperties)
 	{
@@ -71,8 +71,8 @@ public final class DTOUtils
 			}
 		}
 	}
-
-
+	
+	
 	public static Object resolveAttributeValue(Object managedObject, final String propertyPath)
 	{
 		final EntityManager entityManager = EntityManagerUtils.getEntityManager();
@@ -80,26 +80,35 @@ public final class DTOUtils
 		{
 			return null;
 		}
-
+		
 		Object propertyValue = null;
-
+		
 		final Metamodel metamodel = entityManager.getMetamodel();
 		ManagedType<?> managedType = null;
-
+		
 		final String[] parts = propertyPath.split("\\.");
 		for(int i = 0; i < parts.length; i++)
 		{
 			Class<?> managedClass = managedObject.getClass();
-			managedType = metamodel.managedType(managedObject.getClass());
-			if(managedType == null)
+			try
 			{
+				managedType = metamodel.managedType(managedClass);
+			}
+			catch(final IllegalArgumentException e)
+			{
+				// not a managed type, XWS-870
 				return null;
 			}
-
+			
 			final String name = parts[i];
-			final Attribute<?, ?> attribute = managedType.getAttribute(name);
-			if(attribute == null)
+			Attribute<?, ?> attribute = null;
+			try
 			{
+				attribute = managedType.getAttribute(name);
+			}
+			catch(final IllegalArgumentException e)
+			{
+				// attribute not found, XWS-870
 				return null;
 			}
 			managedClass = attribute.getJavaType();
@@ -109,13 +118,17 @@ public final class DTOUtils
 			}
 			if(JPAMetaDataUtils.isManaged(managedClass))
 			{
-				managedType = metamodel.managedType(managedClass);
-				if(managedType == null)
+				try
 				{
+					managedType = metamodel.managedType(managedClass);
+				}
+				catch(final IllegalArgumentException e)
+				{
+					// not a managed type, XWS-870
 					return null;
 				}
 			}
-
+			
 			if(attribute.getJavaMember() instanceof Field)
 			{
 				try
@@ -151,7 +164,7 @@ public final class DTOUtils
 				}
 			}
 		}
-
+		
 		return propertyValue;
 	}
 }

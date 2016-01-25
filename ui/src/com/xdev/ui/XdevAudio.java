@@ -38,15 +38,18 @@ import com.vaadin.ui.Audio;
  * >Mozilla Developer Network</a>.
  *
  * Multiple sources can be specified. Which of the sources is used is selected
- * by the browser depending on which file formats it supports. See <a
- * href="http://en.wikipedia.org/wiki/HTML5_video#Table">wikipedia</a> for a
+ * by the browser depending on which file formats it supports. See
+ * <a href="http://en.wikipedia.org/wiki/HTML5_video#Table">wikipedia</a> for a
  * table of formats supported by different browsers.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevAudio extends Audio
+public class XdevAudio extends Audio implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 *
 	 */
@@ -54,8 +57,8 @@ public class XdevAudio extends Audio
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 *            The caption of the audio component.
@@ -64,8 +67,8 @@ public class XdevAudio extends Audio
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 *            The caption of the audio component
@@ -76,8 +79,8 @@ public class XdevAudio extends Audio
 	{
 		super(caption,source);
 	}
-	
-	
+
+
 	/**
 	 * @return the first source pointed to in this media
 	 */
@@ -89,5 +92,25 @@ public class XdevAudio extends Audio
 			return sources.get(0);
 		}
 		return null;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

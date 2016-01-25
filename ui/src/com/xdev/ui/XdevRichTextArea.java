@@ -31,10 +31,13 @@ import com.vaadin.ui.TextField;
  * into length of field.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevRichTextArea extends RichTextArea
+public class XdevRichTextArea extends RichTextArea implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Constructs an empty <code>RichTextArea</code> with no caption.
 	 */
@@ -42,12 +45,12 @@ public class XdevRichTextArea extends RichTextArea
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a new <code>RichTextArea</code> that's bound to the specified
 	 * <code>Property</code> and has no caption.
-	 * 
+	 *
 	 * @param dataSource
 	 *            the data source for the editor value
 	 */
@@ -55,12 +58,12 @@ public class XdevRichTextArea extends RichTextArea
 	{
 		super(dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a new <code>RichTextArea</code> that's bound to the specified
 	 * <code>Property</code> and has the given caption.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption for the editor.
 	 * @param dataSource
@@ -70,12 +73,12 @@ public class XdevRichTextArea extends RichTextArea
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a new <code>RichTextArea</code> with the given caption and
 	 * initial text contents.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption for the editor.
 	 * @param value
@@ -85,17 +88,37 @@ public class XdevRichTextArea extends RichTextArea
 	{
 		super(caption,value);
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * Constructs an empty <code>RichTextArea</code> with the given caption.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption for the editor.
 	 */
 	public XdevRichTextArea(final String caption)
 	{
 		super(caption);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

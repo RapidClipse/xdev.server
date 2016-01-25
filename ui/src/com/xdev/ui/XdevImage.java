@@ -26,10 +26,13 @@ import com.vaadin.ui.Image;
  * Component for embedding images.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevImage extends Image
+public class XdevImage extends Image implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Creates a new empty Image.
 	 */
@@ -37,12 +40,12 @@ public class XdevImage extends Image
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new Image whose contents is loaded from given resource. The
 	 * dimensions are assumed if possible. The type is guessed from resource.
-	 * 
+	 *
 	 * @param caption
 	 * @param source
 	 *            the Source of the embedded object.
@@ -51,15 +54,35 @@ public class XdevImage extends Image
 	{
 		super(caption,source);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new empty Image with caption.
-	 * 
+	 *
 	 * @param caption
 	 */
 	public XdevImage(final String caption)
 	{
 		super(caption);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

@@ -27,14 +27,16 @@ import com.vaadin.ui.Link;
  * Link is used to create external or internal URL links.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevLink extends Link
+public class XdevLink extends Link implements XdevComponent
 {
-	public final static String	TOP		= "_top";
-	public final static String	BLANK	= "_blank";
-
-
+	public final static String	TOP			= "_top";
+	public final static String	BLANK		= "_blank";
+											
+	private final Extensions	extensions	= new Extensions();
+											
+											
 	/**
 	 * Creates a new link.
 	 */
@@ -42,8 +44,8 @@ public class XdevLink extends Link
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Creates a new instance of Link that opens a new window.
 	 *
@@ -60,15 +62,15 @@ public class XdevLink extends Link
 	 *            the Height of the target window.
 	 * @param border
 	 *            the Border style of the target window.
-	 *
+	 *			
 	 */
 	public XdevLink(final String caption, final Resource resource, final String targetName,
 			final int width, final int height, final BorderStyle border)
 	{
 		super(caption,resource,targetName,width,height,border);
 	}
-
-
+	
+	
 	/**
 	 * Creates a new instance of Link.
 	 *
@@ -79,8 +81,8 @@ public class XdevLink extends Link
 	{
 		super(caption,resource);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 *
@@ -90,5 +92,25 @@ public class XdevLink extends Link
 	public void setTargetName(final String targetName)
 	{
 		super.setTargetName(targetName);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

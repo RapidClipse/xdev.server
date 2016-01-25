@@ -18,17 +18,29 @@
 package com.xdev.ui;
 
 
+import java.beans.PropertyChangeListener;
+import java.util.Objects;
+
 import com.vaadin.ui.NativeButton;
+import com.xdev.ui.action.Action;
+import com.xdev.ui.action.ActionComponent;
+import com.xdev.ui.event.ActionEvent;
 
 
 /**
  * System button component.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevNativeButton extends NativeButton
+public class XdevNativeButton extends NativeButton implements XdevComponent, ActionComponent
 {
+	private final Extensions		extensions	= new Extensions();
+	private Action					action;
+	private PropertyChangeListener	actionPropertyChangeListener;
+	private ClickListener			actionClickListener;
+									
+									
 	/**
 	 *
 	 */
@@ -36,8 +48,8 @@ public class XdevNativeButton extends NativeButton
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 * @param listener
@@ -46,13 +58,80 @@ public class XdevNativeButton extends NativeButton
 	{
 		super(caption,listener);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 */
 	public XdevNativeButton(final String caption)
 	{
 		super(caption);
+	}
+
+
+	public XdevNativeButton(final Action action)
+	{
+		setAction(action);
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setAction(final Action action)
+	{
+		if(!Objects.equals(action,this.action))
+		{
+			if(this.action != null)
+			{
+				this.action.removePropertyChangeListener(this.actionPropertyChangeListener);
+				this.actionPropertyChangeListener = null;
+				removeClickListener(this.actionClickListener);
+				this.actionClickListener = null;
+			}
+
+			this.action = action;
+
+			if(action != null)
+			{
+				Utils.setComponentPropertiesFromAction(this,action);
+				this.actionPropertyChangeListener = new ActionPropertyChangeListener(this,action);
+				action.addPropertyChangeListener(this.actionPropertyChangeListener);
+				this.actionClickListener = event -> action
+						.actionPerformed(new ActionEvent(XdevNativeButton.this));
+				addClickListener(this.actionClickListener);
+			}
+		}
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Action getAction()
+	{
+		return this.action;
 	}
 }

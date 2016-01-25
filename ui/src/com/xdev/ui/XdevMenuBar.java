@@ -41,8 +41,11 @@ import com.xdev.ui.event.ActionEvent;
  * @author XDEV Software
  *
  */
-public class XdevMenuBar extends MenuBar
+public class XdevMenuBar extends MenuBar implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+
+
 	/**
 	 * Constructs an empty, horizontal menu
 	 */
@@ -50,8 +53,28 @@ public class XdevMenuBar extends MenuBar
 	{
 		super();
 	}
-	
-	
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -60,8 +83,8 @@ public class XdevMenuBar extends MenuBar
 	{
 		return addItem(caption,null,command);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -75,11 +98,11 @@ public class XdevMenuBar extends MenuBar
 		final XdevMenuItem newItem = new XdevMenuItem(caption,icon,command);
 		getItems().add(newItem);
 		markAsDirty();
-		
+
 		return newItem;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -91,36 +114,36 @@ public class XdevMenuBar extends MenuBar
 		{
 			throw new IllegalArgumentException("caption cannot be null");
 		}
-		
+
 		final XdevMenuItem newItem = new XdevMenuItem(caption,icon,command);
 		final List<MenuItem> menuItems = getItems();
 		if(menuItems.contains(itemToAddBefore))
 		{
 			final int index = menuItems.indexOf(itemToAddBefore);
 			menuItems.add(index,newItem);
-			
+
 		}
 		else
 		{
 			menuItems.add(newItem);
 		}
-		
+
 		markAsDirty();
-		
+
 		return newItem;
 	}
-	
-	
+
+
 	public XdevMenuItem addItem(final Action action)
 	{
 		final XdevMenuItem newItem = new XdevMenuItem(action);
 		getItems().add(newItem);
 		markAsDirty();
-		
+
 		return newItem;
 	}
-	
-	
+
+
 	public XdevMenuItem addItemBefore(final Action action, final MenuItem itemToAddBefore)
 	{
 		final XdevMenuItem newItem = new XdevMenuItem(action);
@@ -134,14 +157,14 @@ public class XdevMenuBar extends MenuBar
 		{
 			menuItems.add(newItem);
 		}
-		
+
 		markAsDirty();
-		
+
 		return newItem;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * A composite class for menu items and sub-menus.
 	 * <p>
@@ -150,25 +173,60 @@ public class XdevMenuBar extends MenuBar
 	 *
 	 * @see #setAction(Action)
 	 * @see Action
-	 *		
+	 *
 	 * @author XDEV Software
 	 *
 	 */
-	public class XdevMenuItem extends MenuItem implements ActionComponent
+	public class XdevMenuItem extends MenuItem implements XdevComponent, ActionComponent
 	{
+		private final Extensions		extensions	= new Extensions();
 		private Action					action;
 		private PropertyChangeListener	actionPropertyChangeListener;
 		private Command					actionCommand;
-		
-		
+
+
 		public XdevMenuItem(final Action action)
 		{
 			super("",null,null);
-			
+
 			setAction(action);
 		}
-		
-		
+
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public <E> E addExtension(final Class<? super E> type, final E extension)
+		{
+			return this.extensions.add(type,extension);
+		}
+
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public <E> E getExtension(final Class<E> type)
+		{
+			return this.extensions.get(type);
+		}
+
+
+		@Override
+		public boolean isReadOnly()
+		{
+			return !isEnabled();
+		}
+
+
+		@Override
+		public void setReadOnly(final boolean readOnly)
+		{
+			setEnabled(!readOnly);
+		}
+
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -184,9 +242,9 @@ public class XdevMenuBar extends MenuBar
 					setCommand(null);
 					this.actionCommand = null;
 				}
-				
+
 				this.action = action;
-				
+
 				if(action != null)
 				{
 					Utils.setComponentPropertiesFromAction(this,action);
@@ -199,8 +257,8 @@ public class XdevMenuBar extends MenuBar
 				}
 			}
 		}
-		
-		
+
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -209,8 +267,8 @@ public class XdevMenuBar extends MenuBar
 		{
 			return this.action;
 		}
-		
-		
+
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -219,14 +277,14 @@ public class XdevMenuBar extends MenuBar
 		{
 			setText(caption);
 		}
-		
-		
+
+
 		public XdevMenuItem(final String caption, final Resource icon, final Command command)
 		{
 			super(caption,icon,command);
 		}
-		
-		
+
+
 		public XdevMenuItem addItem(final Action action)
 		{
 			if(isSeparator())
@@ -237,19 +295,19 @@ public class XdevMenuBar extends MenuBar
 			{
 				throw new IllegalStateException("A checkable item cannot have children");
 			}
-			
+
 			final XdevMenuItem newItem = new XdevMenuItem(action);
-			
+
 			// The only place where the parent is set
 			newItem.setParent(this);
 			_children().add(newItem);
-			
+
 			markAsDirty();
-			
+
 			return newItem;
 		}
-		
-		
+
+
 		public XdevMenuItem addItemBefore(final Action action, final MenuItem itemToAddBefore)
 				throws IllegalStateException
 		{
@@ -257,9 +315,9 @@ public class XdevMenuBar extends MenuBar
 			{
 				throw new IllegalStateException("A checkable item cannot have children");
 			}
-			
+
 			XdevMenuItem newItem = null;
-			
+
 			final List<MenuItem> itsChildren = _children();
 			if(hasChildren() && itsChildren.contains(itemToAddBefore))
 			{
@@ -272,13 +330,13 @@ public class XdevMenuBar extends MenuBar
 			{
 				newItem = addItem(action);
 			}
-			
+
 			markAsDirty();
-			
+
 			return newItem;
 		}
-		
-		
+
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -287,8 +345,8 @@ public class XdevMenuBar extends MenuBar
 		{
 			return addItem(caption,null,command);
 		}
-		
-		
+
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -308,17 +366,17 @@ public class XdevMenuBar extends MenuBar
 			{
 				throw new IllegalArgumentException("Caption cannot be null");
 			}
-			
+
 			final XdevMenuItem newItem = new XdevMenuItem(caption,icon,command);
 			newItem.setParent(this);
 			_children().add(newItem);
-			
+
 			markAsDirty();
-			
+
 			return newItem;
 		}
-		
-		
+
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -331,7 +389,7 @@ public class XdevMenuBar extends MenuBar
 				throw new IllegalStateException("A checkable item cannot have children");
 			}
 			XdevMenuItem newItem = null;
-			
+
 			final List<MenuItem> children = _children();
 			if(hasChildren() && children.contains(itemToAddBefore))
 			{
@@ -344,13 +402,13 @@ public class XdevMenuBar extends MenuBar
 			{
 				newItem = addItem(caption,icon,command);
 			}
-			
+
 			markAsDirty();
-			
+
 			return newItem;
 		}
-		
-		
+
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -359,8 +417,8 @@ public class XdevMenuBar extends MenuBar
 		{
 			return (XdevMenuItem)super.addSeparator();
 		}
-		
-		
+
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -369,15 +427,15 @@ public class XdevMenuBar extends MenuBar
 		{
 			return (XdevMenuItem)super.addSeparatorBefore(itemToAddBefore);
 		}
-		
-		
+
+
 		private List<MenuItem> _children()
 		{
 			final List<MenuItem> children = getChildren();
 			if(children != null)
 			{
 				return children;
-				
+
 			}
 			try
 			{
@@ -397,7 +455,7 @@ public class XdevMenuBar extends MenuBar
 				// shouldn't happen
 				e.printStackTrace();
 			}
-			
+
 			return new ArrayList<>();
 		}
 	}

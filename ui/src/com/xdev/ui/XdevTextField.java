@@ -38,10 +38,13 @@ import com.vaadin.ui.TextField;
  * </p>
  *
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevTextField extends TextField
+public class XdevTextField extends TextField implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Constructs an empty <code>TextField</code> with no caption.
 	 */
@@ -49,8 +52,8 @@ public class XdevTextField extends TextField
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Constructs a new <code>TextField</code> that's bound to the specified
 	 * <code>Property</code> and has no caption.
@@ -62,8 +65,8 @@ public class XdevTextField extends TextField
 	{
 		super(dataSource);
 	}
-
-
+	
+	
 	/**
 	 * Constructs a new <code>TextField</code> that's bound to the specified
 	 * <code>Property</code> and has the given caption <code>String</code>.
@@ -77,8 +80,8 @@ public class XdevTextField extends TextField
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * Constructs a new <code>TextField</code> with the given caption and
 	 * initial text contents. The editor constructed this way will not be bound
@@ -95,8 +98,8 @@ public class XdevTextField extends TextField
 	{
 		super(caption,value);
 	}
-
-
+	
+	
 	/**
 	 * Constructs an empty <code>TextField</code> with given caption.
 	 *
@@ -107,10 +110,30 @@ public class XdevTextField extends TextField
 	{
 		super(caption);
 	}
-
-
+	
+	
 	// init defaults
 	{
 		setNullRepresentation("");
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

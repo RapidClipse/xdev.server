@@ -43,10 +43,13 @@ import com.vaadin.ui.Label;
  * </p>
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevLabel extends Label
+public class XdevLabel extends Label implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Creates an empty Label.
 	 */
@@ -54,8 +57,8 @@ public class XdevLabel extends Label
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new instance of Label with text-contents read from given
 	 * datasource.
@@ -67,8 +70,8 @@ public class XdevLabel extends Label
 	{
 		super(contentSource,contentMode);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new instance of Label with text-contents read from given
 	 * datasource.
@@ -79,8 +82,8 @@ public class XdevLabel extends Label
 	{
 		super(contentSource);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new instance of Label with text-contents.
 	 *
@@ -91,8 +94,8 @@ public class XdevLabel extends Label
 	{
 		super(content,contentMode);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new instance of Label with text-contents.
 	 *
@@ -103,8 +106,29 @@ public class XdevLabel extends Label
 		super(content);
 	}
 	
+	
 	// init defaults
 	{
 		setSizeUndefined();
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

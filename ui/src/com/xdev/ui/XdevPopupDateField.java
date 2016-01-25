@@ -29,8 +29,11 @@ import com.vaadin.ui.PopupDateField;
  *
  * @author XDEV Software
  */
-public class XdevPopupDateField extends PopupDateField
+public class XdevPopupDateField extends PopupDateField implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 *
 	 */
@@ -38,8 +41,8 @@ public class XdevPopupDateField extends PopupDateField
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param dataSource
 	 * @throws IllegalArgumentException
@@ -49,8 +52,8 @@ public class XdevPopupDateField extends PopupDateField
 	{
 		super(dataSource);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 * @param value
@@ -59,8 +62,8 @@ public class XdevPopupDateField extends PopupDateField
 	{
 		super(caption,value);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 * @param dataSource
@@ -70,13 +73,33 @@ public class XdevPopupDateField extends PopupDateField
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 */
 	public XdevPopupDateField(final String caption)
 	{
 		super(caption);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

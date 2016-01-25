@@ -27,11 +27,13 @@ import com.vaadin.ui.ColorPicker;
  * component.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevColorPicker extends ColorPicker
+public class XdevColorPicker extends ColorPicker implements XdevComponent
 {
-
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Instantiates a new color picker.
 	 */
@@ -39,8 +41,8 @@ public class XdevColorPicker extends ColorPicker
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Instantiates a new color picker.
 	 *
@@ -51,8 +53,8 @@ public class XdevColorPicker extends ColorPicker
 	{
 		super(popupCaption);
 	}
-
-
+	
+	
 	/**
 	 * Instantiates a new color picker.
 	 *
@@ -64,5 +66,25 @@ public class XdevColorPicker extends ColorPicker
 	public XdevColorPicker(final String popupCaption, final Color initialColor)
 	{
 		super(popupCaption,initialColor);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

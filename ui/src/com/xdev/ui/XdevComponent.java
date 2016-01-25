@@ -18,63 +18,48 @@
 package com.xdev.ui;
 
 
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
+import com.xdev.util.ExtendableObject;
 
 
 /**
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevView extends CustomComponent implements View, XdevComponent
+public interface XdevComponent extends ExtendableObject
 {
-	private final Extensions extensions = new Extensions();
-	
-	
 	/**
-	 *
+	 * @see Component#isVisible()
 	 */
-	public XdevView()
-	{
-		super();
-		
-		setSizeFull();
-	}
-
-
-	public void setContent(final Component c)
-	{
-		setCompositionRoot(c);
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void enter(final ViewChangeEvent event)
-	{
-	}
+	public boolean isVisible();
 
 
 	/**
-	 * {@inheritDoc}
+	 * @see Component#setVisible(boolean)
 	 */
-	@Override
-	public <E> E addExtension(final Class<? super E> type, final E extension)
-	{
-		return this.extensions.add(type,extension);
-	}
+	public void setVisible(boolean visible);
 
 
 	/**
-	 * {@inheritDoc}
+	 * @see Component#isEnabled()
 	 */
-	@Override
-	public <E> E getExtension(final Class<E> type)
-	{
-		return this.extensions.get(type);
-	}
+	public boolean isEnabled();
+
+
+	/**
+	 * @see Component#setEnabled(boolean)
+	 */
+	public void setEnabled(boolean enabled);
+
+
+	/**
+	 * @see Component#isReadOnly()
+	 */
+	public boolean isReadOnly();
+
+
+	/**
+	 * @see Component#setReadOnly(boolean)
+	 */
+	public void setReadOnly(boolean readOnly);
 }

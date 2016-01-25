@@ -34,10 +34,13 @@ import com.vaadin.ui.HorizontalLayout;
  * subcomponents in the order of their addition (horizontally).
  *
  * @author XDEV Software
- *
+ * 		
  */
-public class XdevHorizontalLayout extends HorizontalLayout
+public class XdevHorizontalLayout extends HorizontalLayout implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+
+
 	/**
 	 * Constructs an empty HorizontalLayout.
 	 */
@@ -45,14 +48,14 @@ public class XdevHorizontalLayout extends HorizontalLayout
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a HorizontalLayout with the given components. The components
 	 * are added in the given order.
-	 * 
+	 *
 	 * @see AbstractOrderedLayout#addComponents(Component...)
-	 * 
+	 *
 	 * @param children
 	 *            The components to add.
 	 */
@@ -61,13 +64,14 @@ public class XdevHorizontalLayout extends HorizontalLayout
 		super(children);
 	}
 
+
 	// init defaults
 	{
 		setMargin(true);
 		setSpacing(true);
 	}
-	
-	
+
+
 	/**
 	 * Add a component into this container. The component is added to the right
 	 * or under the previous component.
@@ -83,8 +87,8 @@ public class XdevHorizontalLayout extends HorizontalLayout
 		addComponent(component);
 		setComponentAlignment(component,alignment);
 	}
-	
-	
+
+
 	public void setExpandRatios(final float... ratios)
 	{
 		for(int i = 0; i < ratios.length; i++)
@@ -92,8 +96,8 @@ public class XdevHorizontalLayout extends HorizontalLayout
 			setExpandRatio(getComponent(i),ratios[i]);
 		}
 	}
-	
-	
+
+
 	public void addSpacer()
 	{
 		if(!hasExpandingComponent())
@@ -103,8 +107,8 @@ public class XdevHorizontalLayout extends HorizontalLayout
 			setExpandRatio(spacer,1f);
 		}
 	}
-	
-	
+
+
 	public boolean hasExpandingComponent()
 	{
 		for(int column = 0, columnCount = getComponentCount(); column < columnCount; column++)
@@ -114,17 +118,37 @@ public class XdevHorizontalLayout extends HorizontalLayout
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
-	
-	
+
+
+
 	protected static class Spacer extends CustomComponent
 	{
 		public Spacer()
 		{
 			setSizeFull();
 		}
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

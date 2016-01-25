@@ -28,10 +28,13 @@ import com.vaadin.ui.InlineDateField;
  * A date entry component, which displays the actual date selector inline.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevInlineDateField extends InlineDateField
+public class XdevInlineDateField extends InlineDateField implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 *
 	 */
@@ -39,8 +42,8 @@ public class XdevInlineDateField extends InlineDateField
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param dataSource
 	 * @throws IllegalArgumentException
@@ -49,8 +52,8 @@ public class XdevInlineDateField extends InlineDateField
 	{
 		super(dataSource);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 * @param value
@@ -59,8 +62,8 @@ public class XdevInlineDateField extends InlineDateField
 	{
 		super(caption,value);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 * @param dataSource
@@ -69,13 +72,33 @@ public class XdevInlineDateField extends InlineDateField
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 */
 	public XdevInlineDateField(final String caption)
 	{
 		super(caption);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

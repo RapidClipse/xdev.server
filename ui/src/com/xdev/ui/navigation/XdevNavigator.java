@@ -73,8 +73,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,container);
 	}
-
-
+	
+	
 	/**
 	 * Creates a navigator.
 	 * <p>
@@ -101,8 +101,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,stateManager,display);
 	}
-
-
+	
+	
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI and replacing the contents of
@@ -126,8 +126,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,container);
 	}
-
-
+	
+	
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI.
@@ -147,8 +147,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,display);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

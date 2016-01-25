@@ -20,36 +20,31 @@ package com.xdev.ui.entitycomponent.table;
 
 import java.util.Collection;
 
+import com.xdev.ui.XdevComponent;
 import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
 import com.xdev.util.CaptionUtils;
 
 
-public class XdevTable<T> extends AbstractBeanTable<T>
+public class XdevTable<T> extends AbstractBeanTable<T> implements XdevComponent
 {
-	
+	private final Extensions	extensions						= new Extensions();
+																
 	/**
 	 *
 	 */
 	private static final long	serialVersionUID				= -836170197198239894L;
-																
+
 	private boolean				autoUpdateRequiredProperties	= true;
-																
-																
+
+
 	public XdevTable()
 	{
 		super();
 	}
-	
-	
-	// init defaults
-	{
-		setSelectable(true);
-		setImmediate(true);
-	}
-	
-	
+
+
 	/**
 	 * Creates a new empty table with caption.
 	 *
@@ -59,15 +54,42 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 	{
 		super(caption);
 	}
-	
-	
+
+
 	public XdevTable(final int pageLength)
 	{
 		super();
 		super.setPageLength(pageLength);
 	}
-	
-	
+
+
+	// init defaults
+	{
+		setSelectable(true);
+		setImmediate(true);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -79,11 +101,11 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-				
+
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -94,8 +116,8 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 	{
 		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -109,11 +131,11 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 				nestedProperties);
 		container.setRequiredProperties(getVisibleColumns());
 		container.addAll(data);
-		
+
 		try
 		{
 			this.autoUpdateRequiredProperties = false;
-
+			
 			this.setContainerDataSource(container);
 		}
 		finally
@@ -121,8 +143,8 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 			this.autoUpdateRequiredProperties = true;
 		}
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -132,7 +154,7 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 	public void setVisibleColumns(final Object... visibleColumns)
 	{
 		super.setVisibleColumns(visibleColumns);
-		
+
 		if(this.autoUpdateRequiredProperties)
 		{
 			final XdevBeanContainer<T> beanContainer = getContainerDataSource();
@@ -142,8 +164,8 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 			}
 		}
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -159,16 +181,16 @@ public class XdevTable<T> extends AbstractBeanTable<T>
 			this.setConverter(new IDToBeanCollectionConverter(this.getContainerDataSource()));
 		}
 	}
-	
-	
+
+
 	@Override
 	public void setPageLength(final int pageLength)
 	{
 		// FIXME property change to create new model!
 		super.setPageLength(pageLength);
 	}
-	
-	
+
+
 	@Override
 	public String getColumnHeader(final Object propertyId)
 	{

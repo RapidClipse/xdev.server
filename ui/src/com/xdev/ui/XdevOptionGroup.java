@@ -28,10 +28,13 @@ import com.vaadin.ui.OptionGroup;
  * Configures select to be used as an option group.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevOptionGroup extends OptionGroup
+public class XdevOptionGroup extends OptionGroup implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 *
 	 */
@@ -39,8 +42,8 @@ public class XdevOptionGroup extends OptionGroup
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 * @param options
@@ -49,8 +52,8 @@ public class XdevOptionGroup extends OptionGroup
 	{
 		super(caption,options);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 * @param dataSource
@@ -59,8 +62,8 @@ public class XdevOptionGroup extends OptionGroup
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 */
@@ -68,9 +71,30 @@ public class XdevOptionGroup extends OptionGroup
 	{
 		super(caption);
 	}
-
+	
+	
 	// init defaults
 	{
 		setImmediate(true);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

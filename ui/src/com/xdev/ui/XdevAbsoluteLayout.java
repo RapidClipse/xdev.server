@@ -26,15 +26,38 @@ import com.vaadin.ui.AbsoluteLayout;
  * positioning.
  *
  * @author XDEV Software
- *
+ * 		
  */
-public class XdevAbsoluteLayout extends AbsoluteLayout
+public class XdevAbsoluteLayout extends AbsoluteLayout implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+
+
 	/**
 	 * Creates an AbsoluteLayout with full size.
 	 */
 	public XdevAbsoluteLayout()
 	{
 		super();
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

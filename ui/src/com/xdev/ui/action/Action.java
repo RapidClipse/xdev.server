@@ -23,6 +23,7 @@ import java.beans.PropertyChangeListener;
 import com.vaadin.server.Resource;
 import com.xdev.ui.XdevButton;
 import com.xdev.ui.XdevMenuBar.XdevMenuItem;
+import com.xdev.ui.XdevNativeButton;
 import com.xdev.ui.XdevUI;
 import com.xdev.ui.event.ActionListener;
 
@@ -61,6 +62,7 @@ import com.xdev.ui.event.ActionListener;
  * Components currently supporting Action:
  * <ul>
  * <li>{@link XdevButton}</li>
+ * <li>{@link XdevNativeButton}</li>
  * <li>{@link XdevMenuItem}</li>
  * </ul>
  *
@@ -69,9 +71,9 @@ import com.xdev.ui.event.ActionListener;
  * @see ActionListener
  * @see AbstractAction
  * @see ContextSensitiveAction
- *		
+ * 		
  * @author XDEV Software
- *		
+ * 		
  */
 public interface Action extends ActionListener
 {
@@ -80,37 +82,37 @@ public interface Action extends ActionListener
 	 *
 	 * @see #setCaption(String)
 	 */
-	public final static String CAPTION_PROPERTY = "caption";
-	
+	public final static String	CAPTION_PROPERTY		= "caption";
+														
 	/**
 	 * Property name of the icon property.
 	 *
 	 * @see #setIcon(Resource)
 	 */
-	public final static String ICON_PROPERTY = "icon";
-	
+	public final static String	ICON_PROPERTY			= "icon";
+														
 	/**
 	 * Property name of the description property.
 	 *
 	 * @see #setDescription(String)
 	 */
-	public final static String DESCRIPTION_PROPERTY = "description";
-	
+	public final static String	DESCRIPTION_PROPERTY	= "description";
+														
 	/**
 	 * Property name of the enabled property.
 	 *
 	 * @see #setEnabled(boolean)
 	 */
-	public final static String ENABLED_PROPERTY = "enabled";
-	
+	public final static String	ENABLED_PROPERTY		= "enabled";
+														
 	/**
 	 * Property name of the shortcut property.
 	 *
 	 * @see #setShortcut(Shortcut)
 	 */
-	public final static String SHORTCUT_PROPERTY = "shortcut";
-	
-	
+	public final static String	SHORTCUT_PROPERTY		= "shortcut";
+														
+														
 	/**
 	 * Adds a <code>PropertyChange</code> listener. Containers and attached
 	 * components use these methods to register interest in this
@@ -121,8 +123,8 @@ public interface Action extends ActionListener
 	 *            a <code>PropertyChangeListener</code> object
 	 */
 	public void addPropertyChangeListener(PropertyChangeListener listener);
-	
-	
+
+
 	/**
 	 * Removes a <code>PropertyChange</code> listener.
 	 *
@@ -131,16 +133,16 @@ public interface Action extends ActionListener
 	 * @see #addPropertyChangeListener
 	 */
 	public void removePropertyChangeListener(PropertyChangeListener listener);
-	
-	
+
+
 	/**
 	 * Returns the UI object which this action is associated with.
 	 *
 	 * @return
 	 */
 	public XdevUI getUI();
-	
-	
+
+
 	/**
 	 * Returns the caption of this action, used e.g. as text for a
 	 * {@link XdevButton}.
@@ -148,8 +150,8 @@ public interface Action extends ActionListener
 	 * @return the caption of this action
 	 */
 	public String getCaption();
-	
-	
+
+
 	/**
 	 * Sets the caption of this action, used e.g. as text for a
 	 * {@link XdevButton}.
@@ -162,16 +164,16 @@ public interface Action extends ActionListener
 	 * @see #CAPTION_PROPERTY
 	 */
 	public void setCaption(String caption);
-	
-	
+
+
 	/**
 	 * Returns the icon of this action.
 	 *
 	 * @return
 	 */
 	public Resource getIcon();
-	
-	
+
+
 	/**
 	 * Returns the icon of this action.
 	 * <p>
@@ -183,8 +185,8 @@ public interface Action extends ActionListener
 	 * @see #ICON_PROPERTY
 	 */
 	public void setIcon(Resource icon);
-	
-	
+
+
 	/**
 	 * Returns the caption of this action, used e.g. as tool tip text for a
 	 * {@link XdevButton}.
@@ -192,8 +194,8 @@ public interface Action extends ActionListener
 	 * @return the caption of this action
 	 */
 	public String getDescription();
-	
-	
+
+
 	/**
 	 * Sets the description of this action, used e.g. as tool tip text for a
 	 * {@link XdevButton}.
@@ -206,16 +208,16 @@ public interface Action extends ActionListener
 	 * @see #DESCRIPTION_PROPERTY
 	 */
 	public void setDescription(String description);
-	
-	
+
+
 	/**
 	 * Returns the associated shortcut of this action.
 	 *
 	 * @return the shortcut of this action
 	 */
 	public Shortcut getShortcut();
-	
-	
+
+
 	/**
 	 * Sets the shortcut for this action. When the according keys are pressed in
 	 * the browser window, this action's {@link #actionPerformed(ActionEvent)}
@@ -232,8 +234,8 @@ public interface Action extends ActionListener
 	 * @see #SHORTCUT_PROPERTY
 	 */
 	public void setShortcut(Shortcut shortcut);
-	
-	
+
+
 	/**
 	 * Returns the enabled state of the <code>Action</code>. When enabled, any
 	 * component associated with this object is active and able to fire this
@@ -242,8 +244,8 @@ public interface Action extends ActionListener
 	 * @return true if this <code>Action</code> is enabled
 	 */
 	public boolean isEnabled();
-	
-	
+
+
 	/**
 	 * Sets the enabled state of the <code>Action</code>. When enabled, any
 	 * component associated with this object is active and able to fire this

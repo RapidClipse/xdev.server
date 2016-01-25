@@ -68,8 +68,9 @@ import com.xdev.ui.util.UIUtils;
  */
 // https://www.xdevissues.com/browse/XWS-666
 // @PreserveOnRefresh
-public abstract class XdevUI extends UI
+public abstract class XdevUI extends UI implements XdevComponent
 {
+	private final Extensions				extensions			= new Extensions();
 	private final FocusListener				focusNotifier		= this::focusedComponentChanged;
 	private final ComponentAttachListener	focusAttachListener	= event -> addFocusWatcher(
 			event.getAttachedComponent());
@@ -95,7 +96,7 @@ public abstract class XdevUI extends UI
 	 *
 	 * @param content
 	 *            the component to use as this UIs content.
-	 *
+	 * 			
 	 * @see #setContent(Component)
 	 */
 	public XdevUI(final Component content)
@@ -125,6 +126,26 @@ public abstract class XdevUI extends UI
 		// EntityManagerUtils.getEntityManager().close();
 		// }
 		// });
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 
 

@@ -26,10 +26,13 @@ import com.vaadin.ui.Flash;
  * A component for displaying Adobe� Flash� content.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevFlash extends Flash
+public class XdevFlash extends Flash implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Creates a new empty Flash component.
 	 */
@@ -37,11 +40,11 @@ public class XdevFlash extends Flash
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new Flash component with the given caption and content.
-	 * 
+	 *
 	 * @param caption
 	 *            The caption for the component
 	 * @param source
@@ -52,11 +55,11 @@ public class XdevFlash extends Flash
 	{
 		super(caption,source);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new empty Flash component with the given caption
-	 * 
+	 *
 	 * @param caption
 	 *            The caption for the component
 	 */
@@ -64,26 +67,26 @@ public class XdevFlash extends Flash
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * Sets the fullscreen allowed flag, short for
-	 * 
+	 *
 	 * <pre>
 	 * setParameter(&quot;allowFullScreen&quot;,String.valueOf(b));
 	 * </pre>
-	 * 
+	 *
 	 * @param b
 	 */
 	public void setFullscreenAllowed(final boolean b)
 	{
 		setParameter("allowFullScreen",String.valueOf(b));
 	}
-	
-	
+
+
 	/**
 	 * Returns the value of the fullscreen allowed flag, short for
-	 * 
+	 *
 	 * <pre>
 	 * &quot;true&quot;.equals(getParameter(&quot;allowFullScreen&quot;))
 	 * </pre>
@@ -93,5 +96,25 @@ public class XdevFlash extends Flash
 	public boolean isFullscreenAllowed()
 	{
 		return "true".equals(getParameter("allowFullScreen"));
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

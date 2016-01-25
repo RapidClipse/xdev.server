@@ -27,10 +27,12 @@ import com.vaadin.ui.CheckBox;
  * deselected, and which displays its state to the user.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevCheckBox extends CheckBox
+public class XdevCheckBox extends CheckBox implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
 	
 	/**
 	 * Creates a new checkbox.
@@ -39,11 +41,11 @@ public class XdevCheckBox extends CheckBox
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new checkbox with a caption and a set initial state.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption of the checkbox
 	 * @param initialState
@@ -53,11 +55,11 @@ public class XdevCheckBox extends CheckBox
 	{
 		super(caption,initialState);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new checkbox that is connected to a boolean property.
-	 * 
+	 *
 	 * @param state
 	 *            the Initial state of the switch-button.
 	 * @param dataSource
@@ -66,16 +68,36 @@ public class XdevCheckBox extends CheckBox
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new checkbox with a set caption.
-	 * 
+	 *
 	 * @param caption
 	 *            the Checkbox caption.
 	 */
 	public XdevCheckBox(final String caption)
 	{
 		super(caption);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

@@ -43,10 +43,13 @@ import com.vaadin.ui.TreeTable;
  * share UI state in the container.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevTreeTable extends TreeTable
+public class XdevTreeTable extends TreeTable implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Creates an empty TreeTable with a default container.
 	 */
@@ -54,11 +57,11 @@ public class XdevTreeTable extends TreeTable
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a TreeTable instance with given captions and data source.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption for the component
 	 * @param dataSource
@@ -68,16 +71,36 @@ public class XdevTreeTable extends TreeTable
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Creates an empty TreeTable with a default container.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption for the TreeTable
 	 */
 	public XdevTreeTable(final String caption)
 	{
 		super(caption);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

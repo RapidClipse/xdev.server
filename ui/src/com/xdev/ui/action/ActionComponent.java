@@ -32,9 +32,9 @@ import com.vaadin.ui.Component;
  *
  * @see Action
  * @see Component
- * 		
+ *
  * @author XDEV Software
- * 		
+ *
  */
 public interface ActionComponent
 {
@@ -44,8 +44,8 @@ public interface ActionComponent
 	 * @return this component's action
 	 */
 	public Action getAction();
-
-
+	
+	
 	/**
 	 * Connects this component with an action. Properties like text, icon and
 	 * the enabled state will be used from the action.
@@ -58,8 +58,8 @@ public interface ActionComponent
 	 *            the connected action
 	 */
 	public void setAction(Action action);
-
-
+	
+	
 	/**
 	 * Sets the caption of the component.
 	 *
@@ -67,35 +67,35 @@ public interface ActionComponent
 	 *            the new caption for the component. If the caption is
 	 *            {@code null}, no caption is shown and it does not normally
 	 *            take any space
-	 * 			
+	 *
 	 * @see Component#setCaption(String)
 	 */
 	public void setCaption(String caption);
-
-
+	
+	
 	/**
 	 * Sets the icon of the component.
 	 *
 	 * @param icon
 	 *            the icon of the component. If null, no icon is shown and it
 	 *            does not normally take any space
-	 * 			
+	 *
 	 * @see Component#setIcon(Resource)
 	 */
 	public void setIcon(Resource icon);
-
-
+	
+	
 	/**
 	 * Sets the component's description.
 	 *
 	 * @param description
 	 *            the new description string for the component
-	 * 			
+	 *
 	 * @see AbstractComponent#setDescription(String)
 	 */
 	public void setDescription(String description);
-
-
+	
+	
 	/**
 	 * Enables or disables the component. The user can not interact disabled
 	 * components, which are shown with a style that indicates the status,
@@ -104,13 +104,13 @@ public interface ActionComponent
 	 * @param enabled
 	 *            a boolean value specifying if the component should be enabled
 	 *            or not
-	 * 			
+	 *
 	 * @see Component#setEnabled(boolean)
 	 */
 	public void setEnabled(boolean enabled);
-
-
-
+	
+	
+	
 	public static class Utils
 	{
 		public static void setComponentPropertiesFromAction(final ActionComponent component,
@@ -122,22 +122,22 @@ public interface ActionComponent
 			component.setEnabled(action.isEnabled());
 		}
 	}
-
-
-
+	
+	
+	
 	public static class ActionPropertyChangeListener implements PropertyChangeListener
 	{
 		private final ActionComponent	component;
 		private final Action			action;
-
-
+										
+										
 		public ActionPropertyChangeListener(final ActionComponent component, final Action action)
 		{
 			this.component = component;
 			this.action = action;
 		}
-
-
+		
+		
 		@Override
 		public void propertyChange(final PropertyChangeEvent event)
 		{
@@ -146,15 +146,15 @@ public interface ActionComponent
 				case Action.CAPTION_PROPERTY:
 					component.setCaption(action.getCaption());
 				break;
-
+				
 				case Action.ICON_PROPERTY:
 					component.setIcon(action.getIcon());
 				break;
-
+				
 				case Action.DESCRIPTION_PROPERTY:
 					component.setDescription(action.getDescription());
 				break;
-
+				
 				case Action.ENABLED_PROPERTY:
 					component.setEnabled(action.isEnabled());
 				break;

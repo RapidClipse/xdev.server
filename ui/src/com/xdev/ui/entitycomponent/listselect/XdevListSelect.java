@@ -21,6 +21,7 @@ package com.xdev.ui.entitycomponent.listselect;
 import java.util.Collection;
 
 import com.vaadin.data.util.BeanItem;
+import com.xdev.ui.XdevComponent;
 import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
@@ -34,14 +35,15 @@ import com.xdev.util.CaptionUtils;
  * lazyloading, and other advanced features.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevListSelect<T> extends AbstractBeanListSelect<T>
+public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements XdevComponent
 {
-	private boolean	itemCaptionFromAnnotation	= true;
-	private String	itemCaptionValue			= null;
-												
-												
+	private final Extensions	extensions					= new Extensions();
+	private boolean				itemCaptionFromAnnotation	= true;
+	private String				itemCaptionValue			= null;
+															
+															
 	/**
 	 *
 	 */
@@ -49,8 +51,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 */
@@ -58,8 +60,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	{
 		super(caption);
 	}
-
-
+	
+	
 	// init defaults
 	{
 		setImmediate(true);
@@ -67,11 +69,31 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
+	}
+	
+	
+	/**
 	 * Sets if the item's caption should be derived from its {@link Caption}
 	 * annotation.
 	 *
 	 * @see CaptionResolver
-	 *
+	 *		
 	 * @param itemCaptionFromAnnotation
 	 *            the itemCaptionFromAnnotation to set
 	 */
@@ -79,8 +101,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	{
 		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
 	 * @return if the item's caption should be derived from its {@link Caption}
 	 *         annotation
@@ -89,8 +111,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	{
 		return this.itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
 	 * Sets a user defined caption value for the items to display.
 	 *
@@ -103,8 +125,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	{
 		this.itemCaptionValue = itemCaptionValue;
 	}
-
-
+	
+	
 	/**
 	 * Returns the user defined caption value for the items to display
 	 *
@@ -114,8 +136,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	{
 		return this.itemCaptionValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -127,11 +149,11 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-
+				
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -142,8 +164,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 	{
 		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -156,11 +178,11 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-
+		
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -176,8 +198,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 			this.setConverter(new IDToBeanCollectionConverter(this.getContainerDataSource()));
 		}
 	}
-
-
+	
+	
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
@@ -205,7 +227,7 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T>
 				}
 			}
 		}
-
+		
 		return super.getItemCaption(itemId);
 	}
 }

@@ -39,6 +39,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import com.xdev.res.StringResourceUtils;
+import com.xdev.ui.XdevComponent;
 import com.xdev.ui.XdevGridLayout;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.util.CaptionUtils;
@@ -47,15 +48,19 @@ import com.xdev.util.JPAMetaDataUtils;
 
 /**
  * @author XDEV Software
- * 		
+ *		
+ * @since 1.0.2
  */
-public class XdevContainerFilterComponent extends CustomComponent implements FilterSettings
+public class XdevContainerFilterComponent extends CustomComponent
+		implements FilterSettings, XdevComponent
 {
 	public final static String			FILTER_ADD_BUTTON_CLASS		= "x-containerfilter-add-button";
 	public final static String			FILTER_REMOVE_BUTTON_CLASS	= "x-containerfilter-remove-button";
 	public final static String			FILTER_SEARCHFIELD_CLASS	= "x-containerfilter-searchfield";
 	public final static String			FILTER_COMBOBOX_CLASS		= "x-containerfilter-combobox";
 	public final static String			FILTER_EDITOR_CLASS			= "x-containerfilter-editor";
+																	
+	private final Extensions			extensions					= new Extensions();
 																	
 	private final VerticalLayout		rootLayout;
 	private final TextFilterField		searchTextField;
@@ -468,5 +473,25 @@ public class XdevContainerFilterComponent extends CustomComponent implements Fil
 		}
 		
 		return propertyType;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

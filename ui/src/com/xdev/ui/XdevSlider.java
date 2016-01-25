@@ -25,24 +25,27 @@ import com.vaadin.ui.Slider;
  * A component for selecting a numerical value within a range.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevSlider extends Slider
+public class XdevSlider extends Slider implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Default slider constructor. Sets all values to defaults and the slide
 	 * handle at minimum value.
-	 * 
+	 *
 	 */
 	public XdevSlider()
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Create a new slider with the given range and resolution.
-	 * 
+	 *
 	 * @param min
 	 *            The minimum value of the slider
 	 * @param max
@@ -54,11 +57,11 @@ public class XdevSlider extends Slider
 	{
 		super(min,max,resolution);
 	}
-	
-	
+
+
 	/**
 	 * Create a new slider with the given range that only allows integer values.
-	 * 
+	 *
 	 * @param min
 	 *            The minimum value of the slider
 	 * @param max
@@ -68,12 +71,12 @@ public class XdevSlider extends Slider
 	{
 		super(min,max);
 	}
-	
-	
+
+
 	/**
 	 * Create a new slider with the given caption and range that only allows
 	 * integer values.
-	 * 
+	 *
 	 * @param caption
 	 *            The caption for the slider
 	 * @param min
@@ -85,19 +88,39 @@ public class XdevSlider extends Slider
 	{
 		super(caption,min,max);
 	}
-	
-	
+
+
 	/**
 	 * Create a new slider with the caption given as parameter.
-	 * 
+	 *
 	 * The range of the slider is set to 0-100 and only integer values are
 	 * allowed.
-	 * 
+	 *
 	 * @param caption
 	 *            The caption for this slider (e.g. "Volume").
 	 */
 	public XdevSlider(final String caption)
 	{
 		super(caption);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

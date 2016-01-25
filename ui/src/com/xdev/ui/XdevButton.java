@@ -36,64 +36,18 @@ import com.xdev.ui.event.ActionEvent;
  *
  * @see #setAction(Action)
  * @see Action
- *
+ * 		
  * @author XDEV Software
  */
 
-public class XdevButton extends Button implements ActionComponent
+public class XdevButton extends Button implements XdevComponent, ActionComponent
 {
+	private final Extensions		extensions	= new Extensions();
 	private Action					action;
 	private PropertyChangeListener	actionPropertyChangeListener;
 	private ClickListener			actionClickListener;
-	
-	
-	public XdevButton(final Action action)
-	{
-		setAction(action);
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setAction(final Action action)
-	{
-		if(!Objects.equals(action,this.action))
-		{
-			if(this.action != null)
-			{
-				this.action.removePropertyChangeListener(this.actionPropertyChangeListener);
-				this.actionPropertyChangeListener = null;
-				removeClickListener(this.actionClickListener);
-				this.actionClickListener = null;
-			}
-			
-			this.action = action;
-			
-			if(action != null)
-			{
-				Utils.setComponentPropertiesFromAction(this,action);
-				this.actionPropertyChangeListener = new ActionPropertyChangeListener(this,action);
-				action.addPropertyChangeListener(this.actionPropertyChangeListener);
-				this.actionClickListener = event -> action
-						.actionPerformed(new ActionEvent(XdevButton.this));
-				addClickListener(this.actionClickListener);
-			}
-		}
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Action getAction()
-	{
-		return this.action;
-	}
-	
-	
+									
+									
 	/**
 	 * Creates a button with no set text or icon.
 	 */
@@ -152,5 +106,72 @@ public class XdevButton extends Button implements ActionComponent
 	public XdevButton(final String caption, final Resource icon)
 	{
 		super(caption,icon);
+	}
+	
+	
+	public XdevButton(final Action action)
+	{
+		setAction(action);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setAction(final Action action)
+	{
+		if(!Objects.equals(action,this.action))
+		{
+			if(this.action != null)
+			{
+				this.action.removePropertyChangeListener(this.actionPropertyChangeListener);
+				this.actionPropertyChangeListener = null;
+				removeClickListener(this.actionClickListener);
+				this.actionClickListener = null;
+			}
+			
+			this.action = action;
+			
+			if(action != null)
+			{
+				Utils.setComponentPropertiesFromAction(this,action);
+				this.actionPropertyChangeListener = new ActionPropertyChangeListener(this,action);
+				action.addPropertyChangeListener(this.actionPropertyChangeListener);
+				this.actionClickListener = event -> action
+						.actionPerformed(new ActionEvent(XdevButton.this));
+				addClickListener(this.actionClickListener);
+			}
+		}
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Action getAction()
+	{
+		return this.action;
 	}
 }

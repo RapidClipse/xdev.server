@@ -28,10 +28,13 @@ import com.vaadin.ui.Panel;
  * The panel displays scrollbars if the content gets too big to display.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevPanel extends Panel
+public class XdevPanel extends Panel implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Creates a new empty panel.
 	 */
@@ -39,11 +42,11 @@ public class XdevPanel extends Panel
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new empty panel which contains the given content.
-	 * 
+	 *
 	 * @param content
 	 *            the content for the panel.
 	 */
@@ -51,11 +54,11 @@ public class XdevPanel extends Panel
 	{
 		super(content);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new empty panel with the given caption and content.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption of the panel (HTML).
 	 * @param content
@@ -65,16 +68,36 @@ public class XdevPanel extends Panel
 	{
 		super(caption,content);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new empty panel with caption.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption used in the panel (HTML).
 	 */
 	public XdevPanel(final String caption)
 	{
 		super(caption);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

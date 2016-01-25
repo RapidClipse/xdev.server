@@ -50,10 +50,13 @@ import com.vaadin.ui.themes.Runo;
  * time they are shown, but this may change in future releases.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevTabSheet extends TabSheet
+public class XdevTabSheet extends TabSheet implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Constructs a new TabSheet. A TabSheet is immediate by default, and the
 	 * default close handler removes the tab being closed.
@@ -62,8 +65,8 @@ public class XdevTabSheet extends TabSheet
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Constructs a new TabSheet containing the given components.
 	 *
@@ -74,5 +77,25 @@ public class XdevTabSheet extends TabSheet
 	public XdevTabSheet(final Component... components)
 	{
 		super(components);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

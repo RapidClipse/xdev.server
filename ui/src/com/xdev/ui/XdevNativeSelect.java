@@ -31,10 +31,13 @@ import com.vaadin.ui.NativeSelect;
  * better choice.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevNativeSelect extends NativeSelect
+public class XdevNativeSelect extends NativeSelect implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 *
 	 */
@@ -42,8 +45,8 @@ public class XdevNativeSelect extends NativeSelect
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 * @param options
@@ -52,8 +55,8 @@ public class XdevNativeSelect extends NativeSelect
 	{
 		super(caption,options);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 * @param dataSource
@@ -62,13 +65,33 @@ public class XdevNativeSelect extends NativeSelect
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 */
 	public XdevNativeSelect(final String caption)
 	{
 		super(caption);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

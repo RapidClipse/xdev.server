@@ -32,10 +32,13 @@ import com.vaadin.ui.Component;
  * .v-accordion-item-first and .v-accordion-item-caption styles.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevAccordion extends Accordion
+public class XdevAccordion extends Accordion implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Creates an empty accordion.
 	 */
@@ -43,8 +46,8 @@ public class XdevAccordion extends Accordion
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Constructs a new accordion containing the given components.
 	 *
@@ -55,5 +58,25 @@ public class XdevAccordion extends Accordion
 	public XdevAccordion(final Component... components)
 	{
 		super(components);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

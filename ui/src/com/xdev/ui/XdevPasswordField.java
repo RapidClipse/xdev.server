@@ -27,10 +27,13 @@ import com.vaadin.ui.PasswordField;
  * entered text is not displayed on the screen.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevPasswordField extends PasswordField
+public class XdevPasswordField extends PasswordField implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Constructs an empty PasswordField.
 	 */
@@ -38,11 +41,11 @@ public class XdevPasswordField extends PasswordField
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a PasswordField with given property data source.
-	 * 
+	 *
 	 * @param dataSource
 	 *            the property data source for the field
 	 */
@@ -50,11 +53,11 @@ public class XdevPasswordField extends PasswordField
 	{
 		super(dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a PasswordField with given caption and property data source.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption for the field
 	 * @param dataSource
@@ -64,11 +67,11 @@ public class XdevPasswordField extends PasswordField
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a PasswordField with given value and caption.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption for the field
 	 * @param value
@@ -78,16 +81,36 @@ public class XdevPasswordField extends PasswordField
 	{
 		super(caption,value);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a PasswordField with given caption.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption for the field
 	 */
 	public XdevPasswordField(final String caption)
 	{
 		super(caption);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

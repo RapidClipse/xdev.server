@@ -39,10 +39,13 @@ import com.vaadin.ui.VerticalSplitPanel;
  * </pre>
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevVerticalSplitPanel extends VerticalSplitPanel
+public class XdevVerticalSplitPanel extends VerticalSplitPanel implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Creates an empty vertical split panel
 	 */
@@ -50,8 +53,8 @@ public class XdevVerticalSplitPanel extends VerticalSplitPanel
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a vertical split panel containing the given components
 	 *
@@ -65,8 +68,29 @@ public class XdevVerticalSplitPanel extends VerticalSplitPanel
 		super(firstComponent,secondComponent);
 	}
 	
+	
 	// init defaults
 	{
 		setSplitPosition(getSplitPosition(),Unit.PIXELS);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

@@ -35,8 +35,11 @@ import com.vaadin.ui.VerticalLayout;
  * @author XDEV Software
  *
  */
-public class XdevFormLayout extends FormLayout
+public class XdevFormLayout extends FormLayout implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Constructs an empty FormLayout.
 	 */
@@ -44,8 +47,8 @@ public class XdevFormLayout extends FormLayout
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a FormLayout and adds the given components to it.
 	 *
@@ -58,10 +61,31 @@ public class XdevFormLayout extends FormLayout
 	{
 		super(children);
 	}
-
+	
+	
 	// init defaults
 	{
 		setMargin(true);
 		setSpacing(true);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

@@ -26,10 +26,13 @@ import com.vaadin.ui.TextArea;
  * A text field that supports multi line editing.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevTextArea extends TextArea
+public class XdevTextArea extends TextArea implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Constructs an empty TextArea.
 	 */
@@ -37,11 +40,11 @@ public class XdevTextArea extends TextArea
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a TextArea with given property data source.
-	 * 
+	 *
 	 * @param dataSource
 	 *            the data source for the field
 	 */
@@ -49,11 +52,11 @@ public class XdevTextArea extends TextArea
 	{
 		super(dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a TextArea with given caption and property data source.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption for the field
 	 * @param dataSource
@@ -63,11 +66,11 @@ public class XdevTextArea extends TextArea
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a TextArea with given caption and value.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption for the field
 	 * @param value
@@ -77,16 +80,36 @@ public class XdevTextArea extends TextArea
 	{
 		super(caption,value);
 	}
-	
-	
+
+
 	/**
 	 * Constructs an empty TextArea with given caption.
-	 * 
+	 *
 	 * @param caption
 	 *            the caption for the field.
 	 */
 	public XdevTextArea(final String caption)
 	{
 		super(caption);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

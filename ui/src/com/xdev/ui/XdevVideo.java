@@ -38,15 +38,18 @@ import com.vaadin.ui.Video;
  * >Mozilla Developer Network</a>.
  *
  * Multiple sources can be specified. Which of the sources is used is selected
- * by the browser depending on which file formats it supports. See <a
- * href="http://en.wikipedia.org/wiki/HTML5_video#Table">wikipedia</a> for a
+ * by the browser depending on which file formats it supports. See
+ * <a href="http://en.wikipedia.org/wiki/HTML5_video#Table">wikipedia</a> for a
  * table of formats supported by different browsers.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevVideo extends Video
+public class XdevVideo extends Video implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 *
 	 */
@@ -54,8 +57,8 @@ public class XdevVideo extends Video
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 *            The caption for this video.
@@ -66,8 +69,8 @@ public class XdevVideo extends Video
 	{
 		super(caption,source);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 *            The caption for this video.
@@ -76,8 +79,8 @@ public class XdevVideo extends Video
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * @return the first source pointed to in this media
 	 */
@@ -89,5 +92,25 @@ public class XdevVideo extends Video
 			return sources.get(0);
 		}
 		return null;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

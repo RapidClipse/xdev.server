@@ -27,10 +27,13 @@ import com.vaadin.ui.Tree;
  * a hierarchical set of items.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevTree extends Tree
+public class XdevTree extends Tree implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Creates a new empty tree.
 	 */
@@ -38,11 +41,11 @@ public class XdevTree extends Tree
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new tree with caption and connect it to a Container.
-	 * 
+	 *
 	 * @param caption
 	 * @param dataSource
 	 */
@@ -50,15 +53,35 @@ public class XdevTree extends Tree
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new empty tree with caption.
-	 * 
+	 *
 	 * @param caption
 	 */
 	public XdevTree(final String caption)
 	{
 		super(caption);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

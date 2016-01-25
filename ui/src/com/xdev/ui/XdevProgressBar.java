@@ -31,10 +31,13 @@ import com.vaadin.ui.ProgressBar;
  * running but without providing any information about the current progress.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevProgressBar extends ProgressBar
+public class XdevProgressBar extends ProgressBar implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Creates a new progress bar initially set to 0% progress.
 	 */
@@ -42,11 +45,11 @@ public class XdevProgressBar extends ProgressBar
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new progress bar with the given initial value.
-	 * 
+	 *
 	 * @param progress
 	 *            the initial progress value
 	 */
@@ -54,16 +57,36 @@ public class XdevProgressBar extends ProgressBar
 	{
 		super(progress);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new progress bar bound to the given data source.
-	 * 
+	 *
 	 * @param dataSource
 	 *            the property to bind this progress bar to
 	 */
 	public XdevProgressBar(final Property<?> dataSource)
 	{
 		super(dataSource);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 }

@@ -35,10 +35,13 @@ import com.vaadin.ui.VerticalLayout;
  * is by default 100% wide.
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevVerticalLayout extends VerticalLayout
+public class XdevVerticalLayout extends VerticalLayout implements XdevComponent
 {
+	private final Extensions extensions = new Extensions();
+	
+	
 	/**
 	 * Constructs an empty VerticalLayout.
 	 */
@@ -46,14 +49,14 @@ public class XdevVerticalLayout extends VerticalLayout
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a VerticalLayout with the given components. The components are
 	 * added in the given order.
-	 * 
+	 *
 	 * @see AbstractOrderedLayout#addComponents(Component...)
-	 * 
+	 * 		
 	 * @param children
 	 *            The components to add.
 	 */
@@ -61,11 +64,32 @@ public class XdevVerticalLayout extends VerticalLayout
 	{
 		super(children);
 	}
-
+	
+	
 	// init defaults
 	{
 		setMargin(true);
 		setSpacing(true);
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
 	}
 	
 	
@@ -84,8 +108,8 @@ public class XdevVerticalLayout extends VerticalLayout
 		addComponent(component);
 		setComponentAlignment(component,alignment);
 	}
-	
-	
+
+
 	public void setExpandRatios(final float... ratios)
 	{
 		for(int i = 0; i < ratios.length; i++)
@@ -93,8 +117,8 @@ public class XdevVerticalLayout extends VerticalLayout
 			setExpandRatio(getComponent(i),ratios[i]);
 		}
 	}
-	
-	
+
+
 	public void addSpacer()
 	{
 		if(!hasExpandingComponent())
@@ -104,8 +128,8 @@ public class XdevVerticalLayout extends VerticalLayout
 			setExpandRatio(spacer,1f);
 		}
 	}
-	
-	
+
+
 	public boolean hasExpandingComponent()
 	{
 		for(int column = 0, columnCount = getComponentCount(); column < columnCount; column++)
@@ -115,12 +139,12 @@ public class XdevVerticalLayout extends VerticalLayout
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
-	
-	
+
+
+
 	protected static class Spacer extends CustomComponent
 	{
 		public Spacer()

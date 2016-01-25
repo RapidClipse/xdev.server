@@ -46,18 +46,19 @@ import com.vaadin.ui.GridLayout;
  * </p>
  *
  * @author XDEV Software
- *
+ *		
  */
-public class XdevGridLayout extends GridLayout
+public class XdevGridLayout extends GridLayout implements XdevComponent
 {
 	public static enum AutoFill
 	{
 		BOTH, HORIZONTAL, VERTICAL, NONE
 	}
-
-	private AutoFill	autoFill	= AutoFill.BOTH;
-
-
+	
+	private AutoFill			autoFill	= AutoFill.BOTH;
+	private final Extensions	extensions	= new Extensions();
+											
+											
 	/**
 	 * Constructs an empty (1x1) grid layout that is extended as needed.
 	 */
@@ -65,14 +66,14 @@ public class XdevGridLayout extends GridLayout
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Constructs a GridLayout of given size (number of columns and rows) and
 	 * adds the given components in order to the grid.
 	 *
 	 * @see #addComponents(Component...)
-	 *
+	 *		
 	 * @param columns
 	 *            Number of columns in the grid.
 	 * @param rows
@@ -84,8 +85,8 @@ public class XdevGridLayout extends GridLayout
 	{
 		super(columns,rows,children);
 	}
-
-
+	
+	
 	/**
 	 * Constructor for a grid of given size (number of columns and rows).
 	 *
@@ -101,14 +102,35 @@ public class XdevGridLayout extends GridLayout
 	{
 		super(columns,rows);
 	}
-
+	
+	
 	// init defaults
 	{
 		setMargin(true);
 		setSpacing(true);
 	}
-
-
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
+	}
+	
+	
 	/**
 	 * @param autoFill
 	 *            the autoFill to set
@@ -117,8 +139,8 @@ public class XdevGridLayout extends GridLayout
 	{
 		this.autoFill = autoFill;
 	}
-
-
+	
+	
 	/**
 	 * @return the autoFill
 	 */
@@ -126,8 +148,8 @@ public class XdevGridLayout extends GridLayout
 	{
 		return this.autoFill;
 	}
-
-
+	
+	
 	/**
 	 * Adds the component to the grid in cells column1,row1 (NortWest corner of
 	 * the area.) End coordinates (SouthEast corner of the area) are the same as
@@ -154,8 +176,8 @@ public class XdevGridLayout extends GridLayout
 		addComponent(component,column,row);
 		setComponentAlignment(component,alignment);
 	}
-
-
+	
+	
 	/**
 	 * <p>
 	 * Adds a component to the grid in the specified area. The area is defined
@@ -192,14 +214,14 @@ public class XdevGridLayout extends GridLayout
 	 *             if the cells are outside the grid area.
 	 */
 	public void addComponent(final Component component, final int column1, final int row1,
-			final int column2, final int row2, final Alignment alignment) throws OverlapsException,
-			OutOfBoundsException
+			final int column2, final int row2, final Alignment alignment)
+					throws OverlapsException, OutOfBoundsException
 	{
 		addComponent(component,column1,row1,column2,row2);
 		setComponentAlignment(component,alignment);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -216,11 +238,11 @@ public class XdevGridLayout extends GridLayout
 		{
 			setRows(row2 + 1);
 		}
-
+		
 		super.addComponent(component,column1,row1,column2,row2);
 	}
-
-
+	
+	
 	public void setColumnExpandRatios(final float... ratios)
 	{
 		for(int column = 0; column < ratios.length; column++)
@@ -228,8 +250,8 @@ public class XdevGridLayout extends GridLayout
 			setColumnExpandRatio(column,ratios[column]);
 		}
 	}
-
-
+	
+	
 	public void setRowExpandRatios(final float... ratios)
 	{
 		for(int row = 0; row < ratios.length; row++)
@@ -237,34 +259,34 @@ public class XdevGridLayout extends GridLayout
 			setRowExpandRatio(row,ratios[row]);
 		}
 	}
-
-
+	
+	
 	public void addSpacer()
 	{
 		addSpacer(this.autoFill == AutoFill.BOTH || this.autoFill == AutoFill.HORIZONTAL,
 				this.autoFill == AutoFill.BOTH || this.autoFill == AutoFill.VERTICAL);
 	}
-
-
+	
+	
 	public void addSpacer(final boolean horizontal, final boolean vertical)
 	{
 		final int columnCount = getColumns();
 		final int rowCount = getRows();
-
+		
 		if(!hasExpandingColumn())
 		{
 			addComponent(new Spacer(),columnCount,0,columnCount,rowCount - 1);
 			setColumnExpandRatio(columnCount,1f);
 		}
-
+		
 		if(!hasExpandingRow())
 		{
 			addComponent(new Spacer(),0,rowCount,columnCount - 1,rowCount);
 			setRowExpandRatio(rowCount,1f);
 		}
 	}
-
-
+	
+	
 	public boolean hasExpandingColumn()
 	{
 		for(int column = 0, columnCount = getColumns(); column < columnCount; column++)
@@ -274,11 +296,11 @@ public class XdevGridLayout extends GridLayout
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
-
-
+	
+	
 	public boolean hasExpandingRow()
 	{
 		for(int row = 0, rowCount = getRows(); row < rowCount; row++)
@@ -288,12 +310,12 @@ public class XdevGridLayout extends GridLayout
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
-
-
-
+	
+	
+	
 	protected static class Spacer extends CustomComponent
 	{
 		public Spacer()

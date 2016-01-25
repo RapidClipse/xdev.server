@@ -23,7 +23,6 @@ import java.util.List;
 import com.xdev.dal.DAOs;
 import com.xdev.security.authentication.AuthenticationFailedException;
 import com.xdev.security.authentication.Authenticator;
-import com.xdev.security.authentication.AuthenticatorLoginInfo;
 import com.xdev.security.authentication.CredentialsUsernamePassword;
 
 
@@ -31,16 +30,14 @@ import com.xdev.security.authentication.CredentialsUsernamePassword;
  * @author XDEV Software (JW)
  */
 
-public final class DBAuthenticator
-		implements Authenticator<CredentialsUsernamePassword, CredentialsUsernamePassword>,
-		AuthenticatorLoginInfo
+public class DBAuthenticator
+		implements Authenticator<CredentialsUsernamePassword, CredentialsUsernamePassword>
 {
 	
 	private final Class<? extends CredentialsUsernamePassword>	authenticationEntityType;
 	private DBHashStrategy										hashStrategy	= new DBHashStrategy.SHA2();
-	private boolean												hasPassedLogin	= false;
-	
-	
+																				
+																				
 	/**
 	 *
 	 */
@@ -83,24 +80,15 @@ public final class DBAuthenticator
 					{
 						if(!(hashedPassword[i] == entity.password()[i]))
 						{
-							this.hasPassedLogin = false;
 							throw new AuthenticationFailedException();
 						}
 					}
-					this.hasPassedLogin = true;
 					return entity;
 				}
 			}
 		}
 		
 		throw new AuthenticationFailedException();
-	}
-	
-	
-	@Override
-	public boolean hasPassedLogin()
-	{
-		return this.hasPassedLogin;
 	}
 	
 	

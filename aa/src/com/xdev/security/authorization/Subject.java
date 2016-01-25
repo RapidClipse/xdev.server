@@ -180,7 +180,7 @@ public interface Subject
 	 * is thread-safe.
 	 *
 	 * @author XDEV Software (TM)
-	 *		
+	 *
 	 */
 	public class Implementation implements Subject.Mutable
 	{
@@ -191,8 +191,8 @@ public interface Subject
 		private final String						name;
 		private volatile Set<Role>					roles;
 		private transient Map<Resource, Permission>	effectivePermissions	= null;
-		
-		
+
+
 		///////////////////////////////////////////////////////////////////////////
 		// constructors //
 		/////////////////
@@ -300,6 +300,11 @@ public interface Subject
 			this.clearCachedEffectivePermissions();
 		}
 		
+		
+		@Override
+		public String toString()
+		{
+			return this.name;
+		}
 	}
-	
 }

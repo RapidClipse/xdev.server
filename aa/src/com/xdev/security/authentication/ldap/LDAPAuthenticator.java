@@ -20,90 +20,63 @@ package com.xdev.security.authentication.ldap;
 
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
 
 import com.xdev.security.authentication.AuthenticationFailedException;
 import com.xdev.security.authentication.Authenticator;
-import com.xdev.security.authentication.AuthenticatorProvider;
 import com.xdev.security.authentication.CredentialsUsernamePassword;
 
 
 /**
- * @author XDEV Software (JW)
+ * @author XDEV Software
  */
 
-// TODO return type should be login meta data object
-public final class LDAPAuthenticator
-		implements Authenticator<CredentialsUsernamePassword, DirContext>
+public class LDAPAuthenticator implements Authenticator<CredentialsUsernamePassword, DirContext>
 {
-
 	// /////////////////////////////////////////////////////////////////////////
 	// instance fields //
 	// //////////////////
-
-	final LDAPConfiguration	configuration;
-	static DirContext		ldapContext;
-
-
+	
+	private final LDAPConfiguration configuration;
+	
+	
 	// /////////////////////////////////////////////////////////////////////////
 	// constructors //
 	// ///////////////
-
+	
 	public LDAPAuthenticator(final LDAPConfiguration configuration)
 	{
 		super();
+		
 		this.configuration = configuration;
-
 	}
-
-
+	
+	
 	// /////////////////////////////////////////////////////////////////////////
 	// declared methods //
 	// ///////////////////
-
+	
 	public final DirContext authenticate(final String username, final String password)
 			throws AuthenticationFailedException
 	{
 		return this.authenticate(CredentialsUsernamePassword.New(username,password));
 	}
-
-
+	
+	
 	// /////////////////////////////////////////////////////////////////////////
 	// override methods //
 	// ///////////////////
-
+	
 	@Override
 	public final DirContext authenticate(final CredentialsUsernamePassword credentials)
 			throws AuthenticationFailedException
 	{
-		try
+		try (LDAPRealm realm = new LDAPRealm(this.configuration,credentials))
 		{
-			this.configuration.setPrincipal(credentials.username());
-			this.configuration.setCredential(new String(credentials.password()));
-			ldapContext = new InitialDirContext(
-					this.configuration.getLdapEnviromentConfiguration());
-			return ldapContext;
+			return realm.getLdapContext();
 		}
 		catch(final NamingException e)
 		{
 			throw new AuthenticationFailedException(e);
 		}
 	}
-
-
-
-	/**
-	 * An {@link LDAPAuthenticator}-specific provider type.
-	 *
-	 * @author XDEV Software (TM)
-	 */
-	public interface Provider extends AuthenticatorProvider<CredentialsUsernamePassword, DirContext>
-	{
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public LDAPAuthenticator provideAuthenticator();
-	}
-
 }

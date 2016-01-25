@@ -15,10 +15,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.security.authentication.ldap;
+package com.xdev.security.authorization;
 
 
-public interface Builder<Representation>
+/**
+ * Marker interface for central resource collection enums.
+ *
+ * @author XDEV Software
+ */
+public interface ResourceEnum<E extends Enum<E> & ResourceEnum<E>>
 {
-	public Representation build();
+	/**
+	 * Gets the actual resource held by this enum entry.
+	 *
+	 * @return the actual resource
+	 */
+	public Resource resource();
 }

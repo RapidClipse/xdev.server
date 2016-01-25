@@ -15,10 +15,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.security.authentication;
+package com.xdev.security.authorization.db;
 
 
-public interface AuthenticatorLoginInfo
+import java.util.Collection;
+
+
+/**
+ *
+ * @author XDEV Software (CK)
+ */
+public interface AuthorizationRole
 {
-	public boolean hasPassedLogin();
+	public String name();
+	
+	
+	public Collection<? extends AuthorizationResource> resources();
+	
+	
+	public Collection<? extends AuthorizationRole> roles();
 }

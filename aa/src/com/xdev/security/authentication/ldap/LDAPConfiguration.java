@@ -20,167 +20,192 @@ package com.xdev.security.authentication.ldap;
 
 import java.util.Hashtable;
 
-import javax.naming.Context;
+import com.xdev.security.authentication.CredentialsUsernamePassword;
 
 
+/**
+ *
+ * @author XDEV Software
+ */
 public class LDAPConfiguration
 {
-	private final String					providerUrl;
-	private String							principal, credential;
-	
+	public static class LDAPConfigurationBuilder
+	{
+		private final String	providerUrl;
+
+		// Optional
+		private String			suffix	= "";
+		private String			searchbase;
+		private String			securityAuthentication;
+		private String			securityProtocol;
+
+
+		public LDAPConfigurationBuilder(final String providerUrl)
+		{
+			this.providerUrl = providerUrl;
+		}
+
+
+		public LDAPConfigurationBuilder suffix(final String suffix)
+		{
+			this.suffix = suffix;
+			return this;
+		}
+
+
+		public LDAPConfigurationBuilder searchBase(final String searchBase)
+		{
+			this.searchbase = searchBase;
+			return this;
+		}
+
+
+		public LDAPConfigurationBuilder securityAuthentication(final String securityAuthentication)
+		{
+			this.securityAuthentication = securityAuthentication;
+			return this;
+		}
+
+
+		public LDAPConfigurationBuilder securityProtocol(final String securityProtocol)
+		{
+			this.securityProtocol = securityProtocol;
+			return this;
+		}
+
+
+		/**
+		 * @deprecated not used anymore, will be removed in a future release
+		 */
+		@Deprecated
+		public LDAPConfigurationBuilder contextFactory(final String contextFactory)
+		{
+			return this;
+		}
+
+
+		public LDAPConfiguration build()
+		{
+			return new LDAPConfiguration(this);
+		}
+	}
+
+	private final String	providerUrl;
+
 	// Optional
-	private final String					searchbase, securityAuthentication, securityProtocol, /*
-																								 * default
-																								 * is
-																								 * jndi
-																								 */
-											contextFactory;
-	
-	private final Hashtable<String, String>	ldapEnviromentConfiguration;
-	
-	
+	private final String	suffix;
+	private final String	searchbase;
+	private final String	securityAuthentication;
+	private final String	securityProtocol;
+
+
 	/**
 	 *
 	 */
 	private LDAPConfiguration(final LDAPConfigurationBuilder builder)
 	{
 		this.providerUrl = builder.providerUrl;
-		
+
 		// optionals
+		this.suffix = builder.suffix;
 		this.searchbase = builder.searchbase;
 		this.securityAuthentication = builder.securityAuthentication;
 		this.securityProtocol = builder.securityProtocol;
-		this.contextFactory = builder.contextFactory;
-		
-		this.ldapEnviromentConfiguration = new Hashtable<String, String>();
-		this.ldapEnviromentConfiguration.put(Context.INITIAL_CONTEXT_FACTORY,
-				this.getContextFactory());
-		this.ldapEnviromentConfiguration.put(Context.PROVIDER_URL,this.getProviderUrl());
-		this.ldapEnviromentConfiguration.put(Context.SECURITY_AUTHENTICATION,
-				this.getSecurityAuthentication());
-		
-		if(getSecurityProtocol() != null && !getSecurityProtocol().isEmpty())
-		{
-			this.ldapEnviromentConfiguration.put(Context.SECURITY_PROTOCOL,
-					this.getSecurityAuthentication());
-		}
 	}
-	
-	
-	
-	public static class LDAPConfigurationBuilder implements
-			com.xdev.security.authentication.ldap.Builder<LDAPConfiguration>
+
+
+	public String getSuffix()
 	{
-		private final String	providerUrl;
-		
-		// Optional
-		private String			searchbase, securityAuthentication = "none", securityProtocol,
-				contextFactory = "com.sun.jndi.ldap.LdapCtxFactory";
-		
-		
-		/**
- *
- */
-		public LDAPConfigurationBuilder(final String providerUrl)
-		{
-			this.providerUrl = providerUrl;
-		}
-		
-		
-		public LDAPConfigurationBuilder searchBase(final String searchBase)
-		{
-			this.searchbase = searchBase;
-			return this;
-		}
-		
-		
-		public LDAPConfigurationBuilder securityAuthentication(final String securityAuthentication)
-		{
-			this.securityAuthentication = securityAuthentication;
-			return this;
-		}
-		
-		
-		public LDAPConfigurationBuilder securityProtocol(final String securityProtocol)
-		{
-			this.securityProtocol = securityProtocol;
-			return this;
-		}
-		
-		
-		public LDAPConfigurationBuilder contextFactory(final String contextFactory)
-		{
-			this.contextFactory = contextFactory;
-			return this;
-		}
-		
-		
-		@Override
-		public LDAPConfiguration build()
-		{
-			return new LDAPConfiguration(this);
-		}
+		return this.suffix;
 	}
-	
-	
-	public void setPrincipal(final String principal)
-	{
-		this.principal = principal;
-		this.ldapEnviromentConfiguration.put(Context.SECURITY_PRINCIPAL,this.getPrincipal());
-	}
-	
-	
-	public void setCredential(final String credential)
-	{
-		this.credential = credential;
-		this.ldapEnviromentConfiguration.put(Context.SECURITY_CREDENTIALS,this.getCredential());
-	}
-	
-	
+
+
 	public String getProviderUrl()
 	{
 		return this.providerUrl;
 	}
-	
-	
-	public String getPrincipal()
-	{
-		return this.principal;
-	}
-	
-	
-	public String getCredential()
-	{
-		return this.credential;
-	}
-	
-	
+
+
 	public String getSearchbase()
 	{
 		return this.searchbase;
 	}
-	
-	
+
+
 	public String getSecurityAuthentication()
 	{
 		return this.securityAuthentication;
 	}
-	
-	
+
+
 	public String getSecurityProtocol()
 	{
 		return this.securityProtocol;
 	}
-	
-	
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Deprected stuff //
+	///////////////////
+
+	/**
+	 * @deprecated replaced with {@link CredentialsUsernamePassword}, will be
+	 *             removed in a future release
+	 */
+	@Deprecated
+	public void setPrincipal(final String principal)
+	{
+	}
+
+
+	/**
+	 * @deprecated replaced with {@link CredentialsUsernamePassword}, will be
+	 *             removed in a future release
+	 */
+	@Deprecated
+	public void setCredential(final String credential)
+	{
+	}
+
+
+	/**
+	 * @deprecated replaced with {@link CredentialsUsernamePassword}, will be
+	 *             removed in a future release
+	 */
+	@Deprecated
+	public String getPrincipal()
+	{
+		return null;
+	}
+
+
+	/**
+	 * @deprecated replaced with {@link CredentialsUsernamePassword}, will be
+	 *             removed in a future release
+	 */
+	@Deprecated
+	public String getCredential()
+	{
+		return null;
+	}
+
+
+	/**
+	 * @deprecated not used anymore, will be removed in a future release
+	 */
+	@Deprecated
 	public String getContextFactory()
 	{
-		return this.contextFactory;
+		return null;
 	}
-	
-	
+
+
+	/**
+	 * @deprecated not used anymore, will be removed in a future release
+	 */
+	@Deprecated
 	public Hashtable<String, String> getLdapEnviromentConfiguration()
 	{
-		return this.ldapEnviromentConfiguration;
+		return null;
 	}
 }

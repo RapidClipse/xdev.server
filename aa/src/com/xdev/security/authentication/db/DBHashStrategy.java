@@ -22,6 +22,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Random;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -29,84 +30,74 @@ import javax.crypto.spec.PBEKeySpec;
 
 public interface DBHashStrategy
 {
-	// TODO customize salt strength?
 	public byte[] hashPassword(final byte[] password);
 
 
 
-	public class MD5 implements DBHashStrategy
+	public static abstract class MessageDigestStrategy implements DBHashStrategy
 	{
-
 		@Override
 		public byte[] hashPassword(final byte[] password)
 		{
 			try
 			{
-				final MessageDigest md5Digest = MessageDigest.getInstance("MD5");
-				return md5Digest.digest(password);
+				return MessageDigest.getInstance(getAlgorithm()).digest(password);
 			}
 			catch(final NoSuchAlgorithmException e)
 			{
 				throw new RuntimeException(e);
 			}
 		}
-
+		
+		
+		public abstract String getAlgorithm();
 	}
 
 
 
-	public class SHA2 implements DBHashStrategy
+	public static class MD5 extends MessageDigestStrategy
 	{
-
 		@Override
-		public byte[] hashPassword(final byte[] password)
+		public String getAlgorithm()
 		{
-			try
-			{
-				final MessageDigest sha256Digest = MessageDigest.getInstance("SHA-256");
-				return sha256Digest.digest(password);
-			}
-			catch(final NoSuchAlgorithmException e)
-			{
-				throw new RuntimeException(e);
-			}
+			return "MD5";
 		}
 	}
 
 
 
-	public class SHA1 implements DBHashStrategy
+	public static class SHA2 extends MessageDigestStrategy
 	{
-
 		@Override
-		public byte[] hashPassword(final byte[] password)
+		public String getAlgorithm()
 		{
-			try
-			{
-				final MessageDigest sha256Digest = MessageDigest.getInstance("SHA-1");
-				return sha256Digest.digest(password);
-			}
-			catch(final NoSuchAlgorithmException e)
-			{
-				throw new RuntimeException(e);
-			}
+			return "SHA-256";
 		}
 	}
 
 
 
-	// TODO random key storage within db
-	public class PBKDF2WithHmacSHA1 implements DBHashStrategy
+	public static class SHA1 extends MessageDigestStrategy
+	{
+		@Override
+		public String getAlgorithm()
+		{
+			return "SHA-1";
+		}
+	}
+
+
+
+	public static class PBKDF2WithHmacSHA1 implements DBHashStrategy
 	{
 		@Override
 		public byte[] hashPassword(final byte[] password)
 		{
 			final byte[] salt = new byte[16];
+			new Random().nextBytes(salt);
+
 			byte[] hash = null;
-			for(int i = 0; i < 16; i++)
-			{
-				salt[i] = (byte)i;
-			}
+
 			try
 			{
 				final KeySpec spec = new PBEKeySpec(new String(password).toCharArray(),salt,65536,
@@ -115,15 +106,11 @@ public interface DBHashStrategy
 				hash = f.generateSecret(spec).getEncoded();
 
 			}
-			catch(final NoSuchAlgorithmException nsale)
+			catch(final NoSuchAlgorithmException | InvalidKeySpecException e)
 			{
-				nsale.printStackTrace();
+				throw new RuntimeException(e);
+			}
 
-			}
-			catch(final InvalidKeySpecException ikse)
-			{
-				ikse.printStackTrace();
-			}
 			return hash;
 		}
 	}

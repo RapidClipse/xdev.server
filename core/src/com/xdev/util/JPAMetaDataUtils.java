@@ -51,9 +51,14 @@ public final class JPAMetaDataUtils
 		}
 
 		final Metamodel metamodel = entityManager.getMetamodel();
-		ManagedType<?> entityType = metamodel.managedType(entityClass);
-		if(entityType == null)
+		ManagedType<?> entityType = null;
+		try
 		{
+			entityType = metamodel.managedType(entityClass);
+		}
+		catch(final IllegalArgumentException e)
+		{
+			// not a managed type, XWS-870
 			return null;
 		}
 
@@ -61,9 +66,14 @@ public final class JPAMetaDataUtils
 		for(int i = 0; i < parts.length - 1; i++)
 		{
 			final String name = parts[i];
-			final Attribute<?, ?> attribute = entityType.getAttribute(name);
-			if(attribute == null)
+			Attribute<?, ?> attribute = null;
+			try
 			{
+				attribute = entityType.getAttribute(name);
+			}
+			catch(final IllegalArgumentException e)
+			{
+				// attribute not found, XWS-870
 				return null;
 			}
 			entityClass = attribute.getJavaType();
@@ -71,9 +81,13 @@ public final class JPAMetaDataUtils
 			{
 				return null;
 			}
-			entityType = metamodel.managedType(entityClass);
-			if(entityType == null)
+			try
 			{
+				entityType = metamodel.managedType(entityClass);
+			}
+			catch(final IllegalArgumentException e)
+			{
+				// not a managed type, XWS-870
 				return null;
 			}
 		}

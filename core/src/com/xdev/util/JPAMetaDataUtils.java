@@ -31,7 +31,7 @@ import com.xdev.communication.EntityManagerUtils;
 
 /**
  * @author XDEV Software
- *
+ *		
  * @noapi <strong>For internal use only. This class is subject to change in the
  *        future.</strong>
  */
@@ -40,8 +40,8 @@ public final class JPAMetaDataUtils
 	private JPAMetaDataUtils()
 	{
 	}
-
-
+	
+	
 	public static Attribute<?, ?> resolveAttribute(Class<?> entityClass, final String propertyPath)
 	{
 		final EntityManager entityManager = EntityManagerUtils.getEntityManager();
@@ -49,7 +49,7 @@ public final class JPAMetaDataUtils
 		{
 			return null;
 		}
-
+		
 		final Metamodel metamodel = entityManager.getMetamodel();
 		ManagedType<?> entityType = null;
 		try
@@ -61,7 +61,7 @@ public final class JPAMetaDataUtils
 			// not a managed type, XWS-870
 			return null;
 		}
-
+		
 		final String[] parts = propertyPath.split("\\.");
 		for(int i = 0; i < parts.length - 1; i++)
 		{
@@ -91,11 +91,19 @@ public final class JPAMetaDataUtils
 				return null;
 			}
 		}
-
-		return entityType.getAttribute(parts[parts.length - 1]);
+		
+		try
+		{
+			return entityType.getAttribute(parts[parts.length - 1]);
+		}
+		catch(final IllegalArgumentException e)
+		{
+			// attribute not found, XWS-870
+			return null;
+		}
 	}
-
-
+	
+	
 	public static boolean isManaged(final Class<?> clazz)
 	{
 		return clazz.getAnnotation(Entity.class) != null

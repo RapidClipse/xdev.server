@@ -31,7 +31,7 @@ import com.xdev.communication.EntityManagerUtils;
 
 /**
  * @author XDEV Software
- *
+ *		
  * @noapi <strong>For internal use only. This class is subject to change in the
  *        future.</strong>
  */
@@ -40,8 +40,8 @@ public final class JPAMetaDataUtils
 	private JPAMetaDataUtils()
 	{
 	}
-
-
+	
+	
 	public static Attribute<?, ?> resolveAttribute(Class<?> entityClass, final String propertyPath)
 	{
 		final EntityManager entityManager = EntityManagerUtils.getEntityManager();
@@ -49,21 +49,31 @@ public final class JPAMetaDataUtils
 		{
 			return null;
 		}
-
+		
 		final Metamodel metamodel = entityManager.getMetamodel();
-		ManagedType<?> entityType = metamodel.managedType(entityClass);
-		if(entityType == null)
+		ManagedType<?> entityType = null;
+		try
 		{
+			entityType = metamodel.managedType(entityClass);
+		}
+		catch(final IllegalArgumentException e)
+		{
+			// not a managed type, XWS-870
 			return null;
 		}
-
+		
 		final String[] parts = propertyPath.split("\\.");
 		for(int i = 0; i < parts.length - 1; i++)
 		{
 			final String name = parts[i];
-			final Attribute<?, ?> attribute = entityType.getAttribute(name);
-			if(attribute == null)
+			Attribute<?, ?> attribute = null;
+			try
 			{
+				attribute = entityType.getAttribute(name);
+			}
+			catch(final IllegalArgumentException e)
+			{
+				// attribute not found, XWS-870
 				return null;
 			}
 			entityClass = attribute.getJavaType();
@@ -71,17 +81,29 @@ public final class JPAMetaDataUtils
 			{
 				return null;
 			}
-			entityType = metamodel.managedType(entityClass);
-			if(entityType == null)
+			try
 			{
+				entityType = metamodel.managedType(entityClass);
+			}
+			catch(final IllegalArgumentException e)
+			{
+				// not a managed type, XWS-870
 				return null;
 			}
 		}
-
-		return entityType.getAttribute(parts[parts.length - 1]);
+		
+		try
+		{
+			return entityType.getAttribute(parts[parts.length - 1]);
+		}
+		catch(final IllegalArgumentException e)
+		{
+			// attribute not found, XWS-870
+			return null;
+		}
 	}
-
-
+	
+	
 	public static boolean isManaged(final Class<?> clazz)
 	{
 		return clazz.getAnnotation(Entity.class) != null

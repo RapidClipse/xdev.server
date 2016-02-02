@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.security.authorization.db;
+package com.xdev.security.authorization.jpa;
 
 
 import java.util.Collection;
@@ -27,8 +27,8 @@ import java.util.Collection;
  */
 public interface AuthorizationSubject
 {
-	public String name();
-	
-	
+	public String subjectName();
+
+
 	public Collection<? extends AuthorizationRole> roles();
 }

@@ -18,88 +18,22 @@
 package com.xdev.security.authentication.db;
 
 
-import java.util.List;
-
-import com.xdev.dal.DAOs;
-import com.xdev.security.authentication.AuthenticationFailedException;
-import com.xdev.security.authentication.Authenticator;
 import com.xdev.security.authentication.CredentialsUsernamePassword;
+import com.xdev.security.authentication.jpa.JPAAuthenticator;
 
 
 /**
  * @author XDEV Software (JW)
+ * 		
+ * @deprecated replaced by {@link JPAAuthenticator}, will be removed in a future
+ *             release
  */
-
-public class DBAuthenticator
-		implements Authenticator<CredentialsUsernamePassword, CredentialsUsernamePassword>
+@Deprecated
+public class DBAuthenticator extends JPAAuthenticator
 {
-	
-	private final Class<? extends CredentialsUsernamePassword>	authenticationEntityType;
-	private DBHashStrategy										hashStrategy	= new DBHashStrategy.SHA2();
-																				
-																				
-	/**
-	 *
-	 */
 	public DBAuthenticator(
 			final Class<? extends CredentialsUsernamePassword> authenticationEntityType)
 	{
-		this.authenticationEntityType = authenticationEntityType;
-	}
-	
-	
-	public final CredentialsUsernamePassword authenticate(final String username,
-			final String password) throws AuthenticationFailedException
-	{
-		return this.authenticate(CredentialsUsernamePassword.New(username,password.getBytes()));
-	}
-	
-	
-	@Override
-	public CredentialsUsernamePassword authenticate(final CredentialsUsernamePassword credentials)
-			throws AuthenticationFailedException
-	{
-		return checkCredentials(credentials);
-	}
-	
-	
-	protected CredentialsUsernamePassword checkCredentials(
-			final CredentialsUsernamePassword credentials) throws AuthenticationFailedException
-	{
-		final byte[] hashedPassword = this.hashStrategy.hashPassword(credentials.password());
-		final List<? extends CredentialsUsernamePassword> entities = DAOs
-				.getByEntityType(this.authenticationEntityType).findAll();
-		for(final Object object : entities)
-		{
-			final CredentialsUsernamePassword entity = (CredentialsUsernamePassword)object;
-			if(entity.username().equals(credentials.username()))
-			{
-				if(hashedPassword.length == entity.password().length)
-				{
-					for(int i = 0; i < hashedPassword.length; i++)
-					{
-						if(!(hashedPassword[i] == entity.password()[i]))
-						{
-							throw new AuthenticationFailedException();
-						}
-					}
-					return entity;
-				}
-			}
-		}
-		
-		throw new AuthenticationFailedException();
-	}
-	
-	
-	public DBHashStrategy getHashStrategy()
-	{
-		return this.hashStrategy;
-	}
-	
-	
-	public void setHashStrategy(final DBHashStrategy hashStrategy)
-	{
-		this.hashStrategy = hashStrategy;
+		super(authenticationEntityType);
 	}
 }

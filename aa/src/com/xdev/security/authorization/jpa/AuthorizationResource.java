@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.security.authorization.db;
+package com.xdev.security.authorization.jpa;
 
 
 /**

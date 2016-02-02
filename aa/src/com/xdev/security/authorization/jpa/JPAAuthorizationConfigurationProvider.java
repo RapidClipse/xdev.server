@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.security.authorization.db;
+package com.xdev.security.authorization.jpa;
 
 
 import java.util.Collection;
@@ -35,12 +35,12 @@ import com.xdev.security.authorization.AuthorizationConfigurationProvider;
  *
  * @author XDEV Software (CK)
  */
-public class DBAuthorizationConfigurationProvider implements AuthorizationConfigurationProvider
+public class JPAAuthorizationConfigurationProvider implements AuthorizationConfigurationProvider
 {
 	///////////////////////////////////////////////////////////////////////////
 	// static methods //
 	///////////////////
-	
+
 	public static final AuthorizationConfiguration build(
 			final Class<? extends AuthorizationSubject> subjectEntityType,
 			final Class<? extends AuthorizationRole> roleEntityType,
@@ -50,46 +50,46 @@ public class DBAuthorizationConfigurationProvider implements AuthorizationConfig
 		final Map<String, Set<String>> roleRoles = new HashMap<String, Set<String>>();
 		final Map<String, Map<String, Integer>> rolePermissions = new HashMap<String, Map<String, Integer>>();
 		final Map<String, Set<String>> subjectRoles = new HashMap<String, Set<String>>();
-		
+
 		final List<? extends AuthorizationSubject> subjects = DAOs
 				.getByEntityType(subjectEntityType).findAll();
 		final List<? extends AuthorizationRole> roles = DAOs.getByEntityType(roleEntityType)
 				.findAll();
 		final List<? extends AuthorizationResource> resources = DAOs
 				.getByEntityType(resourceEntityType).findAll();
-				
+
 		for(final AuthorizationSubject subject : subjects)
 		{
-			subjectRoles.put(subject.name(),unboxRoles(subject.roles()));
+			subjectRoles.put(subject.subjectName(),unboxRoles(subject.roles()));
 		}
-		
+
 		for(final AuthorizationRole role : roles)
 		{
-			rolePermissions.put(role.name(),unboxResources(role.resources()));
-			roleRoles.put(role.name(),unboxRoles(role.roles()));
+			rolePermissions.put(role.roleName(),unboxResources(role.resources()));
+			roleRoles.put(role.roleName(),unboxRoles(role.roles()));
 		}
-		
+
 		for(final AuthorizationResource resource : resources)
 		{
 			resourceResources.put(resource.resourceName(),new HashSet<String>());
 		}
-		
+
 		return AuthorizationConfiguration.New(resourceResources,roleRoles,rolePermissions,
 				subjectRoles);
 	}
-	
-	
+
+
 	private static Set<String> unboxRoles(final Collection<? extends AuthorizationRole> roles)
 	{
 		if(roles == null)
 		{
 			return null;
 		}
-		
-		return roles.stream().map(AuthorizationRole::name).collect(Collectors.toSet());
+
+		return roles.stream().map(AuthorizationRole::roleName).collect(Collectors.toSet());
 	}
-	
-	
+
+
 	private static Map<String, Integer> unboxResources(
 			final Collection<? extends AuthorizationResource> resources)
 	{
@@ -97,25 +97,25 @@ public class DBAuthorizationConfigurationProvider implements AuthorizationConfig
 		{
 			return null;
 		}
-		
+
 		return resources.stream()
 				.collect(Collectors.toMap(AuthorizationResource::resourceName,r -> 1));
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////
 	// instance fields //
 	////////////////////
-	
+
 	private final Class<? extends AuthorizationSubject>		subjectEntityType;
 	private final Class<? extends AuthorizationRole>		roleEntityType;
 	private final Class<? extends AuthorizationResource>	resourceEntityType;
-															
-															
+
+
 	///////////////////////////////////////////////////////////////////////////
 	// constructors //
 	/////////////////
-	
-	public DBAuthorizationConfigurationProvider(
+
+	public JPAAuthorizationConfigurationProvider(
 			final Class<? extends AuthorizationSubject> subjectEntityType,
 			final Class<? extends AuthorizationRole> roleEntityType,
 			final Class<? extends AuthorizationResource> resourceEntityType)
@@ -124,12 +124,12 @@ public class DBAuthorizationConfigurationProvider implements AuthorizationConfig
 		this.roleEntityType = roleEntityType;
 		this.resourceEntityType = resourceEntityType;
 	}
-	
-	
+
+
 	///////////////////////////////////////////////////////////////////////////
 	// override methods //
 	/////////////////////
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

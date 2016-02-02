@@ -18,100 +18,52 @@
 package com.xdev.security.authentication.db;
 
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.util.Random;
-
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
+import com.xdev.security.authentication.jpa.HashStrategy;
 
 
-public interface DBHashStrategy
+/**
+ * @author XDEV Software (JW)
+ * @deprecated replaced by {@link HashStrategy}, will be removed in a future
+ *             release
+ */
+@Deprecated
+public interface DBHashStrategy extends HashStrategy
 {
-	public byte[] hashPassword(final byte[] password);
-
-
-
-	public static abstract class MessageDigestStrategy implements DBHashStrategy
+	/**
+	 * @deprecated see {@link DBHashStrategy}
+	 */
+	@Deprecated
+	public static class MD5 extends HashStrategy.MD5
 	{
-		@Override
-		public byte[] hashPassword(final byte[] password)
-		{
-			try
-			{
-				return MessageDigest.getInstance(getAlgorithm()).digest(password);
-			}
-			catch(final NoSuchAlgorithmException e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
-		
-		
-		public abstract String getAlgorithm();
 	}
-
-
-
-	public static class MD5 extends MessageDigestStrategy
+	
+	
+	
+	/**
+	 * @deprecated see {@link DBHashStrategy}
+	 */
+	@Deprecated
+	public static class SHA2 extends HashStrategy.SHA2
 	{
-		@Override
-		public String getAlgorithm()
-		{
-			return "MD5";
-		}
 	}
-
-
-
-	public static class SHA2 extends MessageDigestStrategy
+	
+	
+	
+	/**
+	 * @deprecated see {@link DBHashStrategy}
+	 */
+	@Deprecated
+	public static class SHA1 extends HashStrategy.SHA1
 	{
-		@Override
-		public String getAlgorithm()
-		{
-			return "SHA-256";
-		}
 	}
-
-
-
-	public static class SHA1 extends MessageDigestStrategy
+	
+	
+	
+	/**
+	 * @deprecated see {@link DBHashStrategy}
+	 */
+	@Deprecated
+	public static class PBKDF2WithHmacSHA1 extends HashStrategy.PBKDF2WithHmacSHA1
 	{
-		@Override
-		public String getAlgorithm()
-		{
-			return "SHA-1";
-		}
-	}
-
-
-
-	public static class PBKDF2WithHmacSHA1 implements DBHashStrategy
-	{
-		@Override
-		public byte[] hashPassword(final byte[] password)
-		{
-			final byte[] salt = new byte[16];
-			new Random().nextBytes(salt);
-
-			byte[] hash = null;
-
-			try
-			{
-				final KeySpec spec = new PBEKeySpec(new String(password).toCharArray(),salt,65536,
-						128);
-				final SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-				hash = f.generateSecret(spec).getEncoded();
-
-			}
-			catch(final NoSuchAlgorithmException | InvalidKeySpecException e)
-			{
-				throw new RuntimeException(e);
-			}
-
-			return hash;
-		}
 	}
 }

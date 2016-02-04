@@ -18,10 +18,10 @@
 package com.xdev.security.authorization.ui;
 
 
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
-import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.xdev.security.authorization.Permission;
 import com.xdev.security.authorization.Resource;
@@ -42,6 +42,55 @@ import com.xdev.ui.XdevComponent;
 @FunctionalInterface
 public interface SubjectEvaluatingComponentExtension
 {
+	public static interface Builder
+	{
+		public Builder add(final Resource resource, final SubjectEvaluationStrategy strategy);
+		
+		
+		public SubjectEvaluatingComponentExtension build();
+		
+		
+		public static Builder New()
+		{
+			return new Implementation();
+		}
+
+
+
+		public static class Implementation implements Builder
+		{
+			protected final Map<Resource, SubjectEvaluationStrategy> resourceStrategies;
+
+
+			public Implementation()
+			{
+				super();
+
+				this.resourceStrategies = new LinkedHashMap<>();
+			}
+			
+			
+			@Override
+			public Builder add(final Resource resource, final SubjectEvaluationStrategy strategy)
+			{
+				requireNonNull(resource);
+				requireNonNull(strategy);
+				
+				this.resourceStrategies.put(resource,strategy);
+				
+				return this;
+			}
+
+
+			@Override
+			public SubjectEvaluatingComponentExtension build()
+			{
+				return SubjectEvaluatingComponentExtension.New(this.resourceStrategies);
+			}
+		}
+	}
+	
+	
 	/**
 	 * Evaluates the passed {@link Subject} instance by checking if it has
 	 * sufficient {@link Permission}s for the component's {@link Resource}s.
@@ -51,48 +100,45 @@ public interface SubjectEvaluatingComponentExtension
 	 *            the {@link Subject} instance to be evaluated.
 	 */
 	public void evaluateSubject(final XdevComponent component, final Subject subject);
-
-
-	public static SubjectEvaluatingComponentExtension New(final SubjectEvaluationStrategy strategy,
-			final Resource... resources)
+	
+	
+	public static SubjectEvaluatingComponentExtension New(final Resource resource,
+			final SubjectEvaluationStrategy strategy)
 	{
-		requireNonNull(resources);
-		return New(strategy,asList(resources));
+		return Builder.New().add(resource,strategy).build();
 	}
-
-
-	public static SubjectEvaluatingComponentExtension New(final SubjectEvaluationStrategy strategy,
-			final Collection<Resource> resources)
+	
+	
+	public static SubjectEvaluatingComponentExtension New(
+			final Map<Resource, SubjectEvaluationStrategy> resourceStrategies)
 	{
-		return new Implementation(strategy,resources);
+		return new Implementation(resourceStrategies);
 	}
-
-
-
+	
+	
+	
 	public static class Implementation implements SubjectEvaluatingComponentExtension
 	{
-		protected final SubjectEvaluationStrategy	strategy;
-		protected final Collection<Resource>		resources;
-
-
-		protected Implementation(final SubjectEvaluationStrategy strategy,
-				final Collection<Resource> resources)
+		protected final Map<Resource, SubjectEvaluationStrategy> resourceStrategies;
+		
+		
+		protected Implementation(final Map<Resource, SubjectEvaluationStrategy> resourceStrategies)
 		{
-			requireNonNull(strategy);
-			requireNonNull(resources);
-
-			this.strategy = strategy;
-			this.resources = resources;
+			requireNonNull(resourceStrategies);
+			
+			this.resourceStrategies = resourceStrategies;
 		}
-
-
+		
+		
 		@Override
 		public void evaluateSubject(final XdevComponent component, final Subject subject)
 		{
-			final Resource denied = this.resources.stream()
-					.filter(resource -> !subject.hasPermission(resource)).findAny().orElse(null);
-			final boolean hasPermission = denied == null;
-			this.strategy.subjectEvaluated(component,hasPermission);
+			this.resourceStrategies.entrySet().forEach(entry -> {
+				final Resource resource = entry.getKey();
+				final SubjectEvaluationStrategy strategy = entry.getValue();
+				final boolean hasPermission = subject.hasPermission(resource);
+				strategy.subjectEvaluated(component,hasPermission);
+			});
 		}
 	}
 }

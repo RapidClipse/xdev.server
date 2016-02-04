@@ -18,10 +18,6 @@
 package com.xdev.security.authorization.ui;
 
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
@@ -38,20 +34,20 @@ public final class Authorization
 	private Authorization()
 	{
 	}
-	
-	
+
+
 	public static void setAuthorizationManager(final AuthorizationManager authorizationManager)
 	{
 		UI.getCurrent().getSession().setAttribute(AuthorizationManager.class,authorizationManager);
 	}
-	
-	
+
+
 	public static AuthorizationManager getAuthorizationManager()
 	{
 		return UI.getCurrent().getSession().getAttribute(AuthorizationManager.class);
 	}
-	
-	
+
+
 	public static Resource getResource(final String name)
 	{
 		final AuthorizationManager authorizationManager = getAuthorizationManager();
@@ -61,33 +57,15 @@ public final class Authorization
 		}
 		return authorizationManager.resource(name);
 	}
-	
-	
-	public static void setSubjectEvaluatingComponentExtension(final XdevComponent component,
-			final SubjectEvaluationStrategy strategy, final String... resourceNames)
-	{
-		final List<Resource> resources = Arrays.stream(resourceNames)
-				.map(Authorization::getResource).collect(Collectors.toList());
-		setSubjectEvaluatingComponentExtension(component,
-				SubjectEvaluatingComponentExtension.New(strategy,resources));
-	}
-	
-	
-	public static void setSubjectEvaluatingComponentExtension(final XdevComponent component,
-			final SubjectEvaluationStrategy strategy, final Resource... resources)
-	{
-		setSubjectEvaluatingComponentExtension(component,
-				SubjectEvaluatingComponentExtension.New(strategy,resources));
-	}
-	
-	
+
+
 	public static void setSubjectEvaluatingComponentExtension(final XdevComponent component,
 			final SubjectEvaluatingComponentExtension extension)
 	{
 		component.addExtension(SubjectEvaluatingComponentExtension.class,extension);
 	}
-	
-	
+
+
 	public static void evaluateComponents(final XdevComponent root)
 	{
 		if(Authentication.isUserLoggedIn())
@@ -95,12 +73,12 @@ public final class Authorization
 			evaluateComponents(root,Authentication.getUser());
 		}
 	}
-	
-	
+
+
 	public static void evaluateComponents(final XdevComponent root, final Subject subject)
 	{
 		evaluateComponent(root,subject);
-		
+
 		Iterable<?> children = null;
 		if(root instanceof HasComponents)
 		{
@@ -125,8 +103,8 @@ public final class Authorization
 			}
 		}
 	}
-	
-	
+
+
 	public static void evaluateComponent(final XdevComponent component, final Subject subject)
 	{
 		final SubjectEvaluatingComponentExtension extension = component

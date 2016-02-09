@@ -22,14 +22,18 @@ import java.util.Collection;
 
 import com.vaadin.data.Container;
 import com.vaadin.ui.OptionGroup;
+import com.xdev.ui.entitycomponent.BeanComponent;
 
 
 /**
- * Configures select to be used as an option group.
- *
  * @author XDEV Software
  *		
+ *
+ * @deprecated replaced by
+ *             {@link com.xdev.ui.entitycomponent.listselect.XdevOptionGroup}
+ *             which is now a {@link BeanComponent}
  */
+@Deprecated
 public class XdevOptionGroup extends OptionGroup implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
@@ -77,8 +81,8 @@ public class XdevOptionGroup extends OptionGroup implements XdevComponent
 	{
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -87,8 +91,8 @@ public class XdevOptionGroup extends OptionGroup implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

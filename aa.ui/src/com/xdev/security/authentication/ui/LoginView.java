@@ -19,12 +19,32 @@ package com.xdev.security.authentication.ui;
 
 
 import com.vaadin.navigator.View;
+import com.xdev.ui.XdevView;
 
 
+/**
+ * A login view is used for authentication in an application.
+ *
+ * @see XdevAuthenticationNavigator
+ * @see XdevView
+ *		
+ * @author XDEV Software
+ *		
+ */
 public interface LoginView extends View
 {
-	public String getPassword();
-
-
+	/**
+	 * Returns the username of the login form.
+	 *
+	 * @return the username
+	 */
 	public String getUsername();
+	
+	
+	/**
+	 * Returns the password of the login form.
+	 *
+	 * @return the password
+	 */
+	public String getPassword();
 }

@@ -29,6 +29,12 @@ import com.xdev.security.authorization.Subject;
 import com.xdev.ui.XdevComponent;
 
 
+/**
+ * Utility class for authorization purposes.
+ *
+ * @author XDEV Software
+ *		
+ */
 public final class Authorization
 {
 	private Authorization()
@@ -55,7 +61,12 @@ public final class Authorization
 		{
 			throw new IllegalStateException("No authorization manager has been initialized");
 		}
-		return authorizationManager.resource(name);
+		final Resource resource = authorizationManager.resource(name);
+		if(resource == null)
+		{
+			throw new IllegalArgumentException("Resource not found: " + name);
+		}
+		return resource;
 	}
 
 

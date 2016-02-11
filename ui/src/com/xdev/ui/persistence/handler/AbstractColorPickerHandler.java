@@ -14,38 +14,33 @@ public class AbstractColorPickerHandler extends AbstractComponentHandler<Abstrac
 	protected static final String	KEY_RED		= "red";
 	protected static final String	KEY_GREEN	= "green";
 	protected static final String	KEY_BLUE	= "blue";
-
-
+												
+												
 	@Override
 	public Class<AbstractColorPicker> handledType()
 	{
 		return AbstractColorPicker.class;
 	}
-	
-	
+
+
 	@Override
 	protected void addEntryValues(final Map<String, Object> entryValues,
 			final AbstractColorPicker component)
 	{
 		super.addEntryValues(entryValues,component);
-
+		
 		entryValues.put(KEY_RED,component.getColor().getRed());
 		entryValues.put(KEY_GREEN,component.getColor().getGreen());
 		entryValues.put(KEY_BLUE,component.getColor().getBlue());
 	}
-	
-	
+
+
 	@Override
 	public void restore(final AbstractColorPicker component, final GuiPersistenceEntry entry)
 	{
 		super.restore(component,entry);
-		
-		component.setColor(new Color(
-				Integer.valueOf(entry.value(KEY_RED).toString().substring(0,
-						entry.value(KEY_RED).toString().length() - 2)),
-				Integer.valueOf(entry.value(KEY_GREEN).toString().substring(0,
-						entry.value(KEY_GREEN).toString().length() - 2)),
-				Integer.valueOf(entry.value(KEY_BLUE).toString().substring(0,
-						entry.value(KEY_BLUE).toString().length() - 2))));
+
+		component.setColor(new Color((int)entry.value(KEY_RED),(int)entry.value(KEY_GREEN),
+				(int)entry.value(KEY_BLUE)));
 	}
 }

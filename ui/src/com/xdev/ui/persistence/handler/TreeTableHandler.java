@@ -38,8 +38,8 @@ public class TreeTableHandler extends AbstractComponentHandler<TreeTable>
 		entryValues.put(KEY_VALUE,component.getValue());
 		entryValues.put(KEY_SORT_CONTAINER_PROPERTY_ID,component.getSortContainerPropertyId());
 
-		final Object[] comVisCol = new Object[component.getVisibleColumns().length];
-		final Object[] widthCol = new Object[component.getVisibleColumns().length];
+		final boolean[] comVisCol = new boolean[component.getVisibleColumns().length];
+		final int[] widthCol = new int[component.getVisibleColumns().length];
 		final Object[] allColumns = component.getVisibleColumns();
 		int i = 0;
 
@@ -82,9 +82,9 @@ public class TreeTableHandler extends AbstractComponentHandler<TreeTable>
 		
 		// entryValues.put(KEY_EXPANDED,changeObjectArray(oae));
 		
-		entryValues.put(KEY_VISIBLE_COLUMNS,changeObjectArray(allColumns));
-		entryValues.put(KEY_IS_COLLAPSED,changeObjectArray(comVisCol));
-		entryValues.put(KEY_COLUMN_WIDTH,changeObjectArray(widthCol));
+		entryValues.put(KEY_VISIBLE_COLUMNS,allColumns);
+		entryValues.put(KEY_IS_COLLAPSED,comVisCol);
+		entryValues.put(KEY_COLUMN_WIDTH,widthCol);
 		entryValues.put(KEY_IS_ASCENDING,component.isSortAscending());
 	}
 
@@ -97,27 +97,27 @@ public class TreeTableHandler extends AbstractComponentHandler<TreeTable>
 		component.setValue(entry.value(KEY_VALUE));
 		component.setSortContainerPropertyId(entry.value(KEY_SORT_CONTAINER_PROPERTY_ID));
 
-		final Object[] comVisCol = returnObjectArray(entry.value(KEY_IS_COLLAPSED).toString());
-		final Object[] widthCol = returnObjectArray(entry.value(KEY_COLUMN_WIDTH).toString());
+		final boolean[] comVisCol = (boolean[])entry.value(KEY_IS_COLLAPSED);
+		final int[] widthCol = (int[])entry.value(KEY_COLUMN_WIDTH);
 		final Object[] namesCol = returnObjectArray(entry.value(KEY_VISIBLE_COLUMNS).toString());
 		
 		if(component.isColumnCollapsingAllowed())
 		{
 			for(int i = 0; i < comVisCol.length; i++)
 			{
-				component.setColumnCollapsed(namesCol[i],new Boolean(comVisCol[i].toString()));
-				component.setColumnWidth(namesCol[i],Integer.valueOf(widthCol[i].toString()));
+				component.setColumnCollapsed(namesCol[i],comVisCol[i]);
+				component.setColumnWidth(namesCol[i],widthCol[i]);
 			}
 		}
 		else
 		{
 			for(int i = 0; i < comVisCol.length; i++)
 			{
-				component.setColumnWidth(namesCol[i],Integer.valueOf(widthCol[i].toString()));
+				component.setColumnWidth(namesCol[i],widthCol[i]);
 			}
 		}
 
-		component.setSortAscending(new Boolean(entry.value(KEY_IS_ASCENDING).toString()));
+		component.setSortAscending((boolean)entry.value(KEY_IS_ASCENDING));
 		
 		// Doesn't work because of an Issue with Vaadin TreeTable
 		// https://dev.vaadin.com/ticket/11211

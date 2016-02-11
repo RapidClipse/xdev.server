@@ -6,8 +6,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.vaadin.ui.Component;
+import com.xdev.ui.persistence.handler.AbstractColorPickerHandler;
+import com.xdev.ui.persistence.handler.AbstractSelectHandler;
 import com.xdev.ui.persistence.handler.AbstractSplitPanelHandler;
+import com.xdev.ui.persistence.handler.AbstractTextFieldHandler;
+import com.xdev.ui.persistence.handler.CheckBoxHandler;
+import com.xdev.ui.persistence.handler.DateFieldHandler;
+import com.xdev.ui.persistence.handler.RichTextAreaHandler;
+import com.xdev.ui.persistence.handler.SliderHandler;
 import com.xdev.ui.persistence.handler.TabSheetHandler;
+import com.xdev.ui.persistence.handler.TableHandler;
+import com.xdev.ui.persistence.handler.TreeHandler;
+import com.xdev.ui.persistence.handler.TreeTableHandler;
 
 
 public final class GuiPersistenceHandlerRegistry
@@ -38,6 +48,18 @@ public final class GuiPersistenceHandlerRegistry
 	{
 		registerHandler(new AbstractSplitPanelHandler());
 		registerHandler(new TabSheetHandler());
+		// -----------------------------------------
+		registerHandler(new TreeTableHandler());
+		registerHandler(new TableHandler());
+		registerHandler(new TreeHandler());
+		registerHandler(new AbstractSelectHandler());
+		registerHandler(new AbstractTextFieldHandler());
+		registerHandler(new AbstractTextFieldHandler());
+		registerHandler(new AbstractColorPickerHandler());
+		registerHandler(new CheckBoxHandler());
+		registerHandler(new DateFieldHandler());
+		registerHandler(new SliderHandler());
+		registerHandler(new RichTextAreaHandler());
 	}
 
 

@@ -27,13 +27,14 @@ import com.vaadin.ui.PasswordField;
  * entered text is not displayed on the screen.
  *
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevPasswordField extends PasswordField implements XdevComponent
+public class XdevPasswordField extends PasswordField implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+												
+												
 	/**
 	 * Constructs an empty PasswordField.
 	 */
@@ -41,8 +42,8 @@ public class XdevPasswordField extends PasswordField implements XdevComponent
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Constructs a PasswordField with given property data source.
 	 *
@@ -53,8 +54,8 @@ public class XdevPasswordField extends PasswordField implements XdevComponent
 	{
 		super(dataSource);
 	}
-
-
+	
+	
 	/**
 	 * Constructs a PasswordField with given caption and property data source.
 	 *
@@ -67,8 +68,8 @@ public class XdevPasswordField extends PasswordField implements XdevComponent
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * Constructs a PasswordField with given value and caption.
 	 *
@@ -81,8 +82,8 @@ public class XdevPasswordField extends PasswordField implements XdevComponent
 	{
 		super(caption,value);
 	}
-
-
+	
+	
 	/**
 	 * Constructs a PasswordField with given caption.
 	 *
@@ -93,8 +94,8 @@ public class XdevPasswordField extends PasswordField implements XdevComponent
 	{
 		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -103,8 +104,8 @@ public class XdevPasswordField extends PasswordField implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -112,5 +113,25 @@ public class XdevPasswordField extends PasswordField implements XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

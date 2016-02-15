@@ -27,13 +27,14 @@ import com.vaadin.ui.CheckBox;
  * deselected, and which displays its state to the user.
  *
  * @author XDEV Software
- *		
+ *
  */
-public class XdevCheckBox extends CheckBox implements XdevComponent
+public class XdevCheckBox extends CheckBox implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+
+
 	/**
 	 * Creates a new checkbox.
 	 */
@@ -99,5 +100,25 @@ public class XdevCheckBox extends CheckBox implements XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

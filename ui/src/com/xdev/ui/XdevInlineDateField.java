@@ -28,13 +28,14 @@ import com.vaadin.ui.InlineDateField;
  * A date entry component, which displays the actual date selector inline.
  *
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevInlineDateField extends InlineDateField implements XdevComponent
+public class XdevInlineDateField extends InlineDateField implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+												
+												
 	/**
 	 *
 	 */
@@ -42,8 +43,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevComponen
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * @param dataSource
 	 * @throws IllegalArgumentException
@@ -52,8 +53,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevComponen
 	{
 		super(dataSource);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 * @param value
@@ -62,8 +63,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevComponen
 	{
 		super(caption,value);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 * @param dataSource
@@ -72,8 +73,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevComponen
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 */
@@ -81,8 +82,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevComponen
 	{
 		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -91,8 +92,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevComponen
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -100,5 +101,25 @@ public class XdevInlineDateField extends InlineDateField implements XdevComponen
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

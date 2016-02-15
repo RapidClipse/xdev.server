@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.vaadin.data.Item;
-import com.xdev.ui.XdevComponent;
+import com.xdev.ui.XdevField;
 import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.paging.XdevEntityLazyQueryContainer;
@@ -34,13 +34,14 @@ import com.xdev.ui.util.KeyValueType;
  * side for selected items.
  *
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implements XdevComponent
+public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+												
+												
 	/**
 	 *
 	 */
@@ -48,8 +49,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 */
@@ -57,14 +58,14 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		super(caption);
 	}
-	
-	
+
+
 	// init defaults
 	{
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -73,8 +74,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -83,8 +84,28 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -96,7 +117,7 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-				
+
 		// Workaround for TwinColSelect internal size behavior.
 		if(container instanceof XdevEntityLazyQueryContainer)
 		{
@@ -115,8 +136,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 		}
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -127,8 +148,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
-	
-	
+
+
 	@SafeVarargs
 	@Override
 	public final void setContainerDataSource(final Class<T> beanClass, final Collection<T> data,
@@ -138,11 +159,11 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-		
+
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *

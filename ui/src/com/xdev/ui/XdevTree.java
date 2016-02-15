@@ -27,13 +27,14 @@ import com.vaadin.ui.Tree;
  * a hierarchical set of items.
  *
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevTree extends Tree implements XdevComponent
+public class XdevTree extends Tree implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+												
+												
 	/**
 	 * Creates a new empty tree.
 	 */
@@ -41,8 +42,8 @@ public class XdevTree extends Tree implements XdevComponent
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Creates a new tree with caption and connect it to a Container.
 	 *
@@ -53,8 +54,8 @@ public class XdevTree extends Tree implements XdevComponent
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * Creates a new empty tree with caption.
 	 *
@@ -64,8 +65,8 @@ public class XdevTree extends Tree implements XdevComponent
 	{
 		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -74,8 +75,8 @@ public class XdevTree extends Tree implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -83,5 +84,25 @@ public class XdevTree extends Tree implements XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

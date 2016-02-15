@@ -38,13 +38,14 @@ import com.vaadin.ui.TextField;
  * </p>
  *
  * @author XDEV Software
- * 		
+ *
  */
-public class XdevTextField extends TextField implements XdevComponent
+public class XdevTextField extends TextField implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+												
+												
 	/**
 	 * Constructs an empty <code>TextField</code> with no caption.
 	 */
@@ -52,8 +53,8 @@ public class XdevTextField extends TextField implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a new <code>TextField</code> that's bound to the specified
 	 * <code>Property</code> and has no caption.
@@ -65,8 +66,8 @@ public class XdevTextField extends TextField implements XdevComponent
 	{
 		super(dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a new <code>TextField</code> that's bound to the specified
 	 * <code>Property</code> and has the given caption <code>String</code>.
@@ -80,8 +81,8 @@ public class XdevTextField extends TextField implements XdevComponent
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a new <code>TextField</code> with the given caption and
 	 * initial text contents. The editor constructed this way will not be bound
@@ -98,8 +99,8 @@ public class XdevTextField extends TextField implements XdevComponent
 	{
 		super(caption,value);
 	}
-	
-	
+
+
 	/**
 	 * Constructs an empty <code>TextField</code> with given caption.
 	 *
@@ -110,14 +111,14 @@ public class XdevTextField extends TextField implements XdevComponent
 	{
 		super(caption);
 	}
-	
-	
+
+
 	// init defaults
 	{
 		setNullRepresentation("");
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -126,8 +127,8 @@ public class XdevTextField extends TextField implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -135,5 +136,25 @@ public class XdevTextField extends TextField implements XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

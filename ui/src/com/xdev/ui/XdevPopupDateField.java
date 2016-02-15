@@ -29,11 +29,12 @@ import com.vaadin.ui.PopupDateField;
  *
  * @author XDEV Software
  */
-public class XdevPopupDateField extends PopupDateField implements XdevComponent
+public class XdevPopupDateField extends PopupDateField implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+												
+												
 	/**
 	 *
 	 */
@@ -41,8 +42,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevComponent
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * @param dataSource
 	 * @throws IllegalArgumentException
@@ -52,8 +53,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevComponent
 	{
 		super(dataSource);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 * @param value
@@ -62,8 +63,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevComponent
 	{
 		super(caption,value);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 * @param dataSource
@@ -73,8 +74,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevComponent
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 */
@@ -82,8 +83,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevComponent
 	{
 		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -92,8 +93,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -101,5 +102,25 @@ public class XdevPopupDateField extends PopupDateField implements XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

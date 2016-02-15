@@ -31,13 +31,14 @@ import com.vaadin.ui.NativeSelect;
  * better choice.
  *
  * @author XDEV Software
- *		
+ *
  */
-public class XdevNativeSelect extends NativeSelect implements XdevComponent
+public class XdevNativeSelect extends NativeSelect implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+
+
 	/**
 	 *
 	 */
@@ -93,5 +94,25 @@ public class XdevNativeSelect extends NativeSelect implements XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

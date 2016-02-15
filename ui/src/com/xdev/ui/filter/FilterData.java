@@ -18,15 +18,49 @@
 package com.xdev.ui.filter;
 
 
+import java.io.Serializable;
+import java.util.Arrays;
+
+import com.xdev.dal.DAOs;
+import com.xdev.util.EntityIDResolver;
+import com.xdev.util.HibernateEntityIDResolver;
+import com.xdev.util.JPAMetaDataUtils;
+
+
 /**
  * @author XDEV Software
  *
  */
 public class FilterData
 {
-	private Object			propertyId;
-	private FilterOperator	operator;
-	private Object[]		values;
+	protected static class EntityID
+	{
+		private final Class<?>	entityType;
+		private final Object	id;
+
+
+		public EntityID(final Class<?> entityType, final Object id)
+		{
+			this.entityType = entityType;
+			this.id = id;
+		}
+
+
+		public Class<?> getEntityType()
+		{
+			return this.entityType;
+		}
+
+
+		public Object getId()
+		{
+			return this.id;
+		}
+	}
+
+	private Object		propertyId;
+	private String		operatorKey;
+	private Object[]	values;
 
 
 	public FilterData()
@@ -36,9 +70,9 @@ public class FilterData
 
 	public FilterData(final Object propertyId, final FilterOperator operator, final Object[] values)
 	{
-		this.propertyId = propertyId;
-		this.operator = operator;
-		this.values = values;
+		setPropertyId(propertyId);
+		setOperator(operator);
+		setValues(values);
 	}
 
 
@@ -56,24 +90,69 @@ public class FilterData
 
 	public void setOperator(final FilterOperator operator)
 	{
-		this.operator = operator;
+		this.operatorKey = operator.getKey();
 	}
 
 
 	public FilterOperator getOperator()
 	{
-		return this.operator;
+		return FilterOperatorRegistry.getFilterOperators().stream()
+				.filter(op -> op.getKey().equals(this.operatorKey)).findAny().orElse(null);
 	}
 
 
 	public void setValues(final Object[] values)
 	{
-		this.values = values;
+		if(values == null)
+		{
+			this.values = null;
+		}
+		else
+		{
+			final EntityIDResolver idResolver = new HibernateEntityIDResolver();
+			this.values = Arrays.stream(values).map(value -> storeFilterValue(value,idResolver))
+					.toArray();
+		}
+	}
+
+
+	private Object storeFilterValue(final Object value, final EntityIDResolver idResolver)
+	{
+		if(value == null)
+		{
+			return null;
+		}
+
+		final Class<? extends Object> entityType = value.getClass();
+		if(JPAMetaDataUtils.isManaged(entityType))
+		{
+			return new EntityID(entityType,idResolver.getEntityIDPropertyValue(value));
+		}
+
+		return value;
 	}
 
 
 	public Object[] getValues()
 	{
-		return this.values;
+		if(this.values == null)
+		{
+			return null;
+		}
+
+		return Arrays.stream(this.values).map(this::resolveFilterValue).toArray();
+	}
+
+
+	protected Object resolveFilterValue(final Object filterValue)
+	{
+		if(filterValue instanceof EntityID)
+		{
+			final EntityID entityID = (EntityID)filterValue;
+			return DAOs.getByEntityType(entityID.getEntityType())
+					.find((Serializable)entityID.getId());
+		}
+
+		return filterValue;
 	}
 }

@@ -25,13 +25,14 @@ import com.vaadin.ui.Slider;
  * A component for selecting a numerical value within a range.
  *
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevSlider extends Slider implements XdevComponent
+public class XdevSlider extends Slider implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+												
+												
 	/**
 	 * Default slider constructor. Sets all values to defaults and the slide
 	 * handle at minimum value.
@@ -41,8 +42,8 @@ public class XdevSlider extends Slider implements XdevComponent
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Create a new slider with the given range and resolution.
 	 *
@@ -57,8 +58,8 @@ public class XdevSlider extends Slider implements XdevComponent
 	{
 		super(min,max,resolution);
 	}
-
-
+	
+	
 	/**
 	 * Create a new slider with the given range that only allows integer values.
 	 *
@@ -71,8 +72,8 @@ public class XdevSlider extends Slider implements XdevComponent
 	{
 		super(min,max);
 	}
-
-
+	
+	
 	/**
 	 * Create a new slider with the given caption and range that only allows
 	 * integer values.
@@ -88,8 +89,8 @@ public class XdevSlider extends Slider implements XdevComponent
 	{
 		super(caption,min,max);
 	}
-
-
+	
+	
 	/**
 	 * Create a new slider with the caption given as parameter.
 	 *
@@ -103,8 +104,8 @@ public class XdevSlider extends Slider implements XdevComponent
 	{
 		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -113,8 +114,8 @@ public class XdevSlider extends Slider implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -122,5 +123,25 @@ public class XdevSlider extends Slider implements XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

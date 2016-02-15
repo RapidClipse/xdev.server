@@ -21,7 +21,7 @@ package com.xdev.ui.entitycomponent.listselect;
 import java.util.Collection;
 
 import com.vaadin.data.util.BeanItem;
-import com.xdev.ui.XdevComponent;
+import com.xdev.ui.XdevField;
 import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
@@ -35,15 +35,16 @@ import com.xdev.util.CaptionUtils;
  * lazyloading, and other advanced features.
  *
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements XdevComponent
+public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements XdevField
 {
 	private final Extensions	extensions					= new Extensions();
+	private boolean				persistValue				= PERSIST_VALUE_DEFAULT;
 	private boolean				itemCaptionFromAnnotation	= true;
 	private String				itemCaptionValue			= null;
-															
-															
+
+
 	/**
 	 *
 	 */
@@ -51,8 +52,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 */
@@ -60,14 +61,14 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		super(caption);
 	}
-	
-	
+
+
 	// init defaults
 	{
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -76,8 +77,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,14 +87,34 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
+	}
+
+
 	/**
 	 * Sets if the item's caption should be derived from its {@link Caption}
 	 * annotation.
 	 *
 	 * @see CaptionResolver
-	 *		
+	 * 		
 	 * @param itemCaptionFromAnnotation
 	 *            the itemCaptionFromAnnotation to set
 	 */
@@ -101,8 +122,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
 	}
-	
-	
+
+
 	/**
 	 * @return if the item's caption should be derived from its {@link Caption}
 	 *         annotation
@@ -111,8 +132,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.itemCaptionFromAnnotation;
 	}
-	
-	
+
+
 	/**
 	 * Sets a user defined caption value for the items to display.
 	 *
@@ -125,8 +146,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.itemCaptionValue = itemCaptionValue;
 	}
-	
-	
+
+
 	/**
 	 * Returns the user defined caption value for the items to display
 	 *
@@ -136,8 +157,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.itemCaptionValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -149,11 +170,11 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-				
+
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -164,8 +185,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -178,11 +199,11 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-		
+
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -198,8 +219,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 			this.setConverter(new IDToBeanCollectionConverter(this.getContainerDataSource()));
 		}
 	}
-	
-	
+
+
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
@@ -227,7 +248,7 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 				}
 			}
 		}
-		
+
 		return super.getItemCaption(itemId);
 	}
 }

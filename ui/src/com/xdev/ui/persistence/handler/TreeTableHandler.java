@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2013-2016 by XDEV Software, All Rights Reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package com.xdev.ui.persistence.handler;
 
@@ -8,9 +24,8 @@ import com.vaadin.ui.TreeTable;
 import com.xdev.ui.persistence.GuiPersistenceEntry;
 
 
-public class TreeTableHandler extends AbstractComponentHandler<TreeTable>
+public class TreeTableHandler extends AbstractFieldHandler<TreeTable>
 {
-	protected static final String	KEY_VALUE						= "value";
 	protected static final String	KEY_SORT_CONTAINER_PROPERTY_ID	= "sortContainerPropertyId";
 	protected static final String	KEY_VISIBLE_COLUMNS				= "visibleColumns";
 	protected static final String	KEY_IS_COLLAPSED				= "isCollapsed";
@@ -35,7 +50,6 @@ public class TreeTableHandler extends AbstractComponentHandler<TreeTable>
 	{
 		super.addEntryValues(entryValues,component);
 
-		entryValues.put(KEY_VALUE,component.getValue());
 		entryValues.put(KEY_SORT_CONTAINER_PROPERTY_ID,component.getSortContainerPropertyId());
 
 		final boolean[] comVisCol = new boolean[component.getVisibleColumns().length];
@@ -94,12 +108,11 @@ public class TreeTableHandler extends AbstractComponentHandler<TreeTable>
 	{
 		super.restore(component,entry);
 
-		component.setValue(entry.value(KEY_VALUE));
 		component.setSortContainerPropertyId(entry.value(KEY_SORT_CONTAINER_PROPERTY_ID));
 
 		final boolean[] comVisCol = (boolean[])entry.value(KEY_IS_COLLAPSED);
 		final int[] widthCol = (int[])entry.value(KEY_COLUMN_WIDTH);
-		final Object[] namesCol = returnObjectArray(entry.value(KEY_VISIBLE_COLUMNS).toString());
+		final Object[] namesCol = (Object[])entry.value(KEY_VISIBLE_COLUMNS);
 		
 		if(component.isColumnCollapsingAllowed())
 		{

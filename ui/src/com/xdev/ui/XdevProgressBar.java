@@ -31,13 +31,14 @@ import com.vaadin.ui.ProgressBar;
  * running but without providing any information about the current progress.
  *
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevProgressBar extends ProgressBar implements XdevComponent
+public class XdevProgressBar extends ProgressBar implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+												
+												
 	/**
 	 * Creates a new progress bar initially set to 0% progress.
 	 */
@@ -45,8 +46,8 @@ public class XdevProgressBar extends ProgressBar implements XdevComponent
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Creates a new progress bar with the given initial value.
 	 *
@@ -57,8 +58,8 @@ public class XdevProgressBar extends ProgressBar implements XdevComponent
 	{
 		super(progress);
 	}
-
-
+	
+	
 	/**
 	 * Creates a new progress bar bound to the given data source.
 	 *
@@ -69,8 +70,8 @@ public class XdevProgressBar extends ProgressBar implements XdevComponent
 	{
 		super(dataSource);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -79,8 +80,8 @@ public class XdevProgressBar extends ProgressBar implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -88,5 +89,25 @@ public class XdevProgressBar extends ProgressBar implements XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

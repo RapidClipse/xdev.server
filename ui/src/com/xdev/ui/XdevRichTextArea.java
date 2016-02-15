@@ -31,13 +31,14 @@ import com.vaadin.ui.TextField;
  * into length of field.
  *
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevRichTextArea extends RichTextArea implements XdevComponent
+public class XdevRichTextArea extends RichTextArea implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+												
+												
 	/**
 	 * Constructs an empty <code>RichTextArea</code> with no caption.
 	 */
@@ -45,8 +46,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevComponent
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Constructs a new <code>RichTextArea</code> that's bound to the specified
 	 * <code>Property</code> and has no caption.
@@ -58,8 +59,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevComponent
 	{
 		super(dataSource);
 	}
-
-
+	
+	
 	/**
 	 * Constructs a new <code>RichTextArea</code> that's bound to the specified
 	 * <code>Property</code> and has the given caption.
@@ -73,8 +74,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevComponent
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * Constructs a new <code>RichTextArea</code> with the given caption and
 	 * initial text contents.
@@ -88,8 +89,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevComponent
 	{
 		super(caption,value);
 	}
-
-
+	
+	
 	/**
 	 *
 	 * Constructs an empty <code>RichTextArea</code> with the given caption.
@@ -101,8 +102,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevComponent
 	{
 		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -111,8 +112,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -120,5 +121,25 @@ public class XdevRichTextArea extends RichTextArea implements XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

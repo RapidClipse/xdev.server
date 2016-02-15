@@ -26,13 +26,14 @@ import com.vaadin.ui.TextArea;
  * A text field that supports multi line editing.
  *
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevTextArea extends TextArea implements XdevComponent
+public class XdevTextArea extends TextArea implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+												
+												
 	/**
 	 * Constructs an empty TextArea.
 	 */
@@ -40,8 +41,8 @@ public class XdevTextArea extends TextArea implements XdevComponent
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Constructs a TextArea with given property data source.
 	 *
@@ -52,8 +53,8 @@ public class XdevTextArea extends TextArea implements XdevComponent
 	{
 		super(dataSource);
 	}
-
-
+	
+	
 	/**
 	 * Constructs a TextArea with given caption and property data source.
 	 *
@@ -66,8 +67,8 @@ public class XdevTextArea extends TextArea implements XdevComponent
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * Constructs a TextArea with given caption and value.
 	 *
@@ -80,8 +81,8 @@ public class XdevTextArea extends TextArea implements XdevComponent
 	{
 		super(caption,value);
 	}
-
-
+	
+	
 	/**
 	 * Constructs an empty TextArea with given caption.
 	 *
@@ -92,8 +93,8 @@ public class XdevTextArea extends TextArea implements XdevComponent
 	{
 		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -102,8 +103,8 @@ public class XdevTextArea extends TextArea implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -111,5 +112,25 @@ public class XdevTextArea extends TextArea implements XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

@@ -20,43 +20,51 @@ package com.xdev.ui.persistence.handler;
 
 import java.util.Map;
 
-import com.xdev.ui.filter.FilterData;
-import com.xdev.ui.filter.XdevContainerFilterComponent;
+import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.Component;
+import com.xdev.ui.XdevField;
 import com.xdev.ui.persistence.GuiPersistenceEntry;
 
 
-public class XdevContainerFilterComponentHandler
-		extends AbstractComponentHandler<XdevContainerFilterComponent>
+@SuppressWarnings("rawtypes")
+public abstract class AbstractFieldHandler<C extends AbstractField>
+		extends AbstractComponentHandler<C>
 {
-	protected static final String	KEY_SEARCH_TEXT	= "searchText";
-	protected static final String	KEY_FILTER_DATA	= "filterData";
-													
-													
-	@Override
-	public Class<XdevContainerFilterComponent> handledType()
+	protected static final String KEY_VALUE = "value";
+
+
+	protected static boolean persistFieldValue(final Component component)
 	{
-		return XdevContainerFilterComponent.class;
+		if(component instanceof XdevField)
+		{
+			return ((XdevField)component).isPersistValue();
+		}
+
+		return true;
 	}
-	
-	
+
+
 	@Override
-	protected void addEntryValues(final Map<String, Object> entryValues,
-			final XdevContainerFilterComponent component)
+	protected void addEntryValues(final Map<String, Object> entryValues, final C component)
 	{
 		super.addEntryValues(entryValues,component);
 
-		entryValues.put(KEY_SEARCH_TEXT,component.getSearchText());
-		entryValues.put(KEY_FILTER_DATA,component.getFilterData());
+		if(persistFieldValue(component))
+		{
+			entryValues.put(KEY_VALUE,component.getValue());
+		}
 	}
-	
-	
+
+
+	@SuppressWarnings("unchecked")
 	@Override
-	public void restore(final XdevContainerFilterComponent component,
-			final GuiPersistenceEntry entry)
+	public void restore(final C component, final GuiPersistenceEntry entry)
 	{
 		super.restore(component,entry);
 
-		component.setSearchText((String)entry.value(KEY_SEARCH_TEXT));
-		component.setFilterData((FilterData[])entry.value(KEY_FILTER_DATA));
+		if(persistFieldValue(component))
+		{
+			component.setValue(entry.value(KEY_VALUE));
+		}
 	}
 }

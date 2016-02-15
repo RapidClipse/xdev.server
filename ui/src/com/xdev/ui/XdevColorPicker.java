@@ -27,13 +27,14 @@ import com.vaadin.ui.ColorPicker;
  * component.
  *
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevColorPicker extends ColorPicker implements XdevComponent
+public class XdevColorPicker extends ColorPicker implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+												
+												
 	/**
 	 * Instantiates a new color picker.
 	 */
@@ -41,8 +42,8 @@ public class XdevColorPicker extends ColorPicker implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Instantiates a new color picker.
 	 *
@@ -53,8 +54,8 @@ public class XdevColorPicker extends ColorPicker implements XdevComponent
 	{
 		super(popupCaption);
 	}
-	
-	
+
+
 	/**
 	 * Instantiates a new color picker.
 	 *
@@ -67,8 +68,8 @@ public class XdevColorPicker extends ColorPicker implements XdevComponent
 	{
 		super(popupCaption,initialColor);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -77,8 +78,8 @@ public class XdevColorPicker extends ColorPicker implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,5 +87,25 @@ public class XdevColorPicker extends ColorPicker implements XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

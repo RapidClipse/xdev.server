@@ -22,11 +22,12 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
+import com.xdev.ui.persistence.GuiPersistence;
 
 
 /**
  * @author XDEV Software
- *		
+ *
  */
 public class XdevView extends CustomComponent implements View, XdevComponent
 {
@@ -42,8 +43,8 @@ public class XdevView extends CustomComponent implements View, XdevComponent
 		
 		setSizeFull();
 	}
-
-
+	
+	
 	public void setContent(final Component c)
 	{
 		setCompositionRoot(c);
@@ -57,8 +58,8 @@ public class XdevView extends CustomComponent implements View, XdevComponent
 	public void enter(final ViewChangeEvent event)
 	{
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -67,8 +68,8 @@ public class XdevView extends CustomComponent implements View, XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -76,5 +77,34 @@ public class XdevView extends CustomComponent implements View, XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+	
+	
+	/**
+	 * Persists the state of all components in this view and returns the
+	 * serialized data which can be stored in an arbitrary location.
+	 * <p>
+	 * This state can be restored with {@link #restoreState(String)}
+	 *
+	 * @return the serialized state data of all components
+	 * @see GuiPersistence#save(Component, String)
+	 */
+	public String persistState()
+	{
+		return GuiPersistence.save(this,getClass().getName());
+	}
+	
+	
+	/**
+	 * Restores a previously saved state.
+	 *
+	 * @param data
+	 *            the serialized state data
+	 * @see #persistState()
+	 * @see GuiPersistence#load(Component, String, String)
+	 */
+	public void restoreState(final String data)
+	{
+		GuiPersistence.load(this,getClass().getName(),data);
 	}
 }

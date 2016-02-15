@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.vaadin.data.Item;
-import com.xdev.ui.XdevComponent;
+import com.xdev.ui.XdevField;
 import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.paging.XdevEntityLazyQueryContainer;
@@ -33,43 +33,44 @@ import com.xdev.ui.util.KeyValueType;
  * Configures select to be used as an option group.
  *
  * @author XDEV Software
- *		
+ * 		
  */
-public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements XdevComponent
+public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-
-
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+												
+												
 	public XdevOptionGroup()
 	{
 		super();
 	}
-	
-	
+
+
 	public XdevOptionGroup(final String caption, final XdevBeanContainer<T> dataSource)
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	public XdevOptionGroup(final String caption)
 	{
 		super(caption);
 	}
-	
-	
+
+
 	public XdevOptionGroup(final XdevBeanContainer<T> dataSource)
 	{
 		super(dataSource);
 	}
-	
-	
+
+
 	// init defaults
 	{
 		setImmediate(true);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -78,8 +79,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -93,6 +94,26 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@SafeVarargs
 	@Override
 	public final void setContainerDataSource(final Class<T> beanClass, final boolean autoQueryData,
@@ -101,7 +122,7 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-
+				
 		// Workaround for OptionGroup internal size behavior.
 		if(container instanceof XdevEntityLazyQueryContainer)
 		{
@@ -120,8 +141,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 		}
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -132,8 +153,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
-
-
+	
+	
 	@SafeVarargs
 	@Override
 	public final void setContainerDataSource(final Class<T> beanClass, final Collection<T> data,
@@ -143,11 +164,11 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-
+		
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *

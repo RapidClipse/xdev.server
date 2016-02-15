@@ -43,13 +43,14 @@ import com.vaadin.ui.TreeTable;
  * share UI state in the container.
  *
  * @author XDEV Software
- *		
+ *
  */
-public class XdevTreeTable extends TreeTable implements XdevComponent
+public class XdevTreeTable extends TreeTable implements XdevField
 {
-	private final Extensions extensions = new Extensions();
-	
-	
+	private final Extensions	extensions		= new Extensions();
+	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
+
+
 	/**
 	 * Creates an empty TreeTable with a default container.
 	 */
@@ -102,5 +103,25 @@ public class XdevTreeTable extends TreeTable implements XdevComponent
 	public <E> E getExtension(final Class<E> type)
 	{
 		return this.extensions.get(type);
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isPersistValue()
+	{
+		return this.persistValue;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setPersistValue(final boolean persistValue)
+	{
+		this.persistValue = persistValue;
 	}
 }

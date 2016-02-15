@@ -15,19 +15,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.xdev.ui.persistence;
+package com.xdev.ui;
 
 
-import com.vaadin.ui.Component;
-
-
-public interface GuiPersistenceHandler<C extends Component>
+/**
+ * @author XDEV Software
+ *		
+ */
+public interface XdevField extends XdevComponent
 {
-	public Class<C> handledType();
+	public static boolean PERSIST_VALUE_DEFAULT = false;
+
+
+	public void setPersistValue(boolean persistValue);
 	
 	
-	public GuiPersistenceEntry persist(C component);
-	
-	
-	public void restore(C component, GuiPersistenceEntry entry);
+	public boolean isPersistValue();
 }

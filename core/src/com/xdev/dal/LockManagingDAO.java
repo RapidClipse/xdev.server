@@ -29,7 +29,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.EntityType;
 
-import com.googlecode.genericdao.dao.jpa.GenericDAO;
 import com.googlecode.genericdao.dao.jpa.GenericDAOImpl;
 import com.googlecode.genericdao.search.ExampleOptions;
 import com.googlecode.genericdao.search.Filter;
@@ -42,63 +41,62 @@ import com.xdev.communication.EntityManagerUtils;
 
 /**
  *
- * @author XDEV Software (JW)
- * 		
- * @see GenericDAO
+ * @deprecated replaced by {@link JPADAO}, will be removed in a future release
  */
+@Deprecated
 public abstract class LockManagingDAO<T, IT extends Serializable> extends GenericDAOImpl<T, IT>
 {
 	/*
 	 * DAO type must be at least GenericDAOImpl to achieve typed behavior and
 	 * JPA support, see type hierarchy.
 	 */
-	private JPADAO<T, IT> persistenceManager;
-
+	private JPADAO<T, IT>				persistenceManager;
+										
 	// lock meta data
 	private long						lockTimeOut				= 0;
 	private static final String			LOCK_TIMEOUT_PROPERTY	= "javax.persistence.lock.timeout";
 	private final Map<String, Object>	lockProperties			= new HashMap<String, Object>();
-
-
+																
+																
 	public void setLockTimeOut(final long lockTimeOut)
 	{
 		this.lockTimeOut = lockTimeOut;
 	}
-
-
+	
+	
 	public JPADAO<T, IT> getPersistenceManager()
 	{
 		return this.persistenceManager;
 	}
-
-
+	
+	
 	public void setPersistenceManager(final JPADAO<T, IT> persistenceManager)
 	{
 		this.persistenceManager = persistenceManager;
 	}
-
-
+	
+	
 	{
 		this.persistenceManager.setEntityManager(EntityManagerUtils.getEntityManager());
 		this.persistenceManager
 				.setSearchProcessor(new JPASearchProcessor(new JPAAnnotationMetadataUtil()));
 	}
-
-
+	
+	
 	@Override
 	protected EntityManager em()
 	{
 		return EntityManagerUtils.getEntityManager();
 	}
-
-
+	
+	
 	public CriteriaQuery<T> buildCriteriaQuery(final Class<T> type)
 	{
 		final CriteriaBuilder cb = em().getCriteriaBuilder();
 		return cb.createQuery(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -110,11 +108,11 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 			// TODO make LockModeType configurable?
 			em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
 		}
-
+		
 		this.persistenceManager.persist(entities);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -125,8 +123,8 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		final T ret = this.persistenceManager.save(entity);
 		return ret;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -140,8 +138,8 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		final T[] ret = this.persistenceManager.save(entities);
 		return ret;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -152,8 +150,8 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		final boolean ret = this.persistenceManager.remove(entity);
 		return ret;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -166,8 +164,8 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		}
 		this.persistenceManager.remove(entities);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -176,12 +174,12 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 	{
 		final T entity = this.find(id);
 		em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
-
+		
 		final boolean ret = this.persistenceManager.removeById(id);
 		return ret;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -193,11 +191,11 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		{
 			em().lock(entity,LockModeType.PESSIMISTIC_WRITE,this.lockProperties);
 		}
-
+		
 		this.persistenceManager.removeByIds(ids);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -208,8 +206,8 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		final T ret = this.persistenceManager.merge(entity);
 		return ret;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -223,8 +221,8 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		final T[] ret = this.persistenceManager.merge(entities);
 		return ret;
 	}
-
-
+	
+	
 	// -------- TODO pessimistic read allowed ? - check / provide configuration
 	// ----------
 	/**
@@ -236,8 +234,8 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		final T ret = this.persistenceManager.find(id);
 		return ret;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -247,8 +245,8 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		final T[] ret = this.persistenceManager.find(ids);
 		return ret;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -258,8 +256,8 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		final List<T> ret = this.persistenceManager.findAll();
 		return ret;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -269,8 +267,8 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		final T ret = this.persistenceManager.getReference(id);
 		return ret;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -280,55 +278,55 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		final T[] ret = this.persistenceManager.getReferences(ids);
 		return ret;
 	}
-
-
+	
+	
 	@Override
 	public <RT> List<RT> search(final ISearch search)
 	{
 		final List<RT> searchResult = this.persistenceManager.search(search);
 		return searchResult;
 	}
-
-
+	
+	
 	@Override
 	public <RT> RT searchUnique(final ISearch search)
 	{
 		final RT searchResult = this.persistenceManager.searchUnique(search);
 		return searchResult;
 	}
-
-
+	
+	
 	@Override
 	public int count(final ISearch search)
 	{
 		final int count = this.persistenceManager.count(search);
 		return count;
 	}
-
-
+	
+	
 	@Override
 	public <RT> SearchResult<RT> searchAndCount(final ISearch search)
 	{
 		final SearchResult<RT> searchCountResult = this.persistenceManager.searchAndCount(search);
-
+		
 		return searchCountResult;
 	}
-
-
+	
+	
 	@Override
 	public boolean isAttached(final T entity)
 	{
 		return this.persistenceManager.isAttached(entity);
 	}
-
-
+	
+	
 	@Override
 	public void refresh(@SuppressWarnings("unchecked") final T... entities)
 	{
 		this.persistenceManager.refresh(entities);
 	}
-
-
+	
+	
 	@Override
 	public void flush()
 	{
@@ -339,22 +337,22 @@ public abstract class LockManagingDAO<T, IT extends Serializable> extends Generi
 		}
 		this.persistenceManager.flush();
 	}
-
-
+	
+	
 	@Override
 	public Filter getFilterFromExample(final T example)
 	{
 		return this.persistenceManager.getFilterFromExample(example);
 	}
-
-
+	
+	
 	@Override
 	public Filter getFilterFromExample(final T example, final ExampleOptions options)
 	{
 		return this.persistenceManager.getFilterFromExample(example,options);
 	}
-
-
+	
+	
 	public long getLockTimeOut()
 	{
 		if(this.lockProperties.get(LOCK_TIMEOUT_PROPERTY) == null

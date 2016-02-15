@@ -49,4 +49,29 @@ public abstract class AbstractComponentHandler<C extends AbstractComponent>
 	{
 		component.setVisible((Boolean)entry.value(KEY_VISIBLE));
 	}
+	
+	
+	public static String changeObjectArray(final Object[] x)
+	{
+		String s = "";
+
+		for(final Object o : x)
+		{
+			s = s + o + ";";
+		}
+
+		s = s.substring(0,s.length() - 1);
+
+		return s;
+	}
+	
+	
+	public static Object[] returnObjectArray(final String s)
+	{
+		final String[] parts = s.split(";");
+
+		return parts;
+		
+	}
+
 }

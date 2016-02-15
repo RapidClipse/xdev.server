@@ -35,7 +35,7 @@ import com.xdev.ui.filter.FilterField.FilterFieldChangeListener;
 
 /**
  * @author XDEV Software
- *
+ *		
  */
 public class FilterEditor
 {
@@ -126,6 +126,47 @@ public class FilterEditor
 		this.addFilterButton = createAddFilterButton();
 		this.addFilterButton
 				.addClickListener(event -> containerFilterComponent.addFilterEditorAfter(this));
+	}
+	
+	
+	public FilterEditor(final XdevContainerFilterComponent containerFilterComponent,
+			final FilterData data)
+	{
+		this(containerFilterComponent);
+		
+		setFilterData(data);
+	}
+	
+	
+	public void setFilterData(final FilterData data)
+	{
+		final PropertyEntry item = this.propertyComboBox.getContainerPropertyIds().stream()
+				.map(PropertyEntry.class::cast)
+				.filter(entry -> entry.propertyID.equals(data.getPropertyId())).findFirst()
+				.orElse(null);
+		this.propertyComboBox.select(item);
+		
+		this.operatorComboBox.select(data.getOperator());
+		
+		int i = 0;
+		for(final Object value : data.getValues())
+		{
+			this.valueEditors[i++].setFilterValue(value);
+		}
+	}
+	
+	
+	public FilterData getFilterData()
+	{
+		if(this.selectedPropertyEntry == null || this.selectedOperator == null
+				|| this.valueEditors == null)
+		{
+			return null;
+		}
+		
+		final Object[] values = Arrays.stream(this.valueEditors).map(FilterField::getFilterValue)
+				.toArray();
+		return new FilterData(this.selectedPropertyEntry,this.selectedOperator,values);
 	}
 	
 	

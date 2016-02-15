@@ -33,37 +33,38 @@ public interface DBHashStrategy extends HashStrategy
 	 * @deprecated see {@link DBHashStrategy}
 	 */
 	@Deprecated
-	public static class MD5 extends HashStrategy.MD5
+	public static class MD5 extends HashStrategy.MD5 implements DBHashStrategy
 	{
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @deprecated see {@link DBHashStrategy}
 	 */
 	@Deprecated
-	public static class SHA2 extends HashStrategy.SHA2
+	public static class SHA2 extends HashStrategy.SHA2 implements DBHashStrategy
 	{
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @deprecated see {@link DBHashStrategy}
 	 */
 	@Deprecated
-	public static class SHA1 extends HashStrategy.SHA1
+	public static class SHA1 extends HashStrategy.SHA1 implements DBHashStrategy
 	{
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @deprecated see {@link DBHashStrategy}
 	 */
 	@Deprecated
 	public static class PBKDF2WithHmacSHA1 extends HashStrategy.PBKDF2WithHmacSHA1
+			implements DBHashStrategy
 	{
 	}
 }

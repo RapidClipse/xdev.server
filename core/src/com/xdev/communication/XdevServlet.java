@@ -69,7 +69,12 @@ public class XdevServlet extends VaadinServlet
 	{
 		event.getSession().setAttribute(URLParameterRegistry.class,new URLParameterRegistry());
 		
-		final ClientInfo clientInfo = ClientInfo.get(event.getRequest());
+		initSession(event,ClientInfo.get(event.getRequest()));
+	}
+	
+	
+	protected void initSession(final SessionInitEvent event, final ClientInfo clientInfo)
+	{
 		if(clientInfo.isMobile() || clientInfo.isTablet())
 		{
 			event.getSession().addBootstrapListener(new BootstrapListener()

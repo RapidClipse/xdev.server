@@ -29,18 +29,43 @@ import com.vaadin.ui.AbstractSelect;
 import com.xdev.util.Caption;
 
 
+/**
+ *
+ * @author XDEV Software
+ *
+ */
 public interface FillTree
 {
-	
+	public static enum Strategy
+	{
+		/**
+		 * Creates the hierarchical structure beginning with the root entries.
+		 * All entries are going to be added, even if the entries have no
+		 * children. This is the default strategy.
+		 */
+		TOP_DOWN,
+
+		/**
+		 * Creates the hierarchical structure beginning with the bottom most
+		 * child entries. Only entries which have children are going to be
+		 * added.
+		 */
+		BOTTOM_UP
+	}
+
+
 	public void setHierarchicalReceiver(AbstractSelect treeComponent);
-	
-	
+
+
 	public AbstractSelect getHierarchicalReceiver();
-	
-	
+
+
+	public void setStrategy(Strategy strategy);
+
+
 	public <T> Group addRootGroup(Class<T> clazz);
-	
-	
+
+
 	/**
 	 * @deprecated use {@link #addRootGroup(Class)} instead, caption is now
 	 *             handled by {@link Caption}
@@ -50,11 +75,11 @@ public interface FillTree
 	{
 		return addRootGroup(clazz);
 	}
-	
-	
+
+
 	public Group addGroup(Class<?> clazz, Field parentReference);
-	
-	
+
+
 	/**
 	 * @deprecated use {@link #addGroup(Class, Field)} instead, caption is now
 	 *             handled by {@link Caption}
@@ -65,43 +90,65 @@ public interface FillTree
 	{
 		return addGroup(clazz,parentReference);
 	}
-	
-	
+
+
 	public <T> void setGroupData(Class<T> groupClass, Collection<T> data);
-	
-	
+
+
 	public void fillTree(HierarchicalContainer container);
-	
-	
-	
+
+
+
 	public class Implementation implements FillTree
 	{
-		public static final Object		ROOT_IDENTIFIER		= null;
+		public static final Group		ROOT_IDENTIFIER		= null;
+
+		private AbstractSelect			treeComponent;
+
 		// no/null parent means root group
 		// group as key, parent as value - map
 		private final Map<Group, Group>	treeReferenceMap	= new HashMap<Group, Group>();
-															
-		private AbstractSelect			treeComponent;
-										
-										
+
+		private Strategy				strategy			= Strategy.TOP_DOWN;
+
+
+		@Override
+		public void setHierarchicalReceiver(final AbstractSelect treeComponent)
+		{
+			this.treeComponent = treeComponent;
+		}
+
+
+		@Override
+		public AbstractSelect getHierarchicalReceiver()
+		{
+			return this.treeComponent;
+		}
+
+
+		@Override
+		public void setStrategy(final Strategy strategy)
+		{
+			this.strategy = strategy;
+		}
+
+
 		@Override
 		public <T> Group addRootGroup(final Class<T> clazz)
 		{
-			// TODO caption provider
 			final Group node = new Group.Implementation(clazz,null);
-			
-			// TODO null as root identifier
-			this.treeReferenceMap.put(node,null);
-			
+
+			this.treeReferenceMap.put(node,ROOT_IDENTIFIER);
+
 			return node;
 		}
-		
-		
+
+
 		@Override
 		public Group addGroup(final Class<?> clazz, final Field parentReference)
 		{
 			final Group childNode = new Group.Implementation(clazz,parentReference);
-			
+
 			// to avoid concurrent modification exception
 			Group parentNode = null;
 			for(final Group node : this.treeReferenceMap.keySet())
@@ -114,8 +161,8 @@ public interface FillTree
 			this.treeReferenceMap.put(childNode,parentNode);
 			return childNode;
 		}
-		
-		
+
+
 		@Override
 		public <T> void setGroupData(final Class<T> groupClass, final Collection<T> data)
 		{
@@ -127,49 +174,98 @@ public interface FillTree
 				}
 			}
 		}
-		
-		
+
+
 		@Override
-		public void fillTree(HierarchicalContainer container)
+		public void fillTree(final HierarchicalContainer container)
 		{
-			// final Group rootGroup = this.getRootGroup();
-			for(final Group parentNode : this.treeReferenceMap.keySet())
+			switch(this.strategy)
 			{
-				container = addChildren(container,parentNode);
+				case TOP_DOWN:
+					fillTopDown(container);
+				break;
+
+				case BOTTOM_UP:
+					fillBottomUp(container);
+				break;
 			}
+
 			this.getHierarchicalReceiver().setContainerDataSource(container);
 		}
-		
-		
-		public HierarchicalContainer addChildren(final HierarchicalContainer container,
-				final Group parentGroup)
+
+
+		protected void fillTopDown(final HierarchicalContainer container)
+		{
+			for(final Group parentGroup : this.treeReferenceMap.keySet())
+			{
+				if(this.treeReferenceMap.get(parentGroup) == ROOT_IDENTIFIER)
+				{
+					for(final Object rootValue : parentGroup.getGroupData())
+					{
+						container.addItem(rootValue);
+						addChildren(container,parentGroup,rootValue);
+					}
+				}
+			}
+		}
+
+
+		protected void addChildren(final HierarchicalContainer container, final Group parentGroup,
+				final Object parentValue)
 		{
 			for(final Group childGroup : this.getChildGroups(parentGroup))
 			{
-				for(final Object parentDataItem : parentGroup.getGroupData())
+				for(final Object childValue : childGroup.getGroupData())
 				{
-					for(final Object childDataItem : childGroup.getGroupData())
+					if(parentValue
+							.equals(this.getReferenceValue(childValue,childGroup.getReference())))
 					{
-						if(parentDataItem.equals(
-								this.getReferenceValue(childDataItem,childGroup.getReference())))
+						container.addItem(childValue);
+						container.setParent(childValue,parentValue);
+
+						addChildren(container,childGroup,childValue);
+					}
+				}
+			}
+		}
+
+
+		protected void fillBottomUp(final HierarchicalContainer container)
+		{
+			for(final Group parentGroup : this.treeReferenceMap.keySet())
+			{
+				addChildren(container,parentGroup);
+			}
+		}
+
+
+		protected void addChildren(final HierarchicalContainer container, final Group parentGroup)
+		{
+			for(final Group childGroup : this.getChildGroups(parentGroup))
+			{
+				for(final Object parentValue : parentGroup.getGroupData())
+				{
+					for(final Object childValue : childGroup.getGroupData())
+					{
+						if(parentValue.equals(
+								this.getReferenceValue(childValue,childGroup.getReference())))
 						{
-							container.addItem(parentDataItem);
-							container.addItem(childDataItem);
-							container.setParent(childDataItem,parentDataItem);
+							container.addItem(parentValue);
+							container.addItem(childValue);
+							container.setParent(childValue,parentValue);
 						}
 					}
 				}
 			}
-			return container;
 		}
-		
-		
+
+
 		// -------------- TREE UTILITIES -------------------
-		
+
 		protected Collection<Group> getChildGroups(final Group group)
 		{
 			final Collection<Group> children = new ArrayList<Group>();
-			
+
 			// key set equals child nodes
 			for(final Group node : this.treeReferenceMap.keySet())
 			{
@@ -182,8 +278,8 @@ public interface FillTree
 			}
 			return children;
 		}
-		
-		
+
+
 		// TODO create tailored exception type
 		private Object getReferenceValue(final Object referrer, final Field referenceField)
 				throws RuntimeException
@@ -199,8 +295,8 @@ public interface FillTree
 				throw new RuntimeException(e);
 			}
 		}
-		
-		
+
+
 		protected Group getRootGroup()
 		{
 			for(final Group parent : this.treeReferenceMap.values())
@@ -217,20 +313,6 @@ public interface FillTree
 				}
 			}
 			return null;
-		}
-		
-		
-		@Override
-		public void setHierarchicalReceiver(final AbstractSelect treeComponent)
-		{
-			this.treeComponent = treeComponent;
-		}
-		
-		
-		@Override
-		public AbstractSelect getHierarchicalReceiver()
-		{
-			return this.treeComponent;
 		}
 	}
 }

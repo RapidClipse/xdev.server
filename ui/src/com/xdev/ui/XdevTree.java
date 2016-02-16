@@ -30,7 +30,7 @@ import com.xdev.util.CaptionUtils;
  * a hierarchical set of items.
  *
  * @author XDEV Software
- * 		
+ *
  */
 public class XdevTree extends Tree implements XdevField
 {
@@ -117,7 +117,7 @@ public class XdevTree extends Tree implements XdevField
 	 * annotation.
 	 *
 	 * @see CaptionResolver
-	 * 		
+	 *
 	 * @param itemCaptionFromAnnotation
 	 *            the itemCaptionFromAnnotation to set
 	 */
@@ -165,16 +165,16 @@ public class XdevTree extends Tree implements XdevField
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
-		if(isItemCaptionFromAnnotation())
+		if(itemId != null)
 		{
-			if(itemId != null && CaptionUtils.hasCaptionAnnotationValue(itemId.getClass()))
+			if(isItemCaptionFromAnnotation())
 			{
-				return CaptionUtils.resolveCaption(itemId,getLocale());
+				if(CaptionUtils.hasCaptionAnnotationValue(itemId.getClass()))
+				{
+					return CaptionUtils.resolveCaption(itemId,getLocale());
+				}
 			}
-		}
-		else if(this.itemCaptionValue != null)
-		{
-			if(itemId != null)
+			else if(this.itemCaptionValue != null)
 			{
 				return CaptionUtils.resolveCaption(itemId,this.itemCaptionValue,getLocale());
 			}

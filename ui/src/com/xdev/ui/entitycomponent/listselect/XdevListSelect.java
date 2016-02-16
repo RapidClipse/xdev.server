@@ -35,7 +35,7 @@ import com.xdev.util.CaptionUtils;
  * lazyloading, and other advanced features.
  *
  * @author XDEV Software
- * 		
+ *
  */
 public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements XdevField
 {
@@ -67,8 +67,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		setImmediate(true);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -77,8 +77,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -114,7 +114,7 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	 * annotation.
 	 *
 	 * @see CaptionResolver
-	 * 		
+	 *
 	 * @param itemCaptionFromAnnotation
 	 *            the itemCaptionFromAnnotation to set
 	 */
@@ -224,27 +224,30 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
-		if(isItemCaptionFromAnnotation())
+		if(itemId != null)
 		{
-			final BeanItem<T> item = getItem(itemId);
-			if(item != null)
+			if(isItemCaptionFromAnnotation())
 			{
-				final T bean = item.getBean();
-				if(bean != null && CaptionUtils.hasCaptionAnnotationValue(bean.getClass()))
+				final BeanItem<T> item = getItem(itemId);
+				if(item != null)
 				{
-					return CaptionUtils.resolveCaption(bean,getLocale());
+					final T bean = item.getBean();
+					if(bean != null && CaptionUtils.hasCaptionAnnotationValue(bean.getClass()))
+					{
+						return CaptionUtils.resolveCaption(bean,getLocale());
+					}
 				}
 			}
-		}
-		else if(this.itemCaptionValue != null)
-		{
-			final BeanItem<T> item = getItem(itemId);
-			if(item != null)
+			else if(this.itemCaptionValue != null)
 			{
-				final T bean = item.getBean();
-				if(bean != null)
+				final BeanItem<T> item = getItem(itemId);
+				if(item != null)
 				{
-					return CaptionUtils.resolveCaption(bean,this.itemCaptionValue,getLocale());
+					final T bean = item.getBean();
+					if(bean != null)
+					{
+						return CaptionUtils.resolveCaption(bean,this.itemCaptionValue,getLocale());
+					}
 				}
 			}
 		}

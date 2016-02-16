@@ -19,59 +19,30 @@ package com.xdev.communication;
 
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
 import javax.persistence.metamodel.EntityType;
 
+import com.xdev.util.EntityIDResolver;
 import com.xdev.util.HibernateEntityIDResolver;
+import com.xdev.util.JPAMetaDataUtils;
 
 
 /**
  * @author XDEV Software (JW)
- *
+ *		
  */
 public class URLParameterRegistry
 {
 	private final Map<URLKeyDescriptor, URLParameterRegistryValue>	internal;
-	private Set<EntityType<?>>										entities;
-	private HibernateEntityIDResolver								idResolver;
-	
-	
-	public Set<EntityType<?>> getEntities()
-	{
-		if(this.entities == null)
-		{
-			final EntityManager entityManager = EntityManagerUtils.getEntityManager();
-			if(entityManager != null)
-			{
-				this.entities = entityManager.getMetamodel().getEntities();
-			}
-		}
-		
-		return this.entities;
-	}
-	
-	
-	public HibernateEntityIDResolver getIdResolver()
-	{
-		if(this.idResolver != null)
-		{
-			return this.idResolver;
-		}
-		else
-		{
-			this.idResolver = new HibernateEntityIDResolver();
-			return this.idResolver;
-		}
-	}
-	
-	
+	// private Set<EntityType<?>> entities;
+	private EntityIDResolver										idResolver;
+																	
+																	
 	/**
 	 *
 	 */
@@ -82,32 +53,23 @@ public class URLParameterRegistry
 	}
 	
 	
-	/*
-	 * Key muss aus propertyname+view bestehen damit sich view properties
-	 * gegenseitig nicht überschreiben können
-	 */
 	public URLParameterDescriptor put(final Object value, final String viewName,
 			final String propertyName)
 	{
+		/*
+		 * The key has to be a combination of property name and view so view
+		 * properties can't overwrite each other.
+		 */
 		final URLKeyDescriptor parameterKey = new URLKeyDescriptor(viewName,propertyName);
-		for(final EntityType<?> entityType : this.getEntities())
+		
+		if(value != null && JPAMetaDataUtils.isManaged(value.getClass()))
 		{
-			if(entityType.getJavaType().equals(value.getClass()))
+			// See XWS-545
+			final Object id = getIdResolver().getEntityIDPropertyValue(value);
+			if(id instanceof Serializable)
 			{
-				try
-				{
-					final String pkFieldName = this.getIdResolver()
-							.getEntityIDProperty(value.getClass()).getName();
-					final Field f = value.getClass().getDeclaredField(pkFieldName);
-					f.setAccessible(true);
-					this.internal.put(parameterKey,new URLParameterRegistryValue(value.getClass(),
-							null,(Serializable)f.get(value),parameterKey.getPropertyName()));
-				}
-				catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException
-						| SecurityException e)
-				{
-					throw new RuntimeException(e);
-				}
+				this.internal.put(parameterKey,new URLParameterRegistryValue(value.getClass(),null,
+						(Serializable)id,parameterKey.getPropertyName()));
 				return new URLParameterDescriptor(value.getClass(),parameterKey.getPropertyName());
 			}
 		}
@@ -145,4 +107,36 @@ public class URLParameterRegistry
 		return valuesForView;
 	}
 	
+	
+	/**
+	 * @deprecated not used anymore, will be removed in a future release
+	 * @return <code>null</code>
+	 */
+	@Deprecated
+	public Set<EntityType<?>> getEntities()
+	{
+		// if(this.entities == null)
+		// {
+		// final EntityManager entityManager =
+		// EntityManagerUtils.getEntityManager();
+		// if(entityManager != null)
+		// {
+		// this.entities = entityManager.getMetamodel().getEntities();
+		// }
+		// }
+		//
+		// return this.entities;
+		return null;
+	}
+	
+	
+	public EntityIDResolver getIdResolver()
+	{
+		if(this.idResolver == null)
+		{
+			this.idResolver = new HibernateEntityIDResolver();
+		}
+		
+		return this.idResolver;
+	}
 }

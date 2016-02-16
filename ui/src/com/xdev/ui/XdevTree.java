@@ -20,6 +20,9 @@ package com.xdev.ui;
 
 import com.vaadin.data.Container;
 import com.vaadin.ui.Tree;
+import com.xdev.util.Caption;
+import com.xdev.util.CaptionResolver;
+import com.xdev.util.CaptionUtils;
 
 
 /**
@@ -31,10 +34,12 @@ import com.vaadin.ui.Tree;
  */
 public class XdevTree extends Tree implements XdevField
 {
-	private final Extensions	extensions		= new Extensions();
-	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-												
-												
+	private final Extensions	extensions					= new Extensions();
+	private boolean				persistValue				= PERSIST_VALUE_DEFAULT;
+	private boolean				itemCaptionFromAnnotation	= true;
+	private String				itemCaptionValue			= null;
+
+
 	/**
 	 * Creates a new empty tree.
 	 */
@@ -42,8 +47,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new tree with caption and connect it to a Container.
 	 *
@@ -54,8 +59,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new empty tree with caption.
 	 *
@@ -65,8 +70,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -75,8 +80,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -104,5 +109,77 @@ public class XdevTree extends Tree implements XdevField
 	public void setPersistValue(final boolean persistValue)
 	{
 		this.persistValue = persistValue;
+	}
+
+
+	/**
+	 * Sets if the item's caption should be derived from its {@link Caption}
+	 * annotation.
+	 *
+	 * @see CaptionResolver
+	 * 		
+	 * @param itemCaptionFromAnnotation
+	 *            the itemCaptionFromAnnotation to set
+	 */
+	public void setItemCaptionFromAnnotation(final boolean itemCaptionFromAnnotation)
+	{
+		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
+	}
+
+
+	/**
+	 * @return if the item's caption should be derived from its {@link Caption}
+	 *         annotation
+	 */
+	public boolean isItemCaptionFromAnnotation()
+	{
+		return this.itemCaptionFromAnnotation;
+	}
+
+
+	/**
+	 * Sets a user defined caption value for the items to display.
+	 *
+	 * @see Caption
+	 * @see #setItemCaptionFromAnnotation(boolean)
+	 * @param itemCaptionValue
+	 *            the itemCaptionValue to set
+	 */
+	public void setItemCaptionValue(final String itemCaptionValue)
+	{
+		this.itemCaptionValue = itemCaptionValue;
+	}
+
+
+	/**
+	 * Returns the user defined caption value for the items to display
+	 *
+	 * @return the itemCaptionValue
+	 */
+	public String getItemCaptionValue()
+	{
+		return this.itemCaptionValue;
+	}
+
+
+	@Override
+	public String getItemCaption(final Object itemId)
+	{
+		if(isItemCaptionFromAnnotation())
+		{
+			if(itemId != null && CaptionUtils.hasCaptionAnnotationValue(itemId.getClass()))
+			{
+				return CaptionUtils.resolveCaption(itemId,getLocale());
+			}
+		}
+		else if(this.itemCaptionValue != null)
+		{
+			if(itemId != null)
+			{
+				return CaptionUtils.resolveCaption(itemId,this.itemCaptionValue,getLocale());
+			}
+		}
+
+		return super.getItemCaption(itemId);
 	}
 }

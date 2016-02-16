@@ -24,26 +24,23 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.ui.AbstractSelect;
 import com.xdev.util.Caption;
-import com.xdev.util.CaptionUtils;
 
 
 public interface FillTree
 {
-
+	
 	public void setHierarchicalReceiver(AbstractSelect treeComponent);
-
-
+	
+	
 	public AbstractSelect getHierarchicalReceiver();
-
-
+	
+	
 	public <T> Group addRootGroup(Class<T> clazz);
-
-
+	
+	
 	/**
 	 * @deprecated use {@link #addRootGroup(Class)} instead, caption is now
 	 *             handled by {@link Caption}
@@ -53,11 +50,11 @@ public interface FillTree
 	{
 		return addRootGroup(clazz);
 	}
-
-
+	
+	
 	public Group addGroup(Class<?> clazz, Field parentReference);
-
-
+	
+	
 	/**
 	 * @deprecated use {@link #addGroup(Class, Field)} instead, caption is now
 	 *             handled by {@link Caption}
@@ -68,43 +65,43 @@ public interface FillTree
 	{
 		return addGroup(clazz,parentReference);
 	}
-
-
+	
+	
 	public <T> void setGroupData(Class<T> groupClass, Collection<T> data);
-
-
+	
+	
 	public void fillTree(HierarchicalContainer container);
-
-
-
+	
+	
+	
 	public class Implementation implements FillTree
 	{
 		public static final Object		ROOT_IDENTIFIER		= null;
 		// no/null parent means root group
 		// group as key, parent as value - map
 		private final Map<Group, Group>	treeReferenceMap	= new HashMap<Group, Group>();
-
+															
 		private AbstractSelect			treeComponent;
-
-
+										
+										
 		@Override
 		public <T> Group addRootGroup(final Class<T> clazz)
 		{
 			// TODO caption provider
 			final Group node = new Group.Implementation(clazz,null);
-
+			
 			// TODO null as root identifier
 			this.treeReferenceMap.put(node,null);
-
+			
 			return node;
 		}
-
-
+		
+		
 		@Override
 		public Group addGroup(final Class<?> clazz, final Field parentReference)
 		{
 			final Group childNode = new Group.Implementation(clazz,parentReference);
-
+			
 			// to avoid concurrent modification exception
 			Group parentNode = null;
 			for(final Group node : this.treeReferenceMap.keySet())
@@ -117,8 +114,8 @@ public interface FillTree
 			this.treeReferenceMap.put(childNode,parentNode);
 			return childNode;
 		}
-
-
+		
+		
 		@Override
 		public <T> void setGroupData(final Class<T> groupClass, final Collection<T> data)
 		{
@@ -130,8 +127,8 @@ public interface FillTree
 				}
 			}
 		}
-
-
+		
+		
 		@Override
 		public void fillTree(HierarchicalContainer container)
 		{
@@ -142,8 +139,8 @@ public interface FillTree
 			}
 			this.getHierarchicalReceiver().setContainerDataSource(container);
 		}
-
-
+		
+		
 		public HierarchicalContainer addChildren(final HierarchicalContainer container,
 				final Group parentGroup)
 		{
@@ -156,36 +153,23 @@ public interface FillTree
 						if(parentDataItem.equals(
 								this.getReferenceValue(childDataItem,childGroup.getReference())))
 						{
-							/*
-							 * create parent item, child item and add child to
-							 * parent item
-							 */
-							final Object parentCaption = this.getCaptionValue(parentDataItem);
-							/*
-							 * it is possible that parent items may be already
-							 * child items from parents at a higher hierarchy so
-							 * add only items if not already existent
-							 */
-							this.addItemIfNotExistent(container,parentCaption);
-
-							final Object childCaption = this.getCaptionValue(childDataItem);
-							this.addItemIfNotExistent(container,childCaption);
-
-							container.setParent(childCaption,parentCaption);
+							container.addItem(parentDataItem);
+							container.addItem(childDataItem);
+							container.setParent(childDataItem,parentDataItem);
 						}
 					}
 				}
 			}
 			return container;
 		}
-
-
+		
+		
 		// -------------- TREE UTILITIES -------------------
-
+		
 		protected Collection<Group> getChildGroups(final Group group)
 		{
 			final Collection<Group> children = new ArrayList<Group>();
-
+			
 			// key set equals child nodes
 			for(final Group node : this.treeReferenceMap.keySet())
 			{
@@ -198,19 +182,14 @@ public interface FillTree
 			}
 			return children;
 		}
-
-
+		
+		
 		// TODO create tailored exception type
 		private Object getReferenceValue(final Object referrer, final Field referenceField)
 				throws RuntimeException
 		{
 			try
 			{
-				/*
-				 * TODO add caption annotation to getter and safely access
-				 * annotated getter without the need to manipulate field access
-				 * rules
-				 */
 				referenceField.setAccessible(true);
 				final Object referenceValue = referenceField.get(referrer);
 				return referenceValue;
@@ -220,19 +199,8 @@ public interface FillTree
 				throw new RuntimeException(e);
 			}
 		}
-
-
-		private Item addItemIfNotExistent(final Container container, final Object itemID)
-		{
-			final Item item = container.addItem(itemID);
-			if(item == null)
-			{
-				return container.getItem(itemID);
-			}
-			return item;
-		}
-
-
+		
+		
 		protected Group getRootGroup()
 		{
 			for(final Group parent : this.treeReferenceMap.values())
@@ -250,49 +218,15 @@ public interface FillTree
 			}
 			return null;
 		}
-
-
-		private Object getCaptionValue(final Object item
-		// , final Group captionGroupInfo
-		)
-		// throws RuntimeException
-		{
-			return CaptionUtils.resolveCaption(item);
-
-			// if(captionGroupInfo.getCaption() != null)
-			// {
-			// try
-			// {
-			// /*
-			// * TODO add caption annotation to getter and safely access
-			// * annotated getter without the need to manipulate field
-			// * access rules
-			// */
-			// captionGroupInfo.getCaption().setAccessible(true);
-			// final Object captionValue =
-			// captionGroupInfo.getCaption().get(item);
-			// return captionValue;
-			// }
-			// catch(IllegalArgumentException | IllegalAccessException e)
-			// {
-			// throw new RuntimeException(e);
-			// }
-			// }
-			// else
-			// {
-			// // toString fallback
-			// return item.toString();
-			// }
-		}
-
-
+		
+		
 		@Override
 		public void setHierarchicalReceiver(final AbstractSelect treeComponent)
 		{
 			this.treeComponent = treeComponent;
 		}
-
-
+		
+		
 		@Override
 		public AbstractSelect getHierarchicalReceiver()
 		{

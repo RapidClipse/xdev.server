@@ -36,23 +36,23 @@ public interface EntityMasterDetail extends JPAMasterDetail
 	@Override
 	public void connectMasterDetail(BeanComponent master, BeanComponent detail, Class masterClass,
 			Class detailClass);
-
-
-
+			
+			
+			
 	public class Implementation extends MasterDetail.Implementation implements EntityMasterDetail
 	{
 		// private final EntityIDResolver idResolver;
 		private final EntityReferenceResolver referenceResolver;
-
-
+		
+		
 		public Implementation()
 		{
 			super();
 			// this.idResolver = new HibernateEntityIDResolver();
-			this.referenceResolver = new XdevEntityReferenceResolver();
+			this.referenceResolver = XdevEntityReferenceResolver.getInstance();
 		}
-
-
+		
+		
 		@Override
 		public void connectMasterDetail(final BeanComponent master,
 				final BeanComponent detailContainer, final Class masterClass,
@@ -67,18 +67,18 @@ public interface EntityMasterDetail extends JPAMasterDetail
 					this.referenceResolver.getReferenceEntityPropertyName(masterClass,
 							detailClass)));
 		}
-
-
-
+		
+		
+		
 		private class MasterDetailValueChangeListener implements ValueChangeListener
 		{
 			private static final long	serialVersionUID	= 3306467309764402175L;
-
+															
 			private final BeanComponent	masterComponent;
 			private final BeanComponent	detailComponent;
 			private final Object		masterProperty;
-
-
+										
+										
 			public MasterDetailValueChangeListener(final BeanComponent filter,
 					final BeanComponent detailContainer, final Object masterProperty,
 					final Object detailProperty)
@@ -88,8 +88,8 @@ public interface EntityMasterDetail extends JPAMasterDetail
 				// this.detailProperty = detailProperty;
 				this.masterProperty = masterProperty;
 			}
-
-
+			
+			
 			@SuppressWarnings("unchecked")
 			@Override
 			public void valueChange(final ValueChangeEvent event)
@@ -102,14 +102,14 @@ public interface EntityMasterDetail extends JPAMasterDetail
 				{
 					// reattach
 					DAOs.get(selectedBean).reattach(selectedBean);
-					
+
 					try
 					{
 						final Field f = selectedBean.getClass()
 								.getDeclaredField(this.masterProperty.toString());
 						f.setAccessible(true);
 						final Object value = f.get(selectedBean);
-
+						
 						if(value instanceof Collection)
 						{
 							final Collection values = (Collection)value;
@@ -126,7 +126,7 @@ public interface EntityMasterDetail extends JPAMasterDetail
 						e.printStackTrace();
 					}
 				}
-
+				
 				// if(this.filterComponent.getSelectedItem() != null)
 				// {
 				// clearFiltering(this.detailComponent.getContainerDataSource(),

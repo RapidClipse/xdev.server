@@ -33,14 +33,14 @@ import com.xdev.util.HibernateEntityReferenceResolver;
 /**
  *
  * @author XDEV Software
- *		
+ * 		
  */
 public class XdevFillTree implements ExecutableCommandObject
 {
 	private final FillTree					fillTreeComposite;
 	private final EntityReferenceResolver	referenceResolver;
-											
-											
+
+
 	/**
 	 *
 	 */
@@ -49,20 +49,20 @@ public class XdevFillTree implements ExecutableCommandObject
 		super();
 		this.fillTreeComposite = new FillTree.Implementation();
 		this.fillTreeComposite.setHierarchicalReceiver(tree);
-		this.referenceResolver = new HibernateEntityReferenceResolver();
+		this.referenceResolver = HibernateEntityReferenceResolver.getInstance();
 	}
-	
+
 	/*
 	 * --------------- UTILITY DELEGATORS -------------------
 	 */
-	
-	
+
+
 	public <T> Group addRootGroup(final Class<T> clazz) throws RuntimeException
 	{
 		return this.fillTreeComposite.addRootGroup(clazz);
 	}
-	
-	
+
+
 	public Group addGroup(final Class<?> clazz, final Class<?> parentClazz) throws RuntimeException
 	{
 		// TODO check bidirectionals
@@ -77,33 +77,33 @@ public class XdevFillTree implements ExecutableCommandObject
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
+
 	public <T> void setGroupData(final Class<T> groupClass, final Collection<T> data)
 	{
 		this.fillTreeComposite.setGroupData(groupClass,data);
 	}
-	
-	
+
+
 	@Override
 	public void execute()
 	{
 		this.fillTreeComposite.fillTree(new HierarchicalContainer());
 	}
-	
-	
+
+
 	public void setHierarchicalReceiver(final AbstractSelect treeComponent)
 	{
 		this.fillTreeComposite.setHierarchicalReceiver(treeComponent);
 	}
-	
-	
+
+
 	public AbstractSelect getHierarchicalReceiver()
 	{
 		return this.fillTreeComposite.getHierarchicalReceiver();
 	}
-	
-	
+
+
 	public void setStrategy(final Strategy strategy)
 	{
 		this.fillTreeComposite.setStrategy(strategy);

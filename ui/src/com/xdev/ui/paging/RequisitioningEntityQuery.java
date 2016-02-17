@@ -55,7 +55,6 @@ import com.xdev.communication.EntityManagerUtils;
 import com.xdev.data.util.filter.CaptionStringFilter;
 import com.xdev.data.util.filter.CompareBIDirect;
 import com.xdev.util.DTOUtils;
-import com.xdev.util.EntityIDResolver;
 import com.xdev.util.HibernateEntityIDResolver;
 
 
@@ -87,7 +86,6 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	private int							querySize			= -1;
 															
 	private Object[]					requiredProperties;
-	private EntityIDResolver			idResolver;
 										
 										
 	/**
@@ -261,12 +259,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			properties[i] = this.requiredProperties[i].toString();
 		}
 		
-		if(this.idResolver == null)
-		{
-			this.idResolver = new HibernateEntityIDResolver();
-		}
-		
-		DTOUtils.preload(entity,this.idResolver,properties);
+		DTOUtils.preload(entity,HibernateEntityIDResolver.getInstance(),properties);
 	}
 	
 	

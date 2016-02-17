@@ -44,8 +44,8 @@ public interface JPAMasterDetail extends MasterDetail
 		public Implementation()
 		{
 			super();
-			this.idResolver = new HibernateEntityIDResolver();
-			this.referenceResolver = new XdevEntityReferenceResolver();
+			this.idResolver = HibernateEntityIDResolver.getInstance();
+			this.referenceResolver = XdevEntityReferenceResolver.getInstance();
 		}
 
 
@@ -66,7 +66,7 @@ public interface JPAMasterDetail extends MasterDetail
 
 		private class MasterDetailValueChangeListener implements ValueChangeListener
 		{
-			private static final long serialVersionUID = 3306467309764402175L;
+			private static final long	serialVersionUID	= 3306467309764402175L;
 
 			private final BeanComponent	filterComponent;
 			private final BeanComponent	detailComponent;

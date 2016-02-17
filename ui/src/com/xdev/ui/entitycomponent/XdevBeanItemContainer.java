@@ -24,21 +24,19 @@ import java.util.List;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.xdev.util.DTOUtils;
-import com.xdev.util.EntityIDResolver;
 import com.xdev.util.HibernateEntityIDResolver;
 
 
 /**
  * @author XDEV Software (JW,FH)
- * 		
+ *
  */
 public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		implements XdevBeanContainer<BEANTYPE>
 {
-	private Object[]			requiredProperties;
-	private EntityIDResolver	idResolver;
-
-
+	private Object[] requiredProperties;
+	
+	
 	/**
 	 * @param type
 	 * @throws IllegalArgumentException
@@ -47,8 +45,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		super(type);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -59,8 +57,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		this.removeAllItems();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -71,8 +69,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		// no need to synchronize
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -84,14 +82,14 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	public void setRequiredProperties(final Object... propertyIDs)
 	{
 		this.requiredProperties = propertyIDs;
-
+		
 		for(final BEANTYPE bean : getAllItemIds())
 		{
 			preload(bean);
 		}
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -103,8 +101,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		return this.requiredProperties;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -119,8 +117,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 			this.removeItem(bean);
 		}
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -131,8 +129,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		return super.getAllItemIds();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -145,8 +143,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		return super.getUnfilteredItem(itemId);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -154,7 +152,7 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	public void addAll(final Collection<? extends BEANTYPE> collection)
 	{
 		super.addAll(collection);
-
+		
 		if(!collection.isEmpty())
 		{
 			for(final BEANTYPE bean : collection)
@@ -163,8 +161,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -176,8 +174,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		preload(item.getBean());
 		return item;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -188,26 +186,21 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		preload(item.getBean());
 		return item;
 	}
-
-
+	
+	
 	protected void preload(final BEANTYPE bean)
 	{
 		if(this.requiredProperties == null || this.requiredProperties.length == 0)
 		{
 			return;
 		}
-
+		
 		final String[] properties = new String[this.requiredProperties.length];
 		for(int i = 0; i < properties.length; i++)
 		{
 			properties[i] = this.requiredProperties[i].toString();
 		}
-
-		if(this.idResolver == null)
-		{
-			this.idResolver = new HibernateEntityIDResolver();
-		}
-
-		DTOUtils.preload(bean,this.idResolver,properties);
+		
+		DTOUtils.preload(bean,HibernateEntityIDResolver.getInstance(),properties);
 	}
 }

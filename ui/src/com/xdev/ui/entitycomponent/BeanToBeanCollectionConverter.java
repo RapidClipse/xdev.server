@@ -36,34 +36,34 @@ public class BeanToBeanCollectionConverter<T> implements Converter<Set<T>, Colle
 	private final EntityIDResolver		idResolver;
 	private Collection<T>				modelCollection			= new ArrayList<T>();
 	private Collection<Object>			presentationCollection	= new HashSet<>();
-
-
+																
+																
 	/**
 	 *
 	 */
 	public BeanToBeanCollectionConverter(final XdevBeanContainer<T> container)
 	{
 		this.container = container;
-		this.idResolver = new HibernateEntityIDResolver();
+		this.idResolver = HibernateEntityIDResolver.getInstance();
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Collection<? extends T>> getModelType()
 	{
 		return (Class<Collection<? extends T>>)this.presentationCollection.getClass();
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Set<T>> getPresentationType()
 	{
 		return (Class<Set<T>>)this.modelCollection.getClass();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -85,16 +85,16 @@ public class BeanToBeanCollectionConverter<T> implements Converter<Set<T>, Colle
 		{
 			this.modelCollection = new HashSet<>();
 		}
-
+		
 		if(itemIds != null)
 		{
 			this.modelCollection.addAll(itemIds);
 		}
-
+		
 		return this.modelCollection;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -109,7 +109,7 @@ public class BeanToBeanCollectionConverter<T> implements Converter<Set<T>, Colle
 					throws Converter.ConversionException
 	{
 		this.presentationCollection = new HashSet<>();
-
+		
 		if(values != null)
 		{
 			for(final T bean : values)
@@ -117,18 +117,18 @@ public class BeanToBeanCollectionConverter<T> implements Converter<Set<T>, Colle
 				this.presentationCollection.add(convertToPresentation(bean));
 			}
 		}
-
+		
 		return (Set<T>)this.presentationCollection;
 	}
-
-
+	
+	
 	protected T convertToPresentation(final T value)
 	{
 		if(value == null)
 		{
 			return null;
 		}
-
+		
 		final Object id = this.idResolver.getEntityIDPropertyValue(value);
 		final T containerValue = this.container.getItemIds().stream()
 				.map(propertyId -> this.container.getItem(propertyId).getBean())

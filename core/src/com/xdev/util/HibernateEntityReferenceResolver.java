@@ -38,10 +38,23 @@ import com.xdev.communication.EntityManagerUtils;
  */
 public class HibernateEntityReferenceResolver implements EntityReferenceResolver
 {
+	private static HibernateEntityReferenceResolver instance;
+	
+	
+	public static HibernateEntityReferenceResolver getInstance()
+	{
+		if(instance == null)
+		{
+			instance = new HibernateEntityReferenceResolver();
+		}
+		
+		return instance;
+	}
+	
 	private final Configuration config;
-
-
-	public HibernateEntityReferenceResolver()
+	
+	
+	private HibernateEntityReferenceResolver()
 	{
 		this.config = new Configuration();
 		final Set<EntityType<?>> set = EntityManagerUtils.getEntityManager().getMetamodel()
@@ -61,36 +74,28 @@ public class HibernateEntityReferenceResolver implements EntityReferenceResolver
 		}
 		this.config.buildMappings();
 	}
-
-
+	
+	
 	@Override
 	public String getReferenceEntityPropertyName(final Class<?> referenceEntity,
 			final Class<?> entity)
 	{
 		final PersistentClass clazz = this.config.getClassMapping(entity.getName());
-		Property ref = null;
-
+		
 		for(@SuppressWarnings("unchecked")
-		final Iterator<Property> i = clazz.getReferenceablePropertyIterator(); i.hasNext();)
+		final Iterator<Property> iterator = clazz.getReferenceablePropertyIterator(); iterator
+				.hasNext();)
 		{
-			final Property it = i.next();
+			final Property ref = iterator.next();
 			/*
 			 * TODO not only referenceable properties are returned, hence a
 			 * manual check is required
 			 */
-			if(HibernateMetaDataUtils.getReferencablePropertyName(it.getValue()) != null)
+			final String propertyName = HibernateMetaDataUtils
+					.getReferencablePropertyName(ref.getValue());
+			if(propertyName != null && propertyName.equals(referenceEntity.getName()))
 			{
-				ref = it;
-				final String propertyName = HibernateMetaDataUtils
-						.getReferencablePropertyName(ref.getValue());
-						
-				if(propertyName != null)
-				{
-					if(propertyName.equals(referenceEntity.getName()))
-					{
-						return ref.getName();
-					}
-				}
+				return ref.getName();
 			}
 		}
 		return null;

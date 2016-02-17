@@ -33,22 +33,35 @@ import com.xdev.communication.EntityManagerUtils;
 
 /**
  * Returns a Vaadin Item property chain.
- * 
+ *
  * @author XDEV Software (JW)
  */
 // TODO create VaadinItemPathConcatenator to avoid manual "." appending
 public class XdevEntityReferenceResolver implements EntityReferenceResolver
 {
+	private static XdevEntityReferenceResolver instance;
+	
+	
+	public static XdevEntityReferenceResolver getInstance()
+	{
+		if(instance == null)
+		{
+			instance = new XdevEntityReferenceResolver();
+		}
+		
+		return instance;
+	}
+	
 	private final Configuration config;
 	// private final EntityIDResolver idResolver;
-
-
-	public XdevEntityReferenceResolver()
+	
+	
+	private XdevEntityReferenceResolver()
 	{
 		this.config = new Configuration();
 		final Set<EntityType<?>> set = EntityManagerUtils.getEntityManager().getMetamodel()
 				.getEntities();
-
+				
 		for(final Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)
 		{
 			final Class<?> eClazz = i.next().getJavaType();
@@ -64,15 +77,15 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 		this.config.buildMappings();
 		// this.idResolver = new HibernateEntityIDResolver();
 	}
-
-
+	
+	
 	@Override
 	public String getReferenceEntityPropertyName(final Class<?> referenceEntity,
 			final Class<?> entity) throws RuntimeException
 	{
 		final PersistentClass clazz = this.config.getClassMapping(entity.getName());
 		Property ref = null;
-
+		
 		for(@SuppressWarnings("unchecked")
 		final Iterator<Property> i = clazz.getReferenceablePropertyIterator(); i.hasNext();)
 		{
@@ -81,13 +94,13 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 			 * not only referenceable properties are returned, hence a manual
 			 * check is required
 			 */
-
+			
 			final String propertyName = HibernateMetaDataUtils
 					.getReferencablePropertyName(it.getValue());
 			if(propertyName != null)
 			{
 				ref = it;
-
+				
 				if(propertyName.equals(referenceEntity.getName()))
 				{
 					return ref.getName();
@@ -96,8 +109,8 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 		}
 		return getReferenceEntityPropertyname(referenceEntity,entity,ref);
 	}
-
-
+	
+	
 	// look deeper into entity
 	protected String getReferenceEntityPropertyname(final Class<?> referenceEntity,
 			Class<?> previousClass, Property previousProperty) throws RuntimeException
@@ -107,21 +120,22 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 			final String name = previousProperty.getName() + ".";
 			previousClass = previousProperty.getType().getReturnedClass();
 			final PersistentClass clazz = this.config.getClassMapping(previousClass.getName());
-
+			
 			for(@SuppressWarnings("unchecked")
-			final Iterator<Property> i = clazz.getReferenceablePropertyIterator(); i.hasNext();)
+			final Iterator<Property> iterator = clazz.getReferenceablePropertyIterator(); iterator
+					.hasNext();)
 			{
-				final Property it = i.next();
+				final Property property = iterator.next();
 				/*
 				 * not only referenceable properties are returned, hence a
 				 * manual check is required
 				 */
-				if(HibernateMetaDataUtils.getReferencablePropertyName(it.getValue()) != null)
+				if(HibernateMetaDataUtils.getReferencablePropertyName(property.getValue()) != null)
 				{
-					previousProperty = it;
+					previousProperty = property;
 					final String propertyName = HibernateMetaDataUtils
 							.getReferencablePropertyName(previousProperty.getValue());
-
+							
 					if(propertyName != null)
 					{
 						if(propertyName.equals(referenceEntity.getName()))
@@ -134,8 +148,8 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 		}
 		return getReferenceEntityPropertyname(referenceEntity,previousClass,previousProperty);
 	}
-
-
+	
+	
 	private String getPropertyName(final String itemPropertyPath, final Property property)
 	{
 		return itemPropertyPath + property.getName();

@@ -35,14 +35,27 @@ import com.xdev.communication.EntityManagerUtils;
 /**
  *
  * @author XDEV Software (JW)
- *		
+ *
  */
 public class HibernateEntityIDResolver implements EntityIDResolver
 {
+	private static HibernateEntityIDResolver instance;
+
+
+	public static HibernateEntityIDResolver getInstance()
+	{
+		if(instance == null)
+		{
+			instance = new HibernateEntityIDResolver();
+		}
+
+		return instance;
+	}
+
 	private final Configuration config;
 
 
-	public HibernateEntityIDResolver()
+	private HibernateEntityIDResolver()
 	{
 		this.config = new Configuration();
 		final Set<EntityType<?>> set = EntityManagerUtils.getEntityManager().getMetamodel()

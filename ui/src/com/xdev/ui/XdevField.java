@@ -20,7 +20,7 @@ package com.xdev.ui;
 
 /**
  * @author XDEV Software
- *		
+ * @since 1.1
  */
 public interface XdevField extends XdevComponent
 {
@@ -28,7 +28,7 @@ public interface XdevField extends XdevComponent
 
 
 	public void setPersistValue(boolean persistValue);
-	
-	
+
+
 	public boolean isPersistValue();
 }

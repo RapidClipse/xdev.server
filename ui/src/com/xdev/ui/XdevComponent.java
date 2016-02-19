@@ -24,7 +24,7 @@ import com.xdev.util.ExtendableObject;
 
 /**
  * @author XDEV Software
- * 		
+ * @since 1.1
  */
 public interface XdevComponent extends ExtendableObject
 {

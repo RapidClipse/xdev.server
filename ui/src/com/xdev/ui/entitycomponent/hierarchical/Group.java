@@ -24,84 +24,93 @@ import java.util.Collection;
 import com.xdev.util.Caption;
 
 
+/**
+ * @deprecated see {@link FillTree} for more information
+ */
+@Deprecated
 public interface Group
 {
 	public Class<?> getGroupClass();
-	
-	
+
+
 	public Field getReference();
-	
-	
+
+
 	/**
 	 * @deprecated not used anymore, caption is now handled by {@link Caption}
 	 */
 	@Deprecated
 	public Field getCaption();
-	
-	
+
+
 	public Collection<?> getGroupData();
-	
-	
+
+
 	public void setGroupData(Collection<?> groupData);
-	
-	
-	
+
+
+
+	/**
+	 * @deprecated see {@link FillTree} for more information
+	 * 			
+	 */
+	@Deprecated
 	public class Implementation implements Group
 	{
 		private final Class<?>	clazz;
 		private final Field		identifier;
 		private Collection<?>	groupData;
-								
-								
+
+
 		public Implementation(final Class<?> clazz, final Field reference)
 		{
 			this.clazz = clazz;
 			this.identifier = reference;
 		}
-		
-		
+
+
 		@Deprecated
 		public Implementation(final Class<?> clazz, final Field reference, final Field caption)
 		{
 			this(clazz,reference);
 		}
-		
-		
+
+
 		@Override
 		public Field getReference()
 		{
 			return this.identifier;
 		}
-		
-		
+
+
 		@Override
 		public Field getCaption()
 		{
 			return null;
 		}
-		
-		
+
+
 		@Override
 		public Class<?> getGroupClass()
 		{
 			return this.clazz;
 		}
-		
-		
+
+
 		@Override
 		public Collection<?> getGroupData()
 		{
 			return this.groupData;
 		}
-		
-		
+
+
 		@Override
 		public void setGroupData(final Collection<?> groupData)
 		{
 			this.groupData = groupData;
 		}
-		
-		
+
+
 		@Override
 		public String toString()
 		{

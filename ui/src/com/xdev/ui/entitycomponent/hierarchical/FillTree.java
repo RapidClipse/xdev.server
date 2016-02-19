@@ -30,16 +30,27 @@ import java.util.Set;
 
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.ui.AbstractSelect;
+import com.xdev.ui.XdevTree;
+import com.xdev.ui.hierarchical.DynamicHierarchicalContainer;
+import com.xdev.ui.hierarchical.TreeDataProvider;
 import com.xdev.util.Caption;
 
 
 /**
- *
- * @author XDEV Software
- *		
+ * @deprecated replaced by {@link TreeDataProvider}
+ *			
+ * @see TreeDataProvider
+ * @see DynamicHierarchicalContainer
+ * @see XdevHierarchicalBeanItemContainer
+ * @see XdevTree#setContainerDataSource(TreeDataProvider, boolean)
  */
+@Deprecated
 public interface FillTree
 {
+	/**
+	 * @deprecated see {@link FillTree} for more information
+	 */
+	@Deprecated
 	public static enum Strategy
 	{
 		/**
@@ -48,7 +59,7 @@ public interface FillTree
 		 * children. This is the default strategy.
 		 */
 		TOP_DOWN,
-
+		
 		/**
 		 * Creates the hierarchical structure beginning with the bottom most
 		 * child entries. Only entries which have children are going to be
@@ -56,20 +67,20 @@ public interface FillTree
 		 */
 		BOTTOM_UP
 	}
-
-
+	
+	
 	public void setHierarchicalReceiver(AbstractSelect treeComponent);
-
-
+	
+	
 	public AbstractSelect getHierarchicalReceiver();
-
-
+	
+	
 	public void setStrategy(Strategy strategy);
-
-
+	
+	
 	public <T> Group addRootGroup(Class<T> clazz);
-
-
+	
+	
 	/**
 	 * @deprecated use {@link #addRootGroup(Class)} instead, caption is now
 	 *             handled by {@link Caption}
@@ -79,11 +90,11 @@ public interface FillTree
 	{
 		return addRootGroup(clazz);
 	}
-
-
+	
+	
 	public Group addGroup(Class<?> clazz, Field parentReference);
-
-
+	
+	
 	/**
 	 * @deprecated use {@link #addGroup(Class, Field)} instead, caption is now
 	 *             handled by {@link Caption}
@@ -94,60 +105,64 @@ public interface FillTree
 	{
 		return addGroup(clazz,parentReference);
 	}
-
-
+	
+	
 	public <T> void setGroupData(Class<T> groupClass, Collection<T> data);
-
-
+	
+	
 	public void fillTree(HierarchicalContainer container);
-
-
-
+	
+	
+	
+	/**
+	 * @deprecated see {@link FillTree} for more information
+	 */
+	@Deprecated
 	public class Implementation implements FillTree
 	{
 		public static final Group		ROOT_IDENTIFIER		= null;
-
+															
 		private AbstractSelect			treeComponent;
-
+										
 		// no/null parent means root group
 		// group as key, parent as value - map
 		private final Map<Group, Group>	treeReferenceMap	= new HashMap<Group, Group>();
-
+															
 		private Strategy				strategy			= Strategy.TOP_DOWN;
-
-
+															
+															
 		@Override
 		public void setHierarchicalReceiver(final AbstractSelect treeComponent)
 		{
 			this.treeComponent = treeComponent;
 		}
-
-
+		
+		
 		@Override
 		public AbstractSelect getHierarchicalReceiver()
 		{
 			return this.treeComponent;
 		}
-
-
+		
+		
 		@Override
 		public void setStrategy(final Strategy strategy)
 		{
 			this.strategy = strategy;
 		}
-
-
+		
+		
 		@Override
 		public <T> Group addRootGroup(final Class<T> clazz)
 		{
 			final Group node = new Group.Implementation(clazz,null);
-
+			
 			this.treeReferenceMap.put(node,ROOT_IDENTIFIER);
-
+			
 			return node;
 		}
-
-
+		
+		
 		@Override
 		public Group addGroup(final Class<?> clazz, final Field parentReference)
 		{
@@ -156,8 +171,8 @@ public interface FillTree
 			this.treeReferenceMap.put(childGroup,parentGroup);
 			return childGroup;
 		}
-
-
+		
+		
 		protected Group getParentGroup(final Field parentReference)
 		{
 			final Class<?> referenceType = parentReference.getType();
@@ -183,19 +198,19 @@ public interface FillTree
 			{
 				return getParentGroup(referenceType);
 			}
-
+			
 			return null;
 		}
-
-
+		
+		
 		protected Group getParentGroup(final Class<?> referenceType)
 		{
 			return this.treeReferenceMap.keySet().stream()
 					.filter(node -> node.getGroupClass().equals(referenceType)).findFirst()
 					.orElse(null);
 		}
-
-
+		
+		
 		@Override
 		public <T> void setGroupData(final Class<T> groupClass, final Collection<T> data)
 		{
@@ -207,8 +222,8 @@ public interface FillTree
 				}
 			}
 		}
-
-
+		
+		
 		@Override
 		public void fillTree(final HierarchicalContainer container)
 		{
@@ -217,12 +232,12 @@ public interface FillTree
 				case TOP_DOWN:
 					fillTopDown(container);
 				break;
-
+				
 				case BOTTOM_UP:
 					fillBottomUp(container);
 				break;
 			}
-
+			
 			// Hide tree icon for leaf items
 			for(final Object id : container.getItemIds())
 			{
@@ -231,11 +246,11 @@ public interface FillTree
 					container.setChildrenAllowed(id,false);
 				}
 			}
-
+			
 			this.getHierarchicalReceiver().setContainerDataSource(container);
 		}
-
-
+		
+		
 		protected void fillTopDown(final HierarchicalContainer container)
 		{
 			for(final Group parentGroup : this.treeReferenceMap.keySet())
@@ -250,8 +265,8 @@ public interface FillTree
 				}
 			}
 		}
-
-
+		
+		
 		protected void addChildren(final HierarchicalContainer container, final Group parentGroup,
 				final Object parentValue)
 		{
@@ -263,14 +278,14 @@ public interface FillTree
 					{
 						container.addItem(childValue);
 						container.setParent(childValue,parentValue);
-
+						
 						addChildren(container,childGroup,childValue);
 					}
 				}
 			}
 		}
-
-
+		
+		
 		protected void fillBottomUp(final HierarchicalContainer container)
 		{
 			for(final Group parentGroup : this.treeReferenceMap.keySet())
@@ -278,8 +293,8 @@ public interface FillTree
 				addChildren(container,parentGroup);
 			}
 		}
-
-
+		
+		
 		protected void addChildren(final HierarchicalContainer container, final Group parentGroup)
 		{
 			for(final Group childGroup : this.getChildGroups(parentGroup))
@@ -298,14 +313,14 @@ public interface FillTree
 				}
 			}
 		}
-
-
+		
+		
 		// -------------- TREE UTILITIES -------------------
-
+		
 		protected Collection<Group> getChildGroups(final Group group)
 		{
 			final Collection<Group> children = new ArrayList<Group>();
-
+			
 			// key set equals child nodes
 			for(final Group node : this.treeReferenceMap.keySet())
 			{
@@ -318,8 +333,8 @@ public interface FillTree
 			}
 			return children;
 		}
-
-
+		
+		
 		private boolean isChild(final Group childGroup, final Object parentValue,
 				final Object childValue)
 		{
@@ -331,8 +346,8 @@ public interface FillTree
 			}
 			return parentValue.equals(referenceValue);
 		}
-
-
+		
+		
 		// TODO create tailored exception type
 		private Object getReferenceValue(final Object referrer, final Field referenceField)
 				throws RuntimeException
@@ -348,8 +363,8 @@ public interface FillTree
 				throw new RuntimeException(e);
 			}
 		}
-
-
+		
+		
 		protected Group getRootGroup()
 		{
 			for(final Group parent : this.treeReferenceMap.values())

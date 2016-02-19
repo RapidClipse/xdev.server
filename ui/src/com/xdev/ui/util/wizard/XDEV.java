@@ -30,7 +30,7 @@ import com.xdev.ui.entitycomponent.BeanComponent;
  * support complex databinding.
  *
  * @author XDEV Software (JW)
- *
+ *		
  */
 public final class XDEV
 {
@@ -100,7 +100,11 @@ public final class XDEV
 	 *            {@link XdevFillTree#addGroup(Class, Class)}.
 	 * @param tree
 	 *            the tree component to be filled.
+	 * 			
+	 * @deprecated see {@link com.xdev.ui.entitycomponent.hierarchical.FillTree
+	 *             FillTree} for more information
 	 */
+	@Deprecated
 	public static void buildTree(final Consumer<XdevFillTree> consumer, final AbstractSelect tree)
 	{
 		final XdevFillTree builder = new XdevFillTree(tree);

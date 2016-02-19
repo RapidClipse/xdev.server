@@ -20,6 +20,9 @@ package com.xdev.ui;
 
 import com.vaadin.data.Container;
 import com.vaadin.ui.Tree;
+import com.xdev.ui.entitycomponent.hierarchical.XdevHierarchicalBeanItemContainer;
+import com.xdev.ui.hierarchical.DynamicHierarchicalContainer;
+import com.xdev.ui.hierarchical.TreeDataProvider;
 import com.xdev.util.Caption;
 import com.xdev.util.CaptionResolver;
 import com.xdev.util.CaptionUtils;
@@ -72,6 +75,21 @@ public class XdevTree extends Tree implements XdevField
 	}
 
 
+	// init defaults
+	{
+		addExpandListener(event -> {
+			final Container dataSource = getContainerDataSource();
+			if(dataSource instanceof DynamicHierarchicalContainer)
+			{
+				if(((DynamicHierarchicalContainer)dataSource).expand(event.getItemId()))
+				{
+					markAsDirty();
+				}
+			}
+		});
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -120,6 +138,8 @@ public class XdevTree extends Tree implements XdevField
 	 *
 	 * @param itemCaptionFromAnnotation
 	 *            the itemCaptionFromAnnotation to set
+	 * 			
+	 * @since 1.1
 	 */
 	public void setItemCaptionFromAnnotation(final boolean itemCaptionFromAnnotation)
 	{
@@ -130,6 +150,8 @@ public class XdevTree extends Tree implements XdevField
 	/**
 	 * @return if the item's caption should be derived from its {@link Caption}
 	 *         annotation
+	 * 
+	 * @since 1.1
 	 */
 	public boolean isItemCaptionFromAnnotation()
 	{
@@ -144,6 +166,8 @@ public class XdevTree extends Tree implements XdevField
 	 * @see #setItemCaptionFromAnnotation(boolean)
 	 * @param itemCaptionValue
 	 *            the itemCaptionValue to set
+	 * 			
+	 * @since 1.1
 	 */
 	public void setItemCaptionValue(final String itemCaptionValue)
 	{
@@ -155,6 +179,8 @@ public class XdevTree extends Tree implements XdevField
 	 * Returns the user defined caption value for the items to display
 	 *
 	 * @return the itemCaptionValue
+	 *
+	 * @since 1.1
 	 */
 	public String getItemCaptionValue()
 	{
@@ -181,5 +207,17 @@ public class XdevTree extends Tree implements XdevField
 		}
 
 		return super.getItemCaption(itemId);
+	}
+
+
+	public void setContainerDataSource(final TreeDataProvider provider, final boolean preloadAll)
+	{
+		final XdevHierarchicalBeanItemContainer container = new XdevHierarchicalBeanItemContainer(
+				provider);
+		if(preloadAll)
+		{
+			container.preloadAll();
+		}
+		setContainerDataSource(container);
 	}
 }

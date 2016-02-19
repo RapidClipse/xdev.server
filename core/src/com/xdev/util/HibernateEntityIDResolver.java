@@ -19,10 +19,6 @@ package com.xdev.util;
 
 
 import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.persistence.metamodel.EntityType;
 
 import org.hibernate.MappingException;
 import org.hibernate.cfg.Configuration;
@@ -35,48 +31,33 @@ import com.xdev.communication.EntityManagerUtils;
 /**
  *
  * @author XDEV Software (JW)
- *
+ *		
  */
 public class HibernateEntityIDResolver implements EntityIDResolver
 {
 	private static HibernateEntityIDResolver instance;
-
-
+	
+	
 	public static HibernateEntityIDResolver getInstance()
 	{
 		if(instance == null)
 		{
 			instance = new HibernateEntityIDResolver();
 		}
-
+		
 		return instance;
 	}
-
+	
 	private final Configuration config;
-
-
+	
+	
 	private HibernateEntityIDResolver()
 	{
-		this.config = new Configuration();
-		final Set<EntityType<?>> set = EntityManagerUtils.getEntityManager().getMetamodel()
-				.getEntities();
-
-		for(final Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)
-		{
-			final Class<?> eClazz = i.next().getJavaType();
-			try
-			{
-				this.config.addClass(eClazz);
-			}
-			catch(final MappingException e)
-			{
-				this.config.addAnnotatedClass(eClazz);
-			}
-		}
-		this.config.buildMappings();
+		this.config = HibernateMetaDataUtils
+				.getConfiguration(EntityManagerUtils.getEntityManager());
 	}
-
-
+	
+	
 	@Override
 	public Property getEntityIDProperty(final Class<?> entityClass)
 	{
@@ -87,19 +68,19 @@ public class HibernateEntityIDResolver implements EntityIDResolver
 		}
 		final PersistentClass clazz = this.config.getClassMapping(className);
 		final Property idProperty = clazz.getDeclaredIdentifierProperty();
-
+		
 		return idProperty;
 	}
-
-
+	
+	
 	public Property getEntityReferenceProperty(final Class<?> entityClassA,
 			final Class<?> entityClassB)
 	{
-
+		
 		return null;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *

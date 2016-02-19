@@ -18,15 +18,57 @@
 package com.xdev.util;
 
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.metamodel.EntityType;
+
+import org.hibernate.MappingException;
+import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.Collection;
 import org.hibernate.mapping.ManyToOne;
 import org.hibernate.mapping.OneToMany;
 import org.hibernate.mapping.OneToOne;
 import org.hibernate.mapping.Value;
 
+import com.xdev.communication.EntityManagerUtils;
+
 
 public class HibernateMetaDataUtils
 {
+	private static Map<EntityManager, Configuration> configurations = new HashMap<>();
+	
+	
+	synchronized static Configuration getConfiguration(final EntityManager entityManager)
+	{
+		Configuration configuration = configurations.get(entityManager);
+		if(configuration == null)
+		{
+			configuration = new Configuration();
+			final Set<EntityType<?>> set = EntityManagerUtils.getEntityManager().getMetamodel()
+					.getEntities();
+			for(final Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)
+			{
+				final Class<?> clazz = i.next().getJavaType();
+				try
+				{
+					configuration.addClass(clazz);
+				}
+				catch(final MappingException e)
+				{
+					configuration.addAnnotatedClass(clazz);
+				}
+			}
+			configuration.buildMappings();
+			configurations.put(entityManager,configuration);
+		}
+		return configuration;
+	}
+
+
 	public static String getReferencablePropertyName(final org.hibernate.mapping.Value value)
 	{
 		/*

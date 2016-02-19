@@ -19,11 +19,7 @@ package com.xdev.util;
 
 
 import java.util.Iterator;
-import java.util.Set;
 
-import javax.persistence.metamodel.EntityType;
-
-import org.hibernate.MappingException;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
@@ -34,54 +30,39 @@ import com.xdev.communication.EntityManagerUtils;
 /**
  *
  * @author XDEV Software (JW)
- *		
+ * 		
  */
 public class HibernateEntityReferenceResolver implements EntityReferenceResolver
 {
 	private static HibernateEntityReferenceResolver instance;
-	
-	
+
+
 	public static HibernateEntityReferenceResolver getInstance()
 	{
 		if(instance == null)
 		{
 			instance = new HibernateEntityReferenceResolver();
 		}
-		
+
 		return instance;
 	}
-	
+
 	private final Configuration config;
-	
-	
+
+
 	private HibernateEntityReferenceResolver()
 	{
-		this.config = new Configuration();
-		final Set<EntityType<?>> set = EntityManagerUtils.getEntityManager().getMetamodel()
-				.getEntities();
-				
-		for(final Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)
-		{
-			final Class<?> eClazz = i.next().getJavaType();
-			try
-			{
-				this.config.addClass(eClazz);
-			}
-			catch(final MappingException e)
-			{
-				this.config.addAnnotatedClass(eClazz);
-			}
-		}
-		this.config.buildMappings();
+		this.config = HibernateMetaDataUtils
+				.getConfiguration(EntityManagerUtils.getEntityManager());
 	}
-	
-	
+
+
 	@Override
 	public String getReferenceEntityPropertyName(final Class<?> referenceEntity,
 			final Class<?> entity)
 	{
 		final PersistentClass clazz = this.config.getClassMapping(entity.getName());
-		
+
 		for(@SuppressWarnings("unchecked")
 		final Iterator<Property> iterator = clazz.getReferenceablePropertyIterator(); iterator
 				.hasNext();)

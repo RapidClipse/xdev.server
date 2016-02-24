@@ -13,6 +13,9 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * For further information see 
+ * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
 package com.xdev.security.authentication.ui;

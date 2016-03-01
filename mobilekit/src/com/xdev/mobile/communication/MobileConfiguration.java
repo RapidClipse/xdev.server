@@ -13,48 +13,56 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
 package com.xdev.mobile.communication;
 
 
+import java.util.Collection;
+import java.util.Collections;
+
 import com.xdev.mobile.service.MobileService;
 
 
 /**
  * @author XDEV Software
- *
+ *		
  */
 public interface MobileConfiguration
 {
-	public Class<? extends MobileService>[] getMobileServices();
-
-
-
+	public Collection<Class<? extends MobileService>> getMobileServices();
+	
+	
+	
 	public static class Default implements MobileConfiguration
 	{
-		private Class<? extends MobileService>[] mobileServices;
-		
-		
+		private Collection<Class<? extends MobileService>> mobileServices;
+
+
 		public Default()
 		{
 			super();
 		}
-
-
+		
+		
 		@Override
-		public Class<? extends MobileService>[] getMobileServices()
+		public Collection<Class<? extends MobileService>> getMobileServices()
 		{
 			return this.mobileServices;
 		}
-
-
-		public void setMobileServices(final Class<? extends MobileService>[] mobileServices)
+		
+		
+		/**
+		 * @param mobileServices
+		 *            the mobileServices to set
+		 */
+		public void setMobileServices(
+				final Collection<Class<? extends MobileService>> mobileServices)
 		{
-			this.mobileServices = mobileServices;
+			this.mobileServices = Collections.unmodifiableCollection(mobileServices);
 		}
 	}
 }

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -40,7 +40,7 @@ import com.xdev.ui.XdevUI;
  * Also contains all registered mobile services.
  *
  * @author XDEV Software
- * 		
+ *
  * @see #getMobileService(Class)
  */
 public abstract class MobileUI extends XdevUI
@@ -59,9 +59,8 @@ public abstract class MobileUI extends XdevUI
 		final VaadinServlet servlet = VaadinServlet.getCurrent();
 		if(servlet instanceof MobileServlet)
 		{
-			final Class<? extends MobileService>[] mobileServices = ((MobileServlet)servlet)
-					.getMobileConfiguration().getMobileServices();
-			for(final Class<? extends MobileService> clazz : mobileServices)
+			for(final Class<? extends MobileService> clazz : ((MobileServlet)servlet)
+					.getMobileConfiguration().getMobileServices())
 			{
 				try
 				{

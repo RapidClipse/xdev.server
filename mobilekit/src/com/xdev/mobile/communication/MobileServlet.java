@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2015 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -13,9 +13,6 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
- * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
 package com.xdev.mobile.communication;
@@ -23,10 +20,12 @@ package com.xdev.mobile.communication;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 
@@ -44,19 +43,19 @@ import com.xdev.mobile.service.MobileService;
 
 
 /**
- * Servlet optimized for mobile clients. Also provides cordova and bridge
- * scripts for hybrid apps.
+ * Servlet which adds functionality for mobile clients. Also provides cordova
+ * and bridge scripts for hybrid apps.
  *
  * @author XDEV Software
- *
+ * 		
  */
 public class MobileServlet extends XdevServlet
 {
 	private static Logger		LOG	= Logger.getLogger(MobileServlet.class.getName());
-	
+
 	private MobileConfiguration	mobileConfiguration;
-	
-	
+
+
 	@Override
 	protected void servletInitialized() throws ServletException
 	{
@@ -75,7 +74,6 @@ public class MobileServlet extends XdevServlet
 	}
 
 
-	@SuppressWarnings("unchecked")
 	protected MobileConfiguration readMobileConfiguration()
 	{
 		final MobileConfiguration.Default config = new MobileConfiguration.Default();
@@ -89,45 +87,17 @@ public class MobileServlet extends XdevServlet
 			}
 			else
 			{
-				final SAXReader reader = new SAXReader();
-				final Document document = reader.read(url);
-				final Element rootElement = document.getRootElement();
-				if(rootElement != null)
-				{
-					final Element servicesElement = rootElement.element("services");
-					if(servicesElement != null)
-					{
-						final ClassLoader classLoader = getClass().getClassLoader();
-
-						final List<Class<? extends MobileService>> services = new ArrayList<>();
-						for(final Object serviceObject : servicesElement.elements("service"))
-						{
-							if(serviceObject instanceof Element)
-							{
-								final Element serviceElement = (Element)serviceObject;
-								final String className = serviceElement.getTextTrim();
-								try
-								{
-									final Class<?> serviceClass = classLoader.loadClass(className);
-									if(MobileService.class.isAssignableFrom(serviceClass))
-									{
-										services.add((Class<? extends MobileService>)serviceClass);
-									}
-									else
-									{
-										throw new IllegalArgumentException(className
-												+ " is not a MobileService");
-									}
-								}
-								catch(final Exception e)
-								{
-									LOG.log(Level.SEVERE,e.getMessage(),e);
-								}
-							}
-						}
-						config.setMobileServices(services.toArray(new Class[services.size()]));
-					}
-				}
+				final Document document = new SAXReader().read(url);
+				Optional.ofNullable(document.getRootElement()).map(e -> e.element("services"))
+						.ifPresent(servicesElement -> {
+							final ClassLoader classLoader = getClass().getClassLoader();
+							config.setMobileServices(((List<?>)servicesElement.elements("service"))
+									.stream().filter(Element.class::isInstance)
+									.map(Element.class::cast)
+									.map(serviceElement -> createService(classLoader,
+											serviceElement))
+									.filter(Objects::nonNull).collect(Collectors.toList()));
+						});
 			}
 		}
 		catch(final Exception e)
@@ -139,7 +109,34 @@ public class MobileServlet extends XdevServlet
 	}
 
 
-	private URL findMobileXML() throws MalformedURLException
+	@SuppressWarnings("unchecked")
+	private Class<? extends MobileService> createService(final ClassLoader classLoader,
+			final Element serviceElement)
+	{
+		final String className = serviceElement.getTextTrim();
+		try
+		{
+			final Class<?> serviceClass = classLoader.loadClass(className);
+			if(MobileService.class.isAssignableFrom(serviceClass))
+			{
+				return (Class<? extends MobileService>)serviceClass;
+			}
+			else
+			{
+				throw new IllegalArgumentException(
+						className + " is not a " + MobileService.class.getSimpleName());
+			}
+		}
+		catch(final Exception e)
+		{
+			LOG.log(Level.SEVERE,e.getMessage(),e);
+		}
+
+		return null;
+	}
+
+
+	protected URL findMobileXML() throws MalformedURLException
 	{
 		URL resourceUrl = getServletContext().getResource("/mobile.xml");
 		if(resourceUrl == null)

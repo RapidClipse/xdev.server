@@ -23,7 +23,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>xdev-server-core</artifactId>
-	<version>1.1.0</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<name>RapidClipse Framework Core</name>
 
 	<parent>
@@ -36,7 +36,7 @@
 	<properties>
 		<repositoryName>xdev.server.core</repositoryName>
 		<pluginProject>xdev.eclipse.server.core</pluginProject>
-		<vaadinVersion>7.5.10</vaadinVersion>
+		<vaadinVersion>7.6.3</vaadinVersion>
 		<hibernateVersion>4.3.10.Final</hibernateVersion>
 	</properties>
 

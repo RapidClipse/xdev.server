@@ -13,16 +13,16 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
 package com.xdev.ui.entitycomponent;
 
 
+import java.util.Collection;
 import java.util.Locale;
-import java.util.Set;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
@@ -35,8 +35,8 @@ public class IDToBeanConverter<T> implements Converter<Object, T>
 {
 	private final XdevBeanContainer<T>	container;
 	private final EntityIDResolver		idResolver;
-
-
+										
+										
 	/**
 	 *
 	 */
@@ -45,8 +45,8 @@ public class IDToBeanConverter<T> implements Converter<Object, T>
 		this.container = container;
 		this.idResolver = HibernateEntityIDResolver.getInstance();
 	}
-
-
+	
+	
 	@Override
 	public T convertToModel(final Object itemID, final Class<? extends T> targetType,
 			final Locale locale) throws Converter.ConversionException
@@ -55,21 +55,28 @@ public class IDToBeanConverter<T> implements Converter<Object, T>
 		{
 			return null;
 		}
-
+		
 		// multi selection
-		if(!(itemID instanceof Set))
+		if(!(itemID instanceof Collection))
 		{
-			final BeanItem<T> item = this.container.getItem(itemID);
+			BeanItem<T> item = null;
+			try
+			{
+				item = this.container.getItem(itemID);
+			}
+			catch(final Exception e)
+			{
+			}
 			if(item != null)
 			{
 				return item.getBean();
 			}
 		}
-
+		
 		return null;
 	}
-
-
+	
+	
 	@Override
 	public Object convertToPresentation(final T value, final Class<? extends Object> targetType,
 			final Locale locale) throws Converter.ConversionException
@@ -80,16 +87,16 @@ public class IDToBeanConverter<T> implements Converter<Object, T>
 		}
 		return null;
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<T> getModelType()
 	{
 		return (Class<T>)this.container.getBeanType();
 	}
-
-
+	
+	
 	@Override
 	public Class<Object> getPresentationType()
 	{

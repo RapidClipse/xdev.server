@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -32,7 +32,7 @@ import com.xdev.res.StringResourceUtils;
 
 /**
  * @author XDEV Software
- *		
+ *
  */
 public interface FilterOperator
 {
@@ -180,15 +180,14 @@ public interface FilterOperator
 			{
 				return null;
 			}
-
+			
 			value = value.trim();
 			if(value.length() == 0)
 			{
 				return null;
 			}
 
-			return SearchFilterGenerator.Default.createWordFilter(value,context.getPropertyId(),
-					context.getSettings());
+			return new Compare.Equal(context.getPropertyId(),value);
 		}
 	}
 

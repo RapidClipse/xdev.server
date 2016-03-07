@@ -13,17 +13,16 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
 package com.xdev.util;
 
 
-import java.lang.reflect.Field;
+import java.util.Optional;
 
-import org.hibernate.MappingException;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
@@ -33,7 +32,7 @@ import com.xdev.communication.EntityManagerUtils;
 
 /**
  *
- * @author XDEV Software (JW)
+ * @author XDEV Software
  *		
  */
 public class HibernateEntityIDResolver implements EntityIDResolver
@@ -69,48 +68,24 @@ public class HibernateEntityIDResolver implements EntityIDResolver
 		{
 			className = className.substring(0,className.indexOf("_$$_"));
 		}
-		final PersistentClass clazz = this.config.getClassMapping(className);
-		final Property idProperty = clazz.getDeclaredIdentifierProperty();
 		
-		return idProperty;
+		final PersistentClass persistentClass = this.config.getClassMapping(className);
+		if(persistentClass == null)
+		{
+			throw new IllegalArgumentException("Not an entity class: "+entityClass.getName());
+		}
+		
+		return persistentClass.getIdentifierProperty();
 	}
 	
 	
-	public Property getEntityReferenceProperty(final Class<?> entityClassA,
-			final Class<?> entityClassB)
-	{
-		
-		return null;
-	}
-	
-	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * com.xdev.util.EntityIDResolver#getEntityIDPropertyValue(java.lang.Class)
-	 */
 	@Override
 	public Object getEntityIDPropertyValue(final Object entity)
 	{
 		final Property idProperty = getEntityIDProperty(entity.getClass());
-		String className = entity.getClass().getName();
-		if(className.contains("_$$_"))
-		{
-			className = className.substring(0,className.indexOf("_$$_"));
-		}
-		final PersistentClass clazz = this.config.getClassMapping(className);
-		Field idField = null;
-		try
-		{
-			idField = clazz.getMappedClass().getDeclaredField(idProperty.getName());
-			idField.setAccessible(true);
-			return idField.get(entity);
-		}
-		catch(MappingException | NoSuchFieldException | SecurityException | IllegalArgumentException
-				| IllegalAccessException e)
-		{
-			throw new RuntimeException(e);
-		}
+		return Optional.ofNullable(idProperty)
+				.map(property -> property.getPropertyAccessor(entity.getClass()))
+				.map(accessor -> accessor.getGetter(entity.getClass(),idProperty.getName()))
+				.map(getter -> getter.get(entity)).orElse(null);
 	}
 }

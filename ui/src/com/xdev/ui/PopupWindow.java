@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -55,49 +55,49 @@ public interface PopupWindow
 	{
 		return new Implementation(content);
 	}
-
-
+	
+	
 	/**
 	 * @param modal
 	 *            the modal to set
 	 */
 	public PopupWindow modal(final boolean modal);
-
-
+	
+	
 	/**
 	 * @param resizable
 	 *            the resizable to set
 	 */
 	public PopupWindow resizable(final boolean resizable);
-
-
+	
+	
 	/**
 	 * @param closable
 	 *            the closable to set
 	 */
 	public PopupWindow closable(final boolean closable);
-
-
+	
+	
 	/**
 	 * @param draggable
 	 *            the draggable to set
 	 */
 	public PopupWindow draggable(final boolean draggable);
-
-
+	
+	
 	/**
 	 * @param maximized
 	 *            the maximized to set
 	 */
 	public PopupWindow maximized(final boolean maximized);
-
-
+	
+	
 	/**
 	 * Sets the predefined location for the popup window, default is centered.
 	 */
 	public PopupWindow location(final int x, final int y);
-
-
+	
+	
 	/**
 	 * Sets the width of the popup window. Negative number implies unspecified
 	 * size (terminal is free to set the size).
@@ -105,8 +105,8 @@ public interface PopupWindow
 	 * @since 1.2
 	 */
 	public PopupWindow width(final float width, final Unit unit);
-	
-	
+
+
 	/**
 	 * Sets the height of the popup window. Negative number implies unspecified
 	 * size (terminal is free to set the size).
@@ -114,8 +114,8 @@ public interface PopupWindow
 	 * @since 1.2
 	 */
 	public PopupWindow height(final float height, final Unit unit);
-	
-	
+
+
 	/**
 	 * Sets the size of the popup window in pixels.
 	 *
@@ -125,8 +125,8 @@ public interface PopupWindow
 	{
 		return size(width,height,Unit.PIXELS);
 	}
-	
-	
+
+
 	/**
 	 * Sets the size of the popup window. Negative number implies unspecified
 	 * size (terminal is free to set the size).
@@ -134,23 +134,23 @@ public interface PopupWindow
 	 * @since 1.2
 	 */
 	public PopupWindow size(final float width, final float height, final Unit unit);
-
-
+	
+	
 	/**
 	 * Sets the close handler
 	 */
 	public PopupWindow onClose(Consumer<Window.CloseEvent> closeHandler);
-
-
+	
+	
 	/**
 	 * Opens and returns the window
 	 *
 	 * @return the opened window
 	 */
 	public Window show();
-
-
-
+	
+	
+	
 	public static class Implementation implements PopupWindow
 	{
 		private final Component				content;
@@ -165,62 +165,62 @@ public interface PopupWindow
 		private float						height		= -1;
 		private Unit						heightUnit	= Unit.PIXELS;
 		private Consumer<Window.CloseEvent>	closeHandler;
-
-
+											
+											
 		public Implementation(final Component content)
 		{
 			this.content = content;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow modal(final boolean modal)
 		{
 			this.modal = modal;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow resizable(final boolean resizable)
 		{
 			this.resizable = resizable;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow closable(final boolean closable)
 		{
 			this.closable = closable;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow draggable(final boolean draggable)
 		{
 			this.draggable = draggable;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow maximized(final boolean maximized)
 		{
 			this.maximized = maximized;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow location(final int x, final int y)
 		{
 			this.location = new Point(x,y);
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow width(final float width, final Unit unit)
 		{
@@ -228,17 +228,17 @@ public interface PopupWindow
 			this.widthUnit = unit;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow height(final float height, final Unit unit)
 		{
 			this.height = height;
 			this.heightUnit = unit;
-			return null;
+			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow size(final float width, final float height, final Unit unit)
 		{
@@ -248,21 +248,21 @@ public interface PopupWindow
 			this.heightUnit = unit;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow onClose(final Consumer<CloseEvent> closeHandler)
 		{
 			this.closeHandler = closeHandler;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public Window show()
 		{
 			final Window window = new Window();
-
+			
 			float width = this.width;
 			Unit widthUnit = this.widthUnit;
 			if(width < 0)
@@ -270,7 +270,7 @@ public interface PopupWindow
 				width = this.content.getWidth() + 20;
 				widthUnit = this.content.getWidthUnits();
 			}
-
+			
 			float height = this.height;
 			Unit heightUnit = this.heightUnit;
 			if(height < 0)
@@ -278,13 +278,13 @@ public interface PopupWindow
 				height = this.content.getHeight() + 70;
 				heightUnit = this.content.getHeightUnits();
 			}
-
+			
 			window.setWidth(width,widthUnit);
 			window.setHeight(height,heightUnit);
-
+			
 			this.content.setSizeFull();
 			window.setContent(this.content);
-
+			
 			window.setCaption(this.content.getCaption());
 			window.setIcon(this.content.getIcon());
 			window.setModal(this.modal);
@@ -309,7 +309,7 @@ public interface PopupWindow
 				window.addCloseListener(event -> closeHandler.accept(event));
 			}
 			UI.getCurrent().addWindow(window);
-
+			
 			return window;
 		}
 	}

@@ -21,94 +21,48 @@
 package com.xdev.communication;
 
 
-import com.vaadin.server.ServiceException;
-import com.vaadin.server.SessionExpiredException;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.VaadinSession;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
- * @author XDEV Software (JW)
- * 		
+ * @author XDEV Software
+ *
  */
 public interface VaadinSessionStrategyProvider
 {
-	public VaadinSessionStrategy getRequestStartVaadinSessionStrategy(final VaadinRequest request,
-			final VaadinService service);
-			
-			
-	public VaadinSessionStrategy getRequestEndVaadinSessionStrategy(final VaadinRequest request,
-			final VaadinService service);
-			
-			
-			
+	public VaadinSessionStrategy getRequestStartVaadinSessionStrategy(
+			Conversationables conversationables, String persistenceUnit);
+
+
+	public VaadinSessionStrategy getRequestEndVaadinSessionStrategy(
+			Conversationables conversationables, String persistenceUnit);
+
+
+
 	public class Implementation implements VaadinSessionStrategyProvider
 	{
-		private VaadinSessionStrategy currentStrategy;
-		
-		
-		private VaadinSessionStrategy getSessionStrategy(
-				final Class<? extends VaadinSessionStrategy> strategy)
+		protected final VaadinSessionStrategy				perRequest					= new VaadinSessionStrategy.PerRequest();
+		protected final VaadinSessionStrategy				perConversation				= new VaadinSessionStrategy.PerConversation();
+		protected final VaadinSessionStrategy				perConversationPessimistic	= new VaadinSessionStrategy.PerConversationPessimistic();
+		protected final Map<String, VaadinSessionStrategy>	currentStrategies			= new HashMap<>();
+
+
+		protected VaadinSessionStrategy storeSessionStrategy(final String persistenceUnit,
+				final VaadinSessionStrategy strategy)
 		{
-			if(this.currentStrategy != null)
-			{
-				// do not instantiate new type if new type matches with old
-				if(this.currentStrategy.getClass().isAssignableFrom(strategy))
-				{
-					return currentStrategy;
-				}
-				else
-				{
-					// types to not match, create new strategy lazily
-					try
-					{
-						this.currentStrategy = strategy.newInstance();
-						return this.currentStrategy;
-					}
-					catch(InstantiationException | IllegalAccessException e)
-					{
-						throw new RuntimeException(e);
-					}
-				}
-			}
-			try
-			{
-				this.currentStrategy = strategy.newInstance();
-			}
-			catch(InstantiationException | IllegalAccessException e)
-			{
-				throw new RuntimeException(e);
-			}
-			
-			return this.currentStrategy;
+			this.currentStrategies.put(persistenceUnit,strategy);
+			return strategy;
 		}
-		
-		
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see com.xdev.communication.VaadinSessionStrategyProvider#
-		 * getVaadinSessionStrategy(com.vaadin.server.VaadinRequest,
-		 * com.vaadin.server.VaadinService)
-		 */
+
+
 		@Override
 		public VaadinSessionStrategy getRequestStartVaadinSessionStrategy(
-				final VaadinRequest request, final VaadinService service) throws RuntimeException
+				final Conversationables conversationables, final String persistenceUnit)
+						throws RuntimeException
 		{
-			VaadinSession session;
-			try
-			{
-				session = service.findVaadinSession(request);
-			}
-			catch(ServiceException | SessionExpiredException e)
-			{
-				throw new RuntimeException(e);
-			}
-			
-			final Conversationable conversationable = (Conversationable)session
-					.getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
-					
+			final Conversationable conversationable = conversationables.get(persistenceUnit);
+
 			if(conversationable != null)
 			{
 				if(conversationable.getConversation() != null)
@@ -117,79 +71,59 @@ public interface VaadinSessionStrategyProvider
 					{
 						if(conversationable.getConversation().isPessimisticUnit())
 						{
-							return this.getSessionStrategy(
-									VaadinSessionStrategy.PerConversationPessimistic.class);
+							return storeSessionStrategy(persistenceUnit,
+									this.perConversationPessimistic);
 						}
 						else
 						{
-							return this.getSessionStrategy(
-									VaadinSessionStrategy.PerConversation.class);
+							return storeSessionStrategy(persistenceUnit,this.perConversation);
 						}
 					}
 				}
 			}
-			
+
 			// return default strategy
-			return this.getSessionStrategy(VaadinSessionStrategy.PerRequest.class);
+			return storeSessionStrategy(persistenceUnit,this.perRequest);
 		}
-		
-		
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see com.xdev.communication.VaadinSessionStrategyProvider#
-		 * getRequestEndVaadinSessionStrategy(com.vaadin.server.VaadinRequest,
-		 * com.vaadin.server.VaadinService)
-		 */
+
+
 		@Override
-		public VaadinSessionStrategy getRequestEndVaadinSessionStrategy(final VaadinRequest request,
-				final VaadinService service)
+		public VaadinSessionStrategy getRequestEndVaadinSessionStrategy(
+				final Conversationables conversationables, final String persistenceUnit)
 		{
 			/*
 			 * end request with existing strategy - don't exchange strategies
 			 * between request / response
 			 */
-			if(this.currentStrategy != null)
+			final VaadinSessionStrategy strategy = this.currentStrategies.get(persistenceUnit);
+			if(strategy != null)
 			{
-				return this.currentStrategy;
+				return strategy;
 			}
-			else
+
+			final Conversationable conversationable = conversationables.get(persistenceUnit);
+
+			if(conversationable != null)
 			{
-				VaadinSession session;
-				try
+				if(conversationable.getConversation() != null)
 				{
-					session = service.findVaadinSession(request);
-				}
-				catch(ServiceException | SessionExpiredException e)
-				{
-					throw new RuntimeException(e);
-				}
-				
-				final Conversationable conversationable = (Conversationable)session
-						.getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
-						
-				if(conversationable != null)
-				{
-					if(conversationable.getConversation() != null)
+					if(conversationable.getConversation().isActive())
 					{
-						if(conversationable.getConversation().isActive())
+						if(conversationable.getConversation().isPessimisticUnit())
 						{
-							if(conversationable.getConversation().isPessimisticUnit())
-							{
-								return this.getSessionStrategy(
-										VaadinSessionStrategy.PerConversationPessimistic.class);
-							}
-							else
-							{
-								return this.getSessionStrategy(
-										VaadinSessionStrategy.PerConversation.class);
-							}
+							return storeSessionStrategy(persistenceUnit,
+									this.perConversationPessimistic);
+						}
+						else
+						{
+							return storeSessionStrategy(persistenceUnit,this.perConversation);
 						}
 					}
 				}
 			}
+
 			// return default strategy
-			return this.getSessionStrategy(VaadinSessionStrategy.PerRequest.class);
+			return storeSessionStrategy(persistenceUnit,this.perRequest);
 		}
 	}
 }

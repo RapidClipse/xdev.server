@@ -21,47 +21,48 @@
 package com.xdev.communication;
 
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 
 /**
  * @author XDEV Software (JW)
- *		
+ * 		
  */
-public final class URLKeyDescriptor
+public final class URLKeyDescriptor implements Serializable
 {
 	private final String	viewName;
 	private final String	propertyName;
 	private final int		hash;
-	
-	
+							
+							
 	public URLKeyDescriptor(final String viewName, final String propertyName)
 	{
 		this.viewName = viewName;
 		this.propertyName = propertyName;
 		this.hash = Arrays.hashCode(new Object[]{viewName,propertyName});
 	}
-	
-	
+
+
 	public String getPropertyName()
 	{
 		return this.propertyName;
 	}
-	
-	
+
+
 	public String getViewName()
 	{
 		return this.viewName;
 	}
-	
-	
+
+
 	@Override
 	public int hashCode()
 	{
 		return this.hash;
 	}
-	
-	
+
+
 	@Override
 	public boolean equals(final Object obj)
 	{
@@ -69,8 +70,8 @@ public final class URLKeyDescriptor
 		{
 			return true;
 		}
-		
+
 		return obj instanceof URLKeyDescriptor && this.hash == ((URLKeyDescriptor)obj).hash;
 	}
-	
+
 }

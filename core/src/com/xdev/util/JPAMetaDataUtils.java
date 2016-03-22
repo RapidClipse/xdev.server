@@ -29,12 +29,12 @@ import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.Metamodel;
 
-import com.xdev.communication.EntityManagerUtils;
+import com.xdev.persistence.PersistenceUtils;
 
 
 /**
  * @author XDEV Software
- *		
+ * 		
  * @noapi <strong>For internal use only. This class is subject to change in the
  *        future.</strong>
  */
@@ -43,16 +43,16 @@ public final class JPAMetaDataUtils
 	private JPAMetaDataUtils()
 	{
 	}
-	
-	
+
+
 	public static Attribute<?, ?> resolveAttribute(Class<?> entityClass, final String propertyPath)
 	{
-		final EntityManager entityManager = EntityManagerUtils.getEntityManager();
+		final EntityManager entityManager = PersistenceUtils.getEntityManager(entityClass);
 		if(entityManager == null)
 		{
 			return null;
 		}
-		
+
 		final Metamodel metamodel = entityManager.getMetamodel();
 		ManagedType<?> entityType = null;
 		try
@@ -64,7 +64,7 @@ public final class JPAMetaDataUtils
 			// not a managed type, XWS-870
 			return null;
 		}
-		
+
 		final String[] parts = propertyPath.split("\\.");
 		for(int i = 0; i < parts.length - 1; i++)
 		{
@@ -94,7 +94,7 @@ public final class JPAMetaDataUtils
 				return null;
 			}
 		}
-		
+
 		try
 		{
 			return entityType.getAttribute(parts[parts.length - 1]);
@@ -105,8 +105,8 @@ public final class JPAMetaDataUtils
 			return null;
 		}
 	}
-	
-	
+
+
 	public static boolean isManaged(final Class<?> clazz)
 	{
 		return clazz.getAnnotation(Entity.class) != null

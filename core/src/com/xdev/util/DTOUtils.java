@@ -31,7 +31,7 @@ import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.Metamodel;
 
-import com.xdev.communication.EntityManagerUtils;
+import com.xdev.persistence.PersistenceUtils;
 
 
 /**
@@ -78,7 +78,8 @@ public final class DTOUtils
 	
 	public static Object resolveAttributeValue(Object managedObject, final String propertyPath)
 	{
-		final EntityManager entityManager = EntityManagerUtils.getEntityManager();
+		final EntityManager entityManager = PersistenceUtils
+				.getEntityManager(managedObject.getClass());
 		if(entityManager == null)
 		{
 			return null;

@@ -18,7 +18,7 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.db.connection;
+package com.xdev.persistence;
 
 
 import javax.persistence.EntityManagerFactory;
@@ -27,31 +27,26 @@ import javax.persistence.Persistence;
 
 /**
  *
- * @author XDEV Software (JW)
- *		
+ * @author XDEV Software
+ * @since 1.2
  */
 public interface EntityManagerFactoryProvider
 {
-	public EntityManagerFactory getEntityManagerFactory();
-	
-	
-	
-	public class Implementation implements EntityManagerFactoryProvider
+	public EntityManagerFactory createEntityManagerFactory(String persistenceUnit);
+
+
+
+	public class Default implements EntityManagerFactoryProvider
 	{
-		private final EntityManagerFactory entityManagerFactory;
-		
-		
-		public Implementation(final String persistenceUnit)
+		public Default()
 		{
-			entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit);
 		}
 
 
 		@Override
-		public EntityManagerFactory getEntityManagerFactory()
+		public EntityManagerFactory createEntityManagerFactory(final String persistenceUnit)
 		{
-			return entityManagerFactory;
+			return Persistence.createEntityManagerFactory(persistenceUnit);
 		}
-
 	}
 }

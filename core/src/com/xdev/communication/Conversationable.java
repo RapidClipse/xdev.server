@@ -28,11 +28,10 @@ import javax.persistence.EntityManager;
 
 /**
  * @author XDEV Software
- *		
+ *
  */
 public interface Conversationable
 {
-	
 	public void setEntityManager(EntityManager em);
 	
 	
@@ -48,80 +47,41 @@ public interface Conversationable
 	
 	public class Implementation implements Conversationable, Serializable
 	{
-		private EntityManager	em;
+		private EntityManager	entityManager;
 		private Conversation	conversation;
 								
 								
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see
-		 * com.xdev.communication.ConversationableEntityManager#setEntityManager
-		 * (javax.persistence.EntityManager)
-		 */
 		@Override
-		public void setEntityManager(final EntityManager em)
+		public void setEntityManager(final EntityManager entityManager)
 		{
-			this.em = em;
+			this.entityManager = entityManager;
 		}
 		
 		
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see
-		 * com.xdev.communication.ConversationableEntityManager#getEntityManager
-		 * ()
-		 */
 		@Override
 		public EntityManager getEntityManager()
 		{
-			return this.em;
+			return this.entityManager;
 		}
 		
 		
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see
-		 * com.xdev.communication.ConversationableEntityManager#setConversation(
-		 * com.xdev.communication.Conversation)
-		 */
 		@Override
 		public void setConversation(final Conversation conversation)
 		{
-			if(this.conversation != null)
+			if(this.conversation != null && this.conversation.isActive())
 			{
-				if(this.conversation.isActive())
-				{
-					throw new RuntimeException(
-							"Another Conversation is already running, one cannot run multipleconversations");
-				}
-				else
-				{
-					this.conversation = conversation;
-				}
+				throw new RuntimeException(
+						"Another conversation is already running. Only one active conversation is allowed per conversationable.");
 			}
-			else
-			{
-				this.conversation = conversation;
-			}
+			
+			this.conversation = conversation;
 		}
 		
 		
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see
-		 * com.xdev.communication.ConversationableEntityManager#getConversation(
-		 * )
-		 */
 		@Override
 		public Conversation getConversation()
 		{
 			return this.conversation;
 		}
-		
 	}
-	
 }

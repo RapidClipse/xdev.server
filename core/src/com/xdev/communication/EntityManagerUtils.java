@@ -26,117 +26,70 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
-import com.vaadin.server.VaadinSession;
-import com.vaadin.server.VaadinSession.State;
-import com.xdev.db.connection.EntityManagerFactoryProvider;
+import com.xdev.dal.JPADAO;
+import com.xdev.persistence.PersistenceManager;
+import com.xdev.persistence.PersistenceUtils;
 
 
 /**
  *
  * @author XDEV Software (JW)
- *
+ * 		
+ * @deprecated replaced by {@link PersistenceUtils}, {@link PersistenceManager},
+ *             {@link ConversationUtils} and {@link Conversationables}, will be
+ *             removed in a future release
  */
+@Deprecated
 public class EntityManagerUtils
 {
-	public final static String			ENTITY_MANAGER_ATTRIBUTE	= "EntityManager";
-
-	private static EntityManagerFactory	emf;
-
-
-	public static EntityManagerFactory getEntityManagerFactory()
-	{
-		return emf;
-	}
-
-	private static EntityManagerFactoryProvider hibernateUtil;
-
-
-	public static EntityManagerFactory initializeHibernateFactory(
-			final EntityManagerFactoryProvider hibernateUtil)
-	{
-		EntityManagerUtils.hibernateUtil = hibernateUtil;
-		return emf = hibernateUtil.getEntityManagerFactory();
-	}
-
-
-	public static EntityManagerFactoryProvider getEntityManagerFactoryProvider()
-	{
-		return hibernateUtil;
-	}
-
-
-	private static boolean isSessionAccessible()
-	{
-		if(VaadinSession.getCurrent() != null)
-		{
-			if(VaadinSession.getCurrent().getState() == State.OPEN)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-
+	/**
+	 *
+	 * @return the default persistence unit's EntityManager
+	 * @deprecated replaced by {@link PersistenceUtils#getEntityManager(String)}
+	 */
+	@Deprecated
 	public static EntityManager getEntityManager()
 	{
-		/*
-		 * TODO add provider to plug into entity manager administration for
-		 * Vaadin Session independency
-		 */
-		if(isSessionAccessible())
-		{
-			final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
-					.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
-			if(conversationable != null)
-			{
-				return conversationable.getEntityManager();
-			}
-
-		}
-		return null;
-
+		return PersistenceUtils
+				.getEntityManager(PersistenceManager.getCurrent().getDefaultPersistenceUnit());
 	}
 
 
+	/**
+	 *
+	 * @deprecated replaced by {@link ConversationUtils#getConversation()}
+	 */
+	@Deprecated
 	public static Conversation getConversation()
 	{
-		/*
-		 * TODO add provider to plug into entity manager administration for
-		 * Vaadin Session independency
-		 */
-		if(isSessionAccessible())
-		{
-			final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
-					.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
-			if(conversationable != null)
-			{
-				return conversationable.getConversation();
-			}
-		}
-		return null;
+		return ConversationUtils.getConversation();
 	}
 
 
+	/**
+	 * @deprecated no-op
+	 */
+	@Deprecated
 	public static void closeEntityManager()
 	{
-		final EntityManager entityManager = getEntityManager();
-		if(entityManager != null)
-		{
-			entityManager.close();
-		}
 	}
 
 
+	/**
+	 * @deprecated no-op
+	 */
+	@Deprecated
 	public static void closeEntityManagerFactory()
 	{
-		emf.close();
 	}
 
 
+	/**
+	 * @deprecated use {@link JPADAO#beginTransaction()}
+	 */
+	@Deprecated
 	public static void beginTransaction()
 	{
 		final EntityManager em = getEntityManager();
@@ -147,6 +100,10 @@ public class EntityManagerUtils
 	}
 
 
+	/**
+	 * @deprecated use {@link JPADAO#rollback()}
+	 */
+	@Deprecated
 	public static void rollback()
 	{
 		final EntityManager em = getEntityManager();
@@ -157,6 +114,10 @@ public class EntityManagerUtils
 	}
 
 
+	/**
+	 * @deprecated use {@link JPADAO#commit()}
+	 */
+	@Deprecated
 	public static void commit()
 	{
 		final EntityManager em = getEntityManager();
@@ -167,30 +128,33 @@ public class EntityManagerUtils
 	}
 
 
+	/**
+	 * @return <code>null</code>
+	 * @deprecated no-op
+	 */
+	@Deprecated
 	public static EntityTransaction getTransaction()
 	{
-		final EntityManager em = getEntityManager();
-		if(em != null)
-		{
-			return em.getTransaction();
-		}
 		return null;
 	}
 
 
+	/**
+	 * @deprecated replaced by {@link PersistenceUtils#getCriteriaQuery(Class)}
+	 */
+	@Deprecated
 	public static <T> CriteriaQuery<T> getCriteriaQuery(final Class<T> type)
 	{
-		final EntityManager em = getEntityManager();
-		if(em != null)
-		{
-			final CriteriaBuilder cb = em.getCriteriaBuilder();
-			final CriteriaQuery<T> cq = cb.createQuery(type);
-			return cq;
-		}
-		return null;
+		return PersistenceUtils.getCriteriaQuery(type);
 	}
 
 
+	/**
+	 * @deprecated replaced by
+	 *             {@link PersistenceManager#isQueryCacheEnabled(String)},
+	 *             {@link PersistenceManager#isQueryCacheEnabled(EntityManagerFactory)}
+	 */
+	@Deprecated
 	public static boolean isQueryCacheEnabled(final EntityManager entityManager)
 	{
 		final Map<String, Object> properties = entityManager.getEntityManagerFactory()

@@ -26,118 +26,86 @@ import javax.persistence.LockModeType;
 
 /**
  * @author XDEV Software (JW)
- * 		
+ *
  */
 public interface Conversation
 {
-	// public void setEntityManager(EntityManager em);
-	//
-	//
-	// public EntityManager getEntityManager();
-
 	public boolean isActive();
-
-
+	
+	
 	public boolean isPessimisticUnit();
-
-
+	
+	
 	public void setPessimisticUnit(boolean lockState, LockModeType type);
-
-
+	
+	
 	public LockModeType getLockModeType();
-
-
+	
+	
 	public void setLockModeType(final LockModeType lockModeType);
-
-
+	
+	
 	public void start();
-
-
+	
+	
 	public void end();
-
-
-
+	
+	
+	
 	public class Implementation implements Conversation
 	{
-
 		private boolean			isActive		= false;
 		private boolean			pessimisticUnit	= false;
 		private LockModeType	lockModeType;
-
-
+								
+								
 		@Override
 		public LockModeType getLockModeType()
 		{
 			return this.lockModeType;
 		}
-
-
+		
+		
 		@Override
 		public void setLockModeType(final LockModeType lockModeType)
 		{
 			this.lockModeType = lockModeType;
 		}
-
-
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see com.xdev.communication.Conversation#isActive()
-		 */
+		
+		
 		@Override
 		public boolean isActive()
 		{
 			return this.isActive;
 		}
-
-
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see com.xdev.communication.Conversation#start()
-		 */
+		
+		
 		@Override
 		public void start()
 		{
 			this.isActive = true;
 		}
-
-
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see com.xdev.communication.Conversation#end()
-		 */
+		
+		
 		@Override
 		public void end()
 		{
 			this.isActive = false;
 		}
-
-
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see com.xdev.communication.Conversation#isPessimisticUnit()
-		 */
+		
+		
 		@Override
 		public boolean isPessimisticUnit()
 		{
 			return this.pessimisticUnit;
 		}
-
-
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see com.xdev.communication.Conversation#setPessimisticUnit(boolean)
-		 */
+		
+		
 		@Override
 		public void setPessimisticUnit(final boolean mode, final LockModeType type)
 		{
 			this.pessimisticUnit = mode;
 			this.lockModeType = type;
 		}
-
 	}
 }

@@ -47,7 +47,8 @@ import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.SearchResult;
 import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
 import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
-import com.xdev.communication.EntityManagerUtils;
+import com.xdev.persistence.PersistenceManager;
+import com.xdev.persistence.PersistenceUtils;
 
 
 @SuppressWarnings("unchecked")
@@ -66,7 +67,7 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	@Override
 	protected EntityManager em()
 	{
-		return EntityManagerUtils.getEntityManager();
+		return PersistenceUtils.getEntityManager(this.persistentClass);
 	}
 	
 	
@@ -86,8 +87,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		em().getTransaction().commit();
 	}
-
-
+	
+	
 	protected Session getSession()
 	{
 		return em().unwrap(Session.class);
@@ -96,7 +97,9 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	
 	protected boolean isQueryCacheEnabled()
 	{
-		return EntityManagerUtils.isQueryCacheEnabled(em());
+		final PersistenceManager persistenceManager = PersistenceManager.getCurrent();
+		final String persistenceUnit = persistenceManager.getPersistenceUnit(this.persistentClass);
+		return persistenceManager.isQueryCacheEnabled(persistenceUnit);
 	}
 	
 	

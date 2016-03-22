@@ -21,102 +21,25 @@
 package com.xdev.communication;
 
 
-import java.util.Enumeration;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.RollbackException;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import com.vaadin.server.VaadinSession;
-
 
 /**
- * @author XDEV Software (JW)
- *
+ * @author XDEV Software
+ * @deprecated not used anymore, will be removed in a future release
  */
+@Deprecated
 public class XdevHttpSessionListener implements HttpSessionListener
 {
-	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * javax.servlet.http.HttpSessionListener#sessionCreated(javax.servlet.http.
-	 * HttpSessionEvent)
-	 */
 	@Override
-	public void sessionCreated(final HttpSessionEvent se)
+	public void sessionCreated(final HttpSessionEvent event)
 	{
 	}
-	
-	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * javax.servlet.http.HttpSessionListener#sessionDestroyed(javax.servlet.
-	 * http.HttpSessionEvent)
-	 */
+
+
 	@Override
-	public void sessionDestroyed(final HttpSessionEvent se)
+	public void sessionDestroyed(final HttpSessionEvent event)
 	{
-		VaadinSession vSession = null;
-		final Enumeration<String> attributeNames = se.getSession().getAttributeNames();
-		
-		while(attributeNames.hasMoreElements())
-		{
-			final Object attribute = se.getSession().getAttribute(attributeNames.nextElement());
-			if(attribute instanceof VaadinSession)
-			{
-				vSession = (VaadinSession)attribute;
-			}
-			
-		}
-		
-		if(vSession != null)
-		{
-			final Conversationable conversationable = (Conversationable)vSession
-					.getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
-					
-			if(conversationable != null)
-			{
-				final EntityManager em = conversationable.getEntityManager();
-				
-				if(em != null)
-				{
-					if(em.getTransaction().isActive())
-					{
-						try
-						{
-							// end unit of work
-							em.getTransaction().commit();
-						}
-						catch(final RollbackException e)
-						{
-							em.getTransaction().rollback();
-						}
-					}
-					
-					try
-					{
-						em.close();
-					}
-					catch(final Exception e)
-					{
-						if(em != null)
-						{
-							final EntityTransaction tx = em.getTransaction();
-							if(tx != null && tx.isActive())
-							{
-								em.getTransaction().rollback();
-							}
-						}
-					}
-				}
-			}
-		}
 	}
-	
 }

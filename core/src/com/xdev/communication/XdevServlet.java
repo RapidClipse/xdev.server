@@ -41,6 +41,12 @@ import com.vaadin.server.VaadinServletService;
  */
 public class XdevServlet extends VaadinServlet
 {
+	public static XdevServlet getServlet()
+	{
+		return (XdevServlet)VaadinServlet.getCurrent();
+	}
+	
+	
 	@Override
 	protected VaadinServletService createServletService(
 			final DeploymentConfiguration deploymentConfiguration) throws ServiceException

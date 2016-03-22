@@ -37,8 +37,6 @@ import org.hibernate.mapping.OneToMany;
 import org.hibernate.mapping.OneToOne;
 import org.hibernate.mapping.Value;
 
-import com.xdev.communication.EntityManagerUtils;
-
 
 public class HibernateMetaDataUtils
 {
@@ -51,8 +49,7 @@ public class HibernateMetaDataUtils
 		if(configuration == null)
 		{
 			configuration = new Configuration();
-			final Set<EntityType<?>> set = EntityManagerUtils.getEntityManager().getMetamodel()
-					.getEntities();
+			final Set<EntityType<?>> set = entityManager.getMetamodel().getEntities();
 			for(final Iterator<EntityType<?>> i = set.iterator(); i.hasNext();)
 			{
 				final Class<?> clazz = i.next().getJavaType();

@@ -24,17 +24,17 @@ package com.xdev.communication;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceException;
 
 import com.vaadin.server.DeploymentConfiguration;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinResponse;
-import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletService;
 import com.vaadin.server.VaadinSession;
-import com.xdev.db.connection.EntityManagerFactoryProvider;
+import com.vaadin.util.CurrentInstance;
+import com.xdev.persistence.EntityManagerFactoryProvider;
+import com.xdev.persistence.PersistenceManager;
 
 
 /**
@@ -43,95 +43,172 @@ import com.xdev.db.connection.EntityManagerFactoryProvider;
  */
 public class XdevServletService extends VaadinServletService
 {
-	public static final String					HIBERNATEUTIL_FILTER_INIT_PARAM	= "persistenceUnit";
-
-	private boolean								hibernateFactoryInitialized		= false;
-	private final VaadinSessionStrategyProvider	sessionStrategyProvider;
-
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * com.vaadin.server.VaadinService#addSessionDestroyListener(com.vaadin.
-	 * server.SessionDestroyListener)
-	 */
-
-	public XdevServletService(final VaadinServlet servlet,
+	private PersistenceManager				persistenceManager;
+	private VaadinSessionStrategyProvider	sessionStrategyProvider;
+											
+											
+	public XdevServletService(final XdevServlet servlet,
 			final DeploymentConfiguration deploymentConfiguration) throws ServiceException
 	{
 		super(servlet,deploymentConfiguration);
-		this.sessionStrategyProvider = new VaadinSessionStrategyProvider.Implementation();
+	}
+	
+	
+	@Override
+	public XdevServlet getServlet()
+	{
+		return (XdevServlet)super.getServlet();
+	}
+	
+	
+	@Override
+	public void init() throws ServiceException
+	{
+		try
+		{
+			this.persistenceManager = createPersistenceManager();
+		}
+		catch(final PersistenceException e)
+		{
+			throw new ServiceException(e);
+		}
+		
+		this.sessionStrategyProvider = createVaadinSessionStrategyProvider();
+		
+		addSessionDestroyListener(event -> {
+			final VaadinSession session = event.getSession();
+			final Conversationables conversationables = session
+					.getAttribute(Conversationables.class);
+			if(conversationables != null)
+			{
+				conversationables.closeAll();
+			}
+		});
+
+		addServiceDestroyListener(event -> {
+			if(this.persistenceManager != null)
+			{
+				this.persistenceManager.close();
+				this.persistenceManager = null;
+			}
+		});
+		
+		super.init();
 	}
 
 
+	protected PersistenceManager createPersistenceManager() throws PersistenceException
+	{
+		return new PersistenceManager(this,new EntityManagerFactoryProvider.Default());
+	}
+	
+	
+	protected VaadinSessionStrategyProvider createVaadinSessionStrategyProvider()
+	{
+		return new VaadinSessionStrategyProvider.Implementation();
+	}
+	
+	
 	@Override
 	public void requestStart(final VaadinRequest request, final VaadinResponse response)
 	{
-		if(!this.hibernateFactoryInitialized)
-		{
-			this.hibernateFactoryInitialized = true;
-
-			try
-			{
-				// TODO check multiple persistence unit functionality
-				final String hibernatePersistenceUnit = getDeploymentConfiguration()
-						.getApplicationOrSystemProperty(HIBERNATEUTIL_FILTER_INIT_PARAM,null);
-				EntityManagerUtils.initializeHibernateFactory(
-						new EntityManagerFactoryProvider.Implementation(hibernatePersistenceUnit));
-			}
-			catch(final PersistenceException e)
-			{
-				Logger.getLogger(XdevServlet.class.getName()).log(Level.WARNING,e.getMessage(),e);
-			}
-		}
-
 		if(request.getMethod().equals("POST"))
 		{
 			try
 			{
-				final EntityManagerFactory factory = EntityManagerUtils.getEntityManagerFactory();
-				if(factory != null)
+				final VaadinSession session = findVaadinSession(request);
+				if(session != null)
 				{
-					this.sessionStrategyProvider.getRequestStartVaadinSessionStrategy(request,this)
-							.handleRequest(request,this);
+					handleRequestStart(session);
 				}
 			}
-			catch(final PersistenceException e)
+			catch(final Exception e)
 			{
-				Logger.getLogger(XdevServlet.class.getName()).log(Level.WARNING,e.getMessage(),e);
+				handleRequestServiceException(e);
 			}
 		}
-
+		
 		super.requestStart(request,response);
 	}
 	
 	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * com.vaadin.server.VaadinService#createVaadinSession(com.vaadin.server.
-	 * VaadinRequest)
-	 */
-	@Override
-	protected VaadinSession createVaadinSession(final VaadinRequest request) throws ServiceException
+	public void handleRequestStart(final VaadinSession session)
 	{
-		final VaadinSession session = super.createVaadinSession(request);
-		session.setAttribute(ClientInfo.class,ClientInfo.get(request));
-		return session;
+		CurrentInstance.set(PersistenceManager.class,this.persistenceManager);
+		
+		try
+		{
+			final Conversationables conversationables = session
+					.getAttribute(Conversationables.class);
+			if(conversationables != null)
+			{
+				for(final String persistenceUnit : this.persistenceManager.getPersistenceUnits())
+				{
+					this.sessionStrategyProvider
+							.getRequestStartVaadinSessionStrategy(conversationables,persistenceUnit)
+							.requestStart(conversationables,persistenceUnit);
+				}
+			}
+		}
+		catch(final Exception e)
+		{
+			handleRequestServiceException(e);
+		}
 	}
-
-
+	
+	
 	@Override
 	public void requestEnd(final VaadinRequest request, final VaadinResponse response,
 			final VaadinSession session)
 	{
-		// final Conversationable conversationable = (Conversationable)session
-		// .getAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE);
-		//
-		this.sessionStrategyProvider.getRequestEndVaadinSessionStrategy(request,this)
-				.requestEnd(request,this);
+		handleRequestEnd(session);
+		
 		super.requestEnd(request,response,session);
+	}
+	
+	
+	public void handleRequestEnd(final VaadinSession session)
+	{
+		try
+		{
+			final Conversationables conversationables = session
+					.getAttribute(Conversationables.class);
+			if(conversationables != null)
+			{
+				for(final String persistenceUnit : this.persistenceManager.getPersistenceUnits())
+				{
+					this.sessionStrategyProvider
+							.getRequestEndVaadinSessionStrategy(conversationables,persistenceUnit)
+							.requestEnd(conversationables,persistenceUnit);
+				}
+			}
+		}
+		catch(final Exception e)
+		{
+			handleRequestServiceException(e);
+		}
+	}
+	
+	
+	protected void handleRequestServiceException(final Exception exception)
+	{
+		Logger.getLogger(XdevServletService.class.getName()).log(Level.WARNING,
+				exception.getMessage(),exception);
+	}
+	
+	
+	@Override
+	protected VaadinSession createVaadinSession(final VaadinRequest request) throws ServiceException
+	{
+		final VaadinSession session = super.createVaadinSession(request);
+		session.setAttribute(Conversationables.class,new Conversationables());
+		session.setAttribute(ClientInfo.class,ClientInfo.get(request));
+		return session;
+	}
+	
+	
+	public PersistenceManager getPersistenceManager()
+	{
+		return this.persistenceManager;
 	}
 }

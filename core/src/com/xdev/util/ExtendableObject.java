@@ -21,6 +21,7 @@
 package com.xdev.util;
 
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,8 +49,8 @@ public interface ExtendableObject
 	 * @see #getExtension(Class)
 	 */
 	public <E> E addExtension(Class<? super E> type, E extension);
-	
-	
+
+
 	/**
 	 * Gets the registered extension for the specified type.
 	 *
@@ -60,9 +61,9 @@ public interface ExtendableObject
 	 * @see #addExtension(Class, Object)
 	 */
 	public <E> E getExtension(Class<E> type);
-	
-	
-	
+
+
+
 	/**
 	 * Helper class for implementors of {@link ExtendableObject}.
 	 *
@@ -87,13 +88,13 @@ public interface ExtendableObject
 	 * </pre>
 	 *
 	 * @author XDEV Software
-	 * 		
+	 *
 	 */
-	public static class Extensions
+	public static class Extensions implements Serializable
 	{
-		private Map<Class<?>, Object> registry;
-		
-		
+		private transient Map<Class<?>, Object> registry;
+
+
 		@SuppressWarnings("unchecked")
 		public <E> E add(final Class<? super E> type, final E extension)
 		{
@@ -103,8 +104,8 @@ public interface ExtendableObject
 			}
 			return (E)this.registry.put(type,extension);
 		}
-		
-		
+
+
 		@SuppressWarnings("unchecked")
 		public <E> E get(final Class<E> type)
 		{

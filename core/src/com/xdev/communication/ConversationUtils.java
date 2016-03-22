@@ -24,59 +24,41 @@ package com.xdev.communication;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.LockModeType;
 
-import com.vaadin.server.VaadinSession;
-import com.vaadin.server.VaadinSession.State;
+import com.xdev.persistence.PersistenceManager;
+import com.xdev.persistence.PersistenceUtils;
 
 
 /**
- * @author XDEV Software (JW)
- *		
+ * @author XDEV Software
+ *
  */
 public class ConversationUtils
 {
-	
-	private final static String ENTITY_MANAGER_ATTRIBUTE = "EntityManager";
-	
-	
-	private static boolean isSessionAccessible()
-	{
-		if(VaadinSession.getCurrent() != null)
-		{
-			if(VaadinSession.getCurrent().getState() == State.OPEN)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	
 	public static Conversation getConversation()
 	{
-		/*
-		 * TODO add provider to plug into entity manager administration for
-		 * Vaadin Session independency
-		 */
-		if(isSessionAccessible())
-		{
-			final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
-					.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
-			return conversationable.getConversation();
-		}
-		return null;
+		return getConversation(PersistenceManager.getCurrent().getDefaultPersistenceUnit());
 	}
-	
-	
-	private static Conversation newConversation()
+
+
+	public static Conversation getConversation(final String persistenceUnit)
 	{
-		if(isSessionAccessible())
+		final Conversationable conversationable = Conversationables.getCurrent()
+				.get(persistenceUnit);
+		return conversationable != null ? conversationable.getConversation() : null;
+	}
+
+
+	private static Conversation newConversation(final String persistenceUnit)
+	{
+		final Conversationable conversationable = Conversationables.getCurrent()
+				.get(persistenceUnit);
+		if(conversationable != null)
 		{
-			final Conversationable conversationable = (Conversationable)VaadinSession.getCurrent()
-					.getAttribute(ENTITY_MANAGER_ATTRIBUTE);
 			final Conversation conversation = new Conversation.Implementation();
-			
+
 			try
 			{
 				conversationable.setConversation(conversation);
@@ -85,86 +67,118 @@ public class ConversationUtils
 			{
 				return conversationable.getConversation();
 			}
-			
+
 			return conversation;
 		}
+
 		return null;
 	}
-	
-	
-	public static void startConversation()
+
+
+	public static Conversation startConversation()
 	{
-		final Conversation conversation = newConversation();
+		return startConversation(PersistenceManager.getCurrent().getDefaultPersistenceUnit());
+	}
+
+
+	public static Conversation startConversation(final String persistenceUnit)
+	{
+		final Conversation conversation = newConversation(persistenceUnit);
 		if(conversation != null)
 		{
 			conversation.start();
 		}
+		return conversation;
 	}
-	
-	
-	public static void startPessimisticConversation(final LockModeType lockMode)
+
+
+	public static void startPessimisticConversation()
 	{
-		final Conversation conversation = newConversation();
+		startPessimisticConversation(LockModeType.WRITE);
+	}
+
+
+	public static void startPessimisticConversation(final String persistenceUnit)
+	{
+		startPessimisticConversation(persistenceUnit,LockModeType.WRITE);
+	}
+
+
+	public static Conversation startPessimisticConversation(final LockModeType lockMode)
+	{
+		return startPessimisticConversation(
+				PersistenceManager.getCurrent().getDefaultPersistenceUnit(),lockMode);
+	}
+
+
+	public static Conversation startPessimisticConversation(final String persistenceUnit,
+			final LockModeType lockMode)
+	{
+		final Conversation conversation = newConversation(persistenceUnit);
 		if(conversation != null)
 		{
 			conversation.setPessimisticUnit(true,lockMode);
 			conversation.start();
 		}
+		return conversation;
 	}
-	
-	
+
+
 	public static void lockConversation(final Object entity)
 	{
-		final EntityManager em = EntityManagerUtils.getEntityManager();
-		if(em != null)
+		final String persistenceUnit = PersistenceManager.getCurrent()
+				.getPersistenceUnit(entity.getClass());
+		final Conversationable conversationable = Conversationables.getCurrent()
+				.get(persistenceUnit);
+		if(conversationable != null)
 		{
-			final Conversation conversation = getConversation();
+			final Conversation conversation = conversationable.getConversation();
 			if(conversation != null)
 			{
-				em.lock(entity,conversation.getLockModeType());
+				conversationable.getEntityManager().lock(entity,conversation.getLockModeType());
 			}
 		}
 	}
-	
-	
+
+
 	public static void lockConversation(final Object entity, final Map<String, Object> properties)
 	{
-		final EntityManager em = EntityManagerUtils.getEntityManager();
-		if(em != null)
+		final String persistenceUnit = PersistenceManager.getCurrent()
+				.getPersistenceUnit(entity.getClass());
+		final Conversationable conversationable = Conversationables.getCurrent()
+				.get(persistenceUnit);
+		if(conversationable != null)
 		{
-			final Conversation conversation = getConversation();
+			final Conversation conversation = conversationable.getConversation();
 			if(conversation != null)
 			{
-				em.lock(entity,conversation.getLockModeType(),properties);
+				conversationable.getEntityManager().lock(entity,conversation.getLockModeType(),
+						properties);
 			}
 		}
 	}
-	
-	
+
+
 	public static void releaseConversationLock()
 	{
-		final EntityManager em = EntityManagerUtils.getEntityManager();
+		releaseConversationLock(PersistenceManager.getCurrent().getDefaultPersistenceUnit());
+	}
+
+
+	public static void releaseConversationLock(final String persistenceUnit)
+	{
+		final EntityManager em = PersistenceUtils.getEntityManager(persistenceUnit);
 		if(em != null)
 		{
-			if(em.getTransaction().isActive())
+			final EntityTransaction transaction = em.getTransaction();
+			if(transaction.isActive())
 			{
-				em.getTransaction().commit();
+				transaction.commit();
 			}
 		}
 	}
-	
-	
-	public static void startPessimisticConversation()
-	{
-		final Conversation conversation = newConversation();
-		if(conversation != null)
-		{
-			conversation.setPessimisticUnit(true,LockModeType.WRITE);
-			conversation.start();
-		}
-	}
-	
-	
+
+
 	public static void endConversation()
 	{
 		final Conversation conversation = getConversation();
@@ -173,8 +187,18 @@ public class ConversationUtils
 			conversation.end();
 		}
 	}
-	
-	
+
+
+	public static void endConversation(final String persistenceUnit)
+	{
+		final Conversation conversation = getConversation(persistenceUnit);
+		if(conversation != null)
+		{
+			conversation.end();
+		}
+	}
+
+
 	public static boolean isConversationActive()
 	{
 		final Conversation conversation = getConversation();
@@ -184,5 +208,15 @@ public class ConversationUtils
 		}
 		return false;
 	}
-	
+
+
+	public static boolean isConversationActive(final String persistenceUnit)
+	{
+		final Conversation conversation = getConversation(persistenceUnit);
+		if(conversation != null)
+		{
+			return conversation.isActive();
+		}
+		return false;
+	}
 }

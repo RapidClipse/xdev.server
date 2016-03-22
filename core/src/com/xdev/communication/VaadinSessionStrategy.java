@@ -29,25 +29,21 @@ import javax.persistence.RollbackException;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 
-import com.vaadin.server.ServiceException;
-import com.vaadin.server.SessionExpiredException;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.VaadinSession;
+import com.xdev.persistence.PersistenceManager;
 
 
 /**
  * Manages Session propagation.
  *
- * @author XDEV Software (JW)
- *
+ * @author XDEV Software
+ * 		
  */
 public interface VaadinSessionStrategy
 {
-	public void handleRequest(VaadinRequest request, VaadinService service);
+	public void requestStart(Conversationables conversationables, String persistenceUnit);
 	
 	
-	public void requestEnd(VaadinRequest request, VaadinService service);
+	public void requestEnd(Conversationables conversationables, String persistenceUnit);
 	
 	
 	
@@ -56,308 +52,224 @@ public interface VaadinSessionStrategy
 	 * pattern.
 	 *
 	 * @author XDEV Software
-	 *
+	 * 		
 	 */
 	public class PerRequest implements VaadinSessionStrategy
 	{
-		
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see
-		 * com.xdev.communication.VaadinSessionPerStrategy#handleRequest(com.
-		 * vaadin.server.VaadinRequest)
-		 */
 		@Override
-		public void handleRequest(final VaadinRequest request, final VaadinService service)
+		public void requestStart(final Conversationables conversationables,
+				final String persistenceUnit)
 		{
-			final EntityManagerFactory factory = EntityManagerUtils.getEntityManagerFactory();
-			VaadinSession session;
-			try
-			{
-				session = service.findVaadinSession(request);
-			}
-			catch(ServiceException | SessionExpiredException e)
-			{
-				throw new RuntimeException(e);
-			}
-			
+			final EntityManagerFactory factory = PersistenceManager.getCurrent()
+					.getEntityManagerFactory(persistenceUnit);
 			final EntityManager manager = factory.createEntityManager();
-			
+
 			// instantiate conversationable wrapper with entity manager.
 			final Conversationable.Implementation conversationable = new Conversationable.Implementation();
 			conversationable.setEntityManager(manager);
-			
+
 			// Begin a database transaction, start the unit of work
 			manager.getTransaction().begin();
-			
-			// Add the EntityManager to the vaadin session
-			session.setAttribute(EntityManagerUtils.ENTITY_MANAGER_ATTRIBUTE,conversationable);
+
+			conversationables.put(persistenceUnit,conversationable);
 		}
-		
-		
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see
-		 * com.xdev.communication.VaadinSessionStrategy#requestEnd(com.vaadin.
-		 * server.VaadinRequest, com.vaadin.server.VaadinService,
-		 * com.vaadin.server.VaadinSession)
-		 */
+
+
 		@Override
-		public void requestEnd(final VaadinRequest request, final VaadinService service)
+		public void requestEnd(final Conversationables conversationables,
+				final String persistenceUnit)
 		{
-			final EntityManager em = EntityManagerUtils.getEntityManager();
-			if(em != null)
+			final Conversationable conversationable = conversationables.get(persistenceUnit);
+			if(conversationable != null)
 			{
-				if(EntityManagerUtils.getConversation() != null)
+				final EntityManager em = conversationable.getEntityManager();
+				if(em != null)
 				{
-					/*
-					 * Keep the session and with it the persistence context
-					 * alive during user think time while a conversation is
-					 * active. The next request will automatically be handled by
-					 * an appropriate conversation managing strategy.
-					 */
-					if(EntityManagerUtils.getConversation().isActive())
+					final Conversation conversation = conversationable.getConversation();
+					if(conversation != null)
 					{
-						if(em.getTransaction().isActive())
+						/*
+						 * Keep the session and with it the persistence context
+						 * alive during user think time while a conversation is
+						 * active. The next request will automatically be
+						 * handled by an appropriate conversation managing
+						 * strategy.
+						 */
+						if(conversation.isActive())
 						{
-							try
+							final EntityTransaction transaction = em.getTransaction();
+							if(transaction.isActive())
 							{
-								// end unit of work
-								em.getTransaction().commit();
-							}
-							catch(final RollbackException e)
-							{
-								em.getTransaction().rollback();
+								try
+								{
+									// end unit of work
+									transaction.commit();
+								}
+								catch(final RollbackException e)
+								{
+									transaction.rollback();
+								}
 							}
 						}
 					}
-				}
-				else
-				{
-					
-					if(em.getTransaction().isActive())
+					else
 					{
-						try
-						{
-							// end unit of work
-							em.getTransaction().commit();
-						}
-						catch(final RollbackException e)
-						{
-							em.getTransaction().rollback();
-						}
-					}
-					
-					try
-					{
-						EntityManagerUtils.closeEntityManager();
-					}
-					catch(final Exception e)
-					{
-						if(em != null)
-						{
-							final EntityTransaction tx = EntityManagerUtils.getTransaction();
-							if(tx != null && tx.isActive())
-							{
-								EntityManagerUtils.rollback();
-							}
-						}
+						conversationables.close(conversationable);
 					}
 				}
 			}
-			
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 *
+	 * 		
 	 */
 	public class PerConversation implements VaadinSessionStrategy
 	{
-		/**
-		 *
-		 */
-		public PerConversation()
-		{
-			final EntityManager em = EntityManagerUtils.getEntityManager();
-			if(em != null)
-			{
-				/*
-				 * Prepare conversation - disable AUTO flush mode for each
-				 * transaction commit, to achieve the conversation unit of work
-				 * context.
-				 */
-				em.unwrap(Session.class).setFlushMode(FlushMode.MANUAL);
-			}
-		}
-		
-		
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see com.xdev.communication.VaadinSessionStrategy#handleRequest(com.
-		 * vaadin .server.VaadinRequest)
-		 */
 		@Override
-		public void handleRequest(final VaadinRequest request, final VaadinService service)
+		public void requestStart(final Conversationables conversationables,
+				final String persistenceUnit)
 		{
-			final EntityManager em = EntityManagerUtils.getEntityManager();
-			if(em != null)
+			final Conversationable conversationable = conversationables.get(persistenceUnit);
+			if(conversationable != null)
 			{
-				/*
-				 * Begin a database transaction, reconnects Session - continues
-				 * the unit of work
-				 */
-				em.getTransaction().begin();
-			}
-		}
-		
-		
-		@Override
-		public void requestEnd(final VaadinRequest request, final VaadinService service)
-		{
-			final EntityManager em = EntityManagerUtils.getEntityManager();
-			final Conversation conversation = EntityManagerUtils.getConversation();
-			if(conversation != null)
-			{
-				if(conversation.isActive())
+				final EntityManager em = conversationable.getEntityManager();
+				if(em != null)
 				{
-					// Event was not the last request, continue conversation
-					if(em.getTransaction().isActive())
+					final Session session = em.unwrap(Session.class);
+					if(session.getFlushMode() != FlushMode.MANUAL)
 					{
-						try
-						{
-							em.getTransaction().commit();
-						}
-						catch(final RollbackException e)
-						{
-							em.getTransaction().rollback();
-						}
+						/*
+						 * Prepare conversation - disable AUTO flush mode for
+						 * each transaction commit, to achieve the conversation
+						 * unit of work context.
+						 */
+						session.setFlushMode(FlushMode.MANUAL);
 					}
-					
-				}
-				else
-				{
+
 					/*
-					 * The event was the last request: flush (sync with db),
-					 * commit, close
+					 * Begin a database transaction, reconnects Session -
+					 * continues the unit of work
 					 */
-					em.flush();
-					if(em.getTransaction().isActive())
+					final EntityTransaction transaction = em.getTransaction();
+					if(!transaction.isActive())
 					{
-						try
+						transaction.begin();
+					}
+				}
+			}
+		}
+
+
+		@Override
+		public void requestEnd(final Conversationables conversationables,
+				final String persistenceUnit)
+		{
+			final Conversationable conversationable = conversationables.get(persistenceUnit);
+			if(conversationable != null)
+			{
+				final Conversation conversation = conversationable.getConversation();
+				if(conversation != null)
+				{
+					final EntityManager em = conversationable.getEntityManager();
+					if(em != null)
+					{
+						final EntityTransaction transaction = em.getTransaction();
+						if(conversation.isActive())
 						{
-							em.getTransaction().commit();
+							// Event was not the last request, continue
+							// conversation
+							if(transaction.isActive())
+							{
+								try
+								{
+									transaction.commit();
+								}
+								catch(final RollbackException e)
+								{
+									transaction.rollback();
+								}
+							}
+
 						}
-						catch(final RollbackException e)
+						else
 						{
-							em.getTransaction().rollback();
+							/*
+							 * The event was the last request: flush, commit,
+							 * close
+							 */
+							em.flush();
+							if(transaction.isActive())
+							{
+								try
+								{
+									transaction.commit();
+								}
+								catch(final RollbackException e)
+								{
+									transaction.rollback();
+								}
+							}
+							em.close();
 						}
 					}
-					em.close();
 				}
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 *
+	 * 		
 	 */
-	public class PerConversationPessimistic implements VaadinSessionStrategy
+	public class PerConversationPessimistic extends PerConversation
 	{
-		/**
-		 *
-		 */
-		public PerConversationPessimistic()
-		{
-			final EntityManager em = EntityManagerUtils.getEntityManager();
-			if(em != null)
-			{
-				/*
-				 * Prepare conversation - disable AUTO flush mode for each
-				 * transaction commit, to achieve the conversation unit of work
-				 * context.
-				 */
-				em.unwrap(Session.class).setFlushMode(FlushMode.MANUAL);
-				/*
-				 * Begin a database transaction, reconnects Session - continues
-				 * the unit of work
-				 */
-				em.getTransaction().begin();
-			}
-		}
-		
-		
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see com.xdev.communication.VaadinSessionStrategy#handleRequest(com.
-		 * vaadin .server.VaadinRequest)
-		 */
 		@Override
-		public void handleRequest(final VaadinRequest request, final VaadinService service)
+		public void requestEnd(final Conversationables conversationables,
+				final String persistenceUnit)
 		{
-			final EntityManager em = EntityManagerUtils.getEntityManager();
-			if(em != null)
+			final Conversationable conversationable = conversationables.get(persistenceUnit);
+			if(conversationable != null)
 			{
-				if(!em.getTransaction().isActive())
+				final Conversation conversation = conversationable.getConversation();
+				if(conversation != null)
 				{
-					em.getTransaction().begin();
-				}
-			}
-		}
-		
-		
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see com.xdev.communication.VaadinSessionStrategy#requestEnd(com.
-		 * vaadin. server.VaadinRequest, com.vaadin.server.VaadinService,
-		 * com.vaadin.server.VaadinSession)
-		 */
-		@Override
-		public void requestEnd(final VaadinRequest request, final VaadinService service)
-		{
-			final EntityManager em = EntityManagerUtils.getEntityManager();
-			final Conversation conversation = EntityManagerUtils.getConversation();
-			if(conversation != null)
-			{
-				if(!conversation.isActive())
-				{
-					/*
-					 * The event was the last request: flush (sync with db),
-					 * commit, close
-					 */
-					em.flush();
-					
-					final EntityTransaction transaction = em.getTransaction();
-					if(transaction.isActive())
+					final EntityManager em = conversationable.getEntityManager();
+					if(em != null)
 					{
-						try
+						final EntityTransaction transaction = em.getTransaction();
+						if(!conversation.isActive())
 						{
-							transaction.commit();
-						}
-						catch(final RollbackException e)
-						{
-							transaction.rollback();
+							/*
+							 * The event was the last request: flush, commit,
+							 * close
+							 */
+							em.flush();
+							if(transaction.isActive())
+							{
+								try
+								{
+									transaction.commit();
+								}
+								catch(final RollbackException e)
+								{
+									transaction.rollback();
+								}
+							}
+							em.close();
 						}
 					}
-					em.close();
 				}
 			}
 		}
 	}
-	
 }

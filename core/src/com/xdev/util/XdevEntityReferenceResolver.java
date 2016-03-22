@@ -27,7 +27,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 
-import com.xdev.communication.EntityManagerUtils;
+import com.xdev.persistence.PersistenceUtils;
 
 
 /**
@@ -51,14 +51,9 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 		return instance;
 	}
 
-	private final Configuration config;
-	// private final EntityIDResolver idResolver;
-
 
 	private XdevEntityReferenceResolver()
 	{
-		this.config = HibernateMetaDataUtils
-				.getConfiguration(EntityManagerUtils.getEntityManager());
 	}
 
 
@@ -66,7 +61,9 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 	public String getReferenceEntityPropertyName(final Class<?> referenceEntity,
 			final Class<?> entity) throws RuntimeException
 	{
-		final PersistentClass clazz = this.config.getClassMapping(entity.getName());
+		final Configuration config = HibernateMetaDataUtils
+				.getConfiguration(PersistenceUtils.getEntityManager(referenceEntity));
+		final PersistentClass clazz = config.getClassMapping(entity.getName());
 		Property ref = null;
 
 		for(@SuppressWarnings("unchecked")
@@ -101,7 +98,10 @@ public class XdevEntityReferenceResolver implements EntityReferenceResolver
 		{
 			final String name = previousProperty.getName() + ".";
 			previousClass = previousProperty.getType().getReturnedClass();
-			final PersistentClass clazz = this.config.getClassMapping(previousClass.getName());
+
+			final Configuration config = HibernateMetaDataUtils
+					.getConfiguration(PersistenceUtils.getEntityManager(previousClass));
+			final PersistentClass clazz = config.getClassMapping(previousClass.getName());
 
 			for(@SuppressWarnings("unchecked")
 			final Iterator<Property> iterator = clazz.getReferenceablePropertyIterator(); iterator

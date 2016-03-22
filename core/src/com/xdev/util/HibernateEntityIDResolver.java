@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * For further information see
+ * 
+ * For further information see 
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -27,58 +27,64 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 
-import com.xdev.communication.EntityManagerUtils;
+import com.xdev.persistence.PersistenceUtils;
 
 
 /**
  *
  * @author XDEV Software
- *		
+ *
  */
 public class HibernateEntityIDResolver implements EntityIDResolver
 {
 	private static HibernateEntityIDResolver instance;
-	
-	
+
+
 	public static HibernateEntityIDResolver getInstance()
 	{
 		if(instance == null)
 		{
 			instance = new HibernateEntityIDResolver();
 		}
-		
+
 		return instance;
 	}
-	
-	private final Configuration config;
-	
-	
+
+
 	private HibernateEntityIDResolver()
 	{
-		this.config = HibernateMetaDataUtils
-				.getConfiguration(EntityManagerUtils.getEntityManager());
 	}
-	
-	
+
+
 	@Override
-	public Property getEntityIDProperty(final Class<?> entityClass)
+	public Property getEntityIDProperty(Class<?> entityClass)
 	{
 		String className = entityClass.getName();
 		if(className.contains("_$$_"))
 		{
 			className = className.substring(0,className.indexOf("_$$_"));
+			try
+			{
+				entityClass = getClass().getClassLoader().loadClass(className);
+			}
+			catch(final ClassNotFoundException e)
+			{
+				throw new RuntimeException(e);
+			}
 		}
-		
-		final PersistentClass persistentClass = this.config.getClassMapping(className);
+
+		final Configuration config = HibernateMetaDataUtils
+				.getConfiguration(PersistenceUtils.getEntityManager(entityClass));
+		final PersistentClass persistentClass = config.getClassMapping(className);
 		if(persistentClass == null)
 		{
-			throw new IllegalArgumentException("Not an entity class: "+entityClass.getName());
+			throw new IllegalArgumentException("Not an entity class: " + entityClass.getName());
 		}
-		
+
 		return persistentClass.getIdentifierProperty();
 	}
-	
-	
+
+
 	@Override
 	public Object getEntityIDPropertyValue(final Object entity)
 	{

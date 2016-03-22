@@ -32,7 +32,7 @@ import com.vaadin.ui.UI;
 
 
 /**
- * @author XDEV Software (JW)
+ * @author XDEV Software
  * 		
  */
 public abstract class ConversationBuilder
@@ -43,28 +43,33 @@ public abstract class ConversationBuilder
 	}
 
 
-	public void startConversation()
-	{
-		ConversationUtils.startConversation();
-	}
+	public abstract Conversation startConversation();
 
 
 
 	public static class UIBoundConversationBuilder extends ConversationBuilder
 	{
 		private final UI			ui;
+		private String				persistenceUnit;
 		private ViewChangeListener	viewChangeListener;
 		private List<String>		allowedNavigationViews;
 		private DetachListener		detachListener;
 		private List<Component>		detachComponents;
-		
-		
+
+
 		public UIBoundConversationBuilder(final UI ui)
 		{
 			this.ui = ui;
 		}
 
 
+		public UIBoundConversationBuilder persistenceUnit(final String persistenceUnit)
+		{
+			this.persistenceUnit = persistenceUnit;
+			return this;
+		}
+		
+		
 		public UIBoundConversationBuilder endOnDetach(final Component... components)
 		{
 			if(this.detachListener == null)
@@ -150,7 +155,26 @@ public abstract class ConversationBuilder
 				this.allowedNavigationViews = null;
 			}
 
-			ConversationUtils.endConversation();
+			if(this.persistenceUnit != null)
+			{
+				ConversationUtils.endConversation(this.persistenceUnit);
+			}
+			else
+			{
+				ConversationUtils.endConversation();
+			}
+		}
+
+
+		@Override
+		public Conversation startConversation()
+		{
+			if(this.persistenceUnit != null)
+			{
+				return ConversationUtils.startConversation(this.persistenceUnit);
+			}
+
+			return ConversationUtils.startConversation();
 		}
 	}
 }

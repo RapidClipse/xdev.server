@@ -26,24 +26,24 @@ import javax.servlet.ServletContextListener;
 
 
 /**
- * 
- * @author XDEV Software (JW)
  *
+ * @author XDEV Software (JW)
+ *		
+ * @deprecated not used anymore, will be removed in a future release
  */
+@Deprecated
 public class EntityManagerFactoryListener implements ServletContextListener
 {
-	
 	@Override
-	public void contextInitialized(ServletContextEvent sce)
+	public void contextInitialized(final ServletContextEvent sce)
 	{
 		// nothing to do here
 	}
 	
 	
 	@Override
-	public void contextDestroyed(ServletContextEvent sce)
+	public void contextDestroyed(final ServletContextEvent sce)
 	{
-		EntityManagerUtils.closeEntityManagerFactory();
+		// EntityManagerUtils.closeEntityManagerFactory();
 	}
-	
 }

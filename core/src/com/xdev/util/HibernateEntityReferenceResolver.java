@@ -27,45 +27,43 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 
-import com.xdev.communication.EntityManagerUtils;
+import com.xdev.persistence.PersistenceUtils;
 
 
 /**
  *
  * @author XDEV Software (JW)
- * 		
+ *
  */
 public class HibernateEntityReferenceResolver implements EntityReferenceResolver
 {
 	private static HibernateEntityReferenceResolver instance;
-
-
+	
+	
 	public static HibernateEntityReferenceResolver getInstance()
 	{
 		if(instance == null)
 		{
 			instance = new HibernateEntityReferenceResolver();
 		}
-
+		
 		return instance;
 	}
-
-	private final Configuration config;
-
-
+	
+	
 	private HibernateEntityReferenceResolver()
 	{
-		this.config = HibernateMetaDataUtils
-				.getConfiguration(EntityManagerUtils.getEntityManager());
 	}
-
-
+	
+	
 	@Override
 	public String getReferenceEntityPropertyName(final Class<?> referenceEntity,
 			final Class<?> entity)
 	{
-		final PersistentClass clazz = this.config.getClassMapping(entity.getName());
-
+		final Configuration config = HibernateMetaDataUtils
+				.getConfiguration(PersistenceUtils.getEntityManager(referenceEntity));
+		final PersistentClass clazz = config.getClassMapping(entity.getName());
+		
 		for(@SuppressWarnings("unchecked")
 		final Iterator<Property> iterator = clazz.getReferenceablePropertyIterator(); iterator
 				.hasNext();)

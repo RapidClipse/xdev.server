@@ -24,34 +24,31 @@ package com.xdev.ui.entitycomponent;
 import java.util.Locale;
 
 import com.vaadin.data.util.converter.Converter;
-import com.xdev.util.EntityIDResolver;
 import com.xdev.util.HibernateEntityIDResolver;
 
 
 public class BeanToBeanConverter<T> implements Converter<T, T>
 {
-	private final XdevBeanContainer<T>	container;
-	private final EntityIDResolver		idResolver;
-
-
+	private final XdevBeanContainer<T> container;
+	
+	
 	/**
 	 *
 	 */
 	public BeanToBeanConverter(final XdevBeanContainer<T> container)
 	{
 		this.container = container;
-		this.idResolver = HibernateEntityIDResolver.getInstance();
 	}
-
-
+	
+	
 	@Override
 	public T convertToModel(final T bean, final Class<? extends T> targetType, final Locale locale)
 			throws Converter.ConversionException
 	{
 		return bean;
 	}
-
-
+	
+	
 	@Override
 	public T convertToPresentation(final T value, final Class<? extends T> targetType,
 			final Locale locale) throws Converter.ConversionException
@@ -60,25 +57,26 @@ public class BeanToBeanConverter<T> implements Converter<T, T>
 		{
 			return null;
 		}
-
-		final Object id = this.idResolver.getEntityIDPropertyValue(value);
+		
+		final HibernateEntityIDResolver idResolver = HibernateEntityIDResolver.getInstance();
+		final Object id = idResolver.getEntityIDPropertyValue(value);
 		final T containerValue = this.container.getItemIds().stream()
 				.map(propertyId -> this.container.getItem(propertyId).getBean())
-				.filter(bean -> bean.equals(value) || (id != null
-						&& id.equals(this.idResolver.getEntityIDPropertyValue(bean))))
+				.filter(bean -> bean.equals(value)
+						|| (id != null && id.equals(idResolver.getEntityIDPropertyValue(bean))))
 				.findFirst().orElse(null);
 		return containerValue != null ? containerValue : value;
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<T> getModelType()
 	{
 		return (Class<T>)this.container.getBeanType();
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<T> getPresentationType()

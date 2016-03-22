@@ -26,27 +26,24 @@ import java.util.Locale;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
-import com.xdev.util.EntityIDResolver;
 import com.xdev.util.HibernateEntityIDResolver;
 
 
 //TODO check if object as ID type is always suitable
 public class IDToBeanConverter<T> implements Converter<Object, T>
 {
-	private final XdevBeanContainer<T>	container;
-	private final EntityIDResolver		idResolver;
-										
-										
+	private final XdevBeanContainer<T> container;
+	
+	
 	/**
 	 *
 	 */
 	public IDToBeanConverter(final XdevBeanContainer<T> container)
 	{
 		this.container = container;
-		this.idResolver = HibernateEntityIDResolver.getInstance();
 	}
-	
-	
+
+
 	@Override
 	public T convertToModel(final Object itemID, final Class<? extends T> targetType,
 			final Locale locale) throws Converter.ConversionException
@@ -55,7 +52,7 @@ public class IDToBeanConverter<T> implements Converter<Object, T>
 		{
 			return null;
 		}
-		
+
 		// multi selection
 		if(!(itemID instanceof Collection))
 		{
@@ -72,31 +69,31 @@ public class IDToBeanConverter<T> implements Converter<Object, T>
 				return item.getBean();
 			}
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public Object convertToPresentation(final T value, final Class<? extends Object> targetType,
 			final Locale locale) throws Converter.ConversionException
 	{
 		if(value != null)
 		{
-			return this.idResolver.getEntityIDPropertyValue(value);
+			return HibernateEntityIDResolver.getInstance().getEntityIDPropertyValue(value);
 		}
 		return null;
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<T> getModelType()
 	{
 		return (Class<T>)this.container.getBeanType();
 	}
-	
-	
+
+
 	@Override
 	public Class<Object> getPresentationType()
 	{

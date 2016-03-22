@@ -23,32 +23,19 @@ package com.xdev.ui.paging;
 
 import java.io.Serializable;
 
-import javax.persistence.EntityManager;
-
 import org.vaadin.addons.lazyquerycontainer.EntityQueryDefinition;
 import org.vaadin.addons.lazyquerycontainer.Query;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
 import org.vaadin.addons.lazyquerycontainer.QueryFactory;
 
-import com.xdev.communication.EntityManagerUtils;
-
 
 public class RequisitioningEntityQueryFactory<T> implements QueryFactory, Serializable
 {
-	
+
 	/**
 	 *
 	 */
-	private static final long	serialVersionUID	= 9119964329587628519L;
-	
-	
-	/**
-	 * @return the entityManager
-	 */
-	public EntityManager getEntityManager()
-	{
-		return EntityManagerUtils.getEntityManager();
-	}
+	private static final long serialVersionUID = 9119964329587628519L;
 	
 	
 	/**
@@ -63,5 +50,5 @@ public class RequisitioningEntityQueryFactory<T> implements QueryFactory, Serial
 	{
 		return new RequisitioningEntityQuery<T>((EntityQueryDefinition)queryDefinition);
 	}
-	
+
 }

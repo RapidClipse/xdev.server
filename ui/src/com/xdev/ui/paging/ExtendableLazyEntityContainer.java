@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -42,8 +42,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	private static final long	serialVersionUID	= 1L;
 	private final Class<T>		entityType;
 	private Object[]			requiredProperties;
-
-
+								
+								
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
 	 *
@@ -57,8 +57,6 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	 *            True if application manages transactions instead of container.
 	 * @param detachedEntities
 	 *            True if entities are detached from PersistenceContext.
-	 * @param compositeItems
-	 *            True f items are wrapped to CompositeItems.
 	 */
 	public ExtendableLazyEntityContainer(final Class<T> entityClass, final int batchSize,
 			final Object idPropertyId, final boolean applicationManagedTransactions,
@@ -68,10 +66,10 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 				detachedEntities,false,entityClass,batchSize,idPropertyId),
 				new RequisitioningEntityQueryFactory<T>());
 		this.entityType = entityClass;
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
 	 *
@@ -80,8 +78,6 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	 * @param detachedEntities
 	 *            True if entities are detached from PersistenceContext. items
 	 *            until commit.
-	 * @param compositeItems
-	 *            True if native items should be wrapped to CompositeItems.
 	 * @param entityClass
 	 *            The entity class.
 	 * @param batchSize
@@ -101,21 +97,21 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		super(new IntrospectionEntityQueryDefinition<T>(applicationManagedTransactions,
 				detachedEntities,false,entityClass,batchSize,idPropertyId),
 				new RequisitioningEntityQueryFactory<T>());
-				
+
 		getQueryView().getQueryDefinition().setDefaultSortState(defaultSortPropertyIds,
 				defaultSortPropertyAscendingStates);
-				
+
 		this.entityType = entityClass;
 	}
-	
-	
+
+
 	@Override
 	public Class<T> getBeanType()
 	{
 		return this.entityType;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -128,8 +124,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		}
 		this.commit();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -146,8 +142,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		// this.commit();
 		// notifyItemSetChanged();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -168,8 +164,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		// }
 		// this.commit();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -183,8 +179,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		this.commit();
 		return getItem(index);
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -197,8 +193,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	{
 		return (BeanItem<T>)super.getItem(itemId);
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -210,11 +206,11 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	public void setRequiredProperties(final Object... propertyIDs)
 	{
 		this.requiredProperties = propertyIDs;
-		
+
 		getQueryView().setRequiredProperties(propertyIDs);
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *

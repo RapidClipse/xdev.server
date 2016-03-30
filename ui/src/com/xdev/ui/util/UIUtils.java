@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -56,7 +56,7 @@ public final class UIUtils
 	
 	
 	/**
-	 * Shortcut for {@link lookupComponentTree(parent,visitor,null)}
+	 * Shortcut for <code>lookupComponentTree(parent,visitor,null)</code>.
 	 *
 	 * @param <T>
 	 *            The return type
@@ -64,7 +64,8 @@ public final class UIUtils
 	 *            The root of the component tree to visit
 	 * @param visitor
 	 *            the {@link ComponentTreeVisitor}
-	 * @return @see {@link ComponentTreeVisitor}
+	 * @return
+	 * @see {@link ComponentTreeVisitor}
 	 */
 	
 	public static <T> T lookupComponentTree(final Component parent,
@@ -95,7 +96,8 @@ public final class UIUtils
 	 *            the {@link ComponentTreeVisitor}
 	 * @param type
 	 *            The component type class to visit
-	 * @return @see {@link ComponentTreeVisitor}
+	 * @return
+	 * @see {@link ComponentTreeVisitor}
 	 */
 	
 	@SuppressWarnings("unchecked")

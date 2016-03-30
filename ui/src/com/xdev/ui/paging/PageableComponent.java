@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -24,36 +24,32 @@ package com.xdev.ui.paging;
 public interface PageableComponent<ET>
 {
 	// Request next page from ScrollableResultSet
-	/**
-	 * 
-	 * @return the starting index before moving to the next page
-	 */
 	public void nextPage();
-	
-	
+
+
 	// Request previous page from ScrollableResultSet
 	public void previousPage();
-	
-	
+
+
 	public void lastPage();
-	
-	
+
+
 	public void firstPage();
-	
-	
+
+
 	// Request last page from ScrollableResultSet
 	public int getTotalAmountOfPages();
-	
-	
+
+
 	// ...
 	public void setCurrentPage(int currentPage);
-	
-	
+
+
 	public int getCurrentPage();
-	
-	
+
+
 	public void setPageLength(int pageLength);
-	
-	
+
+
 	public int getPageLength();
 }

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -60,7 +60,7 @@ import com.xdev.res.StringResourceProvider;
  * Person p = new Person();
  * p.setFirstName("Peter");
  * p.setLastName("Smith");
- * String caption = CaptionUtils.resolveCaption(p); // -> Person: Smith, Peter
+ * String caption = CaptionUtils.resolveCaption(p); // -&gt; Person: Smith, Peter
  * </pre>
  *
  * The caption annotation is used e.g. by all UI components which contain
@@ -69,10 +69,10 @@ import com.xdev.res.StringResourceProvider;
  *
  * @see CaptionUtils
  * @see CaptionResolver
- * 		
- * 		
+ *
+ *
  * @author XDEV Software
- * 		
+ *
  */
 @Target({ElementType.TYPE,ElementType.FIELD,ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

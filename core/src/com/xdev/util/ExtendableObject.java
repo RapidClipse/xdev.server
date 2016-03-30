@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -68,7 +68,6 @@ public interface ExtendableObject
 	 * Helper class for implementors of {@link ExtendableObject}.
 	 *
 	 * <pre>
-	 * {@code
 	 * public class MyObject extends ... implements ExtendableObject
 	 * {
 	 * 	private Extensions extension = new Extensions();

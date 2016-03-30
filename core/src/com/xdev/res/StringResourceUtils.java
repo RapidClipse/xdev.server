@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -41,10 +41,10 @@ public final class StringResourceUtils
 	private StringResourceUtils()
 	{
 	}
-
+	
 	private static StringResourceProvider stringResourceProvider;
-
-
+	
+	
 	/**
 	 * Returns the {@link StringResourceProvider}.
 	 *
@@ -56,11 +56,11 @@ public final class StringResourceUtils
 		{
 			stringResourceProvider = new StringResourceProvider.Implementation();
 		}
-
+		
 		return stringResourceProvider;
 	}
-
-
+	
+	
 	/**
 	 * @param stringResourceProvider
 	 *            the stringResourceProvider to set
@@ -70,8 +70,8 @@ public final class StringResourceUtils
 	{
 		StringResourceUtils.stringResourceProvider = stringResourceProvider;
 	}
-
-
+	
+	
 	/**
 	 * Returns the localized String for the given <code>key</code>.
 	 *
@@ -91,8 +91,8 @@ public final class StringResourceUtils
 	{
 		return getResourceString(key,null,null);
 	}
-
-
+	
+	
 	/**
 	 * Returns the localized String for the given <code>key</code>.
 	 *
@@ -119,8 +119,8 @@ public final class StringResourceUtils
 	{
 		return getResourceString(key,null,requestor);
 	}
-
-
+	
+	
 	/**
 	 * Returns the localized String for the given <code>key</code> and
 	 * <code>locale</code>.
@@ -130,12 +130,12 @@ public final class StringResourceUtils
 	 *            to get localized String for.
 	 * @param locale
 	 *            to lookup the {@link String} for.
-	 * 			
+	 *
 	 * @return the localized String for the given <code>key</code>.
 	 * @throws MissingResourceException
 	 *             if no String could be found in the current set {@link Locale}
 	 *             for the given <code>key</code>.
-	 * 			
+	 *
 	 * @see Locale
 	 */
 	public static String getResourceString(final String key, final Locale locale)
@@ -143,8 +143,8 @@ public final class StringResourceUtils
 	{
 		return getResourceString(key,locale,null);
 	}
-
-
+	
+	
 	/**
 	 * Returns the localized String for the given <code>key</code> and
 	 * <code>locale</code>.
@@ -164,7 +164,7 @@ public final class StringResourceUtils
 	 * @throws MissingResourceException
 	 *             if no String could be found in the current set {@link Locale}
 	 *             for the given <code>key</code>.
-	 * 			
+	 *
 	 * @see Locale
 	 */
 	public static String getResourceString(final String key, final Locale locale,
@@ -172,8 +172,8 @@ public final class StringResourceUtils
 	{
 		return getStringResourceProvider().lookupResourceString(key,locale,requestor);
 	}
-
-
+	
+	
 	/**
 	 * Returns the localized version of the given {@link String}
 	 * <code>str</code>. Only parts of the {@link String} fitting the pattern
@@ -198,7 +198,7 @@ public final class StringResourceUtils
 	 *            <code>null</code> only the default resource bundle is searched
 	 *            through.
 	 * @return the localized String for the given <code>str</code>.
-	 * 		
+	 *
 	 * @see Locale
 	 */
 	public static String optLocalizeString(final String str, final Object requestor)
@@ -213,8 +213,8 @@ public final class StringResourceUtils
 			return str;
 		}
 	}
-
-
+	
+	
 	/**
 	 * Returns the localized version of the given {@link String}
 	 * <code>str</code> as char if the result is a 1-length String, '\0'
@@ -240,7 +240,7 @@ public final class StringResourceUtils
 	 *            <code>null</code> only the default resource bundle is searched
 	 *            through.
 	 * @return the localized char for the given <code>str</code> or '\0'.
-	 * 		
+	 *
 	 * @see Locale
 	 */
 	public static char optLocalizeChar(String str, final Object requestor)
@@ -258,8 +258,8 @@ public final class StringResourceUtils
 				return length == 1 ? str.charAt(0) : '\0';
 		}
 	}
-
-
+	
+	
 	/**
 	 * Returns the localized version of the given {@link String}
 	 * <code>str</code>. Only parts of the {@link String} fitting the pattern
@@ -281,11 +281,11 @@ public final class StringResourceUtils
 	 *            <code>null</code> only the default resource bundle is searched
 	 *            through.
 	 * @return the localized String for the given <code>key</code>.
-	 * 		
+	 *
 	 * @throws MissingResourceException
 	 *             if no String could be found in the current set {@link Locale}
 	 *             for the given <code>key</code>.
-	 * 			
+	 *
 	 * @see Locale
 	 */
 	public static String localizeString(final String str, final Object requestor)
@@ -293,8 +293,8 @@ public final class StringResourceUtils
 	{
 		return localizeString(str,null,requestor);
 	}
-
-
+	
+	
 	/**
 	 * Returns the localized version of the given {@link String}
 	 * <code>str</code>. Only parts of the {@link String} fitting the pattern
@@ -304,7 +304,7 @@ public final class StringResourceUtils
 	 *
 	 * @param str
 	 *            to localize
-	 * 			
+	 *
 	 * @param locale
 	 *            to lookup the {@link String} for.
 	 * @param requestor
@@ -314,11 +314,11 @@ public final class StringResourceUtils
 	 *            <code>null</code> only the default resource bundle is searched
 	 *            through.
 	 * @return the localized String for the given <code>key</code>.
-	 * 		
+	 *
 	 * @throws MissingResourceException
 	 *             if no String could be found in the current set {@link Locale}
 	 *             for the given <code>key</code>.
-	 * 			
+	 *
 	 * @see Locale
 	 */
 	public static String localizeString(final String str, final Locale locale,
@@ -326,8 +326,8 @@ public final class StringResourceUtils
 	{
 		return format(str,key -> getResourceString(key,locale,requestor));
 	}
-
-
+	
+	
 	/**
 	 * Formats the {@link String} <code>str</code> by replacing the variables
 	 * with values provided by <code>parameterProvider</code>.
@@ -336,7 +336,7 @@ public final class StringResourceUtils
 	 * <p>
 	 *
 	 * <pre>
-	 * Given: parameter provider (name -> Peter, color -> blue)
+	 * Given: parameter provider (name -&gt; Peter, color -&gt; blue)
 	 * Result of format("{$name} loves the color {$color}.",provider) is "Peter loves the color blue".
 	 * </pre>
 	 *
@@ -348,7 +348,7 @@ public final class StringResourceUtils
 	public static String format(String str, final Function<String, String> parameterProvider)
 	{
 		final boolean isRichText = str.startsWith("{\\rtf");
-
+		
 		int start;
 		int searchStart = 0;
 		while((start = str.indexOf("{$",searchStart)) >= 0)
@@ -360,27 +360,27 @@ public final class StringResourceUtils
 				if(isRichText)
 				{
 					// remove optional rich text escapes
-
+					
 					if(start > 0 && str.charAt(start - 1) == '\\')
 					{
 						start--;
 					}
-
+					
 					final int len = key.length();
 					if(len > 0 && key.charAt(len - 1) == '\\')
 					{
 						key = key.substring(0,len - 1);
 					}
 				}
-
+				
 				final String value = parameterProvider.apply(key);
-
+				
 				final StringBuilder sb = new StringBuilder();
 				sb.append(str.substring(0,start));
 				sb.append(value);
 				sb.append(str.substring(end + 1));
 				str = sb.toString();
-
+				
 				searchStart = start + value.length();
 			}
 			else
@@ -388,7 +388,7 @@ public final class StringResourceUtils
 				break;
 			}
 		}
-
+		
 		return str;
 	}
 }

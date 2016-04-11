@@ -32,17 +32,20 @@ import javax.persistence.Persistence;
  */
 public interface EntityManagerFactoryProvider
 {
+	public final static EntityManagerFactoryProvider DEFAULT = new Default();
+
+
 	public EntityManagerFactory createEntityManagerFactory(String persistenceUnit);
-
-
-
+	
+	
+	
 	public class Default implements EntityManagerFactoryProvider
 	{
 		public Default()
 		{
 		}
-
-
+		
+		
 		@Override
 		public EntityManagerFactory createEntityManagerFactory(final String persistenceUnit)
 		{

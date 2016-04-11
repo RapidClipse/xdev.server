@@ -33,13 +33,12 @@ import com.vaadin.server.VaadinResponse;
 import com.vaadin.server.VaadinServletService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.util.CurrentInstance;
-import com.xdev.persistence.EntityManagerFactoryProvider;
 import com.xdev.persistence.PersistenceManager;
 
 
 /**
  * @author XDEV Software
- * 		
+ *
  */
 public class XdevServletService extends VaadinServletService
 {
@@ -99,7 +98,7 @@ public class XdevServletService extends VaadinServletService
 
 	protected PersistenceManager createPersistenceManager() throws PersistenceException
 	{
-		return new PersistenceManager(this,new EntityManagerFactoryProvider.Default());
+		return PersistenceManager.get(getServlet().getServletContext());
 	}
 	
 	

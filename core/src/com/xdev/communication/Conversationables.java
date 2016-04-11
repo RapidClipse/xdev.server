@@ -32,6 +32,7 @@ import javax.persistence.RollbackException;
 
 import com.vaadin.server.VaadinSession;
 import com.vaadin.server.VaadinSession.State;
+import com.vaadin.util.CurrentInstance;
 
 
 /**
@@ -45,9 +46,14 @@ public final class Conversationables implements Serializable
 		final VaadinSession session = VaadinSession.getCurrent();
 		if(session != null && session.getState() == State.OPEN)
 		{
-			return session.getAttribute(Conversationables.class);
+			final Conversationables conversationables = session
+					.getAttribute(Conversationables.class);
+			if(conversationables != null)
+			{
+				return conversationables;
+			}
 		}
-		return null;
+		return CurrentInstance.get(Conversationables.class);
 	}
 
 	private transient Map<String, Conversationable> unitToConversationable;

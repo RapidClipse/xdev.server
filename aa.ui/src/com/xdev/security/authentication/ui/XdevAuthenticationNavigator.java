@@ -54,8 +54,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 {
 	private String	loginViewName		= "";
 	private String	redirectViewName	= null;
-	
-	
+										
+										
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI and replacing the contents of
@@ -81,8 +81,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		super(ui,container);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator.
 	 * <p>
@@ -109,8 +109,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		super(ui,stateManager,display);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI and replacing the contents of
@@ -134,8 +134,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		super(ui,container);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI.
@@ -155,13 +155,13 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		super(ui,display);
 	}
-	
-	
+
+
 	{
 		this.initAuthenticationListener();
 	}
-	
-	
+
+
 	/**
 	 * @return the loginViewName
 	 */
@@ -169,8 +169,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		return this.loginViewName;
 	}
-	
-	
+
+
 	/**
 	 * @param loginViewName
 	 *            the loginViewName to set
@@ -179,8 +179,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		this.loginViewName = loginViewName;
 	}
-	
-	
+
+
 	/**
 	 * @return the redirectViewName
 	 */
@@ -188,8 +188,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		return this.redirectViewName;
 	}
-	
-	
+
+
 	/**
 	 * @param redirectViewName
 	 *            the redirectViewName to set
@@ -198,8 +198,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		this.redirectViewName = redirectViewName;
 	}
-	
-	
+
+
 	protected void initAuthenticationListener()
 	{
 		this.addViewChangeListener(new ViewChangeListener()
@@ -207,33 +207,35 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 			@Override
 			public boolean beforeViewChange(final ViewChangeEvent event)
 			{
-				if(event.getNewView() instanceof LoginView || Authentication.getUser() != null)
+				if(event.getNewView() instanceof LoginView
+						|| event.getNewView() instanceof AccessibleView
+						|| Authentication.getUser() != null)
 				{
 					return true;
 				}
-				
+
 				showUnauthorizedAccessMessage();
-				
+
 				navigateToLoginView();
-				
+
 				return false;
 			}
-			
-			
+
+
 			@Override
 			public void afterViewChange(final ViewChangeEvent event)
 			{
 			}
 		});
 	}
-	
-	
+
+
 	protected void showUnauthorizedAccessMessage()
 	{
 		Notification.show("Permission denied",Type.ERROR_MESSAGE);
 	}
-
-
+	
+	
 	/**
 	 * Navigates to the login view URL set with
 	 * {@link #setLoginViewName(String)}.
@@ -248,11 +250,11 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		{
 			throw new IllegalStateException("No login view set");
 		}
-		
+
 		navigateTo(loginViewName);
 	}
-	
-	
+
+
 	/**
 	 * Navigates to the redirect view URL set with
 	 * {@link #setRedirectViewName(String)}.
@@ -267,7 +269,7 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		{
 			throw new IllegalStateException("No redirect view set");
 		}
-		
+
 		navigateTo(redirectViewName);
 	}
 }

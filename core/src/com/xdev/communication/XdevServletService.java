@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -44,22 +44,22 @@ public class XdevServletService extends VaadinServletService
 {
 	private PersistenceManager				persistenceManager;
 	private VaadinSessionStrategyProvider	sessionStrategyProvider;
-											
-											
+	
+	
 	public XdevServletService(final XdevServlet servlet,
 			final DeploymentConfiguration deploymentConfiguration) throws ServiceException
 	{
 		super(servlet,deploymentConfiguration);
 	}
-	
-	
+
+
 	@Override
 	public XdevServlet getServlet()
 	{
 		return (XdevServlet)super.getServlet();
 	}
-	
-	
+
+
 	@Override
 	public void init() throws ServiceException
 	{
@@ -71,9 +71,9 @@ public class XdevServletService extends VaadinServletService
 		{
 			throw new ServiceException(e);
 		}
-		
+
 		this.sessionStrategyProvider = createVaadinSessionStrategyProvider();
-		
+
 		addSessionDestroyListener(event -> {
 			final VaadinSession session = event.getSession();
 			final Conversationables conversationables = session
@@ -83,7 +83,7 @@ public class XdevServletService extends VaadinServletService
 				conversationables.closeAll();
 			}
 		});
-
+		
 		addServiceDestroyListener(event -> {
 			if(this.persistenceManager != null)
 			{
@@ -91,23 +91,23 @@ public class XdevServletService extends VaadinServletService
 				this.persistenceManager = null;
 			}
 		});
-		
+
 		super.init();
 	}
-
-
+	
+	
 	protected PersistenceManager createPersistenceManager() throws PersistenceException
 	{
 		return PersistenceManager.get(getServlet().getServletContext());
 	}
-	
-	
+
+
 	protected VaadinSessionStrategyProvider createVaadinSessionStrategyProvider()
 	{
 		return new VaadinSessionStrategyProvider.Implementation();
 	}
-	
-	
+
+
 	@Override
 	public void requestStart(final VaadinRequest request, final VaadinResponse response)
 	{
@@ -126,15 +126,15 @@ public class XdevServletService extends VaadinServletService
 				handleRequestServiceException(e);
 			}
 		}
-		
+
 		super.requestStart(request,response);
 	}
-	
-	
+
+
 	public void handleRequestStart(final VaadinSession session)
 	{
 		CurrentInstance.set(PersistenceManager.class,this.persistenceManager);
-		
+
 		try
 		{
 			final Conversationables conversationables = session
@@ -154,48 +154,53 @@ public class XdevServletService extends VaadinServletService
 			handleRequestServiceException(e);
 		}
 	}
-	
-	
+
+
 	@Override
 	public void requestEnd(final VaadinRequest request, final VaadinResponse response,
 			final VaadinSession session)
 	{
 		handleRequestEnd(session);
-		
+
 		super.requestEnd(request,response,session);
 	}
-	
-	
+
+
 	public void handleRequestEnd(final VaadinSession session)
 	{
-		try
+		if(session != null)
 		{
-			final Conversationables conversationables = session
-					.getAttribute(Conversationables.class);
-			if(conversationables != null)
+			try
 			{
-				for(final String persistenceUnit : this.persistenceManager.getPersistenceUnits())
+				final Conversationables conversationables = session
+						.getAttribute(Conversationables.class);
+				if(conversationables != null)
 				{
-					this.sessionStrategyProvider
-							.getRequestEndVaadinSessionStrategy(conversationables,persistenceUnit)
-							.requestEnd(conversationables,persistenceUnit);
+					for(final String persistenceUnit : this.persistenceManager
+							.getPersistenceUnits())
+					{
+						this.sessionStrategyProvider
+								.getRequestEndVaadinSessionStrategy(conversationables,
+										persistenceUnit)
+								.requestEnd(conversationables,persistenceUnit);
+					}
 				}
 			}
-		}
-		catch(final Exception e)
-		{
-			handleRequestServiceException(e);
+			catch(final Exception e)
+			{
+				handleRequestServiceException(e);
+			}
 		}
 	}
-	
-	
+
+
 	protected void handleRequestServiceException(final Exception exception)
 	{
 		Logger.getLogger(XdevServletService.class.getName()).log(Level.WARNING,
 				exception.getMessage(),exception);
 	}
-	
-	
+
+
 	@Override
 	protected VaadinSession createVaadinSession(final VaadinRequest request) throws ServiceException
 	{
@@ -204,8 +209,8 @@ public class XdevServletService extends VaadinServletService
 		session.setAttribute(ClientInfo.class,ClientInfo.get(request));
 		return session;
 	}
-	
-	
+
+
 	public PersistenceManager getPersistenceManager()
 	{
 		return this.persistenceManager;

@@ -1,4 +1,4 @@
-cordova.define("org.apache.cordova.geolocation.PositionError", function(require, exports, module) { /*
+cordova.define("cordova-plugin-splashscreen.SplashScreen", function(require, exports, module) { /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,22 +19,17 @@ cordova.define("org.apache.cordova.geolocation.PositionError", function(require,
  *
 */
 
-/**
- * Position error object
- *
- * @constructor
- * @param code
- * @param message
- */
-var PositionError = function(code, message) {
-    this.code = code || null;
-    this.message = message || '';
+var exec = require('cordova/exec');
+
+var splashscreen = {
+    show:function() {
+        exec(null, null, "SplashScreen", "show", []);
+    },
+    hide:function() {
+        exec(null, null, "SplashScreen", "hide", []);
+    }
 };
 
-PositionError.PERMISSION_DENIED = 1;
-PositionError.POSITION_UNAVAILABLE = 2;
-PositionError.TIMEOUT = 3;
-
-module.exports = PositionError;
+module.exports = splashscreen;
 
 });

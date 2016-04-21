@@ -1,0 +1,1 @@
+cordova.define("cordova-plugin-device-orientation.CompassHeading",function(i,e,t){var n=function(i,e,t,n){this.magneticHeading=i,this.trueHeading=e,this.headingAccuracy=t,this.timestamp=n||(new Date).getTime()};t.exports=n})

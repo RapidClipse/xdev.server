@@ -39,3 +39,8 @@ function contacts_pick(caller) {
 
 	navigator.contacts.pickContact(success, error);
 }
+
+function contacts_create(contact){
+	var contact = navigator.contacts.create(JSON.parse(contact));
+	contact.save();
+}

@@ -1,1 +1,1 @@
-cordova.define("cordova-plugin-camera.CameraPopoverHandle",function(o,e,n){o("cordova/exec");var a=function(){this.setPosition=function(){console.log("CameraPopoverHandle.setPosition is only supported on iOS.")}};n.exports=a})
+cordova.define("cordova-plugin-camera.CameraPopoverHandle",function(o,n,e){var i=function(){this.setPosition=function(){console.log("CameraPopoverHandle.setPosition is only supported on iOS.")}};e.exports=i})

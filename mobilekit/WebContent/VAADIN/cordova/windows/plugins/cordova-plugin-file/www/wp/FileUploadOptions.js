@@ -1,0 +1,1 @@
+cordova.define("cordova-plugin-file.FileUploadOptions1",function(i,e,l){var n=function(i,e,l,n,t,o){if(this.fileKey=i||null,this.fileName=e||null,this.mimeType=l||null,this.headers=t||null,this.httpMethod=o||null,n&&typeof n!="string"){var s=[];for(var a in n)s.push(a+"="+n[a]);this.params=encodeURIComponent(s.join("&"))}else this.params=n||null};l.exports=n})

@@ -25,6 +25,7 @@ import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
 import com.xdev.mobile.service.MobileService;
+import com.xdev.mobile.service.MobileServiceDescriptor;
 import com.xdev.mobile.ui.MobileUI;
 
 
@@ -32,8 +33,9 @@ import com.xdev.mobile.ui.MobileUI;
  * This service provides a way to vibrate the device.
  *
  * @author XDEV Software
- *
+ *		
  */
+@MobileServiceDescriptor("vibrate-descriptor.xml")
 @JavaScript("vibrate.js")
 public class VibrateService extends MobileService
 {
@@ -56,14 +58,14 @@ public class VibrateService extends MobileService
 	{
 		return getServiceHelper(VibrateService.class);
 	}
-	
-	
+
+
 	public VibrateService(final AbstractClientConnector target)
 	{
 		super(target);
 	}
-	
-	
+
+
 	/**
 	 * Vibrates with the specified pattern.
 	 * <p>
@@ -111,7 +113,7 @@ public class VibrateService extends MobileService
 			js.append(']');
 		}
 		js.append(");");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
 }

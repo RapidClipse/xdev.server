@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mobile-service xmlns="http://rapidclipse.com/mobile-service/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<android>
+		<config>
+			<feature name="Vibration">
+				<param name="android-package" value="org.apache.cordova.vibration.Vibration" />
+			</feature>
+		</config>
+		<manifest>
+			<permission name="android.permission.VIBRATE" />
+		</manifest>
+	</android>
+	<ios>
+		<config>
+			<feature name="Vibration">
+				<param name="ios-package" value="CDVVibration" />
+			</feature>
+		</config>
+	</ios>
+	<windows>
+		<config>
+			<feature name='Vibration'>
+				<param name='wp-package' value='Vibration' />
+			</feature>
+		</config>
+	</windows>
+</mobile-service>

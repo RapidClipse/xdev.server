@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.server.AbstractClientConnector;
-import com.vaadin.server.Extension;
 import com.vaadin.server.VaadinServlet;
 import com.xdev.mobile.communication.MobileConfiguration;
 import com.xdev.mobile.communication.MobileServlet;
@@ -46,14 +45,14 @@ import com.xdev.ui.XdevUI;
 public abstract class MobileUI extends XdevUI
 {
 	private static Logger LOG = Logger.getLogger(MobileServlet.class.getName());
-
-
+	
+	
 	public MobileUI()
 	{
 		registerMobileServices();
 	}
-
-
+	
+	
 	private void registerMobileServices()
 	{
 		final VaadinServlet servlet = VaadinServlet.getCurrent();
@@ -76,8 +75,8 @@ public abstract class MobileUI extends XdevUI
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * Returns a registered service.
 	 *
@@ -101,13 +100,7 @@ public abstract class MobileUI extends XdevUI
 	 */
 	public <T extends MobileService> T getMobileService(final Class<T> type)
 	{
-		for(final Extension extension : getExtensions())
-		{
-			if(extension.getClass() == type)
-			{
-				return type.cast(extension);
-			}
-		}
-		return null;
+		return getExtensions().stream().filter(e -> e.getClass().equals(type)).map(type::cast)
+				.findFirst().orElse(null);
 	}
 }

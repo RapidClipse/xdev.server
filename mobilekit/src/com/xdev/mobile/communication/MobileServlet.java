@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2015 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2016 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -13,6 +13,9 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * For further information see
+ * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
 package com.xdev.mobile.communication;
@@ -47,24 +50,24 @@ import com.xdev.mobile.service.MobileService;
  * and bridge scripts for hybrid apps.
  *
  * @author XDEV Software
- * 		
+ * 
  */
 public class MobileServlet extends XdevServlet
 {
 	private static Logger		LOG	= Logger.getLogger(MobileServlet.class.getName());
-
+	
 	private MobileConfiguration	mobileConfiguration;
-
-
+	
+	
 	@Override
 	protected void servletInitialized() throws ServletException
 	{
 		super.servletInitialized();
-
+		
 		this.mobileConfiguration = readMobileConfiguration();
 	}
-
-
+	
+	
 	/**
 	 * @return the mobileConfiguration
 	 */
@@ -72,12 +75,12 @@ public class MobileServlet extends XdevServlet
 	{
 		return this.mobileConfiguration;
 	}
-
-
+	
+	
 	protected MobileConfiguration readMobileConfiguration()
 	{
 		final MobileConfiguration.Default config = new MobileConfiguration.Default();
-
+		
 		try
 		{
 			final URL url = findMobileXML();
@@ -104,11 +107,11 @@ public class MobileServlet extends XdevServlet
 		{
 			LOG.log(Level.SEVERE,e.getMessage(),e);
 		}
-
+		
 		return config;
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	private Class<? extends MobileService> createService(final ClassLoader classLoader,
 			final Element serviceElement)
@@ -131,11 +134,11 @@ public class MobileServlet extends XdevServlet
 		{
 			LOG.log(Level.SEVERE,e.getMessage(),e);
 		}
-
+		
 		return null;
 	}
-
-
+	
+	
 	protected URL findMobileXML() throws MalformedURLException
 	{
 		URL resourceUrl = getServletContext().getResource("/mobile.xml");
@@ -150,13 +153,13 @@ public class MobileServlet extends XdevServlet
 		}
 		return resourceUrl;
 	}
-
-
+	
+	
 	@Override
 	protected void initSession(final SessionInitEvent event)
 	{
 		super.initSession(event);
-
+		
 		event.getSession().addBootstrapListener(new BootstrapListener()
 		{
 			@Override
@@ -182,16 +185,16 @@ public class MobileServlet extends XdevServlet
 					}
 				}
 			}
-
-
+			
+			
 			@Override
 			public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
 			{
 			}
 		});
 	}
-
-
+	
+	
 	/**
 	 * Provides the content security policy which will be written into the
 	 * default html page.

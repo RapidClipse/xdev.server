@@ -21,11 +21,16 @@
 package com.xdev.mobile.service.app;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
 import com.xdev.mobile.service.MobileService;
 import com.xdev.mobile.service.MobileServiceDescriptor;
+
+import elemental.json.JsonArray;
 
 
 /**
@@ -38,33 +43,67 @@ import com.xdev.mobile.service.MobileServiceDescriptor;
 @JavaScript("app.js")
 public class AppService extends MobileService
 {
-	
 	public static AppService getInstance()
 	{
 		return getServiceHelper(AppService.class);
 	}
-	
-	
+
+	private final List<BackButtonHandler> backButtonHandlers = new ArrayList<>();
+
+
 	public AppService(final AbstractClientConnector target)
 	{
 		super(target);
+
+		addFunction("app_onBackButton",this::app_onBackButton);
 	}
 
 
 	public void closeApp()
 	{
-		final StringBuilder js = new StringBuilder();
-		js.append("app_closeApp()");
-		
-		Page.getCurrent().getJavaScript().execute(js.toString());
+		Page.getCurrent().getJavaScript().execute("app_closeApp()");
 	}
-	
-	
+
+
+	public void addBackButtonHandler(final BackButtonHandler handler)
+	{
+		if(this.backButtonHandlers.isEmpty())
+		{
+			Page.getCurrent().getJavaScript().execute("app_addBackButtonHandler()");
+		}
+
+		this.backButtonHandlers.add(handler);
+	}
+
+
+	public void removeBackButtonHandler(final BackButtonHandler handler)
+	{
+		this.backButtonHandlers.remove(handler);
+
+		if(this.backButtonHandlers.isEmpty())
+		{
+			Page.getCurrent().getJavaScript().execute("app_removeBackButtonHandler()");
+		}
+	}
+
+
 	public void addBackButtonListener()
 	{
 		final StringBuilder js = new StringBuilder();
 		js.append("app_onBackKeyDown()");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
+	}
+
+
+	private void app_onBackButton(final JsonArray arguments)
+	{
+		for(int i = this.backButtonHandlers.size(); --i >= 0;)
+		{
+			if(this.backButtonHandlers.get(i).handleBackButton())
+			{
+				break;
+			}
+		}
 	}
 }

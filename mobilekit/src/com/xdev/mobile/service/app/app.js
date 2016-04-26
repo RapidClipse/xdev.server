@@ -1,8 +1,8 @@
 com_xdev_mobile_service_app_AppService = function() {
 	var connector = this;
 
-	window.onBackKeyDown = function(caller) {
-		connector.onBackKeyDown(caller);
+	window.app_onBackButton = function() {
+		connector.app_onBackButton();
 	};
 };
 
@@ -10,10 +10,14 @@ function app_closeApp() {
 	navigator.app.exitApp();
 }
 
-function app_onBackKeyDown(caller) {
-	var onBackKeyDown = function() {
-		window.onBackKeyDown(caller);
-	}
+var backButtonDelegate = function() {
+	window.app_onBackButton();
+}
 
-	document.addEventListener("backbutton", onBackKeyDown, false);
+function app_addBackButtonHandler(){
+	document.addEventListener("backbutton", backButtonDelegate, false);
+}
+
+function app_removeBackButtonHandler() {
+	document.removeEventListener("backbutton", backButtonDelegate);
 }

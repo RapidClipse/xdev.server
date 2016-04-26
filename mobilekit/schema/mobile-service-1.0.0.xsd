@@ -10,28 +10,36 @@
 
 	<xs:complexType name="service">
 		<xs:all>
-			<xs:element minOccurs="0" maxOccurs="1" name="android" type="android" />
+			<xs:element minOccurs="0" maxOccurs="1" name="android"
+				type="android" />
 			<xs:element minOccurs="0" maxOccurs="1" name="ios" type="ios" />
-			<xs:element minOccurs="0" maxOccurs="1" name="windows" type="windows" />
+			<xs:element minOccurs="0" maxOccurs="1" name="windows"
+				type="windows" />
 		</xs:all>
 	</xs:complexType>
 
 	<xs:complexType name="android">
 		<xs:all>
-			<xs:element minOccurs="0" maxOccurs="1" name="config" type="any" />
-			<xs:element minOccurs="0" maxOccurs="1" name="manifest" type="any" />
+			<xs:element minOccurs="0" maxOccurs="1" name="config"
+				type="any" />
+			<xs:element minOccurs="0" maxOccurs="1" name="manifest"
+				type="any" />
 		</xs:all>
 	</xs:complexType>
 
 	<xs:complexType name="ios">
 		<xs:all>
-			<xs:element minOccurs="0" maxOccurs="1" name="config" type="any" />
+			<xs:element minOccurs="0" maxOccurs="1" name="config"
+				type="any" />
 		</xs:all>
 	</xs:complexType>
 
 	<xs:complexType name="windows">
 		<xs:all>
-			<xs:element minOccurs="0" maxOccurs="1" name="config" type="any" />
+			<xs:element minOccurs="0" maxOccurs="1" name="config"
+				type="any" />
+			<xs:element minOccurs="0" maxOccurs="1" name="manifest"
+				type="any" />
 		</xs:all>
 	</xs:complexType>
 
@@ -40,5 +48,4 @@
 			<xs:any minOccurs="0" processContents="lax" maxOccurs="unbounded"></xs:any>
 		</xs:sequence>
 	</xs:complexType>
-
 </xs:schema>

@@ -1,4 +1,4 @@
-com_xdev_mobile_service_event_EventService = function() {
+com_xdev_mobile_service_app_AppService = function() {
 	var connector = this;
 
 	window.onBackKeyDown = function(caller) {
@@ -6,11 +6,11 @@ com_xdev_mobile_service_event_EventService = function() {
 	};
 };
 
-function event_closeApp() {
+function app_closeApp() {
 	navigator.app.exitApp();
 }
 
-function event_onBackKeyDown(caller) {
+function app_onBackKeyDown(caller) {
 	var onBackKeyDown = function() {
 		window.onBackKeyDown(caller);
 	}

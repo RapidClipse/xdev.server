@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -30,6 +30,7 @@ import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
 import com.xdev.mobile.service.MobileService;
+import com.xdev.mobile.service.MobileServiceDescriptor;
 import com.xdev.mobile.service.MobileServiceError;
 import com.xdev.mobile.ui.MobileUI;
 
@@ -42,10 +43,11 @@ import elemental.json.JsonObject;
  *
  */
 
+@MobileServiceDescriptor("geolocation-descriptor.xml")
 @JavaScript("geolocation.js")
 public class GeolocationService extends MobileService
 {
-
+	
 	/**
 	 * Returns the geolocation service.<br>
 	 * To activate the service it has to be registered in the mobile.xml.
@@ -251,7 +253,7 @@ public class GeolocationService extends MobileService
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
 
-	Map<String, Position>	waitMap	= new HashMap<>();
+	Map<String, Position> waitMap = new HashMap<>();
 
 
 	private void geolocation_get_future_success(final JsonArray arguments)
@@ -267,6 +269,7 @@ public class GeolocationService extends MobileService
 
 	private void geolocation_get_future_error(final JsonArray arguments)
 	{
+		// XXX ???
 		System.out.println(arguments.getString(1));
 	}
 }

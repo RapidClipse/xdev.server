@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -32,6 +32,7 @@ import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
 import com.xdev.mobile.service.MobileService;
+import com.xdev.mobile.service.MobileServiceDescriptor;
 import com.xdev.mobile.service.MobileServiceError;
 import com.xdev.mobile.ui.MobileUI;
 
@@ -44,6 +45,7 @@ import elemental.json.JsonObject;
  *
  */
 
+@MobileServiceDescriptor("file-descriptor.xml")
 @JavaScript("file.js")
 public class FileService extends MobileService
 {
@@ -67,15 +69,15 @@ public class FileService extends MobileService
 	{
 		return getServiceHelper(FileService.class);
 	}
-	
-	
-	
+
+
+
 	private static class ReadEntriesCall
 	{
 		final Consumer<List<Entry>>			successCallback;
 		final Consumer<MobileServiceError>	errorCallback;
-		
-		
+
+
 		ReadEntriesCall(final Consumer<List<Entry>> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
 		{
@@ -83,15 +85,15 @@ public class FileService extends MobileService
 			this.errorCallback = errorCallback;
 		}
 	}
-	
-	
-	
+
+
+
 	private static class GetMetaDataCall
 	{
 		final Consumer<Metadata>			successCallback;
 		final Consumer<MobileServiceError>	errorCallback;
-		
-		
+
+
 		GetMetaDataCall(final Consumer<Metadata> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
 		{
@@ -99,23 +101,23 @@ public class FileService extends MobileService
 			this.errorCallback = errorCallback;
 		}
 	}
-	
+
 	private final Map<String, ReadEntriesCall>	readEntriesCall	= new HashMap<>();
 	private final Map<String, GetMetaDataCall>	getMetaDataCall	= new HashMap<>();
-	
-	
+
+
 	public FileService(final AbstractClientConnector connector)
 	{
 		super(connector);
-		
+
 		this.addFunction("file_readEntries_success",this::file_readDirectoryEntries_success);
 		this.addFunction("file_readEntries_error",this::file_readDirectoryEntries_error);
-		
+
 		this.addFunction("file_getMetadata_success",this::file_getMetadata_success);
 		this.addFunction("file_getMetadata_error",this::file_getMetadata_error);
 	}
-	
-	
+
+
 	private void file_readDirectoryEntries_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -124,9 +126,9 @@ public class FileService extends MobileService
 		{
 			return;
 		}
-		
+
 		final List<Entry> entries = new ArrayList<Entry>();
-		
+
 		final JsonArray arrayData = arguments.get(1);
 		for(int i = 0; i < arrayData.length(); i++)
 		{
@@ -140,16 +142,16 @@ public class FileService extends MobileService
 			}
 			else
 			{
-				final DirectoryEntry entry = gson
-						.fromJson(jsonObject.toJson(),DirectoryEntry.class);
+				final DirectoryEntry entry = gson.fromJson(jsonObject.toJson(),
+						DirectoryEntry.class);
 				entries.add(entry);
 			}
 		}
-		
+
 		call.successCallback.accept(entries);
 	}
-	
-	
+
+
 	private void file_readDirectoryEntries_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -160,8 +162,8 @@ public class FileService extends MobileService
 		}
 		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-	
-	
+
+
 	private void file_getMetadata_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -170,19 +172,19 @@ public class FileService extends MobileService
 		{
 			return;
 		}
-		
+
 		final Gson gson = new Gson();
 		final JsonObject jsonObject = arguments.getObject(1);
-		
+
 		// nicht getestet! jsonObject.toJson() könnte auch long zurückliefern
 		// und müsste auf date gecastet werden
-		
+
 		final Metadata metadata = gson.fromJson(jsonObject.toJson(),Metadata.class);
-		
+
 		call.successCallback.accept(metadata);
 	}
-	
-	
+
+
 	private void file_getMetadata_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -193,8 +195,8 @@ public class FileService extends MobileService
 		}
 		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-	
-	
+
+
 	/**
 	 * Read the entries in this directory.
 	 *
@@ -207,15 +209,15 @@ public class FileService extends MobileService
 		final String id = generateCallerID();
 		final ReadEntriesCall call = new ReadEntriesCall(successCallback,errorCallback);
 		this.readEntriesCall.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
-		
+
 		js.append("file_readDirectoryEntries('").append(id).append("');");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	// TODO uebergabe parameter (file oder directory) von dem die metadatan
 	// abgefragt werden soll
 	/**
@@ -231,11 +233,11 @@ public class FileService extends MobileService
 		final String id = generateCallerID();
 		final GetMetaDataCall call = new GetMetaDataCall(successCallback,errorCallback);
 		this.getMetaDataCall.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
-		
+
 		js.append("file_getMetaData('").append(id).append("','").append(entry).append("');");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
 }

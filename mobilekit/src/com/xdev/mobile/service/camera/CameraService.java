@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -29,6 +29,7 @@ import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
 import com.xdev.mobile.service.MobileService;
+import com.xdev.mobile.service.MobileServiceDescriptor;
 import com.xdev.mobile.service.MobileServiceError;
 import com.xdev.mobile.ui.MobileUI;
 
@@ -46,6 +47,7 @@ import elemental.json.JsonArray;
  * TODO camera.cleanup() see
  * https://github.com/apache/cordova-plugin-camera#cameracleanup
  */
+@MobileServiceDescriptor("camera-descriptor.xml")
 @JavaScript("camera.js")
 public class CameraService extends MobileService
 {
@@ -68,16 +70,16 @@ public class CameraService extends MobileService
 	{
 		return getServiceHelper(CameraService.class);
 	}
-	
-	
-	
+
+
+
 	private static class GetPictureCall
 	{
 		final CameraOptions					options;
 		final Consumer<ImageData>			successCallback;
 		final Consumer<MobileServiceError>	errorCallback;
-											
-											
+		
+		
 		GetPictureCall(final CameraOptions options, final Consumer<ImageData> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
 		{
@@ -87,17 +89,17 @@ public class CameraService extends MobileService
 		}
 	}
 	private final Map<String, GetPictureCall> getPictureCalls = new HashMap<>();
-	
-	
+
+
 	public CameraService(final AbstractClientConnector target)
 	{
 		super(target);
-		
+
 		this.addFunction("camera_getPicture_success",this::camera_getPicture_success);
 		this.addFunction("camera_getPicture_error",this::camera_getPicture_error);
 	}
-	
-	
+
+
 	/**
 	 * Takes a photo using the camera, or retrieves a photo from the device's
 	 * image gallery. The image is passed to the success callback as a
@@ -126,8 +128,8 @@ public class CameraService extends MobileService
 	{
 		this.getPicture(options,successCallback,null);
 	}
-	
-	
+
+
 	/**
 	 * Takes a photo using the camera, or retrieves a photo from the device's
 	 * image gallery. The image is passed to the success callback as a
@@ -158,16 +160,16 @@ public class CameraService extends MobileService
 		final String id = generateCallerID();
 		final GetPictureCall call = new GetPictureCall(options,successCallback,errorCallback);
 		this.getPictureCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("camera_getPicture('").append(id).append("',");
 		appendOptions(js,options);
 		js.append(");");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private void appendOptions(final StringBuilder js, final CameraOptions options)
 	{
 		js.append("{\n");
@@ -192,8 +194,8 @@ public class CameraService extends MobileService
 		js.append("cameraDirection: Camera.Direction.").append(options.getDirection())
 				.append("\n}");
 	}
-	
-	
+
+
 	private void camera_getPicture_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -202,11 +204,11 @@ public class CameraService extends MobileService
 		{
 			return;
 		}
-		
+
 		call.successCallback.accept(new ImageData(call.options,arguments.getString(1)));
 	}
-	
-	
+
+
 	private void camera_getPicture_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -215,7 +217,7 @@ public class CameraService extends MobileService
 		{
 			return;
 		}
-		
+
 		call.errorCallback.accept(new MobileServiceError(this,arguments.getString(1)));
 	}
 }

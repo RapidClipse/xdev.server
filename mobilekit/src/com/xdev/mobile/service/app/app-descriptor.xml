@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mobile-service xmlns="http://rapidclipse.com/mobile-service/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://rapidclipse.com/mobile-service/1.0.0 http://rapidclipse.com/xsd/mobile-service-1.0.0.xsd">
+	<android>
+	</android>
+	<ios>
+	</ios>
+	<windows>
+	</windows>
+</mobile-service>

@@ -13,56 +13,58 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.mobile.service.event;
+package com.xdev.mobile.service.app;
 
 
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
 import com.xdev.mobile.service.MobileService;
+import com.xdev.mobile.service.MobileServiceDescriptor;
 
 
 /**
- * This service provides a way to vibrate the device.
+ *
  *
  * @author XDEV Software
  *
  */
-@JavaScript("event.js")
-public class EventService extends MobileService
+@MobileServiceDescriptor("app-descriptor.xml")
+@JavaScript("app.js")
+public class AppService extends MobileService
 {
 	
-	public static EventService getInstance()
+	public static AppService getInstance()
 	{
-		return getServiceHelper(EventService.class);
+		return getServiceHelper(AppService.class);
 	}
-
-
-	public EventService(final AbstractClientConnector target)
+	
+	
+	public AppService(final AbstractClientConnector target)
 	{
 		super(target);
 	}
-	
-	
+
+
 	public void closeApp()
 	{
 		final StringBuilder js = new StringBuilder();
-		js.append("event_closeApp()");
-
+		js.append("app_closeApp()");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	public void addBackButtonListener()
 	{
 		final StringBuilder js = new StringBuilder();
-		js.append("event_onBackKeyDown()");
-
+		js.append("app_onBackKeyDown()");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
 }

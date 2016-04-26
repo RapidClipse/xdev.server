@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!-- ============================================================== -->
+<!-- Copyright (C) 2016 by XDEV Software, All Rights Reserved. -->
+<!-- ============================================================== -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" xmlns="http://rapidclipse.com/mobile/1.0.0"
+	targetNamespace="http://rapidclipse.com/mobile/1.0.0">
+
+	<xs:element name="mobile-app" type="app" />
+
+	<xs:complexType name="app">
+		<xs:all>
+			<xs:element minOccurs="0" maxOccurs="1" name="services">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="service" minOccurs="0" maxOccurs="unbounded" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+
+</xs:schema>

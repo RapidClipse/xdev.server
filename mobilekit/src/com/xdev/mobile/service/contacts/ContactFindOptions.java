@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -25,17 +25,22 @@ package com.xdev.mobile.service.contacts;
  * Search options to filter contacts.
  *
  * @author XDEV Software
- *		
+ *
  */
 public class ContactFindOptions
 {
+	public static ContactFindOptions all()
+	{
+		return new ContactFindOptions().multipleResults();
+	}
+	
 	private String				filter				= "";
 	private ContactFieldType[]	filterFields;
 	private boolean				multiple			= true;
 	private boolean				mustHavePhoneNumber	= false;
 	private ContactFieldType[]	desiredFields;
-								
-								
+	
+	
 	public ContactFindOptions()
 	{
 	}

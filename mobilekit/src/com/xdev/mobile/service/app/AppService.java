@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -47,55 +47,46 @@ public class AppService extends MobileService
 	{
 		return getServiceHelper(AppService.class);
 	}
-
+	
 	private final List<BackButtonHandler> backButtonHandlers = new ArrayList<>();
-
-
+	
+	
 	public AppService(final AbstractClientConnector target)
 	{
 		super(target);
-
+		
 		addFunction("app_onBackButton",this::app_onBackButton);
 	}
-
-
+	
+	
 	public void closeApp()
 	{
 		Page.getCurrent().getJavaScript().execute("app_closeApp()");
 	}
-
-
+	
+	
 	public void addBackButtonHandler(final BackButtonHandler handler)
 	{
 		if(this.backButtonHandlers.isEmpty())
 		{
 			Page.getCurrent().getJavaScript().execute("app_addBackButtonHandler()");
 		}
-
+		
 		this.backButtonHandlers.add(handler);
 	}
-
-
+	
+	
 	public void removeBackButtonHandler(final BackButtonHandler handler)
 	{
 		this.backButtonHandlers.remove(handler);
-
+		
 		if(this.backButtonHandlers.isEmpty())
 		{
 			Page.getCurrent().getJavaScript().execute("app_removeBackButtonHandler()");
 		}
 	}
-
-
-	public void addBackButtonListener()
-	{
-		final StringBuilder js = new StringBuilder();
-		js.append("app_onBackKeyDown()");
-
-		Page.getCurrent().getJavaScript().execute(js.toString());
-	}
-
-
+	
+	
 	private void app_onBackButton(final JsonArray arguments)
 	{
 		for(int i = this.backButtonHandlers.size(); --i >= 0;)

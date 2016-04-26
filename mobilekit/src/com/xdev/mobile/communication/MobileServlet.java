@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -50,15 +50,15 @@ import com.xdev.mobile.service.MobileService;
  * and bridge scripts for hybrid apps.
  *
  * @author XDEV Software
- * 		
+ *
  */
 public class MobileServlet extends XdevServlet
 {
 	private static Logger		LOG	= Logger.getLogger(MobileServlet.class.getName());
-									
+
 	private MobileConfiguration	mobileConfiguration;
-								
-								
+
+
 	@Override
 	protected void servletInitialized() throws ServletException
 	{
@@ -117,6 +117,7 @@ public class MobileServlet extends XdevServlet
 			final Element serviceElement)
 	{
 		final String className = serviceElement.getTextTrim();
+		
 		try
 		{
 			final Class<?> serviceClass = classLoader.loadClass(className);

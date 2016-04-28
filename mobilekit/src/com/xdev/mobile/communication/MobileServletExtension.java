@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * For further information see
+ * 
+ * For further information see 
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -40,133 +40,52 @@ import com.vaadin.server.BootstrapFragmentResponse;
 import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
 import com.vaadin.server.SessionInitEvent;
+import com.vaadin.server.VaadinRequest;
 import com.xdev.communication.ClientInfo;
 import com.xdev.communication.XdevServlet;
+import com.xdev.communication.XdevServletExtension;
 import com.xdev.mobile.service.MobileService;
 
 
 /**
- * Servlet which adds functionality for mobile clients. Also provides cordova
- * and bridge scripts for hybrid apps.
- *
  * @author XDEV Software
  *
  */
-public class MobileServlet extends XdevServlet
+public class MobileServletExtension implements XdevServletExtension
 {
-	private static Logger		LOG	= Logger.getLogger(MobileServlet.class.getName());
-
+	private static Logger		LOG	= Logger.getLogger(MobileServletExtension.class.getName());
+	
 	private MobileConfiguration	mobileConfiguration;
-
-
+	
+	
 	@Override
-	protected void servletInitialized() throws ServletException
+	public void servletInitialized(final XdevServlet servlet) throws ServletException
 	{
-		super.servletInitialized();
-
-		this.mobileConfiguration = readMobileConfiguration();
-	}
-
-
-	/**
-	 * @return the mobileConfiguration
-	 */
-	public MobileConfiguration getMobileConfiguration()
-	{
-		return this.mobileConfiguration;
-	}
-
-
-	protected MobileConfiguration readMobileConfiguration()
-	{
-		final MobileConfiguration.Default config = new MobileConfiguration.Default();
-
-		try
-		{
-			final URL url = findMobileXML();
-			if(url == null)
-			{
-				LOG.log(Level.WARNING,"No mobile.xml found");
-			}
-			else
-			{
-				final Document document = new SAXReader().read(url);
-				Optional.ofNullable(document.getRootElement()).map(e -> e.element("services"))
-						.ifPresent(servicesElement -> {
-							final ClassLoader classLoader = getClass().getClassLoader();
-							config.setMobileServices(((List<?>)servicesElement.elements("service"))
-									.stream().filter(Element.class::isInstance)
-									.map(Element.class::cast)
-									.map(serviceElement -> createService(classLoader,
-											serviceElement))
-									.filter(Objects::nonNull).collect(Collectors.toList()));
-						});
-			}
-		}
-		catch(final Exception e)
-		{
-			LOG.log(Level.SEVERE,e.getMessage(),e);
-		}
-
-		return config;
-	}
-
-
-	@SuppressWarnings("unchecked")
-	private Class<? extends MobileService> createService(final ClassLoader classLoader,
-			final Element serviceElement)
-	{
-		final String className = serviceElement.getTextTrim();
+		this.mobileConfiguration = readMobileConfiguration(servlet);
 		
-		try
-		{
-			final Class<?> serviceClass = classLoader.loadClass(className);
-			if(MobileService.class.isAssignableFrom(serviceClass))
-			{
-				return (Class<? extends MobileService>)serviceClass;
-			}
-			else
-			{
-				throw new IllegalArgumentException(
-						className + " is not a " + MobileService.class.getSimpleName());
-			}
-		}
-		catch(final Exception e)
-		{
-			LOG.log(Level.SEVERE,e.getMessage(),e);
-		}
-
-		return null;
+		servlet.getService().addSessionInitListener(event -> initSession(event));
 	}
-
-
-	protected URL findMobileXML() throws MalformedURLException
+	
+	
+	protected boolean isMobileRequest(final VaadinRequest request)
 	{
-		URL resourceUrl = getServletContext().getResource("/mobile.xml");
-		if(resourceUrl == null)
-		{
-			final ClassLoader classLoader = getService().getClassLoader();
-			resourceUrl = classLoader.getResource("META-INF/mobile.xml");
-			if(resourceUrl == null)
-			{
-				resourceUrl = classLoader.getResource("mobile.xml");
-			}
-		}
-		return resourceUrl;
+		return "true".equals(request.getParameter("cordova"));
 	}
-
-
-	@Override
+	
+	
 	protected void initSession(final SessionInitEvent event)
 	{
-		super.initSession(event);
-
+		if(isMobileRequest(event.getRequest()))
+		{
+			event.getSession().setAttribute(MobileConfiguration.class,this.mobileConfiguration);
+		}
+		
 		event.getSession().addBootstrapListener(new BootstrapListener()
 		{
 			@Override
 			public void modifyBootstrapPage(final BootstrapPageResponse response)
 			{
-				if("true".equals(response.getRequest().getParameter("cordova")))
+				if(isMobileRequest(response.getRequest()))
 				{
 					response.getDocument().head().prependElement("meta")
 							.attr("http-equiv","Content-Security-Policy")
@@ -192,16 +111,16 @@ public class MobileServlet extends XdevServlet
 					}
 				}
 			}
-
-
+			
+			
 			@Override
 			public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
 			{
 			}
 		});
 	}
-
-
+	
+	
 	/**
 	 * Provides the content security policy which will be written into the
 	 * default html page.
@@ -219,5 +138,84 @@ public class MobileServlet extends XdevServlet
 	protected String getContentSecurityPolicy()
 	{
 		return "default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'";
+	}
+	
+	
+	protected MobileConfiguration readMobileConfiguration(final XdevServlet servlet)
+	{
+		final MobileConfiguration.Default config = new MobileConfiguration.Default();
+		
+		try
+		{
+			final URL url = findMobileXML(servlet);
+			if(url == null)
+			{
+				LOG.log(Level.WARNING,"No mobile.xml found");
+			}
+			else
+			{
+				final Document document = new SAXReader().read(url);
+				Optional.ofNullable(document.getRootElement()).map(e -> e.element("services"))
+						.ifPresent(servicesElement -> {
+							final ClassLoader classLoader = getClass().getClassLoader();
+							config.setMobileServices(((List<?>)servicesElement.elements("service"))
+									.stream().filter(Element.class::isInstance)
+									.map(Element.class::cast)
+									.map(serviceElement -> createService(classLoader,
+											serviceElement))
+									.filter(Objects::nonNull).collect(Collectors.toList()));
+						});
+			}
+		}
+		catch(final Exception e)
+		{
+			LOG.log(Level.SEVERE,e.getMessage(),e);
+		}
+		
+		return config;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	private Class<? extends MobileService> createService(final ClassLoader classLoader,
+			final Element serviceElement)
+	{
+		final String className = serviceElement.getTextTrim();
+		
+		try
+		{
+			final Class<?> serviceClass = classLoader.loadClass(className);
+			if(MobileService.class.isAssignableFrom(serviceClass))
+			{
+				return (Class<? extends MobileService>)serviceClass;
+			}
+			else
+			{
+				throw new IllegalArgumentException(
+						className + " is not a " + MobileService.class.getSimpleName());
+			}
+		}
+		catch(final Exception e)
+		{
+			LOG.log(Level.SEVERE,e.getMessage(),e);
+		}
+		
+		return null;
+	}
+	
+	
+	protected URL findMobileXML(final XdevServlet servlet) throws MalformedURLException
+	{
+		URL resourceUrl = servlet.getServletContext().getResource("/mobile.xml");
+		if(resourceUrl == null)
+		{
+			final ClassLoader classLoader = servlet.getService().getClassLoader();
+			resourceUrl = classLoader.getResource("META-INF/mobile.xml");
+			if(resourceUrl == null)
+			{
+				resourceUrl = classLoader.getResource("mobile.xml");
+			}
+		}
+		return resourceUrl;
 	}
 }

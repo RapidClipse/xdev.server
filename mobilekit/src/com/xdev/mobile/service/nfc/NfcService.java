@@ -32,7 +32,6 @@ import com.vaadin.server.Page;
 import com.xdev.mobile.service.MobileService;
 import com.xdev.mobile.service.MobileServiceDescriptor;
 import com.xdev.mobile.service.MobileServiceError;
-import com.xdev.mobile.ui.MobileUI;
 
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
@@ -69,61 +68,60 @@ public class NfcService extends MobileService
 	 * }
 	 * </pre>
 	 *
-	 * @see MobileUI#getMobileService(Class)
 	 * @return the file service if available
 	 */
 	public static NfcService getInstance()
 	{
-		return getServiceHelper(NfcService.class);
+		return getMobileService(NfcService.class);
 	}
-
-
+	
+	
 	public NfcService(final AbstractClientConnector connector)
 	{
 		super(connector);
-
+		
 		this.addFunction("nfc_startTagDiscoveredListener_callback",
 				this::nfc_startTagDiscoveredListener_callback);
 		this.addFunction("nfc_startTagDiscoveredListener_success",
 				this::nfc_startTagDiscoveredListener_success);
 		this.addFunction("nfc_startTagDiscoveredListener_error",
 				this::nfc_startTagDiscoveredListener_error);
-
+		
 		this.addFunction("nfc_stopTagDiscoveredListener_success",
 				this::nfc_stopTagDiscoveredListener_success);
 		this.addFunction("nfc_stopTagDiscoveredListener_error",
 				this::nfc_stopTagDiscoveredListener_error);
-
+		
 		this.addFunction("nfc_erase_success",this::nfc_erase_success);
 		this.addFunction("nfc_erase_error",this::nfc_erase_error);
-
+		
 		this.addFunction("nfc_startNdefListener_callback",this::nfc_startNdefListener_callback);
 		this.addFunction("nfc_startNdefListener_success",this::nfc_startNdefListener_success);
 		this.addFunction("nfc_startNdefListener_error",this::nfc_startNdefListener_error);
-
+		
 		this.addFunction("nfc_stopNdefListener_success",this::nfc_stopNdefListener_success);
 		this.addFunction("nfc_stopNdefListener_error",this::nfc_stopNdefListener_error);
-
+		
 		this.addFunction("nfc_write_success",this::nfc_write_success);
 		this.addFunction("nfc_write_error",this::nfc_write_error);
-
+		
 		this.addFunction("nfc_makeReadOnly_success",this::nfc_makeReadOnly_success);
 		this.addFunction("nfc_makeReadOnly_error",this::nfc_makeReadOnly_error);
-
+		
 		this.addFunction("nfc_showSettings_success",this::nfc_showSettings_success);
 		this.addFunction("nfc_showSettings_error",this::nfc_showSettings_error);
-
+		
 	}
-
-
-
+	
+	
+	
 	private static class StartNdefListenerCall
 	{
 		final Consumer<Ndef>				callback;
 		final Consumer<Object>				successCallback;
 		final Consumer<MobileServiceError>	errorCallback;
-
-
+		
+		
 		StartNdefListenerCall(final Consumer<Ndef> callback, final Consumer<Object> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
 		{
@@ -132,15 +130,15 @@ public class NfcService extends MobileService
 			this.errorCallback = errorCallback;
 		}
 	}
-
-
-
+	
+	
+	
 	private static class StopNdefListenerCall
 	{
 		final Consumer<Object>				successCallback;
 		final Consumer<MobileServiceError>	errorCallback;
-
-
+		
+		
 		StopNdefListenerCall(final Consumer<Object> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
 		{
@@ -148,16 +146,16 @@ public class NfcService extends MobileService
 			this.errorCallback = errorCallback;
 		}
 	}
-
-
-
+	
+	
+	
 	private static class StartTagDiscoveredListenerCall
 	{
 		final Consumer<Ndef>				callback;
 		final Consumer<Object>				successCallback;
 		final Consumer<MobileServiceError>	errorCallback;
-
-
+		
+		
 		StartTagDiscoveredListenerCall(final Consumer<Ndef> callback,
 				final Consumer<Object> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
@@ -167,15 +165,15 @@ public class NfcService extends MobileService
 			this.errorCallback = errorCallback;
 		}
 	}
-
-
-
+	
+	
+	
 	private static class StopTagDiscoveredListenerCall
 	{
 		final Consumer<String>				successCallback;
 		final Consumer<MobileServiceError>	errorCallback;
-
-
+		
+		
 		StopTagDiscoveredListenerCall(final Consumer<String> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
 		{
@@ -183,15 +181,15 @@ public class NfcService extends MobileService
 			this.errorCallback = errorCallback;
 		}
 	}
-
-
-
+	
+	
+	
 	private static class EraseTagCall
 	{
 		final Consumer<String>				successCallback;
 		final Consumer<MobileServiceError>	errorCallback;
-
-
+		
+		
 		EraseTagCall(final Consumer<String> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
 		{
@@ -199,15 +197,15 @@ public class NfcService extends MobileService
 			this.errorCallback = errorCallback;
 		}
 	}
-
-
-
+	
+	
+	
 	private static class WriteCall
 	{
 		final Consumer<String>				successCallback;
 		final Consumer<MobileServiceError>	errorCallback;
-
-
+		
+		
 		WriteCall(final Consumer<String> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
 		{
@@ -215,15 +213,15 @@ public class NfcService extends MobileService
 			this.errorCallback = errorCallback;
 		}
 	}
-
-
-
+	
+	
+	
 	private static class MakeReadOnlyCall
 	{
 		final Consumer<String>				successCallback;
 		final Consumer<MobileServiceError>	errorCallback;
-
-
+		
+		
 		MakeReadOnlyCall(final Consumer<String> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
 		{
@@ -231,15 +229,15 @@ public class NfcService extends MobileService
 			this.errorCallback = errorCallback;
 		}
 	}
-
-
-
+	
+	
+	
 	private static class ShowSettinsCall
 	{
 		final Consumer<String>				successCallback;
 		final Consumer<MobileServiceError>	errorCallback;
-
-
+		
+		
 		ShowSettinsCall(final Consumer<String> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
 		{
@@ -247,7 +245,7 @@ public class NfcService extends MobileService
 			this.errorCallback = errorCallback;
 		}
 	}
-
+	
 	private final Map<String, StartNdefListenerCall>			startNdefListenerCalls			= new HashMap<>();
 	private final Map<String, StopNdefListenerCall>				stopNdefListenerCalls			= new HashMap<>();
 	private final Map<String, StartTagDiscoveredListenerCall>	startTagDiscoveredListenerCalls	= new HashMap<>();
@@ -256,8 +254,8 @@ public class NfcService extends MobileService
 	private final Map<String, WriteCall>						writeCalls						= new HashMap<>();
 	private final Map<String, MakeReadOnlyCall>					makeReadOnlyCalls				= new HashMap<>();
 	private final Map<String, ShowSettinsCall>					showSettinsCalls				= new HashMap<>();
-
-
+	
+	
 	private void nfc_startTagDiscoveredListener_callback(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -266,16 +264,16 @@ public class NfcService extends MobileService
 		{
 			return;
 		}
-
+		
 		final Gson gson = new Gson();
 		final JsonObject jsonObject = arguments.getObject(1);
-
+		
 		final Ndef ndef = gson.fromJson(jsonObject.toJson(),Ndef.class);
-
+		
 		call.callback.accept(ndef);
 	}
-
-
+	
+	
 	private void nfc_startTagDiscoveredListener_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -284,13 +282,13 @@ public class NfcService extends MobileService
 		{
 			return;
 		}
-
+		
 		final String returnString = arguments.getString(1);
-
+		
 		call.successCallback.accept(returnString);
 	}
-
-
+	
+	
 	private void nfc_startTagDiscoveredListener_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -301,8 +299,8 @@ public class NfcService extends MobileService
 		}
 		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-
-
+	
+	
 	private void nfc_stopTagDiscoveredListener_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -311,13 +309,13 @@ public class NfcService extends MobileService
 		{
 			return;
 		}
-
+		
 		final String returnString = arguments.getString(1);
-
+		
 		call.successCallback.accept(returnString);
 	}
-
-
+	
+	
 	private void nfc_stopTagDiscoveredListener_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -328,8 +326,8 @@ public class NfcService extends MobileService
 		}
 		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-
-
+	
+	
 	private void nfc_startNdefListener_callback(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -338,16 +336,16 @@ public class NfcService extends MobileService
 		{
 			return;
 		}
-
+		
 		final Gson gson = new Gson();
 		final JsonObject jsonObject = arguments.getObject(1);
-
+		
 		final Ndef ndef = gson.fromJson(jsonObject.toJson(),Ndef.class);
-
+		
 		call.callback.accept(ndef);
 	}
-
-
+	
+	
 	private void nfc_startNdefListener_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -356,13 +354,13 @@ public class NfcService extends MobileService
 		{
 			return;
 		}
-
+		
 		final String returnString = arguments.getString(1);
-
+		
 		call.successCallback.accept(returnString);
 	}
-
-
+	
+	
 	private void nfc_startNdefListener_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -373,8 +371,8 @@ public class NfcService extends MobileService
 		}
 		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-
-
+	
+	
 	private void nfc_stopNdefListener_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -383,13 +381,13 @@ public class NfcService extends MobileService
 		{
 			return;
 		}
-
+		
 		final String returnString = arguments.getString(1);
-
+		
 		call.successCallback.accept(returnString);
 	}
-
-
+	
+	
 	private void nfc_stopNdefListener_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -400,8 +398,8 @@ public class NfcService extends MobileService
 		}
 		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-
-
+	
+	
 	private void nfc_erase_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -410,13 +408,13 @@ public class NfcService extends MobileService
 		{
 			return;
 		}
-
+		
 		final String returnString = arguments.getString(1);
-
+		
 		call.successCallback.accept(returnString);
 	}
-
-
+	
+	
 	private void nfc_erase_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -427,8 +425,8 @@ public class NfcService extends MobileService
 		}
 		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-
-
+	
+	
 	private void nfc_write_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -437,13 +435,13 @@ public class NfcService extends MobileService
 		{
 			return;
 		}
-
+		
 		final String returnString = arguments.getString(1);
-
+		
 		call.successCallback.accept(returnString);
 	}
-
-
+	
+	
 	private void nfc_write_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -454,8 +452,8 @@ public class NfcService extends MobileService
 		}
 		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-
-
+	
+	
 	private void nfc_makeReadOnly_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -464,13 +462,13 @@ public class NfcService extends MobileService
 		{
 			return;
 		}
-
+		
 		final String returnString = arguments.getString(1);
-
+		
 		call.successCallback.accept(returnString);
 	}
-
-
+	
+	
 	private void nfc_makeReadOnly_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -481,8 +479,8 @@ public class NfcService extends MobileService
 		}
 		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-
-
+	
+	
 	private void nfc_showSettings_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -491,13 +489,13 @@ public class NfcService extends MobileService
 		{
 			return;
 		}
-
+		
 		final String returnString = arguments.getString(1);
-
+		
 		call.successCallback.accept(returnString);
 	}
-
-
+	
+	
 	private void nfc_showSettings_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -508,8 +506,8 @@ public class NfcService extends MobileService
 		}
 		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-
-
+	
+	
 	public synchronized void startTagDiscoveredListener(final Consumer<Ndef> callback,
 			final Consumer<Object> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
@@ -519,14 +517,14 @@ public class NfcService extends MobileService
 		final StartTagDiscoveredListenerCall call = new StartTagDiscoveredListenerCall(callback,
 				successCallback,errorCallback);
 		this.startTagDiscoveredListenerCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_startTagDiscoveredListener('").append(id).append("');");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	public synchronized void stopTagDiscoveredListener(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
@@ -534,35 +532,35 @@ public class NfcService extends MobileService
 		final String id = generateCallerID();
 		final StopTagDiscoveredListenerCall call = new StopTagDiscoveredListenerCall(
 				successCallback,errorCallback);
-
+		
 		this.stopTagDiscoveredListenerCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_stopTagDiscoveredListener('").append(id).append("');");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	public synchronized void startNdefListener(final Consumer<Ndef> callback,
 			final Consumer<Object> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		
 		removeAllListener();
-
+		
 		final String id = generateCallerID();
 		final StartNdefListenerCall call = new StartNdefListenerCall(callback,successCallback,
 				errorCallback);
 		this.startNdefListenerCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_startNdefListener('").append(id).append("');");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	public synchronized void stopNdefListener(final Consumer<Object> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
@@ -570,31 +568,31 @@ public class NfcService extends MobileService
 		final String id = generateCallerID();
 		final StopNdefListenerCall call = new StopNdefListenerCall(successCallback,errorCallback);
 		this.stopNdefListenerCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_stopNdefListener('").append(id).append("');");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	public synchronized void makeReadOnly(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		
 		removeAllListener();
-
+		
 		final String id = generateCallerID();
 		final MakeReadOnlyCall call = new MakeReadOnlyCall(successCallback,errorCallback);
 		this.makeReadOnlyCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_makeReadOnly('").append(id).append("');");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	public synchronized void showSettings(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
@@ -602,14 +600,14 @@ public class NfcService extends MobileService
 		final String id = generateCallerID();
 		final ShowSettinsCall call = new ShowSettinsCall(successCallback,errorCallback);
 		this.showSettinsCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_showSettings('").append(id).append("');");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	public synchronized void eraseTag(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
@@ -617,14 +615,14 @@ public class NfcService extends MobileService
 		final String id = generateCallerID();
 		final EraseTagCall call = new EraseTagCall(successCallback,errorCallback);
 		this.eraseTagCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_erase_tag('").append(id).append("');");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	public synchronized void writeText(final String message, final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
@@ -632,14 +630,14 @@ public class NfcService extends MobileService
 		final String id = generateCallerID();
 		final WriteCall call = new WriteCall(successCallback,errorCallback);
 		this.writeCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_write_text('").append(id).append("','").append(message).append("');");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	public synchronized void removeAllListener()
 	{
 		
@@ -652,11 +650,11 @@ public class NfcService extends MobileService
 		this.writeCalls.clear();
 		this.makeReadOnlyCalls.clear();
 		this.showSettinsCalls.clear();
-
+		
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_remove_all_Listener();");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
+	
 }

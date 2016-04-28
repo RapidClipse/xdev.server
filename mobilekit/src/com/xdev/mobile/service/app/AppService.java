@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * For further information see
+ * 
+ * For further information see 
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -45,7 +45,7 @@ public class AppService extends MobileService
 {
 	public static AppService getInstance()
 	{
-		return getServiceHelper(AppService.class);
+		return getMobileService(AppService.class);
 	}
 	
 	private final List<BackButtonHandler> backButtonHandlers = new ArrayList<>();

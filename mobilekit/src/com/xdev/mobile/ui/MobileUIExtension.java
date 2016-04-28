@@ -26,46 +26,37 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.vaadin.server.AbstractClientConnector;
-import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinSession;
 import com.xdev.mobile.communication.MobileConfiguration;
-import com.xdev.mobile.communication.MobileServlet;
 import com.xdev.mobile.service.MobileService;
 import com.xdev.ui.XdevUI;
+import com.xdev.ui.XdevUIExtension;
 
 
 /**
- * The topmost component in any component hierarchy ... see {@link XdevUI}.
- * <p>
- * Also contains all registered mobile services.
- *
  * @author XDEV Software
  *
- * @see #getMobileService(Class)
  */
-public abstract class MobileUI extends XdevUI
+public class MobileUIExtension implements XdevUIExtension
 {
-	private static Logger LOG = Logger.getLogger(MobileServlet.class.getName());
-	
-	
-	public MobileUI()
+	private static Logger LOG = Logger.getLogger(MobileUIExtension.class.getName());
+
+
+	@Override
+	public void uiInitialized(final XdevUI ui)
 	{
-		registerMobileServices();
-	}
-	
-	
-	private void registerMobileServices()
-	{
-		final VaadinServlet servlet = VaadinServlet.getCurrent();
-		if(servlet instanceof MobileServlet)
+		final MobileConfiguration mobileConfiguration = VaadinSession.getCurrent()
+				.getAttribute(MobileConfiguration.class);
+		if(mobileConfiguration != null)
 		{
-			for(final Class<? extends MobileService> clazz : ((MobileServlet)servlet)
-					.getMobileConfiguration().getMobileServices())
+			for(final Class<? extends MobileService> clazz : mobileConfiguration
+					.getMobileServices())
 			{
 				try
 				{
 					final Constructor<? extends MobileService> constructor = clazz
 							.getConstructor(AbstractClientConnector.class);
-					constructor.newInstance(this);
+					constructor.newInstance(ui);
 					LOG.log(Level.INFO,"Mobile service registered: " + clazz.getName());
 				}
 				catch(final Exception e)
@@ -74,33 +65,5 @@ public abstract class MobileUI extends XdevUI
 				}
 			}
 		}
-	}
-	
-	
-	/**
-	 * Returns a registered service.
-	 *
-	 * Services are registered in the mobile.xml configuration file. Example:
-	 *
-	 * <pre>
-	 * {@code
-	 * <?xml version="1.0" encoding="UTF-8"?>
-	 * <mobile-app>
-	 * 	<services>
-	 * 		<service>com.xdev.mobile.service.contacts.ContactsService</service>
-	 * 	</services>
-	 * </mobile-app>
-	 * }
-	 * </pre>
-	 *
-	 * @param type
-	 * @return
-	 * @see MobileServlet#getMobileConfiguration()
-	 * @see MobileConfiguration#getMobileServices()
-	 */
-	public <T extends MobileService> T getMobileService(final Class<T> type)
-	{
-		return getExtensions().stream().filter(e -> e.getClass().equals(type)).map(type::cast)
-				.findFirst().orElse(null);
 	}
 }

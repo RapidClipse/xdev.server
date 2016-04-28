@@ -24,32 +24,47 @@ package com.xdev.mobile.service;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractJavaScriptExtension;
 import com.vaadin.ui.UI;
-import com.xdev.mobile.ui.MobileUI;
 
 
 /**
  * @author XDEV Software
- * 		
+ *
  */
 public abstract class MobileService extends AbstractJavaScriptExtension
 {
-	protected static <T extends MobileService> T getServiceHelper(final Class<T> clazz)
+	/**
+	 * Returns a registered service.
+	 *
+	 * Services are registered in the mobile.xml configuration file. Example:
+	 *
+	 * <pre>
+	 * {@code
+	 * <?xml version="1.0" encoding="UTF-8"?>
+	 * <mobile-app>
+	 * 	<services>
+	 * 		<service>com.xdev.mobile.service.contacts.ContactsService</service>
+	 * 	</services>
+	 * </mobile-app>
+	 * }
+	 * </pre>
+	 *
+	 * @param type
+	 * @return
+	 */
+	public static <T extends MobileService> T getMobileService(final Class<T> clazz)
 	{
 		final UI ui = UI.getCurrent();
-		if(ui instanceof MobileUI)
-		{
-			return ((MobileUI)ui).getMobileService(clazz);
-		}
-		return null;
+		return ui.getExtensions().stream().filter(e -> e.getClass().equals(clazz)).map(clazz::cast)
+				.findFirst().orElse(null);
 	}
-	
-	
+
+
 	protected MobileService(final AbstractClientConnector target)
 	{
 		super(target);
 	}
-
-
+	
+	
 	protected String generateCallerID()
 	{
 		return Long.toString(System.nanoTime(),Character.MAX_RADIX);

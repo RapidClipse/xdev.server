@@ -21,6 +21,7 @@
 package com.xdev.ui;
 
 
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Future;
 
@@ -38,6 +39,7 @@ import com.xdev.ui.action.XdevActionManager;
 import com.xdev.ui.event.FocusChangeEvent;
 import com.xdev.ui.event.FocusChangeListener;
 import com.xdev.ui.util.UIUtils;
+import com.xdev.util.ExtensionUtils;
 
 
 /**
@@ -81,8 +83,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 			event.getDetachedComponent());
 	private Component						lastFocusedComponent;
 	private XdevActionManager				xdevActionManager;
-
-
+	
+	
 	/**
 	 * Creates a new empty UI without a caption. The content of the UI must be
 	 * set by calling {@link #setContent(Component)} before using the UI.
@@ -91,27 +93,26 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Creates a new UI with the given component (often a layout) as its
 	 * content.
 	 *
 	 * @param content
 	 *            the component to use as this UIs content.
-	 * 			
+	 *
 	 * @see #setContent(Component)
 	 */
 	public XdevUI(final Component content)
 	{
 		super(content);
 	}
-
-
+	
 	// init defaults
 	{
 		setLocale(Locale.getDefault());
-
+		
 		// https://www.xdevissues.com/browse/XWS-666
 		// System.out.println("attach listener");
 		// addDetachListener(new DetachListener()
@@ -129,9 +130,24 @@ public abstract class XdevUI extends UI implements XdevComponent
 		// EntityManagerUtils.getEntityManager().close();
 		// }
 		// });
+
+		try
+		{
+			final List<XdevUIExtension> extensions = ExtensionUtils.readExtensions("ui",
+					XdevUIExtension.class);
+
+			for(final XdevUIExtension extension : extensions)
+			{
+				extension.uiInitialized(this);
+			}
+		}
+		catch(final Exception e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -140,8 +156,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -150,8 +166,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -160,8 +176,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		return super.access(getAccessRunnable(runnable));
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -170,8 +186,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		super.accessSynchronously(getAccessRunnable(runnable));
 	}
-
-
+	
+	
 	/**
 	 * Ensures that <code>runnable</code> is an {@link UIAccessWrapper}.
 	 *
@@ -186,8 +202,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 		}
 		return new UIAccessWrapper(runnable);
 	}
-
-
+	
+	
 	/**
 	 * @return the xdevActionManager
 	 */
@@ -197,11 +213,11 @@ public abstract class XdevUI extends UI implements XdevComponent
 		{
 			this.xdevActionManager = new XdevActionManager(this);
 		}
-
+		
 		return this.xdevActionManager;
 	}
-
-
+	
+	
 	public void addFocusChangeListener(final FocusChangeListener listener)
 	{
 		if(getListeners(FocusChangeEvent.class).isEmpty())
@@ -212,16 +228,16 @@ public abstract class XdevUI extends UI implements XdevComponent
 				addFocusWatcher(content);
 			}
 		}
-
+		
 		addListener(FocusChangeEvent.EVENT_ID,FocusChangeEvent.class,listener,
 				FocusChangeListener.focusChangedMethod);
 	}
-
-
+	
+	
 	public void removeFocusChangeListener(final FocusChangeListener listener)
 	{
 		removeListener(FocusChangeEvent.EVENT_ID,FocusChangeEvent.class,listener);
-
+		
 		if(getListeners(FocusChangeEvent.class).isEmpty())
 		{
 			final Component content = getContent();
@@ -231,31 +247,31 @@ public abstract class XdevUI extends UI implements XdevComponent
 			}
 		}
 	}
-
-
+	
+	
 	private void focusedComponentChanged(final FocusEvent event)
 	{
 		this.lastFocusedComponent = event.getComponent();
 		fireEvent(new FocusChangeEvent(this.lastFocusedComponent));
 	}
-
-
+	
+	
 	@Override
 	public void setContent(final Component content)
 	{
 		super.setContent(content);
-
+		
 		if(content != null && !getListeners(FocusChangeEvent.class).isEmpty())
 		{
 			addFocusWatcher(content);
 		}
 	}
-
-
+	
+	
 	private void addFocusWatcher(final Component root)
 	{
 		UIUtils.lookupComponentTree(root,c -> {
-
+			
 			if(c instanceof FocusNotifier)
 			{
 				((FocusNotifier)c).addFocusListener(this.focusNotifier);
@@ -267,19 +283,19 @@ public abstract class XdevUI extends UI implements XdevComponent
 				((ComponentAttachDetachNotifier)c)
 						.addComponentDetachListener(this.focusDetachListener);
 			}
-
+			
 			return null;
 		});
-
+		
 		fireEvent(new FocusChangeEvent(
 				this.lastFocusedComponent != null ? this.lastFocusedComponent : this));
 	}
-
-
+	
+	
 	private void removeFocusWatcher(final Component component)
 	{
 		UIUtils.lookupComponentTree(component,c -> {
-
+			
 			if(c instanceof FocusNotifier)
 			{
 				((FocusNotifier)c).removeFocusListener(this.focusNotifier);
@@ -291,7 +307,7 @@ public abstract class XdevUI extends UI implements XdevComponent
 				((ComponentAttachDetachNotifier)c)
 						.removeComponentDetachListener(this.focusDetachListener);
 			}
-
+			
 			return null;
 		});
 	}

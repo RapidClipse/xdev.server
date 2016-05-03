@@ -13,19 +13,33 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
 package com.xdev.mobile.service.app;
 
 
+import java.util.EventListener;
+
+
 /**
+ * Handler for events fired by {@link AppService}.
+ *
  * @author XDEV Software
  *
  */
-public interface BackButtonHandler
+@FunctionalInterface
+public interface AppEventHandler extends EventListener
 {
-	public boolean handleBackButton();
+	/**
+	 * Called when an app event happened.
+	 * <p>
+	 * Propagation to other listeners can be prevented by calling
+	 * {@link AppEvent#consume()}.
+	 *
+	 * @param event
+	 */
+	public void handleAppEvent(AppEvent event);
 }

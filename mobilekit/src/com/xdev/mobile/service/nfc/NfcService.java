@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -110,7 +110,6 @@ public class NfcService extends MobileService
 		
 		this.addFunction("nfc_showSettings_success",this::nfc_showSettings_success);
 		this.addFunction("nfc_showSettings_error",this::nfc_showSettings_error);
-		
 	}
 	
 	
@@ -232,13 +231,13 @@ public class NfcService extends MobileService
 	
 	
 	
-	private static class ShowSettinsCall
+	private static class ShowSettingsCall
 	{
 		final Consumer<String>				successCallback;
 		final Consumer<MobileServiceError>	errorCallback;
 		
 		
-		ShowSettinsCall(final Consumer<String> successCallback,
+		ShowSettingsCall(final Consumer<String> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
 		{
 			this.successCallback = successCallback;
@@ -253,7 +252,7 @@ public class NfcService extends MobileService
 	private final Map<String, EraseTagCall>						eraseTagCalls					= new HashMap<>();
 	private final Map<String, WriteCall>						writeCalls						= new HashMap<>();
 	private final Map<String, MakeReadOnlyCall>					makeReadOnlyCalls				= new HashMap<>();
-	private final Map<String, ShowSettinsCall>					showSettinsCalls				= new HashMap<>();
+	private final Map<String, ShowSettingsCall>					showSettingsCalls				= new HashMap<>();
 	
 	
 	private void nfc_startTagDiscoveredListener_callback(final JsonArray arguments)
@@ -484,7 +483,7 @@ public class NfcService extends MobileService
 	private void nfc_showSettings_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ShowSettinsCall call = this.showSettinsCalls.remove(id);
+		final ShowSettingsCall call = this.showSettingsCalls.remove(id);
 		if(call == null || call.successCallback == null)
 		{
 			return;
@@ -499,7 +498,7 @@ public class NfcService extends MobileService
 	private void nfc_showSettings_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ShowSettinsCall call = this.showSettinsCalls.remove(id);
+		final ShowSettingsCall call = this.showSettingsCalls.remove(id);
 		if(call == null || call.errorCallback == null)
 		{
 			return;
@@ -598,8 +597,8 @@ public class NfcService extends MobileService
 	{
 		
 		final String id = generateCallerID();
-		final ShowSettinsCall call = new ShowSettinsCall(successCallback,errorCallback);
-		this.showSettinsCalls.put(id,call);
+		final ShowSettingsCall call = new ShowSettingsCall(successCallback,errorCallback);
+		this.showSettingsCalls.put(id,call);
 		
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_showSettings('").append(id).append("');");
@@ -640,7 +639,6 @@ public class NfcService extends MobileService
 	
 	public synchronized void removeAllListener()
 	{
-		
 		// clear all Maps because of highlander
 		this.startNdefListenerCalls.clear();
 		this.stopNdefListenerCalls.clear();
@@ -649,7 +647,7 @@ public class NfcService extends MobileService
 		this.eraseTagCalls.clear();
 		this.writeCalls.clear();
 		this.makeReadOnlyCalls.clear();
-		this.showSettinsCalls.clear();
+		this.showSettingsCalls.clear();
 		
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_remove_all_Listener();");

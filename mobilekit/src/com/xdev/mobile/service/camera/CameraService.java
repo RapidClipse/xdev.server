@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -69,24 +69,7 @@ public class CameraService extends MobileService
 		return getMobileService(CameraService.class);
 	}
 	
-	
-	
-	private static class GetPictureCall
-	{
-		final CameraOptions					options;
-		final Consumer<ImageData>			successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-
-
-		GetPictureCall(final CameraOptions options, final Consumer<ImageData> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.options = options;
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
-	}
-	private final Map<String, GetPictureCall> getPictureCalls = new HashMap<>();
+	private final Map<String, ServiceCall<ImageData>> getPictureCalls = new HashMap<>();
 	
 	
 	public CameraService(final AbstractClientConnector target)
@@ -112,9 +95,6 @@ public class CameraService extends MobileService
 	 * Supported platforms:
 	 * <ul>
 	 * <li>Android</li>
-	 * <li>BlackBerry 10</li>
-	 * <li>Firefox OS</li>
-	 * <li>Amazon FireOS</li>
 	 * <li>iOS</li>
 	 * <li>Windows</li>
 	 * <li>Windows Phone 8</li>
@@ -142,9 +122,6 @@ public class CameraService extends MobileService
 	 * Supported platforms:
 	 * <ul>
 	 * <li>Android</li>
-	 * <li>BlackBerry 10</li>
-	 * <li>Firefox OS</li>
-	 * <li>Amazon FireOS</li>
 	 * <li>iOS</li>
 	 * <li>Windows</li>
 	 * <li>Windows Phone 8</li>
@@ -156,7 +133,8 @@ public class CameraService extends MobileService
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final GetPictureCall call = new GetPictureCall(options,successCallback,errorCallback);
+		final ServiceCall<ImageData> call = ServiceCall.async(successCallback,errorCallback);
+		call.put("options",options);
 		this.getPictureCalls.put(id,call);
 		
 		final StringBuilder js = new StringBuilder();
@@ -197,25 +175,23 @@ public class CameraService extends MobileService
 	private void camera_getPicture_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final GetPictureCall call = this.getPictureCalls.remove(id);
-		if(call == null || call.successCallback == null)
+		final ServiceCall<ImageData> call = this.getPictureCalls.remove(id);
+		if(call != null)
 		{
-			return;
+			final CameraOptions options = (CameraOptions)call.get("options");
+			final ImageData imageData = new ImageData(options,arguments.getString(1));
+			call.success(imageData);
 		}
-		
-		call.successCallback.accept(new ImageData(call.options,arguments.getString(1)));
 	}
 	
 	
 	private void camera_getPicture_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final GetPictureCall call = this.getPictureCalls.remove(id);
-		if(call == null || call.errorCallback == null)
+		final ServiceCall<ImageData> call = this.getPictureCalls.remove(id);
+		if(call != null)
 		{
-			return;
+			call.error(new MobileServiceError(this,arguments.getString(1)));
 		}
-		
-		call.errorCallback.accept(new MobileServiceError(this,arguments.getString(1)));
 	}
 }

@@ -29,15 +29,17 @@ import com.vaadin.server.StreamResource;
 
 
 /**
+ * Helper class to retrieve image data from the {@link CameraService}.
+ *
  * @author XDEV Software
- * 		
+ *
  */
 public class ImageData
 {
 	private String	base64data;
 	private String	uri;
-					
-					
+
+
 	public ImageData(final CameraOptions options, final String value)
 	{
 		if(options.getDestinationType() == DestinationType.IMAGE)
@@ -49,36 +51,36 @@ public class ImageData
 			this.uri = value;
 		}
 	}
-	
-	
+
+
 	public String getBase64data()
 	{
 		return this.base64data;
 	}
-	
-	
+
+
 	public byte[] toRawData()
 	{
 		if(this.base64data == null)
 		{
 			throw new IllegalArgumentException("ImageData contains only URI");
 		}
-		
+
 		return Base64.getDecoder().decode(this.base64data);
 	}
-	
-	
+
+
 	public Resource toResource()
 	{
 		if(this.base64data == null)
 		{
 			throw new IllegalArgumentException("ImageData contains only URI");
 		}
-		
+
 		return new StreamResource(() -> new ByteArrayInputStream(toRawData()),toString());
 	}
-	
-	
+
+
 	public String getURI()
 	{
 		return this.uri;

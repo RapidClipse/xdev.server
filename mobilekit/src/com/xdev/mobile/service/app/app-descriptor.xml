@@ -3,6 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://rapidclipse.com/mobile-service/1.0.0 http://rapidclipse.com/xsd/mobile-service-1.0.0.xsd">
 	<android>
+		<config>
+			<feature name="ExitApp">
+				<param name="android-package" value="cordova.custom.plugins.exitapp.ExitApp" />
+			</feature>
+		</config>
 	</android>
 	<ios>
 	</ios>

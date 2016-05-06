@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -38,6 +38,28 @@ import elemental.json.JsonObject;
 
 
 /**
+ * This service provides information about the device's location, such as
+ * latitude and longitude. Common sources of location information include Global
+ * Positioning System (GPS) and location inferred from network signals such as
+ * IP address, RFID, WiFi and Bluetooth MAC addresses, and GSM/CDMA cell IDs.
+ * There is no guarantee that the API returns the device's actual location.
+ * <p>
+ * <b>WARNING</b>:<br>
+ * Collection and use of geolocation data raises important privacy issues. Your
+ * app's privacy policy should discuss how the app uses geolocation data,
+ * whether it is shared with any other parties, and the level of precision of
+ * the data (for example, coarse, fine, ZIP code level, etc.). Geolocation data
+ * is generally considered sensitive because it can reveal user's whereabouts
+ * and, if stored, the history of their travels. Therefore, in addition to the
+ * app's privacy policy, you should strongly consider providing a just-in-time
+ * notice before the app accesses geolocation data (if the device operating
+ * system doesn't do so already). That notice should provide the same
+ * information noted above, as well as obtaining the user's permission (e.g., by
+ * presenting choices for OK and No Thanks). For more information, please see
+ * the <a href=
+ * "http://cordova.apache.org/docs/en/latest/guide/appdev/privacy/index.html">
+ * Privacy Guide</a>.
+ *
  * @author XDEV Software
  *
  */
@@ -65,88 +87,27 @@ public class GeolocationService extends MobileService
 	{
 		return getMobileService(GeolocationService.class);
 	}
-	
-	
-	
-	private static class GetCall
-	{
-		final Consumer<Position>			successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-		
-		
-		GetCall(final Consumer<Position> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
-	}
-	
-	
-	
-	private static class WatchCall
-	{
-		final Consumer<Geolocation>			successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-		
-		
-		WatchCall(final Consumer<Geolocation> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
-	}
-	
-	private final Map<String, GetCall>		getCalls	= new HashMap<>();
-	private final Map<String, WatchCall>	watchcalls	= new HashMap<>();
-	
-	
+
+	private final Map<String, ServiceCall<Position>>	getCalls	= new HashMap<>();
+	private final Map<String, ServiceCall<Geolocation>>	watchcalls	= new HashMap<>();
+	private final Map<String, Position>					waitMap		= new HashMap<>();
+
+
 	public GeolocationService(final AbstractClientConnector connector)
 	{
 		super(connector);
-		
+
 		this.addFunction("geolocation_get_success",this::geolocation_get_success);
 		this.addFunction("geolocation_get_error",this::geolocation_get_error);
-		
+
 		this.addFunction("geolocation_watch_success",this::geolocation_watch_success);
 		this.addFunction("geolocation_watch_error",this::geolocation_watch_error);
-		
+
 		this.addFunction("geolocation_get_future_success",this::geolocation_get_future_success);
 		this.addFunction("geolocation_get_future_error",this::geolocation_get_future_error);
-		
 	}
-	
-	
-	private void geolocation_get_success(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final GetCall call = this.getCalls.remove(id);
-		if(call == null || call.successCallback == null)
-		{
-			return;
-		}
-		
-		final Gson gson = new Gson();
-		final JsonObject jsonObject = arguments.getObject(1);
-		final Position position = gson.fromJson(jsonObject.toJson(),Position.class);
-		
-		call.successCallback.accept(position);
-	}
-	
-	
-	private void geolocation_get_error(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final GetCall call = this.getCalls.remove(id);
-		if(call == null || call.errorCallback == null)
-		{
-			return;
-		}
-		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
-	}
-	
-	
+
+
 	/**
 	 * Asynchronously acquires the current position.
 	 *
@@ -160,16 +121,41 @@ public class GeolocationService extends MobileService
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final GetCall call = new GetCall(successCallback,errorCallback);
+		final ServiceCall<Position> call = ServiceCall.async(successCallback,errorCallback);
 		this.getCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("geolocation_get('").append(id).append("');");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
+	private void geolocation_get_success(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final ServiceCall<Position> call = this.getCalls.remove(id);
+		if(call != null)
+		{
+			final Gson gson = new Gson();
+			final JsonObject jsonObject = arguments.getObject(1);
+			final Position position = gson.fromJson(jsonObject.toJson(),Position.class);
+			call.success(position);
+		}
+	}
+
+
+	private void geolocation_get_error(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final ServiceCall<Position> call = this.getCalls.remove(id);
+		if(call != null)
+		{
+			call.error(new MobileServiceError(this,arguments.get(1).asString()));
+		}
+	}
+
+
 	/**
 	 *
 	 * Asynchronously watches the geolocation for changes to geolocation. When a
@@ -182,61 +168,57 @@ public class GeolocationService extends MobileService
 	 *            location data.
 	 * @param timeout
 	 */
-	
+
 	public synchronized void watchPosition(final Consumer<Geolocation> successCallback,
 			final Consumer<MobileServiceError> errorCallback, final int timeout)
 	{
 		final String id = generateCallerID();
-		final WatchCall call = new WatchCall(successCallback,errorCallback);
+		final ServiceCall<Geolocation> call = ServiceCall.async(successCallback,errorCallback);
 		this.watchcalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("geolocation_watch('").append(id).append("',");
 		appendTimeout(js,timeout);
 		js.append(");");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private void appendTimeout(final StringBuilder js, final int timeout)
 	{
 		js.append("{ ");
 		js.append("timeout: ").append(timeout).append(" }");
 	}
-	
-	
+
+
 	private void geolocation_watch_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final WatchCall call = this.watchcalls.get(id);
-		if(call == null || call.successCallback == null)
+		final ServiceCall<Geolocation> call = this.watchcalls.get(id);
+		if(call != null)
 		{
-			return;
+			final Gson gson = new Gson();
+			final JsonObject jsonObject = arguments.getObject(1);
+			final Position position = gson.fromJson(jsonObject.toJson(),Position.class);
+			final double watchID = arguments.getNumber(2);
+			final Geolocation geolocation = new Geolocation(position,watchID);
+			call.success(geolocation);
 		}
-		
-		final Gson gson = new Gson();
-		final JsonObject jsonObject = arguments.getObject(1);
-		final Position position = gson.fromJson(jsonObject.toJson(),Position.class);
-		final double watchID = arguments.getNumber(2);
-		final Geolocation geolocation = new Geolocation(position,watchID);
-		
-		call.successCallback.accept(geolocation);
 	}
-	
-	
+
+
 	private void geolocation_watch_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final WatchCall call = this.watchcalls.get(id);
-		if(call == null || call.errorCallback == null)
+		final ServiceCall<Geolocation> call = this.watchcalls.get(id);
+		if(call != null)
 		{
-			return;
+			call.error(new MobileServiceError(this,arguments.get(1).asString()));
 		}
-		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-	
-	
+
+
 	/**
 	 * Clears the specified heading watch.
 	 *
@@ -247,24 +229,22 @@ public class GeolocationService extends MobileService
 		final StringBuilder js = new StringBuilder();
 		js.append("geolocation_clear_watch(");
 		js.append(watchID).append(");");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	Map<String, Position> waitMap = new HashMap<>();
-	
-	
+
+
 	private void geolocation_get_future_success(final JsonArray arguments)
 	{
 		final Gson gson = new Gson();
 		final JsonObject jsonObject = arguments.getObject(1);
 		final Position position = gson.fromJson(jsonObject.toJson(),Position.class);
-		
+
 		this.waitMap.put(this.toString(),position);
 		this.notify();
 	}
-	
-	
+
+
 	private void geolocation_get_future_error(final JsonArray arguments)
 	{
 		// XXX ???

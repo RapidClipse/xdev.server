@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mobile-service xmlns="http://rapidclipse.com/mobile-service/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://rapidclipse.com/mobile-service/1.0.0 http://rapidclipse.com/xsd/mobile-service-1.0.0.xsd">
+	<android>
+		<config>
+			<feature name="BarcodeScanner">
+				<param name="android-package"
+					value="com.phonegap.plugins.barcodescanner.BarcodeScanner" />
+			</feature>
+		</config>
+		<manifest>
+			<permission>CAMERA</permission>
+			<permission>FLASHLIGHT</permission>
+			<feature>android.hardware.camera</feature>
+		</manifest>
+	</android>
+	<ios>
+		<config>
+			<config>
+				<feature name="BarcodeScanner">
+					<param name="ios-package" value="CDVBarcodeScanner" />
+				</feature>
+			</config>
+		</config>
+	</ios>
+	<windows>
+	</windows>
+</mobile-service>

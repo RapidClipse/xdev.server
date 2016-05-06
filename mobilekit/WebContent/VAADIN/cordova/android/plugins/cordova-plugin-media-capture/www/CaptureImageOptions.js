@@ -1,0 +1,1 @@
+cordova.define("cordova-plugin-media-capture.CaptureImageOptions",function(i,o,t){var a=function(){this.limit=1};t.exports=a})

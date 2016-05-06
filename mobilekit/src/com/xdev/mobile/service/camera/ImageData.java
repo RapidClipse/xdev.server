@@ -22,10 +22,10 @@ package com.xdev.mobile.service.camera;
 
 
 import java.io.ByteArrayInputStream;
+import java.util.Base64;
 
 import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
-import com.xdev.mobile.util.DataUtils;
 
 
 /**
@@ -61,7 +61,12 @@ public class ImageData
 	
 	public byte[] toRawData()
 	{
-		return DataUtils.decodeBase64Data(this.base64data);
+		if(this.base64data == null)
+		{
+			throw new IllegalArgumentException("ImageData contains only URI");
+		}
+
+		return Base64.getDecoder().decode(this.base64data);
 	}
 	
 	

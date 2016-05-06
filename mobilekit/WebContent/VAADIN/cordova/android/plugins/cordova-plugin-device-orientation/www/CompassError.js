@@ -1,1 +1,0 @@
-cordova.define("cordova-plugin-device-orientation.CompassError",function(o,i,n){var r=function(o){this.code=o!==void 0?o:null};r.COMPASS_INTERNAL_ERR=0,r.COMPASS_NOT_SUPPORTED=20,n.exports=r})

@@ -1,1 +1,0 @@
-cordova.define("cordova-plugin-media-capture.CaptureError",function(E,A,_){var R=function(E){this.code=E||null};R.CAPTURE_INTERNAL_ERR=0,R.CAPTURE_APPLICATION_BUSY=1,R.CAPTURE_INVALID_ARGUMENT=2,R.CAPTURE_NO_MEDIA_FILES=3,R.CAPTURE_NOT_SUPPORTED=20,_.exports=R})

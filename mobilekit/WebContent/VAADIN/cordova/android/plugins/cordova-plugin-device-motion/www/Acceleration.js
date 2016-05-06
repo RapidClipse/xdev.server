@@ -1,1 +1,0 @@
-cordova.define("cordova-plugin-device-motion.Acceleration",function(i,t,e){var o=function(i,t,e,o){this.x=i,this.y=t,this.z=e,this.timestamp=o||(new Date).getTime()};e.exports=o})

@@ -1,1 +1,0 @@
-cordova.define("cordova-plugin-splashscreen.SplashScreen",function(n,e,l){var o=n("cordova/exec"),c={show:function(){o(null,null,"SplashScreen","show",[])},hide:function(){o(null,null,"SplashScreen","hide",[])}};l.exports=c})

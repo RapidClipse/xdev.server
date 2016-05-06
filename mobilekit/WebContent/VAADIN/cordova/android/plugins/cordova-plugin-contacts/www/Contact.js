@@ -1,1 +1,180 @@
-cordova.define("cordova-plugin-contacts.Contact",function(t,n,e){function o(t){var n=t.birthday;try{t.birthday=new Date(parseFloat(n))}catch(e){console.log("Cordova Contact convertIn error: exception creating date.")}return t}function i(t){var n=t.birthday;if(n!==null){if(!l.isDate(n))try{n=new Date(n)}catch(e){n=null}l.isDate(n)&&(n=n.valueOf()),t.birthday=n}return t}var a=t("cordova/argscheck"),r=t("cordova/exec"),s=t("./ContactError"),l=t("cordova/utils"),c=function(t,n,e,o,i,a,r,s,l,c,u,h,d,v){this.id=t||null,this.rawId=null,this.displayName=n||null,this.name=e||null,this.nickname=o||null,this.phoneNumbers=i||null,this.emails=a||null,this.addresses=r||null,this.ims=s||null,this.organizations=l||null,this.birthday=c||null,this.note=u||null,this.photos=h||null,this.categories=d||null,this.urls=v||null};c.prototype.remove=function(t,n){a.checkArgs("FF","Contact.remove",arguments);var e=n&&function(t){n(new s(t))};this.id===null?e(s.UNKNOWN_ERROR):r(t,e,"Contacts","remove",[this.id])},c.prototype.clone=function(){function t(t){if(t)for(var n=0;t.length>n;++n)t[n].id=null}var n=l.clone(this);return n.id=null,n.rawId=null,t(n.phoneNumbers),t(n.emails),t(n.addresses),t(n.ims),t(n.organizations),t(n.categories),t(n.photos),t(n.urls),n},c.prototype.save=function(n,e){a.checkArgs("FFO","Contact.save",arguments);var c=e&&function(t){e(new s(t))},u=function(e){if(e){if(n){var i=t("./contacts").create(e);n(o(i))}}else c(s.UNKNOWN_ERROR)},h=i(l.clone(this));r(u,c,"Contacts","save",[h])},e.exports=c})
+cordova.define("cordova-plugin-contacts.Contact", function(require, exports, module) {
+/*
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+*/
+
+var argscheck = require('cordova/argscheck'),
+    exec = require('cordova/exec'),
+    ContactError = require('./ContactError'),
+    utils = require('cordova/utils');
+
+/**
+* Converts primitives into Complex Object
+* Currently only used for Date fields
+*/
+function convertIn(contact) {
+    var value = contact.birthday;
+    try {
+      contact.birthday = new Date(parseFloat(value));
+    } catch (exception){
+      console.log("Cordova Contact convertIn error: exception creating date.");
+    }
+    return contact;
+}
+
+/**
+* Converts Complex objects into primitives
+* Only conversion at present is for Dates.
+**/
+
+function convertOut(contact) {
+    var value = contact.birthday;
+    if (value !== null) {
+        // try to make it a Date object if it is not already
+        if (!utils.isDate(value)){
+            try {
+                value = new Date(value);
+            } catch(exception){
+                value = null;
+            }
+        }
+        if (utils.isDate(value)){
+            value = value.valueOf(); // convert to milliseconds
+        }
+        contact.birthday = value;
+    }
+    return contact;
+}
+
+/**
+* Contains information about a single contact.
+* @constructor
+* @param {DOMString} id unique identifier
+* @param {DOMString} displayName
+* @param {ContactName} name
+* @param {DOMString} nickname
+* @param {Array.<ContactField>} phoneNumbers array of phone numbers
+* @param {Array.<ContactField>} emails array of email addresses
+* @param {Array.<ContactAddress>} addresses array of addresses
+* @param {Array.<ContactField>} ims instant messaging user ids
+* @param {Array.<ContactOrganization>} organizations
+* @param {DOMString} birthday contact's birthday
+* @param {DOMString} note user notes about contact
+* @param {Array.<ContactField>} photos
+* @param {Array.<ContactField>} categories
+* @param {Array.<ContactField>} urls contact's web sites
+*/
+var Contact = function (id, displayName, name, nickname, phoneNumbers, emails, addresses,
+    ims, organizations, birthday, note, photos, categories, urls) {
+    this.id = id || null;
+    this.rawId = null;
+    this.displayName = displayName || null;
+    this.name = name || null; // ContactName
+    this.nickname = nickname || null;
+    this.phoneNumbers = phoneNumbers || null; // ContactField[]
+    this.emails = emails || null; // ContactField[]
+    this.addresses = addresses || null; // ContactAddress[]
+    this.ims = ims || null; // ContactField[]
+    this.organizations = organizations || null; // ContactOrganization[]
+    this.birthday = birthday || null;
+    this.note = note || null;
+    this.photos = photos || null; // ContactField[]
+    this.categories = categories || null; // ContactField[]
+    this.urls = urls || null; // ContactField[]
+};
+
+/**
+* Removes contact from device storage.
+* @param successCB success callback
+* @param errorCB error callback
+*/
+Contact.prototype.remove = function(successCB, errorCB) {
+    argscheck.checkArgs('FF', 'Contact.remove', arguments);
+    var fail = errorCB && function(code) {
+        errorCB(new ContactError(code));
+    };
+    if (this.id === null) {
+        fail(ContactError.UNKNOWN_ERROR);
+    }
+    else {
+        exec(successCB, fail, "Contacts", "remove", [this.id]);
+    }
+};
+
+/**
+* Creates a deep copy of this Contact.
+* With the contact ID set to null.
+* @return copy of this Contact
+*/
+Contact.prototype.clone = function() {
+    var clonedContact = utils.clone(this);
+    clonedContact.id = null;
+    clonedContact.rawId = null;
+
+    function nullIds(arr) {
+        if (arr) {
+            for (var i = 0; i < arr.length; ++i) {
+                arr[i].id = null;
+            }
+        }
+    }
+
+    // Loop through and clear out any id's in phones, emails, etc.
+    nullIds(clonedContact.phoneNumbers);
+    nullIds(clonedContact.emails);
+    nullIds(clonedContact.addresses);
+    nullIds(clonedContact.ims);
+    nullIds(clonedContact.organizations);
+    nullIds(clonedContact.categories);
+    nullIds(clonedContact.photos);
+    nullIds(clonedContact.urls);
+    return clonedContact;
+};
+
+/**
+* Persists contact to device storage.
+* @param successCB success callback
+* @param errorCB error callback
+*/
+Contact.prototype.save = function(successCB, errorCB) {
+    argscheck.checkArgs('FFO', 'Contact.save', arguments);
+    var fail = errorCB && function(code) {
+        errorCB(new ContactError(code));
+    };
+    var success = function(result) {
+        if (result) {
+            if (successCB) {
+                var fullContact = require('./contacts').create(result);
+                successCB(convertIn(fullContact));
+            }
+        }
+        else {
+            // no Entry object returned
+            fail(ContactError.UNKNOWN_ERROR);
+        }
+    };
+    var dupContact = convertOut(utils.clone(this));
+    exec(success, fail, "Contacts", "save", [dupContact]);
+};
+
+
+module.exports = Contact;
+
+});

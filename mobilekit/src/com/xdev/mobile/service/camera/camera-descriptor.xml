@@ -9,6 +9,7 @@
 			</feature>
 		</config>
 		<manifest>
+            <permission>CAMERA</permission>
 			<permission>WRITE_EXTERNAL_STORAGE</permission>
 		</manifest>
 	</android>

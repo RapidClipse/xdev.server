@@ -1,1 +1,0 @@
-cordova.define("cordova-plugin-contacts.ContactError",function(R,E,O){var N=function(R){this.code=R!==void 0?R:null};N.UNKNOWN_ERROR=0,N.INVALID_ARGUMENT_ERROR=1,N.TIMEOUT_ERROR=2,N.PENDING_OPERATION_ERROR=3,N.IO_ERROR=4,N.NOT_SUPPORTED_ERROR=5,N.OPERATION_CANCELLED_ERROR=6,N.PERMISSION_DENIED_ERROR=20,O.exports=N})

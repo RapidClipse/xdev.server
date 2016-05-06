@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -22,10 +22,10 @@ package com.xdev.mobile.service.camera;
 
 
 import java.io.ByteArrayInputStream;
-import java.util.Base64;
 
 import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
+import com.xdev.mobile.util.DataUtils;
 
 
 /**
@@ -38,8 +38,8 @@ public class ImageData
 {
 	private String	base64data;
 	private String	uri;
-
-
+	
+	
 	public ImageData(final CameraOptions options, final String value)
 	{
 		if(options.getDestinationType() == DestinationType.IMAGE)
@@ -51,36 +51,31 @@ public class ImageData
 			this.uri = value;
 		}
 	}
-
-
+	
+	
 	public String getBase64data()
 	{
 		return this.base64data;
 	}
-
-
+	
+	
 	public byte[] toRawData()
 	{
-		if(this.base64data == null)
-		{
-			throw new IllegalArgumentException("ImageData contains only URI");
-		}
-
-		return Base64.getDecoder().decode(this.base64data);
+		return DataUtils.decodeBase64Data(this.base64data);
 	}
-
-
+	
+	
 	public Resource toResource()
 	{
 		if(this.base64data == null)
 		{
 			throw new IllegalArgumentException("ImageData contains only URI");
 		}
-
+		
 		return new StreamResource(() -> new ByteArrayInputStream(toRawData()),toString());
 	}
-
-
+	
+	
 	public String getURI()
 	{
 		return this.uri;

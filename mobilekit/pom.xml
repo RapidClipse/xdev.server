@@ -1,78 +1,83 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <artifactId>xdev-server-mobilekit</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
-    <name>XDEV Mobile Kit</name>
+	<artifactId>xdev-server-mobilekit</artifactId>
+	<version>0.7.0-SNAPSHOT</version>
+	<name>XDEV Mobile Kit</name>
 
-    <parent>
-        <groupId>com.xdev-software</groupId>
-        <artifactId>xdev-server-pom</artifactId>
-        <version>1.0.2</version>
-        <relativePath>../xdev.server.pom/pom.xml</relativePath>
-    </parent>
+	<parent>
+		<groupId>com.xdev-software</groupId>
+		<artifactId>xdev-server-pom</artifactId>
+		<version>1.0.2</version>
+		<relativePath>../xdev.server.pom/pom.xml</relativePath>
+	</parent>
 
-    <properties>
-        <repositoryName>xdev.server.mobilekit</repositoryName>
-        <pluginProject>xdev.eclipse.server.mobilekit</pluginProject>
-    </properties>
+	<properties>
+		<repositoryName>xdev.server.mobilekit</repositoryName>
+		<pluginProject>xdev.eclipse.server.mobilekit</pluginProject>
+	</properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.xdev-software</groupId>
-            <artifactId>xdev-server-ui</artifactId>
-            <version>1.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.5</version>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>com.xdev-software</groupId>
+			<artifactId>xdev-server-ui</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
+	</dependencies>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>uglifyjs-maven-plugin</id>
-            <url>https://raw.github.com/tqh/uglifyjs-maven-plugin/master/repo</url>
-        </pluginRepository>
-    </pluginRepositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>uglifyjs-maven-plugin</id>
+			<url>https://raw.github.com/tqh/uglifyjs-maven-plugin/master/repo</url>
+		</pluginRepository>
+	</pluginRepositories>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>WebContent</directory>
-            </resource>
-            <resource>
-                <directory>src</directory>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>net.tqh.plugins</groupId>
-                <artifactId>uglifyjs-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                    <execution>
-                        <id>uglify-js</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>uglify</goal>
-                        </goals>
-                        <configuration>
-                            <skip>false</skip>
-                            <sourceDirectory>cordova</sourceDirectory>
-                            <outputDirectory>WebContent/VAADIN/cordova</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+	<build>
+		<resources>
+			<resource>
+				<directory>WebContent</directory>
+			</resource>
+			<resource>
+				<directory>src</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>net.tqh.plugins</groupId>
+				<artifactId>uglifyjs-maven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<id>uglify-js</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>uglify</goal>
+						</goals>
+						<configuration>
+							<skip>false</skip>
+							<sourceDirectory>cordova</sourceDirectory>
+							<outputDirectory>WebContent/VAADIN/cordova</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

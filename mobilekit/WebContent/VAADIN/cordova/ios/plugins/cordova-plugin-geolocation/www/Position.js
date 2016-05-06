@@ -1,1 +1,0 @@
-cordova.define("cordova-plugin-geolocation.Position",function(t,i,o){var e=t("./Coordinates"),a=function(t,i){this.coords=t?new e(t.latitude,t.longitude,t.altitude,t.accuracy,t.heading,t.velocity,t.altitudeAccuracy):new e,this.timestamp=i!==void 0?i:(new Date).getTime()};o.exports=a})

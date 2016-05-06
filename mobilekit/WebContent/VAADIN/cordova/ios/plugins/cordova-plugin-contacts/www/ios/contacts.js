@@ -1,1 +1,0 @@
-cordova.define("cordova-plugin-contacts.contacts-ios",function(o,t,c){var n=o("cordova/exec");c.exports={newContactUI:function(o){n(o,null,"Contacts","newContact",[])},chooseContact:function(t,c){var a=function(c){var n=o("./contacts").create(c);t(n.id,n)};n(a,null,"Contacts","chooseContact",[c])}}})

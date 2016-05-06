@@ -13,33 +13,35 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
 package com.xdev.mobile.service.file;
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.google.gson.Gson;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
 import com.xdev.mobile.service.MobileService;
 import com.xdev.mobile.service.MobileServiceDescriptor;
 import com.xdev.mobile.service.MobileServiceError;
+import com.xdev.mobile.service.file.FileServiceError.Reason;
 
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
+import elemental.json.JsonValue;
 
 
 /**
+ * This service implements a File API allowing read/write access to files
+ * residing on the device.
+ *
  * @author XDEV Software
  *
  */
@@ -48,7 +50,6 @@ import elemental.json.JsonObject;
 @JavaScript("file.js")
 public class FileService extends MobileService
 {
-	
 	/**
 	 * Returns the file service.<br>
 	 * To activate the service it has to be registered in the mobile.xml.
@@ -67,175 +68,71 @@ public class FileService extends MobileService
 	{
 		return getMobileService(FileService.class);
 	}
-	
-	
-	
-	private static class ReadEntriesCall
-	{
-		final Consumer<List<Entry>>			successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-		
-		
-		ReadEntriesCall(final Consumer<List<Entry>> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
-	}
-	
-	
-	
-	private static class GetMetaDataCall
-	{
-		final Consumer<Metadata>			successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-		
-		
-		GetMetaDataCall(final Consumer<Metadata> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
-	}
-	
-	private final Map<String, ReadEntriesCall>	readEntriesCall	= new HashMap<>();
-	private final Map<String, GetMetaDataCall>	getMetaDataCall	= new HashMap<>();
-	
-	
+
+	private final Map<String, ServiceCall<FileData>> readFileCalls = new HashMap<>();
+
+
 	public FileService(final AbstractClientConnector connector)
 	{
 		super(connector);
-		
-		this.addFunction("file_readEntries_success",this::file_readDirectoryEntries_success);
-		this.addFunction("file_readEntries_error",this::file_readDirectoryEntries_error);
-		
-		this.addFunction("file_getMetadata_success",this::file_getMetadata_success);
-		this.addFunction("file_getMetadata_error",this::file_getMetadata_error);
+
+		this.addFunction("file_readFile_success",this::file_readFile_success);
+		this.addFunction("file_readFile_error",this::file_readFile_error);
 	}
-	
-	
-	private void file_readDirectoryEntries_success(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final ReadEntriesCall call = this.readEntriesCall.remove(id);
-		if(call == null || call.successCallback == null)
-		{
-			return;
-		}
-		
-		final List<Entry> entries = new ArrayList<Entry>();
-		
-		final JsonArray arrayData = arguments.get(1);
-		for(int i = 0; i < arrayData.length(); i++)
-		{
-			final Gson gson = new Gson();
-			final JsonObject jsonObject = arrayData.get(i);
-			final Boolean isFile = jsonObject.get("isFile");
-			if(isFile)
-			{
-				final FileEntry entry = gson.fromJson(jsonObject.toJson(),FileEntry.class);
-				entries.add(entry);
-			}
-			else
-			{
-				final DirectoryEntry entry = gson.fromJson(jsonObject.toJson(),
-						DirectoryEntry.class);
-				entries.add(entry);
-			}
-		}
-		
-		call.successCallback.accept(entries);
-	}
-	
-	
-	private void file_readDirectoryEntries_error(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final ReadEntriesCall call = this.readEntriesCall.remove(id);
-		if(call == null || call.errorCallback == null)
-		{
-			return;
-		}
-		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
-	}
-	
-	
-	private void file_getMetadata_success(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final GetMetaDataCall call = this.getMetaDataCall.remove(id);
-		if(call == null || call.successCallback == null)
-		{
-			return;
-		}
-		
-		final Gson gson = new Gson();
-		final JsonObject jsonObject = arguments.getObject(1);
-		
-		// nicht getestet! jsonObject.toJson() könnte auch long zurückliefern
-		// und müsste auf date gecastet werden
-		
-		final Metadata metadata = gson.fromJson(jsonObject.toJson(),Metadata.class);
-		
-		call.successCallback.accept(metadata);
-	}
-	
-	
-	private void file_getMetadata_error(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final ReadEntriesCall call = this.readEntriesCall.remove(id);
-		if(call == null || call.errorCallback == null)
-		{
-			return;
-		}
-		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
-	}
-	
-	
-	/**
-	 * Read the entries in this directory.
-	 *
-	 * @param successCallback
-	 * @param errorCallback
-	 */
-	public synchronized void readEntries(final Consumer<List<Entry>> successCallback,
+
+
+	public void readFile(final String path, final Consumer<FileData> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ReadEntriesCall call = new ReadEntriesCall(successCallback,errorCallback);
-		this.readEntriesCall.put(id,call);
-		
+		final ServiceCall<FileData> call = ServiceCall.async(successCallback,errorCallback);
+		this.readFileCalls.put(id,call);
+
 		final StringBuilder js = new StringBuilder();
-		
-		js.append("file_readDirectoryEntries('").append(id).append("');");
-		
+
+		js.append("file_readFile('").append(id).append("','").append(path).append("');");
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
+	}
+
+
+	private void file_readFile_success(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final ServiceCall<FileData> call = this.readFileCalls.remove(id);
+		if(call != null)
+		{
+			call.success(new FileData(arguments.get(1).asString()));
+		}
+	}
+
+
+	private void file_readFile_error(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final ServiceCall<FileData> call = this.readFileCalls.remove(id);
+		if(call != null)
+		{
+			call.error(createFileServiceError("Error reading file",arguments.get(1)));
+		}
 	}
 	
 	
-	// TODO uebergabe parameter (file oder directory) von dem die metadatan
-	// abgefragt werden soll
-	/**
-	 * Read the metadata of a file or directory.
-	 *
-	 * @param successCallback
-	 * @param errorCallback
-	 */
-	public synchronized void getMetaData(final Consumer<Metadata> successCallback,
-			final Consumer<MobileServiceError> errorCallback, final Entry entry)
+	private FileServiceError createFileServiceError(final String message, final JsonValue value)
 	{
-		
-		final String id = generateCallerID();
-		final GetMetaDataCall call = new GetMetaDataCall(successCallback,errorCallback);
-		this.getMetaDataCall.put(id,call);
-		
-		final StringBuilder js = new StringBuilder();
-		
-		js.append("file_getMetaData('").append(id).append("','").append(entry).append("');");
-		
-		Page.getCurrent().getJavaScript().execute(js.toString());
+		Reason reason = null;
+		if(value instanceof JsonObject)
+		{
+			try
+			{
+				final int code = (int)((JsonObject)value).getNumber("code");
+				reason = Reason.getByCode(code);
+			}
+			catch(final Exception e)
+			{
+				// swallow
+			}
+		}
+		return new FileServiceError(this,message,reason);
 	}
 }

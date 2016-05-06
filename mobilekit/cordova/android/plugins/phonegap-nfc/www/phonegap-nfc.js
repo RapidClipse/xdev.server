@@ -1,4 +1,5 @@
-cordova.define("phonegap-nfc.NFC", function(require, exports, module) { /*jshint  bitwise: false, camelcase: false, quotmark: false, unused: vars */
+cordova.define("phonegap-nfc.NFC", function(require, exports, module) {
+/*jshint  bitwise: false, camelcase: false, quotmark: false, unused: vars */
 /*global cordova, console */
 "use strict";
 

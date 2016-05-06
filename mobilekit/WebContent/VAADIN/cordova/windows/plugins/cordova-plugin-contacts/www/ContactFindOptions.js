@@ -1,1 +1,0 @@
-cordova.define("cordova-plugin-contacts.ContactFindOptions",function(i,o,t){var n=function(i,o,t,n){this.filter=i||"",this.multiple=o!==void 0?o:!1,this.desiredFields=t!==void 0?t:[],this.hasPhoneNumber=n!==void 0?n:!1};t.exports=n})

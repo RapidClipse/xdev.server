@@ -1,4 +1,5 @@
-cordova.define("cordova-plugin-geolocation.geolocation", function(require, exports, module) { /*
+cordova.define("cordova-plugin-geolocation.geolocation", function(require, exports, module) {
+/*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,13 +20,15 @@ cordova.define("cordova-plugin-geolocation.geolocation", function(require, expor
  *
 */
 
-
 var exec = cordova.require('cordova/exec');
 var utils = require('cordova/utils');
 var PositionError = require('./PositionError');
 
-module.exports = {
+// Native watchPosition method is called async after permissions prompt.
+// So we use additional map and own ids to return watch id synchronously.
+var pluginToNativeWatchMap = {};
 
+module.exports = {
     getCurrentPosition: function(success, error, args) {
         var win = function() {
           var geo = cordova.require('cordova/modulemapper').getOriginalSymbol(window, 'navigator.geolocation');
@@ -67,9 +70,5 @@ module.exports = {
         exec(win, null, "Geolocation", "getPermission", []);
     }
 };
-
-// Native watchPosition method is called async after permissions prompt.
-// So we use additional map and own ids to return watch id synchronously.
-var pluginToNativeWatchMap = {};
 
 });

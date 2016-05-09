@@ -1,17 +1,33 @@
 com_xdev_mobile_service_nfc_NfcService = function() {
 	var connector = this;
 
-	window.nfc_startTagDiscoveredListener_callback = function(caller, callback) {
-		connector.nfc_startTagDiscoveredListener_callback(caller, callback)
+	window.nfc_startNdefListener_success = function(caller, successCallback) {
+		connector.nfc_startNdefListener_success(caller, successCallback);
+	};
+	window.nfc_startNdefListener_error = function(caller, error) {
+		connector.nfc_startNdefListener_error(caller, error);
+	};
+	window.nfc_startNdefListener_callback = function(caller, callback) {
+		connector.nfc_startNdefListener_callback(caller, callback)
+	};
+
+	window.nfc_stopNdefListener_success = function(caller, successCallback) {
+		connector.nfc_stopNdefListener_success(caller, successCallback);
+	};
+	window.nfc_stopNdefListener_error = function(caller, error) {
+		connector.nfc_stopNdefListener_error(caller, error);
 	};
 	window.nfc_startTagDiscoveredListener_success = function(caller,
 			successCallback) {
 		connector.nfc_startTagDiscoveredListener_success(caller,
 				successCallback);
 	};
-
 	window.nfc_startTagDiscoveredListener_error = function(caller, error) {
 		connector.nfc_startTagDiscoveredListener_error(caller, error);
+	};
+
+	window.nfc_startTagDiscoveredListener_callback = function(caller, callback) {
+		connector.nfc_startTagDiscoveredListener_callback(caller, callback)
 	};
 
 	window.nfc_stopTagDiscoveredListener_success = function(caller,
@@ -26,26 +42,8 @@ com_xdev_mobile_service_nfc_NfcService = function() {
 	window.nfc_erase_success = function(caller, success) {
 		connector.nfc_erase_success(caller, success);
 	};
-
 	window.nfc_erase_error = function(caller, error) {
 		connector.nfc_erase_error(caller, error);
-	};
-
-	window.nfc_startNdefListener_callback = function(caller, callback) {
-		connector.nfc_startNdefListener_callback(caller, callback)
-	};
-	window.nfc_startNdefListener_success = function(caller, successCallback) {
-		connector.nfc_startNdefListener_success(caller, successCallback);
-	};
-	window.nfc_startNdefListener_error = function(caller, error) {
-		connector.nfc_startNdefListener_error(caller, error);
-	};
-
-	window.nfc_stopNdefListener_success = function(caller, successCallback) {
-		connector.nfc_stopNdefListener_success(caller, successCallback);
-	};
-	window.nfc_stopNdefListener_error = function(caller, error) {
-		connector.nfc_stopNdefListener_error(caller, error);
 	};
 
 	window.nfc_write_success = function(caller, successCallback) {
@@ -88,7 +86,6 @@ function nfc_startNdefListener(caller) {
 }
 
 function nfc_stopNdefListener(caller) {
-
 	var success = function(succesCallback) {
 		window.nfc_stopNdefListener_success(caller, succesCallback);
 	};
@@ -130,7 +127,7 @@ function nfc_stopTagDiscoveredListener(caller) {
 }
 
 var writeListener;
-function nfc_write_text(caller, messageString) {
+function nfc_write(caller, message) {
 	var success = function(success) {
 		window.nfc_write_success(caller, success);
 		nfc.removeNdefListener(writeListener);
@@ -142,7 +139,6 @@ function nfc_write_text(caller, messageString) {
 	}
 
 	writeListener = function(callback) {
-		var message = [ ndef.textRecord(messageString) ];
 		nfc.write(message, success, error);
 	}
 
@@ -154,7 +150,8 @@ function nfc_write_text(caller, messageString) {
 		console.log(error);
 	};
 
-	nfc.addNdefListener(writeListener, writeListenersuccess,
+	nfc
+			.addNdefListener(writeListener, writeListenersuccess,
 					writeListenererror);
 
 }

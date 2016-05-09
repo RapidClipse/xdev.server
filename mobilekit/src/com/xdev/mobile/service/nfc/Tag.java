@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -27,20 +27,19 @@ import java.util.Collection;
 
 /**
  * @author XDEV Software
- *		
+ *
  */
 public class Tag
 {
-	
-	private boolean					isWritable;
-	private byte[]					id;
-	private Collection<String>		techTypes;
-	private String					type;
-	private boolean					canMakeReadOnly;
-	private double					maxSize;
-	private Collection<NdefMessage>	ndefMessage;
-									
-									
+	private boolean				isWritable;
+	private byte[]				id;
+	private Collection<String>	techTypes;
+	private String				type;
+	private boolean				canMakeReadOnly;
+	private double				maxSize;
+	private Collection<Record>	ndefMessage;
+
+
 	/**
 	 *
 	 */
@@ -48,8 +47,8 @@ public class Tag
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param isWritable
 	 * @param id
@@ -61,7 +60,7 @@ public class Tag
 	 */
 	public Tag(final boolean isWritable, final byte[] id, final Collection<String> techTypes,
 			final String type, final boolean canMakeReadOnly, final double maxSize,
-			final Collection<NdefMessage> ndefMessage)
+			final Collection<Record> ndefMessage)
 	{
 		super();
 		this.isWritable = isWritable;
@@ -72,8 +71,8 @@ public class Tag
 		this.maxSize = maxSize;
 		this.ndefMessage = ndefMessage;
 	}
-	
-	
+
+
 	/**
 	 * @return the isWritable
 	 */
@@ -81,8 +80,8 @@ public class Tag
 	{
 		return this.isWritable;
 	}
-	
-	
+
+
 	/**
 	 * @param isWritable
 	 *            the isWritable to set
@@ -91,8 +90,8 @@ public class Tag
 	{
 		this.isWritable = isWritable;
 	}
-	
-	
+
+
 	/**
 	 * @return the id
 	 */
@@ -100,8 +99,8 @@ public class Tag
 	{
 		return this.id;
 	}
-	
-	
+
+
 	/**
 	 * @param id
 	 *            the id to set
@@ -110,8 +109,8 @@ public class Tag
 	{
 		this.id = id;
 	}
-	
-	
+
+
 	/**
 	 * @return the techTypes
 	 */
@@ -119,8 +118,8 @@ public class Tag
 	{
 		return this.techTypes;
 	}
-	
-	
+
+
 	/**
 	 * @param techTypes
 	 *            the techTypes to set
@@ -129,8 +128,8 @@ public class Tag
 	{
 		this.techTypes = techTypes;
 	}
-	
-	
+
+
 	/**
 	 * @return the type
 	 */
@@ -138,8 +137,8 @@ public class Tag
 	{
 		return this.type;
 	}
-	
-	
+
+
 	/**
 	 * @param type
 	 *            the type to set
@@ -148,8 +147,8 @@ public class Tag
 	{
 		this.type = type;
 	}
-	
-	
+
+
 	/**
 	 * @return the canMakeReadOnly
 	 */
@@ -157,8 +156,8 @@ public class Tag
 	{
 		return this.canMakeReadOnly;
 	}
-	
-	
+
+
 	/**
 	 * @param canMakeReadOnly
 	 *            the canMakeReadOnly to set
@@ -167,8 +166,8 @@ public class Tag
 	{
 		this.canMakeReadOnly = canMakeReadOnly;
 	}
-	
-	
+
+
 	/**
 	 * @return the maxSize
 	 */
@@ -176,8 +175,8 @@ public class Tag
 	{
 		return this.maxSize;
 	}
-	
-	
+
+
 	/**
 	 * @param maxSize
 	 *            the maxSize to set
@@ -186,30 +185,30 @@ public class Tag
 	{
 		this.maxSize = maxSize;
 	}
-	
-	
+
+
 	/**
 	 * @return the ndefMessage
 	 */
-	public Collection<NdefMessage> getNdefMessage()
+	public Collection<Record> getNdefMessage()
 	{
 		return this.ndefMessage;
 	}
-	
-	
+
+
 	/**
 	 * @param ndefMessage
 	 *            the ndefMessage to set
 	 */
-	public void setNdefMessage(final Collection<NdefMessage> ndefMessage)
+	public void setNdefMessage(final Collection<Record> ndefMessage)
 	{
 		this.ndefMessage = ndefMessage;
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -220,5 +219,4 @@ public class Tag
 				+ this.canMakeReadOnly + ", maxSize=" + this.maxSize + ", ndefMessage="
 				+ this.ndefMessage + "]";
 	}
-	
 }

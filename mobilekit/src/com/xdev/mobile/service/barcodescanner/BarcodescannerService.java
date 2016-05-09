@@ -166,7 +166,7 @@ public class BarcodescannerService extends MobileService
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<BarcodeData> call = ServiceCall.async(successCallback,errorCallback);
+		final ServiceCall<BarcodeData> call = ServiceCall.New(successCallback,errorCallback);
 		this.scanCalls.put(id,call);
 		
 		final StringBuilder js = new StringBuilder();

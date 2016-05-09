@@ -13,16 +13,14 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
 package com.xdev.mobile.service;
 
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import com.vaadin.server.AbstractClientConnector;
@@ -73,33 +71,22 @@ public abstract class MobileService extends AbstractJavaScriptExtension
 	{
 		return Long.toString(System.nanoTime(),Character.MAX_RADIX);
 	}
-	
-	
-	
+
+
+
 	protected static interface ServiceCall<R>
 	{
-		public static <R> ServiceCall<R> async(final Consumer<R> successCallback,
+		public static <R> ServiceCall<R> New(final Consumer<R> successCallback,
 				final Consumer<MobileServiceError> errorCallback)
 		{
 			return new Implementation<R>(successCallback,errorCallback);
 		}
 
 
-		// public static <R> ServiceCall.Synchronized<R> sync()
-		// {
-		// return new Synchronized.Implementation<R>();
-		// }
-
 		public void success(final R returnValue);
 		
 		
 		public void error(final MobileServiceError error);
-
-
-		public void put(String key, Object value);
-
-
-		public Object get(String key);
 		
 		
 		
@@ -107,7 +94,6 @@ public abstract class MobileService extends AbstractJavaScriptExtension
 		{
 			private final Consumer<R>					successCallback;
 			private final Consumer<MobileServiceError>	errorCallback;
-			private final Map<String, Object>			values	= new HashMap<>();
 			
 			
 			public Implementation(final Consumer<R> successCallback,
@@ -136,83 +122,6 @@ public abstract class MobileService extends AbstractJavaScriptExtension
 					this.errorCallback.accept(error);
 				}
 			}
-
-
-			@Override
-			public void put(final String key, final Object value)
-			{
-				this.values.put(key,value);
-			}
-
-
-			@Override
-			public Object get(final String key)
-			{
-				return this.values.get(key);
-			}
 		}
-
-		// public static interface Synchronized<R> extends ServiceCall<R>
-		// {
-		// public R execute(String script) throws MobileServiceException;
-		//
-		//
-		//
-		// public static class Implementation<R> implements Synchronized<R>
-		// {
-		// private R returnValue;
-		// private MobileServiceException exception;
-		// private final CountDownLatch countDownLatch = new CountDownLatch(1);
-		//
-		//
-		// @Override
-		// public R execute(final String script) throws MobileServiceException
-		// {
-		// final JavaScript javaScript = Page.getCurrent().getJavaScript();
-		//
-		// try
-		// {
-		// CompletableFuture.runAsync(() -> {
-		// try
-		// {
-		// javaScript.execute(script);
-		// this.countDownLatch.await();
-		// }
-		// catch(final InterruptedException e)
-		// {
-		// throw new RuntimeException(e);
-		// }
-		// }).get();
-		// }
-		// catch(InterruptedException | ExecutionException e)
-		// {
-		// throw new RuntimeException(e);
-		// }
-		//
-		// if(this.exception != null)
-		// {
-		// throw this.exception;
-		// }
-		//
-		// return this.returnValue;
-		// }
-		//
-		//
-		// @Override
-		// public void success(final R returnValue)
-		// {
-		// this.returnValue = returnValue;
-		// this.countDownLatch.countDown();
-		// }
-		//
-		//
-		// @Override
-		// public void error(final MobileServiceError error)
-		// {
-		// this.exception = new MobileServiceException(error);
-		// this.countDownLatch.countDown();
-		// }
-		// }
-		// }
 	}
 }

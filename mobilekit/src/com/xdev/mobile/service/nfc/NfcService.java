@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -74,585 +74,562 @@ public class NfcService extends MobileService
 	{
 		return getMobileService(NfcService.class);
 	}
-	
-	
+
+
+
+	protected static class NfcCallbackServiceCall extends ServiceCall.Implementation<String>
+	{
+		private final Consumer<Ndef> callback;
+
+
+		public NfcCallbackServiceCall(final Consumer<String> successCallback,
+				final Consumer<MobileServiceError> errorCallback, final Consumer<Ndef> callback)
+		{
+			super(successCallback,errorCallback);
+			this.callback = callback;
+		}
+
+
+		public void callback(final Ndef ndef)
+		{
+			if(this.callback != null)
+			{
+				this.callback.accept(ndef);
+			}
+		}
+	}
+
+	private final Map<String, NfcCallbackServiceCall>	startNdefListenerCalls			= new HashMap<>();
+	private final Map<String, ServiceCall<String>>		removeNdefListenerCalls			= new HashMap<>();
+	private final Map<String, NfcCallbackServiceCall>	startTagDiscoveredListenerCalls	= new HashMap<>();
+	private final Map<String, ServiceCall<String>>		stopTagDiscoveredListenerCalls	= new HashMap<>();
+	private final Map<String, ServiceCall<String>>		eraseTagCalls					= new HashMap<>();
+	private final Map<String, ServiceCall<String>>		writeCalls						= new HashMap<>();
+	private final Map<String, ServiceCall<String>>		makeReadOnlyCalls				= new HashMap<>();
+	private final Map<String, ServiceCall<String>>		showSettingsCalls				= new HashMap<>();
+
+
 	public NfcService(final AbstractClientConnector connector)
 	{
 		super(connector);
-		
+
+		this.addFunction("nfc_startNdefListener_success",this::nfc_startNdefListener_success);
+		this.addFunction("nfc_startNdefListener_error",this::nfc_startNdefListener_error);
+		this.addFunction("nfc_startNdefListener_callback",this::nfc_startNdefListener_callback);
+
+		this.addFunction("nfc_stopNdefListener_success",this::nfc_stopNdefListener_success);
+		this.addFunction("nfc_stopNdefListener_error",this::nfc_stopNdefListener_error);
+
 		this.addFunction("nfc_startTagDiscoveredListener_callback",
 				this::nfc_startTagDiscoveredListener_callback);
 		this.addFunction("nfc_startTagDiscoveredListener_success",
 				this::nfc_startTagDiscoveredListener_success);
 		this.addFunction("nfc_startTagDiscoveredListener_error",
 				this::nfc_startTagDiscoveredListener_error);
-		
+
 		this.addFunction("nfc_stopTagDiscoveredListener_success",
 				this::nfc_stopTagDiscoveredListener_success);
 		this.addFunction("nfc_stopTagDiscoveredListener_error",
 				this::nfc_stopTagDiscoveredListener_error);
-		
+
 		this.addFunction("nfc_erase_success",this::nfc_erase_success);
 		this.addFunction("nfc_erase_error",this::nfc_erase_error);
-		
-		this.addFunction("nfc_startNdefListener_callback",this::nfc_startNdefListener_callback);
-		this.addFunction("nfc_startNdefListener_success",this::nfc_startNdefListener_success);
-		this.addFunction("nfc_startNdefListener_error",this::nfc_startNdefListener_error);
-		
-		this.addFunction("nfc_stopNdefListener_success",this::nfc_stopNdefListener_success);
-		this.addFunction("nfc_stopNdefListener_error",this::nfc_stopNdefListener_error);
-		
+
 		this.addFunction("nfc_write_success",this::nfc_write_success);
 		this.addFunction("nfc_write_error",this::nfc_write_error);
-		
+
 		this.addFunction("nfc_makeReadOnly_success",this::nfc_makeReadOnly_success);
 		this.addFunction("nfc_makeReadOnly_error",this::nfc_makeReadOnly_error);
-		
+
 		this.addFunction("nfc_showSettings_success",this::nfc_showSettings_success);
 		this.addFunction("nfc_showSettings_error",this::nfc_showSettings_error);
 	}
-	
-	
-	
-	private static class StartNdefListenerCall
+
+
+	/**
+	 * Registers an event listener for any NDEF tag.
+	 * <p>
+	 * A ndef event is fired when a NDEF tag is read.
+	 *
+	 * @param callback
+	 *            The callback that is called when an NDEF tag is read.
+	 * @param successCallback
+	 *            (Optional) The callback that is called when the listener is
+	 *            added.
+	 * @param errorCallback
+	 *            (Optional) The callback that is called if there was an error.
+	 */
+	public synchronized void startNdefListener(final Consumer<Ndef> callback,
+			final Consumer<String> successCallback,
+			final Consumer<MobileServiceError> errorCallback)
 	{
-		final Consumer<Ndef>				callback;
-		final Consumer<Object>				successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-		
-		
-		StartNdefListenerCall(final Consumer<Ndef> callback, final Consumer<Object> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.callback = callback;
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
+		removeAllListener();
+
+		final String id = generateCallerID();
+		final NfcCallbackServiceCall call = new NfcCallbackServiceCall(successCallback,
+				errorCallback,callback);
+		this.startNdefListenerCalls.put(id,call);
+
+		final StringBuilder js = new StringBuilder();
+		js.append("nfc_startNdefListener('").append(id).append("');");
+
+		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
-	
-	private static class StopNdefListenerCall
-	{
-		final Consumer<Object>				successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-		
-		
-		StopNdefListenerCall(final Consumer<Object> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
-	}
-	
-	
-	
-	private static class StartTagDiscoveredListenerCall
-	{
-		final Consumer<Ndef>				callback;
-		final Consumer<Object>				successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-		
-		
-		StartTagDiscoveredListenerCall(final Consumer<Ndef> callback,
-				final Consumer<Object> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.callback = callback;
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
-	}
-	
-	
-	
-	private static class StopTagDiscoveredListenerCall
-	{
-		final Consumer<String>				successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-		
-		
-		StopTagDiscoveredListenerCall(final Consumer<String> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
-	}
-	
-	
-	
-	private static class EraseTagCall
-	{
-		final Consumer<String>				successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-		
-		
-		EraseTagCall(final Consumer<String> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
-	}
-	
-	
-	
-	private static class WriteCall
-	{
-		final Consumer<String>				successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-		
-		
-		WriteCall(final Consumer<String> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
-	}
-	
-	
-	
-	private static class MakeReadOnlyCall
-	{
-		final Consumer<String>				successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-		
-		
-		MakeReadOnlyCall(final Consumer<String> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
-	}
-	
-	
-	
-	private static class ShowSettingsCall
-	{
-		final Consumer<String>				successCallback;
-		final Consumer<MobileServiceError>	errorCallback;
-		
-		
-		ShowSettingsCall(final Consumer<String> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
-		{
-			this.successCallback = successCallback;
-			this.errorCallback = errorCallback;
-		}
-	}
-	
-	private final Map<String, StartNdefListenerCall>			startNdefListenerCalls			= new HashMap<>();
-	private final Map<String, StopNdefListenerCall>				stopNdefListenerCalls			= new HashMap<>();
-	private final Map<String, StartTagDiscoveredListenerCall>	startTagDiscoveredListenerCalls	= new HashMap<>();
-	private final Map<String, StopTagDiscoveredListenerCall>	stopTagDiscoveredListenerCalls	= new HashMap<>();
-	private final Map<String, EraseTagCall>						eraseTagCalls					= new HashMap<>();
-	private final Map<String, WriteCall>						writeCalls						= new HashMap<>();
-	private final Map<String, MakeReadOnlyCall>					makeReadOnlyCalls				= new HashMap<>();
-	private final Map<String, ShowSettingsCall>					showSettingsCalls				= new HashMap<>();
-	
-	
-	private void nfc_startTagDiscoveredListener_callback(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final StartTagDiscoveredListenerCall call = this.startTagDiscoveredListenerCalls.get(id);
-		if(call == null || call.successCallback == null)
-		{
-			return;
-		}
-		
-		final Gson gson = new Gson();
-		final JsonObject jsonObject = arguments.getObject(1);
-		
-		final Ndef ndef = gson.fromJson(jsonObject.toJson(),Ndef.class);
-		
-		call.callback.accept(ndef);
-	}
-	
-	
-	private void nfc_startTagDiscoveredListener_success(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final StartTagDiscoveredListenerCall call = this.startTagDiscoveredListenerCalls.get(id);
-		if(call == null || call.successCallback == null)
-		{
-			return;
-		}
-		
-		final String returnString = arguments.getString(1);
-		
-		call.successCallback.accept(returnString);
-	}
-	
-	
-	private void nfc_startTagDiscoveredListener_error(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final StartTagDiscoveredListenerCall call = this.startTagDiscoveredListenerCalls.remove(id);
-		if(call == null || call.errorCallback == null)
-		{
-			return;
-		}
-		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
-	}
-	
-	
-	private void nfc_stopTagDiscoveredListener_success(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final StopTagDiscoveredListenerCall call = this.stopTagDiscoveredListenerCalls.remove(id);
-		if(call == null || call.successCallback == null)
-		{
-			return;
-		}
-		
-		final String returnString = arguments.getString(1);
-		
-		call.successCallback.accept(returnString);
-	}
-	
-	
-	private void nfc_stopTagDiscoveredListener_error(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final StopTagDiscoveredListenerCall call = this.stopTagDiscoveredListenerCalls.remove(id);
-		if(call == null || call.errorCallback == null)
-		{
-			return;
-		}
-		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
-	}
-	
-	
-	private void nfc_startNdefListener_callback(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final StartNdefListenerCall call = this.startNdefListenerCalls.get(id);
-		if(call == null || call.successCallback == null)
-		{
-			return;
-		}
-		
-		final Gson gson = new Gson();
-		final JsonObject jsonObject = arguments.getObject(1);
-		
-		final Ndef ndef = gson.fromJson(jsonObject.toJson(),Ndef.class);
-		
-		call.callback.accept(ndef);
-	}
-	
-	
+
+
 	private void nfc_startNdefListener_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final StartNdefListenerCall call = this.startNdefListenerCalls.get(id);
-		if(call == null || call.successCallback == null)
+		final NfcCallbackServiceCall call = this.startNdefListenerCalls.get(id);
+		if(call != null)
 		{
-			return;
+			call.success(arguments.getString(1));
 		}
-		
-		final String returnString = arguments.getString(1);
-		
-		call.successCallback.accept(returnString);
 	}
-	
-	
+
+
 	private void nfc_startNdefListener_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final StartNdefListenerCall call = this.startNdefListenerCalls.remove(id);
-		if(call == null || call.errorCallback == null)
+		final NfcCallbackServiceCall call = this.startNdefListenerCalls.remove(id);
+		if(call != null)
 		{
-			return;
+			call.error(new MobileServiceError(this,arguments.get(1).asString()));
 		}
-		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-	
-	
+
+
+	private void nfc_startNdefListener_callback(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final NfcCallbackServiceCall call = this.startNdefListenerCalls.get(id);
+		if(call != null)
+		{
+			final JsonObject jsonObject = arguments.getObject(1);
+			final Ndef ndef = new Gson().fromJson(jsonObject.toJson(),Ndef.class);
+			call.callback(ndef);
+		}
+	}
+
+
+	/**
+	 * Removes the previously registered event listener for NDEF tags added via
+	 * {@link #addNdefListener(Consumer, Consumer, Consumer)}.
+	 *
+	 * @param successCallback
+	 *            (Optional) The callback that is called when the listener is
+	 *            successfully removed.
+	 * @param errorCallback
+	 *            (Optional) The callback that is called if there was an error
+	 *            during removal.
+	 */
+	public synchronized void stopNdefListener(final Consumer<String> successCallback,
+			final Consumer<MobileServiceError> errorCallback)
+	{
+		final String id = generateCallerID();
+		final ServiceCall<String> call = ServiceCall.New(successCallback,errorCallback);
+		this.removeNdefListenerCalls.put(id,call);
+
+		final StringBuilder js = new StringBuilder();
+		js.append("nfc_stopNdefListener('").append(id).append("');");
+
+		Page.getCurrent().getJavaScript().execute(js.toString());
+	}
+
+
 	private void nfc_stopNdefListener_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final StopNdefListenerCall call = this.stopNdefListenerCalls.get(id);
-		if(call == null || call.successCallback == null)
+		final ServiceCall<String> call = this.removeNdefListenerCalls.get(id);
+		if(call != null)
 		{
-			return;
+			call.success(arguments.getString(1));
 		}
-		
-		final String returnString = arguments.getString(1);
-		
-		call.successCallback.accept(returnString);
 	}
-	
-	
+
+
 	private void nfc_stopNdefListener_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final StopNdefListenerCall call = this.stopNdefListenerCalls.remove(id);
-		if(call == null || call.errorCallback == null)
+		final ServiceCall<String> call = this.removeNdefListenerCalls.remove(id);
+		if(call != null)
 		{
-			return;
+			call.error(new MobileServiceError(this,arguments.get(1).asString()));
 		}
-		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
 	}
-	
-	
-	private void nfc_erase_success(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final EraseTagCall call = this.eraseTagCalls.get(id);
-		if(call == null || call.successCallback == null)
-		{
-			return;
-		}
-		
-		final String returnString = arguments.getString(1);
-		
-		call.successCallback.accept(returnString);
-	}
-	
-	
-	private void nfc_erase_error(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final EraseTagCall call = this.eraseTagCalls.remove(id);
-		if(call == null || call.errorCallback == null)
-		{
-			return;
-		}
-		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
-	}
-	
-	
-	private void nfc_write_success(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final WriteCall call = this.writeCalls.get(id);
-		if(call == null || call.successCallback == null)
-		{
-			return;
-		}
-		
-		final String returnString = arguments.getString(1);
-		
-		call.successCallback.accept(returnString);
-	}
-	
-	
-	private void nfc_write_error(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final EraseTagCall call = this.eraseTagCalls.remove(id);
-		if(call == null || call.errorCallback == null)
-		{
-			return;
-		}
-		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
-	}
-	
-	
-	private void nfc_makeReadOnly_success(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final WriteCall call = this.writeCalls.get(id);
-		if(call == null || call.successCallback == null)
-		{
-			return;
-		}
-		
-		final String returnString = arguments.getString(1);
-		
-		call.successCallback.accept(returnString);
-	}
-	
-	
-	private void nfc_makeReadOnly_error(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final MakeReadOnlyCall call = this.makeReadOnlyCalls.remove(id);
-		if(call == null || call.errorCallback == null)
-		{
-			return;
-		}
-		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
-	}
-	
-	
-	private void nfc_showSettings_success(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final ShowSettingsCall call = this.showSettingsCalls.remove(id);
-		if(call == null || call.successCallback == null)
-		{
-			return;
-		}
-		
-		final String returnString = arguments.getString(1);
-		
-		call.successCallback.accept(returnString);
-	}
-	
-	
-	private void nfc_showSettings_error(final JsonArray arguments)
-	{
-		final String id = arguments.getString(0);
-		final ShowSettingsCall call = this.showSettingsCalls.remove(id);
-		if(call == null || call.errorCallback == null)
-		{
-			return;
-		}
-		call.errorCallback.accept(new MobileServiceError(this,arguments.get(1).asString()));
-	}
-	
-	
+
+
+	/**
+	 * Registers an event listener for tags matching any tag type.
+	 * <p>
+	 * This event occurs when any tag is detected by the phone.
+	 *
+	 * @param callback
+	 *            The callback that is called when a tag is detected.
+	 * @param successCallback
+	 *            (Optional) The callback that is called when the listener is
+	 *            added.
+	 * @param errorCallback
+	 *            (Optional) The callback that is called if there was an error.
+	 */
 	public synchronized void startTagDiscoveredListener(final Consumer<Ndef> callback,
-			final Consumer<Object> successCallback,
+			final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		removeAllListener();
+
 		final String id = generateCallerID();
-		final StartTagDiscoveredListenerCall call = new StartTagDiscoveredListenerCall(callback,
-				successCallback,errorCallback);
+		final NfcCallbackServiceCall call = new NfcCallbackServiceCall(successCallback,
+				errorCallback,callback);
 		this.startTagDiscoveredListenerCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_startTagDiscoveredListener('").append(id).append("');");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
+	private void nfc_startTagDiscoveredListener_success(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final NfcCallbackServiceCall call = this.startTagDiscoveredListenerCalls.get(id);
+		if(call != null)
+		{
+			call.success(arguments.getString(1));
+		}
+	}
+
+
+	private void nfc_startTagDiscoveredListener_error(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final NfcCallbackServiceCall call = this.startTagDiscoveredListenerCalls.remove(id);
+		if(call != null)
+		{
+			call.error(new MobileServiceError(this,arguments.get(1).asString()));
+		}
+	}
+
+
+	private void nfc_startTagDiscoveredListener_callback(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final NfcCallbackServiceCall call = this.startTagDiscoveredListenerCalls.get(id);
+		if(call != null)
+		{
+			final JsonObject jsonObject = arguments.getObject(1);
+			final Ndef ndef = new Gson().fromJson(jsonObject.toJson(),Ndef.class);
+			call.callback(ndef);
+		}
+	}
+
+
+	/**
+	 * Removes the previously registered event listener added via
+	 * {@link #startTagDiscoveredListener(Consumer, Consumer, Consumer)}.
+	 *
+	 * @param successCallback
+	 *            (Optional) The callback that is called when the listener is
+	 *            successfully removed.
+	 * @param errorCallback
+	 *            (Optional) The callback that is called if there was an error
+	 *            during removal.
+	 */
 	public synchronized void stopTagDiscoveredListener(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
-		
 		final String id = generateCallerID();
-		final StopTagDiscoveredListenerCall call = new StopTagDiscoveredListenerCall(
-				successCallback,errorCallback);
-		
+		final ServiceCall<String> call = ServiceCall.New(successCallback,errorCallback);
+
 		this.stopTagDiscoveredListenerCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_stopTagDiscoveredListener('").append(id).append("');");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
-	public synchronized void startNdefListener(final Consumer<Ndef> callback,
-			final Consumer<Object> successCallback,
-			final Consumer<MobileServiceError> errorCallback)
+
+
+	private void nfc_stopTagDiscoveredListener_success(final JsonArray arguments)
 	{
-		
-		removeAllListener();
-		
-		final String id = generateCallerID();
-		final StartNdefListenerCall call = new StartNdefListenerCall(callback,successCallback,
-				errorCallback);
-		this.startNdefListenerCalls.put(id,call);
-		
-		final StringBuilder js = new StringBuilder();
-		js.append("nfc_startNdefListener('").append(id).append("');");
-		
-		Page.getCurrent().getJavaScript().execute(js.toString());
+		final String id = arguments.getString(0);
+		final ServiceCall<String> call = this.stopTagDiscoveredListenerCalls.remove(id);
+		if(call != null)
+		{
+			call.success(arguments.getString(1));
+		}
 	}
-	
-	
-	public synchronized void stopNdefListener(final Consumer<Object> successCallback,
-			final Consumer<MobileServiceError> errorCallback)
+
+
+	private void nfc_stopTagDiscoveredListener_error(final JsonArray arguments)
 	{
-		
-		final String id = generateCallerID();
-		final StopNdefListenerCall call = new StopNdefListenerCall(successCallback,errorCallback);
-		this.stopNdefListenerCalls.put(id,call);
-		
-		final StringBuilder js = new StringBuilder();
-		js.append("nfc_stopNdefListener('").append(id).append("');");
-		
-		Page.getCurrent().getJavaScript().execute(js.toString());
+		final String id = arguments.getString(0);
+		final ServiceCall<String> call = this.stopTagDiscoveredListenerCalls.remove(id);
+		if(call != null)
+		{
+			call.error(new MobileServiceError(this,arguments.get(1).asString()));
+		}
 	}
-	
-	
-	public synchronized void makeReadOnly(final Consumer<String> successCallback,
-			final Consumer<MobileServiceError> errorCallback)
-	{
-		
-		removeAllListener();
-		
-		final String id = generateCallerID();
-		final MakeReadOnlyCall call = new MakeReadOnlyCall(successCallback,errorCallback);
-		this.makeReadOnlyCalls.put(id,call);
-		
-		final StringBuilder js = new StringBuilder();
-		js.append("nfc_makeReadOnly('").append(id).append("');");
-		
-		Page.getCurrent().getJavaScript().execute(js.toString());
-	}
-	
-	
-	public synchronized void showSettings(final Consumer<String> successCallback,
-			final Consumer<MobileServiceError> errorCallback)
-	{
-		
-		final String id = generateCallerID();
-		final ShowSettingsCall call = new ShowSettingsCall(successCallback,errorCallback);
-		this.showSettingsCalls.put(id,call);
-		
-		final StringBuilder js = new StringBuilder();
-		js.append("nfc_showSettings('").append(id).append("');");
-		
-		Page.getCurrent().getJavaScript().execute(js.toString());
-	}
-	
-	
+
+
+	/**
+	 * Erase a NDEF tag by writing an empty message. Will format unformatted
+	 * tags before writing.
+	 *
+	 * @param successCallback
+	 * @param errorCallback
+	 */
 	public synchronized void eraseTag(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		removeAllListener();
 		final String id = generateCallerID();
-		final EraseTagCall call = new EraseTagCall(successCallback,errorCallback);
+		final ServiceCall<String> call = ServiceCall.New(successCallback,errorCallback);
 		this.eraseTagCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_erase_tag('").append(id).append("');");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
+	}
+
+
+	private void nfc_erase_success(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final ServiceCall<String> call = this.eraseTagCalls.get(id);
+		if(call != null)
+		{
+			call.success(arguments.getString(1));
+		}
+	}
+
+
+	private void nfc_erase_error(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final ServiceCall<String> call = this.eraseTagCalls.remove(id);
+		if(call != null)
+		{
+			call.error(new MobileServiceError(this,arguments.get(1).asString()));
+		}
+	}
+
+
+	/**
+	 * Writes an NDEF Message to a NFC tag.
+	 * <p>
+	 * A NDEF Message is an array of one or more NDEF Records
+	 *
+	 * @param message
+	 * @param successCallback
+	 * @param errorCallback
+	 */
+	public synchronized void write(final Consumer<String> successCallback,
+			final Consumer<MobileServiceError> errorCallback, final Record... records)
+	{
+		if(records == null || records.length == 0)
+		{
+			throw new IllegalArgumentException("At least one record is required");
+		}
+
+		removeAllListener();
+
+		final String id = generateCallerID();
+		final ServiceCall<String> call = ServiceCall.New(successCallback,errorCallback);
+		this.writeCalls.put(id,call);
+
+		final StringBuilder message = new StringBuilder();
+		message.append("[");
+		for(int i = 0; i < records.length; i++)
+		{
+			if(i > 0)
+			{
+				message.append(",");
+			}
+			final Record record = records[i];
+			switch(record.getTypeNameFormat())
+			{
+				case TNF_WELL_KNOWN:
+				{
+					switch(record.getRecordType())
+					{
+						case RTD_TEXT:
+						{
+							message.append("ndef.textRecord(\"").append(record.getPayloadAsString())
+									.append("\",null,\"").append(record.getIdAsString())
+									.append("\")");
+						}
+						break;
+						
+						case RTD_URI:
+						{
+							message.append("ndef.uriRecord(\"").append(record.getPayloadAsString())
+									.append("\",\"").append(record.getIdAsString()).append("\")");
+						}
+						break;
+						
+						default:
+							throw new IllegalArgumentException("Unsupported record");
+					}
+				}
+				break;
+				
+				case TNF_ABSOLUTE_URI:
+				{
+					message.append("ndef.absoluteUriRecord(\"").append(record.getTypeAsString())
+							.append("\",\"").append(record.getPayloadAsString()).append("\",\"")
+							.append(record.getIdAsString()).append("\")");
+				}
+				break;
+				
+				case TNF_MIME_MEDIA:
+				{
+					message.append("ndef.mimeMediaRecord(\"").append(record.getTypeAsString())
+							.append("\",\"").append(record.getPayloadAsString()).append("\",\"")
+							.append(record.getIdAsString()).append("\")");
+				}
+				break;
+				
+				default:
+					throw new IllegalArgumentException("Unsupported record");
+			}
+		}
+		message.append("]");
+
+		final StringBuilder js = new StringBuilder();
+		js.append("nfc_write('").append(id).append("',").append(message).append(");");
+
+		Page.getCurrent().getJavaScript().execute(js.toString());
+	}
+
+
+	private void nfc_write_success(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final ServiceCall<String> call = this.writeCalls.get(id);
+		if(call != null)
+		{
+			call.success(arguments.getString(1));
+		}
+	}
+
+
+	private void nfc_write_error(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final ServiceCall<String> call = this.writeCalls.remove(id);
+		if(call != null)
+		{
+			call.error(new MobileServiceError(this,arguments.get(1).asString()));
+		}
 	}
 	
 	
-	public synchronized void writeText(final String message, final Consumer<String> successCallback,
+	/**
+	 * Makes a NFC tag read only.
+	 * <p>
+	 * <b> Warning this is permanent.</b>
+	 * 
+	 * @param successCallback
+	 * @param errorCallback
+	 */
+	public synchronized void makeReadOnly(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		removeAllListener();
+
 		final String id = generateCallerID();
-		final WriteCall call = new WriteCall(successCallback,errorCallback);
-		this.writeCalls.put(id,call);
-		
+		final ServiceCall<String> call = ServiceCall.New(successCallback,errorCallback);
+		this.makeReadOnlyCalls.put(id,call);
+
 		final StringBuilder js = new StringBuilder();
-		js.append("nfc_write_text('").append(id).append("','").append(message).append("');");
-		
+		js.append("nfc_makeReadOnly('").append(id).append("');");
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
+	private void nfc_makeReadOnly_success(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final ServiceCall<String> call = this.makeReadOnlyCalls.get(id);
+		if(call != null)
+		{
+			call.success(arguments.getString(1));
+		}
+	}
+
+
+	private void nfc_makeReadOnly_error(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final ServiceCall<String> call = this.makeReadOnlyCalls.remove(id);
+		if(call != null)
+		{
+			call.error(new MobileServiceError(this,arguments.get(1).asString()));
+		}
+	}
+
+
+	/**
+	 * Show the NFC settings on the device.
+	 *
+	 * @param successCallback
+	 * @param errorCallback
+	 */
+	public synchronized void showSettings(final Consumer<String> successCallback,
+			final Consumer<MobileServiceError> errorCallback)
+	{
+		final String id = generateCallerID();
+		final ServiceCall<String> call = ServiceCall.New(successCallback,errorCallback);
+		this.showSettingsCalls.put(id,call);
+
+		final StringBuilder js = new StringBuilder();
+		js.append("nfc_showSettings('").append(id).append("');");
+
+		Page.getCurrent().getJavaScript().execute(js.toString());
+	}
+
+
+	private void nfc_showSettings_success(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final ServiceCall<String> call = this.showSettingsCalls.remove(id);
+		if(call != null)
+		{
+			call.success(arguments.getString(1));
+		}
+	}
+
+
+	private void nfc_showSettings_error(final JsonArray arguments)
+	{
+		final String id = arguments.getString(0);
+		final ServiceCall<String> call = this.showSettingsCalls.remove(id);
+		if(call != null)
+		{
+			call.error(new MobileServiceError(this,arguments.get(1).asString()));
+		}
+	}
+
+
 	public synchronized void removeAllListener()
 	{
 		// clear all Maps because of highlander
 		this.startNdefListenerCalls.clear();
-		this.stopNdefListenerCalls.clear();
+		this.removeNdefListenerCalls.clear();
 		this.startTagDiscoveredListenerCalls.clear();
 		this.stopTagDiscoveredListenerCalls.clear();
 		this.eraseTagCalls.clear();
 		this.writeCalls.clear();
 		this.makeReadOnlyCalls.clear();
 		this.showSettingsCalls.clear();
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_remove_all_Listener();");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
 }

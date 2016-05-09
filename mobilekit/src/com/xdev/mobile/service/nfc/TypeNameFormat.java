@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -26,9 +26,9 @@ import java.util.Arrays;
 
 /**
  * @author XDEV Software
- *		
+ * 
  */
-public enum TnfCode
+public enum TypeNameFormat
 {
 	TNF_EMPTY(0, "Empty"),
 	TNF_WELL_KNOWN(1, "Well Known"),
@@ -38,25 +38,25 @@ public enum TnfCode
 	TNF_UNKNOWN(5, "Unknown"),
 	TNF_UNCHANGED(6, "Unchanged"),
 	TNF_RESERVED(7, "Reserved");
+
+	public static TypeNameFormat byNumber(final int code)
+	{
+		return Arrays.stream(values()).filter(tnf -> tnf.getCode() == code).findAny()
+				.orElseThrow(() -> new IllegalArgumentException("No TNF for code: " + code));
+	}
 	
-	public static TnfCode byNumber(final int number)
-	{
-		return Arrays.stream(values()).filter(code -> code.getNumber() == number).findAny()
-				.orElseThrow(() -> new IllegalArgumentException("No Type for Number: " + number));
-	}
-
-	private final int		number;
+	private final int		code;
 	private final String	description;
-
-
-	private TnfCode(final int number, final String description)
+	
+	
+	private TypeNameFormat(final int code, final String description)
 	{
-		this.number = number;
+		this.code = code;
 		this.description = description;
-
+		
 	}
-
-
+	
+	
 	/**
 	 * @return the description
 	 */
@@ -64,14 +64,14 @@ public enum TnfCode
 	{
 		return this.description;
 	}
-
-
+	
+	
 	/**
-	 * @return the number
+	 * @return the code
 	 */
-	public int getNumber()
+	public int getCode()
 	{
-		return this.number;
+		return this.code;
 	}
-
+	
 }

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -69,7 +69,7 @@ public class CameraService extends MobileService
 		return getMobileService(CameraService.class);
 	}
 	
-	private final Map<String, ServiceCall<ImageData>> getPictureCalls = new HashMap<>();
+	private final Map<String, GetPictureServiceCall> getPictureCalls = new HashMap<>();
 	
 	
 	public CameraService(final AbstractClientConnector target)
@@ -133,8 +133,8 @@ public class CameraService extends MobileService
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<ImageData> call = ServiceCall.async(successCallback,errorCallback);
-		call.put("options",options);
+		final GetPictureServiceCall call = new GetPictureServiceCall(successCallback,errorCallback,
+				options);
 		this.getPictureCalls.put(id,call);
 		
 		final StringBuilder js = new StringBuilder();
@@ -175,11 +175,10 @@ public class CameraService extends MobileService
 	private void camera_getPicture_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<ImageData> call = this.getPictureCalls.remove(id);
+		final GetPictureServiceCall call = this.getPictureCalls.remove(id);
 		if(call != null)
 		{
-			final CameraOptions options = (CameraOptions)call.get("options");
-			final ImageData imageData = new ImageData(options,arguments.getString(1));
+			final ImageData imageData = new ImageData(call.getOptions(),arguments.getString(1));
 			call.success(imageData);
 		}
 	}
@@ -188,10 +187,31 @@ public class CameraService extends MobileService
 	private void camera_getPicture_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<ImageData> call = this.getPictureCalls.remove(id);
+		final GetPictureServiceCall call = this.getPictureCalls.remove(id);
 		if(call != null)
 		{
 			call.error(new MobileServiceError(this,arguments.getString(1)));
+		}
+	}
+
+
+
+	protected static class GetPictureServiceCall extends ServiceCall.Implementation<ImageData>
+	{
+		private final CameraOptions options;
+
+
+		public GetPictureServiceCall(final Consumer<ImageData> successCallback,
+				final Consumer<MobileServiceError> errorCallback, final CameraOptions options)
+		{
+			super(successCallback,errorCallback);
+			this.options = options;
+		}
+		
+		
+		public CameraOptions getOptions()
+		{
+			return this.options;
 		}
 	}
 }

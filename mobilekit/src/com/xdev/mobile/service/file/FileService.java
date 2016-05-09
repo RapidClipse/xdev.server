@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * For further information see
+ * 
+ * For further information see 
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -85,7 +85,7 @@ public class FileService extends MobileService
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<FileData> call = ServiceCall.async(successCallback,errorCallback);
+		final ServiceCall<FileData> call = ServiceCall.New(successCallback,errorCallback);
 		this.readFileCalls.put(id,call);
 
 		final StringBuilder js = new StringBuilder();

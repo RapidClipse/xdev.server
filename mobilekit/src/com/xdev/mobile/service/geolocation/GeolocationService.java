@@ -121,7 +121,7 @@ public class GeolocationService extends MobileService
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<Position> call = ServiceCall.async(successCallback,errorCallback);
+		final ServiceCall<Position> call = ServiceCall.New(successCallback,errorCallback);
 		this.getCalls.put(id,call);
 
 		final StringBuilder js = new StringBuilder();
@@ -173,7 +173,7 @@ public class GeolocationService extends MobileService
 			final Consumer<MobileServiceError> errorCallback, final int timeout)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<Geolocation> call = ServiceCall.async(successCallback,errorCallback);
+		final ServiceCall<Geolocation> call = ServiceCall.New(successCallback,errorCallback);
 		this.watchcalls.put(id,call);
 
 		final StringBuilder js = new StringBuilder();

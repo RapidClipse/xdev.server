@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -27,18 +27,13 @@ package com.xdev.mobile.service.nfc;
  */
 public class Ndef
 {
-	
 	private boolean	isTrusted;
 	private Tag		tag;
 
 
-	/**
-	 *
-	 */
 	public Ndef()
 	{
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 
@@ -92,11 +87,6 @@ public class Ndef
 	}
 	
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString()
 	{

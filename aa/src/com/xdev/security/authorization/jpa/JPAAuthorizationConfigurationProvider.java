@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -40,26 +40,63 @@ import com.xdev.security.authorization.AuthorizationConfigurationProvider;
  */
 public class JPAAuthorizationConfigurationProvider implements AuthorizationConfigurationProvider
 {
-	///////////////////////////////////////////////////////////////////////////
-	// static methods //
-	///////////////////
+	private final Class<? extends AuthorizationSubject>		subjectEntityType;
+	private final Class<? extends AuthorizationRole>		roleEntityType;
+	private final Class<? extends AuthorizationResource>	resourceEntityType;
 
-	public static final AuthorizationConfiguration build(
+
+	public JPAAuthorizationConfigurationProvider(
 			final Class<? extends AuthorizationSubject> subjectEntityType,
 			final Class<? extends AuthorizationRole> roleEntityType,
 			final Class<? extends AuthorizationResource> resourceEntityType)
+	{
+		this.subjectEntityType = subjectEntityType;
+		this.roleEntityType = roleEntityType;
+		this.resourceEntityType = resourceEntityType;
+	}
+
+
+	/**
+	 * @return the subjectEntityType
+	 */
+	public Class<? extends AuthorizationSubject> getSubjectEntityType()
+	{
+		return this.subjectEntityType;
+	}
+	
+	
+	/**
+	 * @return the roleEntityType
+	 */
+	public Class<? extends AuthorizationRole> getRoleEntityType()
+	{
+		return this.roleEntityType;
+	}
+	
+	
+	/**
+	 * @return the resourceEntityType
+	 */
+	public Class<? extends AuthorizationResource> getResourceEntityType()
+	{
+		return this.resourceEntityType;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public AuthorizationConfiguration provideConfiguration()
 	{
 		final Map<String, Set<String>> resourceResources = new HashMap<String, Set<String>>();
 		final Map<String, Set<String>> roleRoles = new HashMap<String, Set<String>>();
 		final Map<String, Map<String, Integer>> rolePermissions = new HashMap<String, Map<String, Integer>>();
 		final Map<String, Set<String>> subjectRoles = new HashMap<String, Set<String>>();
 
-		final List<? extends AuthorizationSubject> subjects = DAOs
-				.getByEntityType(subjectEntityType).findAll();
-		final List<? extends AuthorizationRole> roles = DAOs.getByEntityType(roleEntityType)
-				.findAll();
-		final List<? extends AuthorizationResource> resources = DAOs
-				.getByEntityType(resourceEntityType).findAll();
+		final List<? extends AuthorizationSubject> subjects = getSubjects();
+		final List<? extends AuthorizationRole> roles = getRoles();
+		final List<? extends AuthorizationResource> resources = getResources();
 
 		for(final AuthorizationSubject subject : subjects)
 		{
@@ -82,7 +119,25 @@ public class JPAAuthorizationConfigurationProvider implements AuthorizationConfi
 	}
 
 
-	private static Set<String> unboxRoles(final Collection<? extends AuthorizationRole> roles)
+	protected List<? extends AuthorizationSubject> getSubjects()
+	{
+		return DAOs.getByEntityType(getSubjectEntityType()).findAll();
+	}
+
+
+	protected List<? extends AuthorizationRole> getRoles()
+	{
+		return DAOs.getByEntityType(getRoleEntityType()).findAll();
+	}
+	
+	
+	protected List<? extends AuthorizationResource> getResources()
+	{
+		return DAOs.getByEntityType(getResourceEntityType()).findAll();
+	}
+
+
+	protected Set<String> unboxRoles(final Collection<? extends AuthorizationRole> roles)
 	{
 		if(roles == null)
 		{
@@ -93,7 +148,7 @@ public class JPAAuthorizationConfigurationProvider implements AuthorizationConfi
 	}
 
 
-	private static Map<String, Integer> unboxResources(
+	protected Map<String, Integer> unboxResources(
 			final Collection<? extends AuthorizationResource> resources)
 	{
 		if(resources == null)
@@ -103,42 +158,5 @@ public class JPAAuthorizationConfigurationProvider implements AuthorizationConfi
 
 		return resources.stream()
 				.collect(Collectors.toMap(AuthorizationResource::resourceName,r -> 1));
-	}
-
-	///////////////////////////////////////////////////////////////////////////
-	// instance fields //
-	////////////////////
-
-	private final Class<? extends AuthorizationSubject>		subjectEntityType;
-	private final Class<? extends AuthorizationRole>		roleEntityType;
-	private final Class<? extends AuthorizationResource>	resourceEntityType;
-
-
-	///////////////////////////////////////////////////////////////////////////
-	// constructors //
-	/////////////////
-
-	public JPAAuthorizationConfigurationProvider(
-			final Class<? extends AuthorizationSubject> subjectEntityType,
-			final Class<? extends AuthorizationRole> roleEntityType,
-			final Class<? extends AuthorizationResource> resourceEntityType)
-	{
-		this.subjectEntityType = subjectEntityType;
-		this.roleEntityType = roleEntityType;
-		this.resourceEntityType = resourceEntityType;
-	}
-
-
-	///////////////////////////////////////////////////////////////////////////
-	// override methods //
-	/////////////////////
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public AuthorizationConfiguration provideConfiguration()
-	{
-		return build(this.subjectEntityType,this.roleEntityType,this.resourceEntityType);
 	}
 }

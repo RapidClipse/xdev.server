@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -45,26 +45,55 @@ import com.xdev.security.authorization.AuthorizationException;
  */
 public class LDAPAuthorizationConfigurationProvider implements AuthorizationConfigurationProvider
 {
-	///////////////////////////////////////////////////////////////////////////
-	// static methods //
-	///////////////////
+	private final LDAPConfiguration				configuration;
+	private final CredentialsUsernamePassword	credentials;
 	
-	public static final AuthorizationConfiguration build(final LDAPConfiguration configuration,
-			final CredentialsUsernamePassword credentials) throws AuthorizationException
+	
+	public LDAPAuthorizationConfigurationProvider(final LDAPConfiguration configuration,
+			final CredentialsUsernamePassword credentials)
 	{
-		try (final LDAPRealm realm = new LDAPRealm(configuration,credentials))
+		this.configuration = configuration;
+		this.credentials = credentials;
+	}
+
+
+	/**
+	 * @return the configuration
+	 */
+	public LDAPConfiguration getConfiguration()
+	{
+		return this.configuration;
+	}
+	
+	
+	/**
+	 * @return the credentials
+	 */
+	public CredentialsUsernamePassword getCredentials()
+	{
+		return this.credentials;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public AuthorizationConfiguration provideConfiguration()
+	{
+		try (final LDAPRealm realm = new LDAPRealm(this.configuration,this.credentials))
 		{
 			SecurityUtils.setSecurityManager(new DefaultSecurityManager(realm));
-			
+
 			final Map<String, Set<String>> resourceResources = new HashMap<String, Set<String>>();
 			final Map<String, Set<String>> roleRoles = new HashMap<String, Set<String>>();
 			final HashMap<String, HashMap<String, Integer>> rolePermissions = new HashMap<String, HashMap<String, Integer>>();
 			final Map<String, Set<String>> subjectRoles = new HashMap<String, Set<String>>();
-			
-			final String username = credentials.username();
+
+			final String username = this.credentials.username();
 			final Set<String> groupNames = realm.getGroupNamesForUser(username);
 			subjectRoles.put(username,groupNames);
-			
+
 			for(final String group : groupNames)
 			{
 				final HashMap<String, Integer> permissions = new HashMap<String, Integer>();
@@ -73,7 +102,7 @@ public class LDAPAuthorizationConfigurationProvider implements AuthorizationConf
 				roleRoles.put(group,new HashSet<String>());
 				resourceResources.put(group,new HashSet<String>());
 			}
-			
+
 			return AuthorizationConfiguration.New(resourceResources,roleRoles,rolePermissions,
 					subjectRoles);
 		}
@@ -81,38 +110,5 @@ public class LDAPAuthorizationConfigurationProvider implements AuthorizationConf
 		{
 			throw new AuthorizationException(e);
 		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////
-	// instance fields //
-	////////////////////
-	
-	private final LDAPConfiguration				configuration;
-	private final CredentialsUsernamePassword	credentials;
-												
-												
-	///////////////////////////////////////////////////////////////////////////
-	// constructors //
-	/////////////////
-	
-	public LDAPAuthorizationConfigurationProvider(final LDAPConfiguration configuration,
-			final CredentialsUsernamePassword credentials)
-	{
-		this.configuration = configuration;
-		this.credentials = credentials;
-	}
-	
-	
-	///////////////////////////////////////////////////////////////////////////
-	// override methods //
-	/////////////////////
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public AuthorizationConfiguration provideConfiguration()
-	{
-		return build(this.configuration,this.credentials);
 	}
 }

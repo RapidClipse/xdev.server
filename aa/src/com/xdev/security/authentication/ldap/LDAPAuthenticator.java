@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -38,39 +38,39 @@ public class LDAPAuthenticator implements Authenticator<CredentialsUsernamePassw
 	// /////////////////////////////////////////////////////////////////////////
 	// instance fields //
 	// //////////////////
-	
+
 	private final LDAPConfiguration configuration;
-	
-	
+
+
 	// /////////////////////////////////////////////////////////////////////////
 	// constructors //
 	// ///////////////
-	
+
 	public LDAPAuthenticator(final LDAPConfiguration configuration)
 	{
 		super();
-		
+
 		this.configuration = configuration;
 	}
-	
-	
+
+
 	// /////////////////////////////////////////////////////////////////////////
 	// declared methods //
 	// ///////////////////
-	
+
 	public final DirContext authenticate(final String username, final String password)
 			throws AuthenticationFailedException
 	{
 		return this.authenticate(CredentialsUsernamePassword.New(username,password));
 	}
-	
-	
+
+
 	// /////////////////////////////////////////////////////////////////////////
 	// override methods //
 	// ///////////////////
-	
+
 	@Override
-	public final DirContext authenticate(final CredentialsUsernamePassword credentials)
+	public DirContext authenticate(final CredentialsUsernamePassword credentials)
 			throws AuthenticationFailedException
 	{
 		try (LDAPRealm realm = new LDAPRealm(this.configuration,credentials))

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -24,8 +24,8 @@ package com.xdev.ui.filter;
 import java.util.Date;
 
 import com.vaadin.data.Container.Filter;
+import com.vaadin.data.util.filter.Like;
 import com.vaadin.data.util.filter.Not;
-import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.xdev.data.util.filter.Compare;
 import com.xdev.res.StringResourceUtils;
 
@@ -49,9 +49,9 @@ public interface FilterOperator
 
 
 	public Filter createFilter(FilterContext context, FilterField<?>[] editors);
-	
-	
-	
+
+
+
 	public static abstract class Abstract implements FilterOperator
 	{
 		protected final String	key;
@@ -110,8 +110,8 @@ public interface FilterOperator
 		{
 			return type == Boolean.class || type == boolean.class;
 		}
-		
-		
+
+
 		protected FilterField<?> createStringField()
 		{
 			return new TextFilterField();
@@ -146,7 +146,62 @@ public interface FilterOperator
 
 
 
-	public static class Equals extends Abstract
+	public static abstract class AbstractString extends Abstract
+	{
+		public AbstractString(final String key)
+		{
+			super(key);
+		}
+
+
+		public AbstractString(final String key, final String name)
+		{
+			super(key,name);
+		}
+
+
+		@Override
+		public boolean isPropertyTypeSupported(final Class<?> type)
+		{
+			return type == String.class;
+		}
+
+
+		@Override
+		public FilterField<?>[] createValueEditors(final FilterContext context,
+				final Class<?> propertyType)
+		{
+			return new FilterField<?>[]{createStringField()};
+		}
+
+
+		@Override
+		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
+		{
+			String value = (String)editors[0].getFilterValue();
+			if(value == null)
+			{
+				return null;
+			}
+
+			value = value.trim();
+			if(value.length() == 0)
+			{
+				return null;
+			}
+
+			final String pattern = SearchFilterGenerator.toPattern(value,context.getSettings());
+			return createStringFilter(pattern,context,editors);
+		}
+
+
+		protected abstract Filter createStringFilter(final String pattern,
+				final FilterContext context, final FilterField<?>[] editors);
+	}
+
+
+
+	public static class Equals extends AbstractString
 	{
 		public final static String KEY = "EQUALS";
 
@@ -158,42 +213,22 @@ public interface FilterOperator
 
 
 		@Override
-		public boolean isPropertyTypeSupported(final Class<?> type)
+		protected Filter createStringFilter(final String pattern, final FilterContext context,
+				final FilterField<?>[] editors)
 		{
-			return type == String.class;
-		}
-
-
-		@Override
-		public FilterField<?>[] createValueEditors(final FilterContext context,
-				final Class<?> propertyType)
-		{
-			return new FilterField<?>[]{createStringField()};
-		}
-
-
-		@Override
-		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
-		{
-			String value = (String)editors[0].getFilterValue();
-			if(value == null)
+			if(pattern.indexOf(SearchFilterGenerator.SQL_WILDCARD) != -1
+					|| !context.getSettings().isCaseSensitive())
 			{
-				return null;
-			}
-			
-			value = value.trim();
-			if(value.length() == 0)
-			{
-				return null;
+				return new Like(context.getPropertyId(),pattern,false);
 			}
 
-			return new Compare.Equal(context.getPropertyId(),value);
+			return new Compare.Equal(context.getPropertyId(),pattern);
 		}
 	}
 
 
 
-	public static class StartsWith extends Abstract
+	public static class StartsWith extends AbstractString
 	{
 		public final static String KEY = "STARTS_WITH";
 
@@ -202,40 +237,20 @@ public interface FilterOperator
 		{
 			super(KEY);
 		}
-		
-		
-		@Override
-		public boolean isPropertyTypeSupported(final Class<?> type)
-		{
-			return type == String.class;
-		}
 
 
 		@Override
-		public FilterField<?>[] createValueEditors(final FilterContext context,
-				final Class<?> propertyType)
+		protected Filter createStringFilter(String pattern, final FilterContext context,
+				final FilterField<?>[] editors)
 		{
-			return new FilterField<?>[]{createStringField()};
-		}
-
-
-		@Override
-		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
-		{
-			String value = (String)editors[0].getFilterValue();
-			if(value == null)
+			if(pattern.length() > 0
+					&& pattern.charAt(pattern.length() - 1) != SearchFilterGenerator.SQL_WILDCARD)
 			{
-				return null;
+				pattern += SearchFilterGenerator.SQL_WILDCARD;
 			}
 
-			value = value.trim();
-			if(value.length() == 0)
-			{
-				return null;
-			}
-
-			return new SimpleStringFilter(context.getPropertyId(),value,
-					!context.getSettings().isCaseSensitive(),true);
+			return new Like(context.getPropertyId(),pattern,
+					context.getSettings().isCaseSensitive());
 		}
 	}
 

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -23,6 +23,7 @@ package com.xdev.ui.entitycomponent;
 
 import java.util.Locale;
 
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
 import com.xdev.util.HibernateEntityIDResolver;
 
@@ -58,8 +59,20 @@ public class BeanToBeanConverter<T> implements Converter<T, T>
 			return null;
 		}
 		
+		final BeanItem<T> item = this.container.getItem(value);
+		if(item != null)
+		{
+			// same object
+			return item.getBean();
+		}
+		
+		// find by id
 		final HibernateEntityIDResolver idResolver = HibernateEntityIDResolver.getInstance();
 		final Object id = idResolver.getEntityIDPropertyValue(value);
+		if(id == null)
+		{
+			return value;
+		}
 		final T containerValue = this.container.getItemIds().stream()
 				.map(propertyId -> this.container.getItem(propertyId).getBean())
 				.filter(bean -> bean.equals(value)

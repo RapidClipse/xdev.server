@@ -36,7 +36,7 @@
 	<properties>
 		<repositoryName>xdev.server.core</repositoryName>
 		<pluginProject>xdev.eclipse.server.core</pluginProject>
-		<vaadinVersion>7.6.4</vaadinVersion>
+		<vaadinVersion>7.6.6</vaadinVersion>
 		<hibernateVersion>4.3.10.Final</hibernateVersion>
 	</properties>
 

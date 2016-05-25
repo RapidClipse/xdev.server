@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -49,6 +49,9 @@ public interface XdevBeanContainer<T> extends Container.Filterable
 	 * refresh data for query implementations
 	 */
 	public void refresh();
+	
+	
+	public BeanItem<T> replaceItem(BeanItem<T> oldItem, T newBean);
 	
 	
 	public Class<? super T> getBeanType();

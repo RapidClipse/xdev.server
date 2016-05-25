@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -24,7 +24,9 @@ package com.xdev.ui;
 import org.hibernate.StaleObjectStateException;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.util.BeanItem;
 import com.xdev.dal.DAOs;
+import com.xdev.ui.fieldgroup.BeanItemCreator;
 import com.xdev.ui.fieldgroup.ObjectLockedException;
 
 
@@ -43,25 +45,51 @@ import com.xdev.ui.fieldgroup.ObjectLockedException;
  * </p>
  *
  * @author XDEV Software
- *		
+ *
  */
 public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 {
+	private final Class<T>		beanType;
+	
+	private BeanItemCreator<T>	beanItemCreator;
+	
+	
 	public XdevFieldGroup()
 	{
-		super(null);
+		this(null);
 	}
-
-
+	
+	
 	/**
 	 * @param beanType
 	 */
 	public XdevFieldGroup(final Class<T> beanType)
 	{
 		super(beanType);
+		
+		this.beanType = beanType;
+	}
+	
+	
+	/**
+	 * @param beanItemCreator
+	 *            the beanItemCreator to set
+	 */
+	public void setBeanItemCreator(final BeanItemCreator<T> beanItemCreator)
+	{
+		this.beanItemCreator = beanItemCreator;
 	}
 
 
+	/**
+	 * @return the beanItemCreator
+	 */
+	public BeanItemCreator<T> getBeanItemCreator()
+	{
+		return this.beanItemCreator;
+	}
+	
+	
 	public T save() throws com.xdev.ui.fieldgroup.CommitException, ObjectLockedException
 	{
 		try
@@ -72,12 +100,27 @@ public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 		{
 			throw new com.xdev.ui.fieldgroup.CommitException(e);
 		}
-
-		final T bean = getItemDataSource().getBean();
+		
+		final BeanItem<T> beanItem = getItemDataSource();
+		final T bean = beanItem.getBean();
 		try
 		{
 			final T persistentBean = DAOs.get(bean).save(bean);
-			this.setItemDataSource(persistentBean);
+			
+			if(persistentBean != bean)
+			{
+				BeanItem<T> newItem = null;
+				if(this.beanItemCreator != null)
+				{
+					newItem = this.beanItemCreator.createBeanItem(beanItem,persistentBean);
+				}
+				if(newItem == null)
+				{
+					newItem = new BeanItem<T>(persistentBean,this.beanType);
+				}
+				this.setItemDataSource(newItem);
+			}
+			
 			return persistentBean;
 		}
 		catch(final StaleObjectStateException e)

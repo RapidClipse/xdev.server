@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -30,6 +30,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.AbstractSelect;
 import com.xdev.dal.DAOs;
 import com.xdev.data.util.filter.CompareBIDirect;
+import com.xdev.ui.XdevFieldGroup;
 import com.xdev.ui.entitycomponent.BeanComponent;
 
 
@@ -45,7 +46,7 @@ public interface MasterDetail
 
 	public class Implementation implements MasterDetail
 	{
-
+		
 		@Override
 		public void connectMasterDetail(final AbstractSelect master,
 				final Filterable detailContainer, final Object filterProperty,
@@ -71,6 +72,12 @@ public interface MasterDetail
 		public <T> void connectForm(final BeanComponent<T> master, final BeanFieldGroup<T> detail)
 		{
 			master.addValueChangeListener(e -> prepareFormData(master.getSelectedItem(),detail));
+			
+			if(detail instanceof XdevFieldGroup)
+			{
+				((XdevFieldGroup<T>)detail)
+						.setBeanItemCreator(master.getContainerDataSource()::replaceItem);
+			}
 		}
 
 

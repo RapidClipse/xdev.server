@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -42,8 +42,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	private static final long	serialVersionUID	= 1L;
 	private final Class<T>		entityType;
 	private Object[]			requiredProperties;
-								
-								
+
+
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
 	 *
@@ -192,6 +192,20 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	public BeanItem<T> getItem(final Object itemId)
 	{
 		return (BeanItem<T>)super.getItem(itemId);
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.xdev.ui.entitycomponent.XdevBeanContainer#replaceItem(com.vaadin.data
+	 * .util.BeanItem, java.lang.Object)
+	 */
+	@Override
+	public BeanItem<T> replaceItem(final BeanItem<T> oldItem, final T newBean)
+	{
+		return getQueryView().replaceItem(oldItem,newBean);
 	}
 
 

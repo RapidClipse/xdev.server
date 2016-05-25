@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -38,8 +38,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		implements XdevBeanContainer<BEANTYPE>
 {
 	private Object[] requiredProperties;
-	
-	
+
+
 	/**
 	 * @param type
 	 * @throws IllegalArgumentException
@@ -48,8 +48,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		super(type);
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -60,8 +60,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		this.removeAllItems();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -72,8 +72,30 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		// no need to synchronize
 	}
-	
-	
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.xdev.ui.entitycomponent.XdevBeanContainer#replaceItem(com.vaadin.data
+	 * .util.BeanItem, java.lang.Object)
+	 */
+	@Override
+	public BeanItem<BEANTYPE> replaceItem(final BeanItem<BEANTYPE> oldItem, final BEANTYPE newBean)
+	{
+		final BEANTYPE id = oldItem.getBean();
+		final int index = getAllItemIds().indexOf(id);
+		if(index != -1)
+		{
+			removeItem(id);
+			return addBeanAt(index,newBean);
+		}
+
+		return null;
+	}
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -85,14 +107,14 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	public void setRequiredProperties(final Object... propertyIDs)
 	{
 		this.requiredProperties = propertyIDs;
-		
+
 		for(final BEANTYPE bean : getAllItemIds())
 		{
 			preload(bean);
 		}
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -104,8 +126,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		return this.requiredProperties;
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -120,8 +142,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 			this.removeItem(bean);
 		}
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -132,8 +154,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		return super.getAllItemIds();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -146,64 +168,53 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		return super.getUnfilteredItem(itemId);
 	}
-	
-	
-	/**
-	 * {@inheritDoc}
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.vaadin.data.util.AbstractInMemoryContainer#internalAddItemAfter(java.
+	 * lang.Object, java.lang.Object, com.vaadin.data.Item, boolean)
 	 */
 	@Override
-	public void addAll(final Collection<? extends BEANTYPE> collection)
+	protected BeanItem<BEANTYPE> internalAddItemAfter(final BEANTYPE previousItemId,
+			final BEANTYPE newItemId, final BeanItem<BEANTYPE> item, final boolean filter)
 	{
-		super.addAll(collection);
-		
-		if(!collection.isEmpty())
-		{
-			for(final BEANTYPE bean : collection)
-			{
-				preload(bean);
-			}
-		}
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public BeanItem<BEANTYPE> addBean(final BEANTYPE bean)
-	{
-		final BeanItem<BEANTYPE> item = super.addBean(bean);
-		// addBean id is bean itself
 		preload(item.getBean());
-		return item;
+		return super.internalAddItemAfter(previousItemId,newItemId,item,filter);
 	}
 	
 	
-	/**
-	 * {@inheritDoc}
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.vaadin.data.util.AbstractInMemoryContainer#internalAddItemAtEnd(java.
+	 * lang.Object, com.vaadin.data.Item, boolean)
 	 */
 	@Override
-	public BeanItem<BEANTYPE> addItem(final Object itemId)
+	protected BeanItem<BEANTYPE> internalAddItemAtEnd(final BEANTYPE newItemId,
+			final BeanItem<BEANTYPE> item, final boolean filter)
 	{
-		final BeanItem<BEANTYPE> item = super.addItem(itemId);
 		preload(item.getBean());
-		return item;
+		return super.internalAddItemAtEnd(newItemId,item,filter);
 	}
-	
-	
+
+
 	protected void preload(final BEANTYPE bean)
 	{
 		if(this.requiredProperties == null || this.requiredProperties.length == 0)
 		{
 			return;
 		}
-		
+
 		final String[] properties = new String[this.requiredProperties.length];
 		for(int i = 0; i < properties.length; i++)
 		{
 			properties[i] = this.requiredProperties[i].toString();
 		}
-		
+
 		DTOUtils.preload(bean,HibernateEntityIDResolver.getInstance(),properties);
 	}
 }

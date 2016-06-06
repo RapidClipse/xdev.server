@@ -76,8 +76,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,container);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator.
 	 * <p>
@@ -104,8 +104,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,stateManager,display);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI and replacing the contents of
@@ -129,8 +129,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,container);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI.
@@ -150,8 +150,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,display);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -166,6 +166,61 @@ public class XdevNavigator extends Navigator
 		if(navigationState != null)
 		{
 			super.navigateTo(navigationState);
+		}
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void init(final UI ui, final NavigationStateManager stateManager,
+			final ViewDisplay display)
+	{
+		super.init(ui,new XdevNavigationStateManager(stateManager),display);
+	}
+
+
+
+	private static class XdevNavigationStateManager implements NavigationStateManager
+	{
+		private final NavigationStateManager delegate;
+
+
+		public XdevNavigationStateManager(final NavigationStateManager delegate)
+		{
+			this.delegate = delegate;
+		}
+
+
+		@Override
+		public String getState()
+		{
+			/*
+			 * Workaround for Vaadin Bug (NPE), see XWS-1021
+			 */
+			try
+			{
+				return this.delegate.getState();
+			}
+			catch(final NullPointerException e)
+			{
+				return "";
+			}
+		}
+
+
+		@Override
+		public void setState(final String state)
+		{
+			this.delegate.setState(state);
+		}
+
+
+		@Override
+		public void setNavigator(final Navigator navigator)
+		{
+			this.delegate.setNavigator(navigator);
 		}
 	}
 }

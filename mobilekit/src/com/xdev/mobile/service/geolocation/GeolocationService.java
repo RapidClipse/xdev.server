@@ -68,7 +68,7 @@ import elemental.json.JsonObject;
 @JavaScript("geolocation.js")
 public class GeolocationService extends MobileService
 {
-	
+
 	/**
 	 * Returns the geolocation service.<br>
 	 * To activate the service it has to be registered in the mobile.xml.
@@ -88,9 +88,9 @@ public class GeolocationService extends MobileService
 		return getMobileService(GeolocationService.class);
 	}
 
-	private final Map<String, ServiceCall<Position>>	getCalls	= new HashMap<>();
-	private final Map<String, ServiceCall<Geolocation>>	watchcalls	= new HashMap<>();
-	private final Map<String, Position>					waitMap		= new HashMap<>();
+	private final Map<String, ServiceCall<Position, MobileServiceError>>	getCalls	= new HashMap<>();
+	private final Map<String, ServiceCall<Geolocation, MobileServiceError>>	watchcalls	= new HashMap<>();
+	private final Map<String, Position>										waitMap		= new HashMap<>();
 
 
 	public GeolocationService(final AbstractClientConnector connector)
@@ -121,7 +121,8 @@ public class GeolocationService extends MobileService
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<Position> call = ServiceCall.New(successCallback,errorCallback);
+		final ServiceCall<Position, MobileServiceError> call = ServiceCall.New(successCallback,
+				errorCallback);
 		this.getCalls.put(id,call);
 
 		final StringBuilder js = new StringBuilder();
@@ -134,7 +135,7 @@ public class GeolocationService extends MobileService
 	private void geolocation_get_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<Position> call = this.getCalls.remove(id);
+		final ServiceCall<Position, MobileServiceError> call = this.getCalls.remove(id);
 		if(call != null)
 		{
 			final Gson gson = new Gson();
@@ -147,12 +148,7 @@ public class GeolocationService extends MobileService
 
 	private void geolocation_get_error(final JsonArray arguments)
 	{
-		final String id = arguments.getString(0);
-		final ServiceCall<Position> call = this.getCalls.remove(id);
-		if(call != null)
-		{
-			call.error(new MobileServiceError(this,arguments.get(1).asString()));
-		}
+		callError(arguments,this.getCalls,true);
 	}
 
 
@@ -173,7 +169,8 @@ public class GeolocationService extends MobileService
 			final Consumer<MobileServiceError> errorCallback, final int timeout)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<Geolocation> call = ServiceCall.New(successCallback,errorCallback);
+		final ServiceCall<Geolocation, MobileServiceError> call = ServiceCall.New(successCallback,
+				errorCallback);
 		this.watchcalls.put(id,call);
 
 		final StringBuilder js = new StringBuilder();
@@ -195,7 +192,7 @@ public class GeolocationService extends MobileService
 	private void geolocation_watch_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<Geolocation> call = this.watchcalls.get(id);
+		final ServiceCall<Geolocation, MobileServiceError> call = this.watchcalls.get(id);
 		if(call != null)
 		{
 			final Gson gson = new Gson();
@@ -210,12 +207,7 @@ public class GeolocationService extends MobileService
 
 	private void geolocation_watch_error(final JsonArray arguments)
 	{
-		final String id = arguments.getString(0);
-		final ServiceCall<Geolocation> call = this.watchcalls.get(id);
-		if(call != null)
-		{
-			call.error(new MobileServiceError(this,arguments.get(1).asString()));
-		}
+		callError(arguments,this.watchcalls,false);
 	}
 
 

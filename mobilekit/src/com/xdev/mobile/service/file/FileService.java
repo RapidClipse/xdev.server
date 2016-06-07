@@ -30,7 +30,6 @@ import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
 import com.xdev.mobile.service.MobileService;
 import com.xdev.mobile.service.MobileServiceDescriptor;
-import com.xdev.mobile.service.MobileServiceError;
 import com.xdev.mobile.service.file.FileServiceError.Reason;
 
 import elemental.json.JsonArray;
@@ -43,7 +42,7 @@ import elemental.json.JsonValue;
  * residing on the device.
  *
  * @author XDEV Software
- *
+ *		
  */
 
 @MobileServiceDescriptor("file-descriptor.xml")
@@ -68,56 +67,57 @@ public class FileService extends MobileService
 	{
 		return getMobileService(FileService.class);
 	}
-
-	private final Map<String, ServiceCall<FileData>> readFileCalls = new HashMap<>();
-
-
+	
+	private final Map<String, ServiceCall<FileData, FileServiceError>> readFileCalls = new HashMap<>();
+	
+	
 	public FileService(final AbstractClientConnector connector)
 	{
 		super(connector);
-
+		
 		this.addFunction("file_readFile_success",this::file_readFile_success);
 		this.addFunction("file_readFile_error",this::file_readFile_error);
 	}
-
-
+	
+	
 	public void readFile(final String path, final Consumer<FileData> successCallback,
-			final Consumer<MobileServiceError> errorCallback)
+			final Consumer<FileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<FileData> call = ServiceCall.New(successCallback,errorCallback);
+		final ServiceCall<FileData, FileServiceError> call = ServiceCall.New(successCallback,
+				errorCallback);
 		this.readFileCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
-
+		
 		js.append("file_readFile('").append(id).append("','").append(path).append("');");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private void file_readFile_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<FileData> call = this.readFileCalls.remove(id);
+		final ServiceCall<FileData, FileServiceError> call = this.readFileCalls.remove(id);
 		if(call != null)
 		{
 			call.success(new FileData(arguments.get(1).asString()));
 		}
 	}
-
-
+	
+	
 	private void file_readFile_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<FileData> call = this.readFileCalls.remove(id);
+		final ServiceCall<FileData, FileServiceError> call = this.readFileCalls.remove(id);
 		if(call != null)
 		{
 			call.error(createFileServiceError("Error reading file",arguments.get(1)));
 		}
 	}
-	
-	
+
+
 	private FileServiceError createFileServiceError(final String message, final JsonValue value)
 	{
 		Reason reason = null;

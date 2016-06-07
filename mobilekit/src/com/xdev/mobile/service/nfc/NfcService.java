@@ -48,7 +48,7 @@ import elemental.json.JsonObject;
  * </ul>
  *
  * @author XDEV Software
- *
+ *		
  */
 
 @MobileServiceDescriptor("nfc-descriptor.xml")
@@ -77,7 +77,8 @@ public class NfcService extends MobileService
 
 
 
-	protected static class NfcCallbackServiceCall extends ServiceCall.Implementation<String>
+	protected static class NfcCallbackServiceCall
+			extends ServiceCall.Implementation<String, MobileServiceError>
 	{
 		private final Consumer<Ndef> callback;
 
@@ -99,14 +100,14 @@ public class NfcService extends MobileService
 		}
 	}
 
-	private final Map<String, NfcCallbackServiceCall>	startNdefListenerCalls			= new HashMap<>();
-	private final Map<String, ServiceCall<String>>		removeNdefListenerCalls			= new HashMap<>();
-	private final Map<String, NfcCallbackServiceCall>	startTagDiscoveredListenerCalls	= new HashMap<>();
-	private final Map<String, ServiceCall<String>>		stopTagDiscoveredListenerCalls	= new HashMap<>();
-	private final Map<String, ServiceCall<String>>		eraseTagCalls					= new HashMap<>();
-	private final Map<String, ServiceCall<String>>		writeCalls						= new HashMap<>();
-	private final Map<String, ServiceCall<String>>		makeReadOnlyCalls				= new HashMap<>();
-	private final Map<String, ServiceCall<String>>		showSettingsCalls				= new HashMap<>();
+	private final Map<String, NfcCallbackServiceCall>					startNdefListenerCalls			= new HashMap<>();
+	private final Map<String, ServiceCall<String, MobileServiceError>>	removeNdefListenerCalls			= new HashMap<>();
+	private final Map<String, NfcCallbackServiceCall>					startTagDiscoveredListenerCalls	= new HashMap<>();
+	private final Map<String, ServiceCall<String, MobileServiceError>>	stopTagDiscoveredListenerCalls	= new HashMap<>();
+	private final Map<String, ServiceCall<String, MobileServiceError>>	eraseTagCalls					= new HashMap<>();
+	private final Map<String, ServiceCall<String, MobileServiceError>>	writeCalls						= new HashMap<>();
+	private final Map<String, ServiceCall<String, MobileServiceError>>	makeReadOnlyCalls				= new HashMap<>();
+	private final Map<String, ServiceCall<String, MobileServiceError>>	showSettingsCalls				= new HashMap<>();
 
 
 	public NfcService(final AbstractClientConnector connector)
@@ -190,12 +191,7 @@ public class NfcService extends MobileService
 
 	private void nfc_startNdefListener_error(final JsonArray arguments)
 	{
-		final String id = arguments.getString(0);
-		final NfcCallbackServiceCall call = this.startNdefListenerCalls.remove(id);
-		if(call != null)
-		{
-			call.error(new MobileServiceError(this,arguments.get(1).asString()));
-		}
+		callError(arguments,this.startNdefListenerCalls,true);
 	}
 
 
@@ -227,7 +223,8 @@ public class NfcService extends MobileService
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<String> call = ServiceCall.New(successCallback,errorCallback);
+		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
+				errorCallback);
 		this.removeNdefListenerCalls.put(id,call);
 
 		final StringBuilder js = new StringBuilder();
@@ -240,7 +237,7 @@ public class NfcService extends MobileService
 	private void nfc_stopNdefListener_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<String> call = this.removeNdefListenerCalls.get(id);
+		final ServiceCall<String, MobileServiceError> call = this.removeNdefListenerCalls.get(id);
 		if(call != null)
 		{
 			call.success(arguments.getString(1));
@@ -250,12 +247,7 @@ public class NfcService extends MobileService
 
 	private void nfc_stopNdefListener_error(final JsonArray arguments)
 	{
-		final String id = arguments.getString(0);
-		final ServiceCall<String> call = this.removeNdefListenerCalls.remove(id);
-		if(call != null)
-		{
-			call.error(new MobileServiceError(this,arguments.get(1).asString()));
-		}
+		callError(arguments,this.removeNdefListenerCalls,true);
 	}
 
 
@@ -303,12 +295,7 @@ public class NfcService extends MobileService
 
 	private void nfc_startTagDiscoveredListener_error(final JsonArray arguments)
 	{
-		final String id = arguments.getString(0);
-		final NfcCallbackServiceCall call = this.startTagDiscoveredListenerCalls.remove(id);
-		if(call != null)
-		{
-			call.error(new MobileServiceError(this,arguments.get(1).asString()));
-		}
+		callError(arguments,this.startTagDiscoveredListenerCalls,true);
 	}
 
 
@@ -340,8 +327,9 @@ public class NfcService extends MobileService
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<String> call = ServiceCall.New(successCallback,errorCallback);
-
+		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
+				errorCallback);
+				
 		this.stopTagDiscoveredListenerCalls.put(id,call);
 
 		final StringBuilder js = new StringBuilder();
@@ -354,7 +342,8 @@ public class NfcService extends MobileService
 	private void nfc_stopTagDiscoveredListener_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<String> call = this.stopTagDiscoveredListenerCalls.remove(id);
+		final ServiceCall<String, MobileServiceError> call = this.stopTagDiscoveredListenerCalls
+				.remove(id);
 		if(call != null)
 		{
 			call.success(arguments.getString(1));
@@ -364,12 +353,7 @@ public class NfcService extends MobileService
 
 	private void nfc_stopTagDiscoveredListener_error(final JsonArray arguments)
 	{
-		final String id = arguments.getString(0);
-		final ServiceCall<String> call = this.stopTagDiscoveredListenerCalls.remove(id);
-		if(call != null)
-		{
-			call.error(new MobileServiceError(this,arguments.get(1).asString()));
-		}
+		callError(arguments,this.stopTagDiscoveredListenerCalls,true);
 	}
 
 
@@ -385,7 +369,8 @@ public class NfcService extends MobileService
 	{
 		removeAllListener();
 		final String id = generateCallerID();
-		final ServiceCall<String> call = ServiceCall.New(successCallback,errorCallback);
+		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
+				errorCallback);
 		this.eraseTagCalls.put(id,call);
 
 		final StringBuilder js = new StringBuilder();
@@ -398,7 +383,7 @@ public class NfcService extends MobileService
 	private void nfc_erase_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<String> call = this.eraseTagCalls.get(id);
+		final ServiceCall<String, MobileServiceError> call = this.eraseTagCalls.get(id);
 		if(call != null)
 		{
 			call.success(arguments.getString(1));
@@ -408,12 +393,7 @@ public class NfcService extends MobileService
 
 	private void nfc_erase_error(final JsonArray arguments)
 	{
-		final String id = arguments.getString(0);
-		final ServiceCall<String> call = this.eraseTagCalls.remove(id);
-		if(call != null)
-		{
-			call.error(new MobileServiceError(this,arguments.get(1).asString()));
-		}
+		callError(arguments,this.eraseTagCalls,true);
 	}
 
 
@@ -437,7 +417,8 @@ public class NfcService extends MobileService
 		removeAllListener();
 
 		final String id = generateCallerID();
-		final ServiceCall<String> call = ServiceCall.New(successCallback,errorCallback);
+		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
+				errorCallback);
 		this.writeCalls.put(id,call);
 
 		final StringBuilder message = new StringBuilder();
@@ -508,7 +489,7 @@ public class NfcService extends MobileService
 	private void nfc_write_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<String> call = this.writeCalls.get(id);
+		final ServiceCall<String, MobileServiceError> call = this.writeCalls.get(id);
 		if(call != null)
 		{
 			call.success(arguments.getString(1));
@@ -518,12 +499,7 @@ public class NfcService extends MobileService
 
 	private void nfc_write_error(final JsonArray arguments)
 	{
-		final String id = arguments.getString(0);
-		final ServiceCall<String> call = this.writeCalls.remove(id);
-		if(call != null)
-		{
-			call.error(new MobileServiceError(this,arguments.get(1).asString()));
-		}
+		callError(arguments,this.writeCalls,true);
 	}
 	
 	
@@ -531,7 +507,7 @@ public class NfcService extends MobileService
 	 * Makes a NFC tag read only.
 	 * <p>
 	 * <b> Warning this is permanent.</b>
-	 * 
+	 *
 	 * @param successCallback
 	 * @param errorCallback
 	 */
@@ -541,7 +517,8 @@ public class NfcService extends MobileService
 		removeAllListener();
 
 		final String id = generateCallerID();
-		final ServiceCall<String> call = ServiceCall.New(successCallback,errorCallback);
+		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
+				errorCallback);
 		this.makeReadOnlyCalls.put(id,call);
 
 		final StringBuilder js = new StringBuilder();
@@ -554,7 +531,7 @@ public class NfcService extends MobileService
 	private void nfc_makeReadOnly_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<String> call = this.makeReadOnlyCalls.get(id);
+		final ServiceCall<String, MobileServiceError> call = this.makeReadOnlyCalls.get(id);
 		if(call != null)
 		{
 			call.success(arguments.getString(1));
@@ -564,12 +541,7 @@ public class NfcService extends MobileService
 
 	private void nfc_makeReadOnly_error(final JsonArray arguments)
 	{
-		final String id = arguments.getString(0);
-		final ServiceCall<String> call = this.makeReadOnlyCalls.remove(id);
-		if(call != null)
-		{
-			call.error(new MobileServiceError(this,arguments.get(1).asString()));
-		}
+		callError(arguments,this.makeReadOnlyCalls,true);
 	}
 
 
@@ -583,7 +555,8 @@ public class NfcService extends MobileService
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<String> call = ServiceCall.New(successCallback,errorCallback);
+		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
+				errorCallback);
 		this.showSettingsCalls.put(id,call);
 
 		final StringBuilder js = new StringBuilder();
@@ -596,7 +569,7 @@ public class NfcService extends MobileService
 	private void nfc_showSettings_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<String> call = this.showSettingsCalls.remove(id);
+		final ServiceCall<String, MobileServiceError> call = this.showSettingsCalls.remove(id);
 		if(call != null)
 		{
 			call.success(arguments.getString(1));
@@ -606,12 +579,7 @@ public class NfcService extends MobileService
 
 	private void nfc_showSettings_error(final JsonArray arguments)
 	{
-		final String id = arguments.getString(0);
-		final ServiceCall<String> call = this.showSettingsCalls.remove(id);
-		if(call != null)
-		{
-			call.error(new MobileServiceError(this,arguments.get(1).asString()));
-		}
+		callError(arguments,this.showSettingsCalls,true);
 	}
 
 

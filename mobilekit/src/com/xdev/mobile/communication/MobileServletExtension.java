@@ -49,37 +49,37 @@ import com.xdev.mobile.service.MobileService;
 
 /**
  * @author XDEV Software
- *
+ *		
  */
 public class MobileServletExtension implements XdevServletExtension
 {
-	private static Logger		LOG	= Logger.getLogger(MobileServletExtension.class.getName());
-	
-	private MobileConfiguration	mobileConfiguration;
-	
-	
+	private static Logger LOG = Logger.getLogger(MobileServletExtension.class.getName());
+
+	private MobileConfiguration mobileConfiguration;
+
+
 	@Override
 	public void servletInitialized(final XdevServlet servlet) throws ServletException
 	{
 		this.mobileConfiguration = readMobileConfiguration(servlet);
-		
+
 		servlet.getService().addSessionInitListener(event -> initSession(event));
 	}
-	
-	
+
+
 	protected boolean isMobileRequest(final VaadinRequest request)
 	{
 		return "true".equals(request.getParameter("cordova"));
 	}
-	
-	
+
+
 	protected void initSession(final SessionInitEvent event)
 	{
 		if(isMobileRequest(event.getRequest()))
 		{
 			event.getSession().setAttribute(MobileConfiguration.class,this.mobileConfiguration);
 		}
-		
+
 		event.getSession().addBootstrapListener(new BootstrapListener()
 		{
 			@Override
@@ -87,9 +87,6 @@ public class MobileServletExtension implements XdevServletExtension
 			{
 				if(isMobileRequest(response.getRequest()))
 				{
-					response.getDocument().head().prependElement("meta")
-							.attr("http-equiv","Content-Security-Policy")
-							.attr("content",getContentSecurityPolicy());
 					final ClientInfo clientInfo = ClientInfo.get(response.getRequest());
 					if(clientInfo.isAndroid())
 					{
@@ -111,40 +108,20 @@ public class MobileServletExtension implements XdevServletExtension
 					}
 				}
 			}
-			
-			
+
+
 			@Override
 			public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
 			{
 			}
 		});
 	}
-	
-	
-	/**
-	 * Provides the content security policy which will be written into the
-	 * default html page.
-	 * <p>
-	 * Default is
-	 *
-	 * <pre>
-	 * default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'
-	 * </pre>
-	 *
-	 * @see <a href=
-	 *      "https://github.com/apache/cordova-plugin-whitelist#content-security-policy">
-	 *      Whitelist Plugin</a>
-	 */
-	protected String getContentSecurityPolicy()
-	{
-		return "default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'";
-	}
-	
-	
+
+
 	protected MobileConfiguration readMobileConfiguration(final XdevServlet servlet)
 	{
 		final MobileConfiguration.Default config = new MobileConfiguration.Default();
-		
+
 		try
 		{
 			final URL url = findMobileXML(servlet);
@@ -171,17 +148,17 @@ public class MobileServletExtension implements XdevServletExtension
 		{
 			LOG.log(Level.SEVERE,e.getMessage(),e);
 		}
-		
+
 		return config;
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	private Class<? extends MobileService> createService(final ClassLoader classLoader,
 			final Element serviceElement)
 	{
 		final String className = serviceElement.getTextTrim();
-		
+
 		try
 		{
 			final Class<?> serviceClass = classLoader.loadClass(className);
@@ -199,11 +176,11 @@ public class MobileServletExtension implements XdevServletExtension
 		{
 			LOG.log(Level.SEVERE,e.getMessage(),e);
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	protected URL findMobileXML(final XdevServlet servlet) throws MalformedURLException
 	{
 		URL resourceUrl = servlet.getServletContext().getResource("/mobile.xml");

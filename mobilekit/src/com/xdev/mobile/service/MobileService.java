@@ -21,11 +21,14 @@
 package com.xdev.mobile.service;
 
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractJavaScriptExtension;
 import com.vaadin.ui.UI;
+
+import elemental.json.JsonArray;
 
 
 /**
@@ -71,33 +74,48 @@ public abstract class MobileService extends AbstractJavaScriptExtension
 	{
 		return Long.toString(System.nanoTime(),Character.MAX_RADIX);
 	}
-
-
-
-	protected static interface ServiceCall<R>
+	
+	
+	protected void callError(final JsonArray arguments,
+			final Map<String, ? extends ServiceCall<?, MobileServiceError>> callMap,
+			final boolean remove)
 	{
-		public static <R> ServiceCall<R> New(final Consumer<R> successCallback,
-				final Consumer<MobileServiceError> errorCallback)
+		final String id = arguments.getString(0);
+		final ServiceCall<?, MobileServiceError> call = remove ? callMap.remove(id)
+				: callMap.get(id);
+		if(call != null)
 		{
-			return new Implementation<R>(successCallback,errorCallback);
+			call.error(new MobileServiceError(this,arguments.get(1).asString()));
+		}
+	}
+
+
+
+	protected static interface ServiceCall<R, E extends MobileServiceError>
+	{
+		public static <R, E extends MobileServiceError> ServiceCall<R, E> New(
+				final Consumer<R> successCallback, final Consumer<E> errorCallback)
+		{
+			return new Implementation<R, E>(successCallback,errorCallback);
 		}
 
 
 		public void success(final R returnValue);
 		
 		
-		public void error(final MobileServiceError error);
+		public void error(final E error);
 		
 		
 		
-		public static class Implementation<R> implements ServiceCall<R>
+		public static class Implementation<R, E extends MobileServiceError>
+				implements ServiceCall<R, E>
 		{
-			private final Consumer<R>					successCallback;
-			private final Consumer<MobileServiceError>	errorCallback;
+			private final Consumer<R>	successCallback;
+			private final Consumer<E>	errorCallback;
 			
 			
 			public Implementation(final Consumer<R> successCallback,
-					final Consumer<MobileServiceError> errorCallback)
+					final Consumer<E> errorCallback)
 			{
 				this.successCallback = successCallback;
 				this.errorCallback = errorCallback;
@@ -115,7 +133,7 @@ public abstract class MobileService extends AbstractJavaScriptExtension
 			
 			
 			@Override
-			public void error(final MobileServiceError error)
+			public void error(final E error)
 			{
 				if(this.errorCallback != null)
 				{

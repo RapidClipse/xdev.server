@@ -35,6 +35,7 @@ import com.vaadin.server.StreamResource;
  */
 public class FileData
 {
+	// TODO check https://github.com/ooxi/jdatauri
 	private final String base64data;
 
 

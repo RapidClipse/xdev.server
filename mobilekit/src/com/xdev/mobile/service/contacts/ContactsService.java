@@ -33,7 +33,7 @@ import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
 import com.xdev.mobile.service.MobileService;
 import com.xdev.mobile.service.MobileServiceDescriptor;
-import com.xdev.mobile.service.MobileServiceError;
+import com.xdev.mobile.service.contacts.ContactsServiceError.Reason;
 
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
@@ -86,27 +86,27 @@ public class ContactsService extends MobileService
 	{
 		return getMobileService(ContactsService.class);
 	}
-
-	private final Map<String, ServiceCall<List<Contact>>>	findCalls	= new HashMap<>();
-	private final Map<String, ServiceCall<Contact>>			pickCalls	= new HashMap<>();
-	private final Map<String, ServiceCall<Contact>>			saveCalls	= new HashMap<>();
-
-
+	
+	private final Map<String, ServiceCall<List<Contact>, ContactsServiceError>>	findCalls	= new HashMap<>();
+	private final Map<String, ServiceCall<Contact, ContactsServiceError>>		pickCalls	= new HashMap<>();
+	private final Map<String, ServiceCall<Contact, ContactsServiceError>>		saveCalls	= new HashMap<>();
+	
+	
 	public ContactsService(final AbstractClientConnector connector)
 	{
 		super(connector);
-
+		
 		this.addFunction("contacts_find_success",this::contacts_find_success);
 		this.addFunction("contacts_find_error",this::contacts_find_error);
-
+		
 		this.addFunction("contacts_pick_success",this::contacts_pick_success);
 		this.addFunction("contacts_pick_error",this::contacts_pick_error);
-
+		
 		this.addFunction("contacts_save_success",this::contacts_save_success);
 		this.addFunction("contacts_save_error",this::contacts_save_error);
 	}
-
-
+	
+	
 	/**
 	 * Finds contacts in the device contacts database.
 	 * <p>
@@ -120,21 +120,22 @@ public class ContactsService extends MobileService
 	 */
 	public synchronized void find(final ContactFindOptions options,
 			final Consumer<List<Contact>> successCallback,
-			final Consumer<MobileServiceError> errorCallback)
+			final Consumer<ContactsServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<List<Contact>> call = ServiceCall.New(successCallback,errorCallback);
+		final ServiceCall<List<Contact>, ContactsServiceError> call = ServiceCall
+				.New(successCallback,errorCallback);
 		this.findCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
 		appendFields(js,options);
 		appendOptions(js,options);
 		js.append("contacts_find('").append(id).append("',fields,options);");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private void appendFields(final StringBuilder js, final ContactFindOptions options)
 	{
 		js.append("var fields = [");
@@ -157,8 +158,8 @@ public class ContactsService extends MobileService
 		}
 		js.append("];\n");
 	}
-
-
+	
+	
 	private void appendOptions(final StringBuilder js, final ContactFindOptions options)
 	{
 		js.append("var options = new ContactFindOptions();\n");
@@ -183,16 +184,16 @@ public class ContactsService extends MobileService
 			js.append("];\n");
 		}
 	}
-
-
+	
+	
 	private void contacts_find_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<List<Contact>> call = this.findCalls.remove(id);
+		final ServiceCall<List<Contact>, ContactsServiceError> call = this.findCalls.remove(id);
 		if(call != null)
 		{
 			final List<Contact> contacts = new ArrayList<Contact>();
-
+			
 			final JsonArray arrayData = arguments.get(1);
 			for(int i = 0; i < arrayData.length(); i++)
 			{
@@ -201,23 +202,23 @@ public class ContactsService extends MobileService
 				final Contact contact = gson.fromJson(jsonObject.toJson(),Contact.class);
 				contacts.add(contact);
 			}
-
+			
 			call.success(contacts);
 		}
 	}
-
-
+	
+	
 	private void contacts_find_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<List<Contact>> call = this.findCalls.remove(id);
+		final ServiceCall<List<Contact>, ContactsServiceError> call = this.findCalls.remove(id);
 		if(call != null)
 		{
-			call.error(new MobileServiceError(this,arguments.getString(1)));
+			call.error(createContactsServiceError(arguments.get(1).asString()));
 		}
 	}
-
-
+	
+	
 	/**
 	 * Launches the Contact Picker to select a single contact.
 	 * <p>
@@ -230,15 +231,16 @@ public class ContactsService extends MobileService
 	 * </ul>
 	 */
 	public void pickContact(final Consumer<Contact> successCallback,
-			final Consumer<MobileServiceError> errorCallback)
+			final Consumer<ContactsServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<Contact> call = ServiceCall.New(successCallback,errorCallback);
+		final ServiceCall<Contact, ContactsServiceError> call = ServiceCall.New(successCallback,
+				errorCallback);
 		this.pickCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
 		js.append("contacts_pick('").append(id).append("');");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
 	
@@ -246,29 +248,29 @@ public class ContactsService extends MobileService
 	private void contacts_pick_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<Contact> call = this.pickCalls.remove(id);
+		final ServiceCall<Contact, ContactsServiceError> call = this.pickCalls.remove(id);
 		if(call != null)
 		{
 			final Gson gson = new Gson();
 			final JsonObject jsonObject = arguments.getObject(1);
 			final Contact contact = gson.fromJson(jsonObject.toJson(),Contact.class);
-
+			
 			call.success(contact);
 		}
 	}
-
-
+	
+	
 	private void contacts_pick_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<Contact> call = this.pickCalls.remove(id);
+		final ServiceCall<Contact, ContactsServiceError> call = this.pickCalls.remove(id);
 		if(call != null)
 		{
-			call.error(new MobileServiceError(this,arguments.getString(1)));
+			call.error(createContactsServiceError(arguments.get(1).asString()));
 		}
 	}
-
-
+	
+	
 	/**
 	 * Saves a new contact to the device contacts database, or updates an
 	 * existing contact if a contact with the same id already exists.
@@ -282,17 +284,18 @@ public class ContactsService extends MobileService
 	 * </ul>
 	 */
 	public void save(final Contact contact, final Consumer<Contact> successCallback,
-			final Consumer<MobileServiceError> errorCallback)
+			final Consumer<ContactsServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<Contact> call = ServiceCall.New(successCallback,errorCallback);
+		final ServiceCall<Contact, ContactsServiceError> call = ServiceCall.New(successCallback,
+				errorCallback);
 		this.saveCalls.put(id,call);
-
+		
 		final Gson gson = new Gson();
 		final String json = gson.toJson(contact);
 		final StringBuilder js = new StringBuilder();
 		js.append("contacts_save('").append(id).append("','").append(json).append("')");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
 	
@@ -300,25 +303,43 @@ public class ContactsService extends MobileService
 	private void contacts_save_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<Contact> call = this.saveCalls.remove(id);
+		final ServiceCall<Contact, ContactsServiceError> call = this.saveCalls.remove(id);
 		if(call != null)
 		{
 			final Gson gson = new Gson();
 			final JsonObject jsonObject = arguments.getObject(1);
 			final Contact contact = gson.fromJson(jsonObject.toJson(),Contact.class);
-
+			
 			call.success(contact);
 		}
 	}
-
-
+	
+	
 	private void contacts_save_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<Contact> call = this.saveCalls.remove(id);
+		final ServiceCall<Contact, ContactsServiceError> call = this.saveCalls.remove(id);
 		if(call != null)
 		{
-			call.error(new MobileServiceError(this,arguments.getString(1)));
+			call.error(createContactsServiceError(arguments.get(1).asString()));
 		}
+	}
+	
+	
+	private ContactsServiceError createContactsServiceError(final String message)
+	{
+		Reason reason = null;
+		
+		try
+		{
+			final int code = Integer.parseInt(message);
+			reason = Reason.getByCode(code);
+		}
+		catch(final Exception e)
+		{
+			// swallow
+		}
+		
+		return new ContactsServiceError(this,message,reason);
 	}
 }

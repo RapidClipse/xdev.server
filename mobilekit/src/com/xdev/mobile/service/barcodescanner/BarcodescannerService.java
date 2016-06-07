@@ -116,19 +116,19 @@ public class BarcodescannerService extends MobileService
 	{
 		return getMobileService(BarcodescannerService.class);
 	}
-	
-	private final Map<String, ServiceCall<BarcodeData>> scanCalls = new HashMap<>();
-	
-	
+
+	private final Map<String, ServiceCall<BarcodeData, MobileServiceError>> scanCalls = new HashMap<>();
+
+
 	public BarcodescannerService(final AbstractClientConnector target)
 	{
 		super(target);
-		
+
 		this.addFunction("barcodescanner_scan_success",this::barcodescanner_scan_success);
 		this.addFunction("barcodescanner_scan_error",this::barcodescanner_scan_error);
 	}
-
-
+	
+	
 	/**
 	 * Opens the barcode scanner and passes the result to the callback if the
 	 * scan was completed successfully.
@@ -146,8 +146,8 @@ public class BarcodescannerService extends MobileService
 	{
 		this.scan(successCallback,null);
 	}
-	
-	
+
+
 	/**
 	 * Opens the barcode scanner and passes the result to the callback if the
 	 * scan was completed successfully.
@@ -166,20 +166,21 @@ public class BarcodescannerService extends MobileService
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<BarcodeData> call = ServiceCall.New(successCallback,errorCallback);
+		final ServiceCall<BarcodeData, MobileServiceError> call = ServiceCall.New(successCallback,
+				errorCallback);
 		this.scanCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("barcodescanner_scan('").append(id).append("');");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private void barcodescanner_scan_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<BarcodeData> call = this.scanCalls.remove(id);
+		final ServiceCall<BarcodeData, MobileServiceError> call = this.scanCalls.remove(id);
 		if(call != null)
 		{
 			final JsonObject object = arguments.getObject(1);
@@ -195,23 +196,18 @@ public class BarcodescannerService extends MobileService
 				{
 					barcodeFormat = BarcodeFormat.UNKNOWN;
 				}
-				
+
 				final String text = object.getString("text");
-				
+
 				final BarcodeData barcodeData = new BarcodeData(barcodeFormat,text);
 				call.success(barcodeData);
 			}
 		}
 	}
-	
-	
+
+
 	private void barcodescanner_scan_error(final JsonArray arguments)
 	{
-		final String id = arguments.getString(0);
-		final ServiceCall<BarcodeData> call = this.scanCalls.remove(id);
-		if(call != null)
-		{
-			call.error(new MobileServiceError(this,arguments.getString(1)));
-		}
+		callError(arguments,this.scanCalls,true);
 	}
 }

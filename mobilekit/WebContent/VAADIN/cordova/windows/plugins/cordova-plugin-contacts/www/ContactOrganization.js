@@ -1,0 +1,1 @@
+cordova.define("cordova-plugin-contacts.ContactOrganization",function(t,n,i){var l=function(t,n,i,l,o){this.id=null,this.pref=t!==void 0?t:!1,this.type=n||null,this.name=i||null,this.department=l||null,this.title=o||null};i.exports=l})

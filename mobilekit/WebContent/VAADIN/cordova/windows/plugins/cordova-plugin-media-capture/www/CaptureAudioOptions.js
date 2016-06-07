@@ -1,0 +1,1 @@
+cordova.define("cordova-plugin-media-capture.CaptureAudioOptions",function(i,o,t){var n=function(){this.limit=1,this.duration=0};t.exports=n})

@@ -1,0 +1,1 @@
+cordova.define("cordova.custom.plugins.exitapp.exitApp",function(p,o,e){var i=p("cordova/exec");e.exports={exitApp:function(){i(null,null,"ExitApp","exitApp",[])}}})

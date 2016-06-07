@@ -25,6 +25,8 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
+import org.jsoup.nodes.Element;
+
 import com.vaadin.server.BootstrapFragmentResponse;
 import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
@@ -47,6 +49,17 @@ public class XdevServlet extends VaadinServlet
 	public static XdevServlet getServlet()
 	{
 		return (XdevServlet)VaadinServlet.getCurrent();
+	}
+
+	private final ContentSecurityPolicy contentSecurityPolicy = new ContentSecurityPolicy();
+
+
+	/**
+	 * @since 1.3
+	 */
+	public ContentSecurityPolicy getContentSecurityPolicy()
+	{
+		return this.contentSecurityPolicy;
 	}
 
 
@@ -102,6 +115,25 @@ public class XdevServlet extends VaadinServlet
 
 	protected void initSession(final SessionInitEvent event, final ClientInfo clientInfo)
 	{
+		event.getSession().addBootstrapListener(new BootstrapListener()
+		{
+			@Override
+			public void modifyBootstrapPage(final BootstrapPageResponse response)
+			{
+				final Element head = response.getDocument().head();
+				head.getElementsByAttributeValue("http-equiv","Content-Security-Policy")
+						.forEach(Element::remove);
+				head.prependElement("meta").attr("http-equiv","Content-Security-Policy")
+						.attr("content",XdevServlet.this.contentSecurityPolicy.toString());
+			}
+
+
+			@Override
+			public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
+			{
+			}
+		});
+
 		if(clientInfo.isMobile() || clientInfo.isTablet())
 		{
 			event.getSession().addBootstrapListener(new BootstrapListener()

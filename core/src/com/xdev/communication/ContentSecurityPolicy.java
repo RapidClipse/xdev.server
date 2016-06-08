@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -34,30 +34,23 @@ import java.util.stream.Collectors;
  */
 public class ContentSecurityPolicy
 {
-	public final static String				DEFAULT_SRC	= "default-src";
-	public final static String				STYLE_SRC	= "style-src";
-	public final static String				SCRIPT_SRC	= "script-src";
-	public final static String				IMG_SRC		= "img-src";
+	public final static String	DEFAULT_SRC	= "default-src";
+	public final static String	STYLE_SRC	= "style-src";
+	public final static String	SCRIPT_SRC	= "script-src";
+	public final static String	IMG_SRC		= "img-src";
 	
-	private final Map<String, Set<String>>	directives	= new LinkedHashMap<>();
+	private final Map<String, Set<String>> directives = new LinkedHashMap<>();
 	
 	
 	public ContentSecurityPolicy()
 	{
-		final Set<String> defaultSrc = new LinkedHashSet<>();
-		defaultSrc.add("*");
-		this.directives.put(DEFAULT_SRC,defaultSrc);
-		
-		final Set<String> styleSrc = new LinkedHashSet<>();
-		styleSrc.add("'self'");
-		styleSrc.add("'unsafe-inline'");
-		this.directives.put(STYLE_SRC,styleSrc);
-		
-		final Set<String> scriptSrc = new LinkedHashSet<>();
-		scriptSrc.add("'self'");
-		scriptSrc.add("'unsafe-inline'");
-		scriptSrc.add("'unsafe-eval'");
-		this.directives.put(SCRIPT_SRC,scriptSrc);
+	}
+	
+	
+	public boolean isEmpty()
+	{
+		return this.directives.isEmpty()
+				|| this.directives.values().stream().mapToInt(Set::size).sum() == 0;
 	}
 	
 	

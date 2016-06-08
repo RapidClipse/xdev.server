@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -26,7 +26,7 @@ import com.vaadin.data.util.BeanItem;
 
 /**
  * @author XDEV Software
- *
+ *		
  */
 @FunctionalInterface
 public interface BeanItemCreator<T>

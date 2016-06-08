@@ -23,7 +23,7 @@ package com.xdev.mobile.service.geolocation;
 
 /**
  * @author XDEV Software
- *
+ *		
  */
 public class Coordinates
 {
@@ -34,14 +34,14 @@ public class Coordinates
 	private double	altitudeAccuracy;
 	private double	heading;
 	private double	speed;
-	
-	
+
+
 	public Coordinates()
 	{
-
+	
 	}
-	
-	
+
+
 	/**
 	 * @param latitude
 	 * @param longitude
@@ -51,8 +51,9 @@ public class Coordinates
 	 * @param heading
 	 * @param speed
 	 */
-	public Coordinates(final double latitude, final double longitude, final int altitude,
-			final int accuracy, final int altitudeAccuracy, final int heading, final int speed)
+	public Coordinates(final double latitude, final double longitude, final double altitude,
+			final double accuracy, final double altitudeAccuracy, final double heading,
+			final double speed)
 	{
 		super();
 		this.latitude = latitude;
@@ -63,8 +64,8 @@ public class Coordinates
 		this.heading = heading;
 		this.speed = speed;
 	}
-
-
+	
+	
 	/**
 	 * @return the latitude
 	 */
@@ -72,8 +73,8 @@ public class Coordinates
 	{
 		return this.latitude;
 	}
-
-
+	
+	
 	/**
 	 * @param latitude
 	 *            the latitude to set
@@ -82,8 +83,8 @@ public class Coordinates
 	{
 		this.latitude = latitude;
 	}
-
-
+	
+	
 	/**
 	 * @return the longitude
 	 */
@@ -91,8 +92,8 @@ public class Coordinates
 	{
 		return this.longitude;
 	}
-
-
+	
+	
 	/**
 	 * @param longitude
 	 *            the longitude to set
@@ -101,8 +102,8 @@ public class Coordinates
 	{
 		this.longitude = longitude;
 	}
-
-
+	
+	
 	/**
 	 * @return the altitude
 	 */
@@ -110,8 +111,8 @@ public class Coordinates
 	{
 		return this.altitude;
 	}
-
-
+	
+	
 	/**
 	 * @param altitude
 	 *            the altitude to set
@@ -120,8 +121,8 @@ public class Coordinates
 	{
 		this.altitude = altitude;
 	}
-
-
+	
+	
 	/**
 	 * @return the accuracy
 	 */
@@ -129,8 +130,8 @@ public class Coordinates
 	{
 		return this.accuracy;
 	}
-
-
+	
+	
 	/**
 	 * @param accuracy
 	 *            the accuracy to set
@@ -139,8 +140,8 @@ public class Coordinates
 	{
 		this.accuracy = accuracy;
 	}
-
-
+	
+	
 	/**
 	 * @return the altitudeAccuracy
 	 */
@@ -148,8 +149,8 @@ public class Coordinates
 	{
 		return this.altitudeAccuracy;
 	}
-
-
+	
+	
 	/**
 	 * @param altitudeAccuracy
 	 *            the altitudeAccuracy to set
@@ -158,8 +159,8 @@ public class Coordinates
 	{
 		this.altitudeAccuracy = altitudeAccuracy;
 	}
-
-
+	
+	
 	/**
 	 * @return the heading
 	 */
@@ -167,8 +168,8 @@ public class Coordinates
 	{
 		return this.heading;
 	}
-
-
+	
+	
 	/**
 	 * @param heading
 	 *            the heading to set
@@ -177,8 +178,8 @@ public class Coordinates
 	{
 		this.heading = heading;
 	}
-
-
+	
+	
 	/**
 	 * @return the speed
 	 */
@@ -186,8 +187,8 @@ public class Coordinates
 	{
 		return this.speed;
 	}
-
-
+	
+	
 	/**
 	 * @param speed
 	 *            the speed to set
@@ -196,8 +197,8 @@ public class Coordinates
 	{
 		this.speed = speed;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *

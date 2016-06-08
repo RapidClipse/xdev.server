@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.google.gson.Gson;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
@@ -34,7 +33,9 @@ import com.xdev.mobile.service.MobileServiceDescriptor;
 import com.xdev.mobile.service.MobileServiceError;
 
 import elemental.json.JsonArray;
+import elemental.json.JsonNumber;
 import elemental.json.JsonObject;
+import elemental.json.JsonValue;
 
 
 /**
@@ -61,7 +62,7 @@ import elemental.json.JsonObject;
  * Privacy Guide</a>.
  *
  * @author XDEV Software
- *
+ * 		
  */
 
 @MobileServiceDescriptor("geolocation-descriptor.xml")
@@ -138,9 +139,8 @@ public class GeolocationService extends MobileService
 		final ServiceCall<Position, MobileServiceError> call = this.getCalls.remove(id);
 		if(call != null)
 		{
-			final Gson gson = new Gson();
 			final JsonObject jsonObject = arguments.getObject(1);
-			final Position position = gson.fromJson(jsonObject.toJson(),Position.class);
+			final Position position = parsePosition(jsonObject);
 			call.success(position);
 		}
 	}
@@ -195,9 +195,8 @@ public class GeolocationService extends MobileService
 		final ServiceCall<Geolocation, MobileServiceError> call = this.watchcalls.get(id);
 		if(call != null)
 		{
-			final Gson gson = new Gson();
 			final JsonObject jsonObject = arguments.getObject(1);
-			final Position position = gson.fromJson(jsonObject.toJson(),Position.class);
+			final Position position = parsePosition(jsonObject);
 			final double watchID = arguments.getNumber(2);
 			final Geolocation geolocation = new Geolocation(position,watchID);
 			call.success(geolocation);
@@ -228,9 +227,8 @@ public class GeolocationService extends MobileService
 
 	private void geolocation_get_future_success(final JsonArray arguments)
 	{
-		final Gson gson = new Gson();
 		final JsonObject jsonObject = arguments.getObject(1);
-		final Position position = gson.fromJson(jsonObject.toJson(),Position.class);
+		final Position position = parsePosition(jsonObject);
 
 		this.waitMap.put(this.toString(),position);
 		this.notify();
@@ -239,7 +237,36 @@ public class GeolocationService extends MobileService
 
 	private void geolocation_get_future_error(final JsonArray arguments)
 	{
-		// XXX ???
+		// TODO ???
 		System.out.println(arguments.getString(1));
+	}
+	
+	
+	private Position parsePosition(final JsonObject object)
+	{
+		final JsonObject coordsObj = object.getObject("coords");
+		
+		final Coordinates coords = new Coordinates(getDouble(coordsObj,"latitude"),
+				getDouble(coordsObj,"longitude"),getDouble(coordsObj,"altitude"),
+				getDouble(coordsObj,"accuracy"),getDouble(coordsObj,"altitudeAccuracy"),
+				getDouble(coordsObj,"heading"),getDouble(coordsObj,"speed"));
+
+		final long timestamp = (long)getDouble(object,"timestamp");
+		
+		return new Position(coords,timestamp);
+	}
+	
+	
+	private double getDouble(final JsonObject object, final String key)
+	{
+		if(object.hasKey(key))
+		{
+			final JsonValue value = object.get(key);
+			if(value instanceof JsonNumber)
+			{
+				return value.asNumber();
+			}
+		}
+		return -1;
 	}
 }

@@ -21,8 +21,6 @@
 package com.xdev.communication;
 
 
-import java.util.concurrent.Callable;
-
 import javax.persistence.EntityManager;
 
 import com.vaadin.server.VaadinSession;
@@ -31,7 +29,7 @@ import com.xdev.persistence.PersistenceManager;
 
 
 /**
- * Callable wrapper for threads outside vaadin's session scope, e.g. web
+ * Runnable wrapper for threads outside vaadin's session scope, e.g. web
  * services.
  * <p>
  * It ensures the proper handling of the application's {@link EntityManager} and
@@ -39,43 +37,43 @@ import com.xdev.persistence.PersistenceManager;
  *
  * @see EntityManager
  * @see Conversation
- * @see RunnableAccessWrapper
- *		
+ * @see CallableAccessWrapper
+ * 		
  * @author XDEV Software
- *		
- * @since 1.2
+ * 		
+ * @since 1.3
  */
-public class CallableAccessWrapper<V> implements Callable<V>
+public class RunnableAccessWrapper implements Runnable
 {
-	private final Callable<V>	callable;
+	private final Runnable		runnable;
 	private final VaadinSession	session;
-
-
-	public CallableAccessWrapper(final Callable<V> callable)
+	
+	
+	public RunnableAccessWrapper(final Runnable runnable)
 	{
-		this(callable,VaadinSession.getCurrent());
+		this(runnable,VaadinSession.getCurrent());
 	}
-
-
-	public CallableAccessWrapper(final Callable<V> callable, final VaadinSession session)
+	
+	
+	public RunnableAccessWrapper(final Runnable runnable, final VaadinSession session)
 	{
-		this.callable = callable;
+		this.runnable = runnable;
 		this.session = session;
 	}
-
-
+	
+	
 	@Override
-	public V call() throws Exception
+	public void run()
 	{
 		final XdevServletService service = XdevServletService.getCurrent();
-
+		
 		if(this.session != null)
 		{
 			try
 			{
 				service.handleRequestStart(this.session);
-
-				return this.callable.call();
+				
+				this.runnable.run();
 			}
 			finally
 			{
@@ -87,10 +85,10 @@ public class CallableAccessWrapper<V> implements Callable<V>
 			final PersistenceManager persistenceManager = PersistenceManager
 					.get(service.getServlet().getServletContext());
 			CurrentInstance.set(PersistenceManager.class,persistenceManager);
-
+			
 			final Conversationables conversationables = new Conversationables();
 			CurrentInstance.set(Conversationables.class,conversationables);
-
+			
 			final VaadinSessionStrategyProvider sessionStrategyProvider = createVaadinSessionStrategyProvider();
 			for(final String persistenceUnit : persistenceManager.getPersistenceUnits())
 			{
@@ -98,10 +96,10 @@ public class CallableAccessWrapper<V> implements Callable<V>
 						.getRequestStartVaadinSessionStrategy(conversationables,persistenceUnit)
 						.requestStart(conversationables,persistenceUnit);
 			}
-
+			
 			try
 			{
-				return this.callable.call();
+				this.runnable.run();
 			}
 			finally
 			{
@@ -111,14 +109,14 @@ public class CallableAccessWrapper<V> implements Callable<V>
 							.getRequestEndVaadinSessionStrategy(conversationables,persistenceUnit)
 							.requestEnd(conversationables,persistenceUnit);
 				}
-				
+
 				CurrentInstance.set(PersistenceManager.class,null);
 				CurrentInstance.set(Conversationables.class,null);
 			}
 		}
 	}
-
-
+	
+	
 	protected VaadinSessionStrategyProvider createVaadinSessionStrategyProvider()
 	{
 		return new VaadinSessionStrategyProvider.Implementation();

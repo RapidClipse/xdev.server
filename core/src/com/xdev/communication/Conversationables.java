@@ -55,10 +55,10 @@ public final class Conversationables implements Serializable
 		}
 		return CurrentInstance.get(Conversationables.class);
 	}
-
+	
 	private transient Map<String, Conversationable> unitToConversationable;
-
-
+	
+	
 	public Conversationables()
 	{
 	}
@@ -72,69 +72,69 @@ public final class Conversationables implements Serializable
 		}
 		return this.unitToConversationable;
 	}
-
-
+	
+	
 	public Conversationables put(final String persistenceUnit, final Conversationable conversation)
 	{
 		unitToConversationable().put(persistenceUnit,conversation);
 		return this;
 	}
-
-
+	
+	
 	public Conversationable remove(final String persistenceUnit)
 	{
 		return unitToConversationable().remove(persistenceUnit);
 	}
-
-
+	
+	
 	public Conversationable get(final String persistenceUnit)
 	{
 		return unitToConversationable().get(persistenceUnit);
 	}
-
-
+	
+	
 	public void forEach(final Consumer<Conversationable> consumer)
 	{
 		unitToConversationable().values().forEach(consumer);
 	}
-
-
+	
+	
 	public void closeAll()
 	{
 		unitToConversationable().values().forEach(this::close);
 	}
-
-
+	
+	
 	public void close(final Conversationable conversationable)
 	{
 		final EntityManager em = conversationable.getEntityManager();
 		if(em != null)
 		{
-			if(em.getTransaction().isActive())
+			final EntityTransaction transaction = em.getTransaction();
+			if(transaction != null && transaction.isActive())
 			{
 				try
 				{
-					em.getTransaction().commit();
+					transaction.commit();
 				}
 				catch(final RollbackException e)
 				{
-					em.getTransaction().rollback();
+					if(transaction.isActive())
+					{
+						transaction.rollback();
+					}
 				}
 			}
-
+			
 			try
 			{
 				em.close();
 			}
 			catch(final Exception e)
 			{
-				if(em != null)
+				if(transaction != null && transaction.isActive())
 				{
-					final EntityTransaction tx = em.getTransaction();
-					if(tx != null && tx.isActive())
-					{
-						tx.rollback();
-					}
+					transaction.rollback();
 				}
 			}
 		}

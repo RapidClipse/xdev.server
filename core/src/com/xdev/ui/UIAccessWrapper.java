@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -39,42 +39,31 @@ import com.xdev.communication.XdevServletService;
  *
  * @see EntityManager
  * @see Conversation
- *		
+ * 		
  * @author XDEV Software
- *		
+ * 		
  */
 public class UIAccessWrapper implements Runnable
 {
-	public static void access(final Runnable r)
-	{
-		UI.getCurrent().access(new UIAccessWrapper(r));
-	}
-
-
-	public static void accessSynchronously(final Runnable r)
-	{
-		UI.getCurrent().accessSynchronously(new UIAccessWrapper(r));
-	}
-	
 	private final Runnable runnable;
-
-
+	
+	
 	public UIAccessWrapper(final Runnable runnable)
 	{
 		this.runnable = runnable;
 	}
-
-
+	
+	
 	@Override
 	public void run()
 	{
 		final XdevServletService service = XdevServlet.getServlet().getService();
 		final VaadinSession session = UI.getCurrent().getSession();
-		
+
 		try
 		{
 			service.handleRequestStart(session);
-
+			
 			this.runnable.run();
 		}
 		finally

@@ -50,43 +50,43 @@ import com.xdev.mobile.service.MobileService;
 
 /**
  * @author XDEV Software
- * 		
+ *
  */
 public class MobileServletExtension implements XdevServletExtension
 {
 	private static Logger LOG = Logger.getLogger(MobileServletExtension.class.getName());
-	
+
 	private MobileConfiguration mobileConfiguration;
-	
-	
+
+
 	@Override
 	public void servletInitialized(final XdevServlet servlet) throws ServletException
 	{
 		this.mobileConfiguration = readMobileConfiguration(servlet);
-		
-		servlet.getService().addSessionInitListener(event -> initSession(event));
 
+		servlet.getService().addSessionInitListener(event -> initSession(event));
+		
 		final ContentSecurityPolicy csp = servlet.getContentSecurityPolicy();
 		csp.addDirectives(ContentSecurityPolicy.DEFAULT_SRC,"*");
 		csp.addDirectives(ContentSecurityPolicy.STYLE_SRC,"'self'","'unsafe-inline'");
 		csp.addDirectives(ContentSecurityPolicy.SCRIPT_SRC,"'self'","'unsafe-inline'",
 				"'unsafe-eval'");
 	}
-	
-	
+
+
 	protected boolean isMobileRequest(final VaadinRequest request)
 	{
 		return "true".equals(request.getParameter("cordova"));
 	}
-	
-	
+
+
 	protected void initSession(final SessionInitEvent event)
 	{
 		if(isMobileRequest(event.getRequest()))
 		{
 			event.getSession().setAttribute(MobileConfiguration.class,this.mobileConfiguration);
 		}
-		
+
 		event.getSession().addBootstrapListener(new BootstrapListener()
 		{
 			@Override
@@ -107,28 +107,28 @@ public class MobileServletExtension implements XdevServletExtension
 								.attr("type","text/javascript")
 								.attr("src","VAADIN/cordova/ios/cordova.js");
 					}
-					else
-					{
-						response.getDocument().body().prependElement("script")
-								.attr("type","text/javascript")
-								.attr("src","VAADIN/cordova/windows/cordova.js");
-					}
+					// else
+					// {
+					// response.getDocument().body().prependElement("script")
+					// .attr("type","text/javascript")
+					// .attr("src","VAADIN/cordova/windows/cordova.js");
+					// }
 				}
 			}
-			
-			
+
+
 			@Override
 			public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
 			{
 			}
 		});
 	}
-	
-	
+
+
 	protected MobileConfiguration readMobileConfiguration(final XdevServlet servlet)
 	{
 		final MobileConfiguration.Default config = new MobileConfiguration.Default();
-		
+
 		try
 		{
 			final URL url = findMobileXML(servlet);
@@ -155,17 +155,17 @@ public class MobileServletExtension implements XdevServletExtension
 		{
 			LOG.log(Level.SEVERE,e.getMessage(),e);
 		}
-		
+
 		return config;
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	private Class<? extends MobileService> createService(final ClassLoader classLoader,
 			final Element serviceElement)
 	{
 		final String className = serviceElement.getTextTrim();
-		
+
 		try
 		{
 			final Class<?> serviceClass = classLoader.loadClass(className);
@@ -183,11 +183,11 @@ public class MobileServletExtension implements XdevServletExtension
 		{
 			LOG.log(Level.SEVERE,e.getMessage(),e);
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	protected URL findMobileXML(final XdevServlet servlet) throws MalformedURLException
 	{
 		URL resourceUrl = servlet.getServletContext().getResource("/mobile.xml");

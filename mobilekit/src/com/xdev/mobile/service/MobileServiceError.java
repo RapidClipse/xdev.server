@@ -27,18 +27,18 @@ package com.xdev.mobile.service;
  */
 public class MobileServiceError
 {
-	private final MobileService	source;
+	private final AbstractMobileService	source;
 	private final String		message;
 	
 	
-	public MobileServiceError(final MobileService source, final String message)
+	public MobileServiceError(final AbstractMobileService source, final String message)
 	{
 		this.source = source;
 		this.message = message;
 	}
 	
 	
-	public MobileService getSource()
+	public AbstractMobileService getSource()
 	{
 		return this.source;
 	}

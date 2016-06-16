@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -27,8 +27,10 @@ import java.util.List;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
-import com.xdev.mobile.service.MobileService;
-import com.xdev.mobile.service.MobileServiceDescriptor;
+import com.xdev.mobile.config.MobileServiceConfiguration;
+import com.xdev.mobile.service.AbstractMobileService;
+import com.xdev.mobile.service.annotations.MobileService;
+import com.xdev.mobile.service.annotations.Plugin;
 
 import elemental.json.JsonArray;
 
@@ -39,15 +41,16 @@ import elemental.json.JsonArray;
  * @author XDEV Software
  *
  */
-@MobileServiceDescriptor("app-descriptor.xml")
+@MobileService(plugins = {@Plugin(name = "cordova-plugin-exitapp", spec = "1.0.0"),
+		@Plugin(name = "cordova-plugin-cache", spec = "1.0.5")})
 @JavaScript("app.js")
-public class AppService extends MobileService
+public class AppService extends AbstractMobileService
 {
 	public static AppService getInstance()
 	{
 		return getMobileService(AppService.class);
 	}
-	
+
 	private final List<AppEventHandler>	pauseHandlers				= new ArrayList<>();
 	private final List<AppEventHandler>	resumeHandlers				= new ArrayList<>();
 	private final List<AppEventHandler>	backButtonHandlers			= new ArrayList<>();
@@ -55,12 +58,13 @@ public class AppService extends MobileService
 	private final List<AppEventHandler>	searchButtonHandlers		= new ArrayList<>();
 	private final List<AppEventHandler>	volumeDownButtonHandlers	= new ArrayList<>();
 	private final List<AppEventHandler>	volumeUpButtonHandlers		= new ArrayList<>();
-	
-	
-	public AppService(final AbstractClientConnector target)
+
+
+	public AppService(final AbstractClientConnector target,
+			final MobileServiceConfiguration configuration)
 	{
-		super(target);
-		
+		super(target,configuration);
+
 		addFunction("app_onPause",this::app_onPause);
 		addFunction("app_onResume",this::app_onResume);
 		addFunction("app_onBackButton",this::app_onBackButton);
@@ -69,8 +73,8 @@ public class AppService extends MobileService
 		addFunction("app_onVolumeDownButton",this::app_onVolumeDownButton);
 		addFunction("app_onVolumeUpButton",this::app_onVolumeUpButton);
 	}
-	
-	
+
+
 	/**
 	 * Closes the app.
 	 * <p>
@@ -87,6 +91,22 @@ public class AppService extends MobileService
 	}
 	
 	
+	/**
+	 * Clears the local cache of the application.
+	 * <p>
+	 * Supported platforms:
+	 * <ul>
+	 * <li>Android</li>
+	 * <li>iOS</li>
+	 * </ul>
+	 *
+	 */
+	public void clearCache()
+	{
+		Page.getCurrent().getJavaScript().execute("app_clearCache()");
+	}
+
+
 	/**
 	 * Adds an handler for the pause event.
 	 * <p>
@@ -108,8 +128,8 @@ public class AppService extends MobileService
 	{
 		addEventHandler(handler,this.pauseHandlers,"app_addPauseHandler()");
 	}
-	
-	
+
+
 	/**
 	 * Removes the previously registered pause handler.
 	 *
@@ -120,8 +140,8 @@ public class AppService extends MobileService
 	{
 		removeEventHandler(handler,this.pauseHandlers,"app_removePauseHandler()");
 	}
-	
-	
+
+
 	/**
 	 * Adds an handler for the resume event.
 	 * <p>
@@ -142,8 +162,8 @@ public class AppService extends MobileService
 	{
 		addEventHandler(handler,this.resumeHandlers,"app_addResumeHandler()");
 	}
-	
-	
+
+
 	/**
 	 * Removes the previously registered resume handler.
 	 *
@@ -154,8 +174,8 @@ public class AppService extends MobileService
 	{
 		removeEventHandler(handler,this.resumeHandlers,"app_removeResumeHandler()");
 	}
-	
-	
+
+
 	/**
 	 * Adds an handler for the backbutton event.
 	 * <p>
@@ -175,8 +195,8 @@ public class AppService extends MobileService
 	{
 		addEventHandler(handler,this.backButtonHandlers,"app_addBackButtonHandler()");
 	}
-	
-	
+
+
 	/**
 	 * Removes the previously registered backbutton handler.
 	 *
@@ -187,8 +207,8 @@ public class AppService extends MobileService
 	{
 		removeEventHandler(handler,this.backButtonHandlers,"app_removeBackButtonHandler()");
 	}
-	
-	
+
+
 	/**
 	 * Adds an handler for the menubutton event.
 	 * <p>
@@ -206,8 +226,8 @@ public class AppService extends MobileService
 	{
 		addEventHandler(handler,this.menuButtonHandlers,"app_addMenuButtonHandler()");
 	}
-	
-	
+
+
 	/**
 	 * Removes the previously registered menubutton handler.
 	 *
@@ -218,8 +238,8 @@ public class AppService extends MobileService
 	{
 		removeEventHandler(handler,this.menuButtonHandlers,"app_removeMenuButtonHandler()");
 	}
-	
-	
+
+
 	/**
 	 * Adds an handler for the searchbutton event.
 	 * <p>
@@ -238,8 +258,8 @@ public class AppService extends MobileService
 	{
 		addEventHandler(handler,this.searchButtonHandlers,"app_addSearchButtonHandler()");
 	}
-	
-	
+
+
 	/**
 	 * Removes the previously registered searchbutton handler.
 	 *
@@ -250,8 +270,8 @@ public class AppService extends MobileService
 	{
 		removeEventHandler(handler,this.searchButtonHandlers,"app_removeSearchButtonHandler()");
 	}
-	
-	
+
+
 	/**
 	 * Adds an handler for the volumedownbutton event.
 	 * <p>
@@ -315,8 +335,8 @@ public class AppService extends MobileService
 	{
 		removeEventHandler(handler,this.volumeUpButtonHandlers,"app_removeVolumeUpButtonHandler()");
 	}
-	
-	
+
+
 	private void addEventHandler(final AppEventHandler handler, final List<AppEventHandler> list,
 			final String javaScript)
 	{
@@ -324,65 +344,65 @@ public class AppService extends MobileService
 		{
 			Page.getCurrent().getJavaScript().execute(javaScript);
 		}
-		
+
 		list.add(handler);
 	}
-	
-	
+
+
 	private void removeEventHandler(final AppEventHandler handler, final List<AppEventHandler> list,
 			final String javaScript)
 	{
 		list.remove(handler);
-		
+
 		if(list.isEmpty())
 		{
 			Page.getCurrent().getJavaScript().execute(javaScript);
 		}
 	}
-	
-	
+
+
 	private void app_onPause(final JsonArray arguments)
 	{
 		handleEvent(this.pauseHandlers);
 	}
-	
-	
+
+
 	private void app_onResume(final JsonArray arguments)
 	{
 		handleEvent(this.resumeHandlers);
 	}
-	
-	
+
+
 	private void app_onBackButton(final JsonArray arguments)
 	{
 		handleEvent(this.backButtonHandlers);
 	}
-	
-	
+
+
 	private void app_onMenuButton(final JsonArray arguments)
 	{
 		handleEvent(this.menuButtonHandlers);
 	}
-	
-	
+
+
 	private void app_onSearchButton(final JsonArray arguments)
 	{
 		handleEvent(this.searchButtonHandlers);
 	}
-	
-	
+
+
 	private void app_onVolumeDownButton(final JsonArray arguments)
 	{
 		handleEvent(this.volumeDownButtonHandlers);
 	}
-	
-	
+
+
 	private void app_onVolumeUpButton(final JsonArray arguments)
 	{
 		handleEvent(this.volumeUpButtonHandlers);
 	}
-	
-	
+
+
 	private void handleEvent(final List<AppEventHandler> handlers)
 	{
 		if(handlers.isEmpty())

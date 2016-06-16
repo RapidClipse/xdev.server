@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -28,9 +28,11 @@ import java.util.function.Consumer;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
-import com.xdev.mobile.service.MobileService;
-import com.xdev.mobile.service.MobileServiceDescriptor;
+import com.xdev.mobile.config.MobileServiceConfiguration;
+import com.xdev.mobile.service.AbstractMobileService;
 import com.xdev.mobile.service.MobileServiceError;
+import com.xdev.mobile.service.annotations.MobileService;
+import com.xdev.mobile.service.annotations.Plugin;
 
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
@@ -94,9 +96,9 @@ import elemental.json.JsonObject;
  * @author XDEV Software
  * 		
  */
-@MobileServiceDescriptor("barcodescanner-descriptor.xml")
+@MobileService(plugins = @Plugin(name = "phonegap-plugin-barcodescanner", spec = "5.0.0") )
 @JavaScript("barcodescanner.js")
-public class BarcodescannerService extends MobileService
+public class BarcodescannerService extends AbstractMobileService
 {
 	/**
 	 * Returns the barcodescanner service.<br>
@@ -116,19 +118,20 @@ public class BarcodescannerService extends MobileService
 	{
 		return getMobileService(BarcodescannerService.class);
 	}
-	
+
 	private final Map<String, ServiceCall<BarcodeData, MobileServiceError>> scanCalls = new HashMap<>();
-	
-	
-	public BarcodescannerService(final AbstractClientConnector target)
+
+
+	public BarcodescannerService(final AbstractClientConnector target,
+			final MobileServiceConfiguration configuration)
 	{
-		super(target);
-		
+		super(target,configuration);
+
 		this.addFunction("barcodescanner_scan_success",this::barcodescanner_scan_success);
 		this.addFunction("barcodescanner_scan_error",this::barcodescanner_scan_error);
 	}
-
-
+	
+	
 	/**
 	 * Opens the barcode scanner and passes the result to the callback if the
 	 * scan was completed successfully.
@@ -146,8 +149,8 @@ public class BarcodescannerService extends MobileService
 	{
 		this.scan(successCallback,null);
 	}
-	
-	
+
+
 	/**
 	 * Opens the barcode scanner and passes the result to the callback if the
 	 * scan was completed successfully.
@@ -169,14 +172,14 @@ public class BarcodescannerService extends MobileService
 		final ServiceCall<BarcodeData, MobileServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.scanCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("barcodescanner_scan('").append(id).append("');");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private void barcodescanner_scan_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -196,23 +199,23 @@ public class BarcodescannerService extends MobileService
 				{
 					barcodeFormat = BarcodeFormat.UNKNOWN;
 				}
-				
+
 				final String text = object.getString("text");
-				
+
 				final BarcodeData barcodeData = new BarcodeData(barcodeFormat,text);
 				call.success(barcodeData);
 			}
 		}
 	}
-
-
+	
+	
 	private boolean isCancelled(final JsonObject object)
 	{
 		final String cancelled = object.get("cancelled").asString();
 		return "1".equals(cancelled) || "true".equalsIgnoreCase(cancelled);
 	}
-	
-	
+
+
 	private void barcodescanner_scan_error(final JsonArray arguments)
 	{
 		callError(arguments,this.scanCalls,true);

@@ -2,9 +2,8 @@
 <!-- ============================================================== -->
 <!-- Copyright (C) 2016 by XDEV Software, All Rights Reserved. -->
 <!-- ============================================================== -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	elementFormDefault="qualified" xmlns="http://rapidclipse.com/mobile/1.0.0"
-	targetNamespace="http://rapidclipse.com/mobile/1.0.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+	xmlns="http://rapidclipse.com/mobile/1.0.0" targetNamespace="http://rapidclipse.com/mobile/1.0.0">
 
 	<xs:element name="mobile-app" type="app" />
 
@@ -13,11 +12,23 @@
 			<xs:element minOccurs="0" maxOccurs="1" name="services">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="service" minOccurs="0" maxOccurs="unbounded" type="xs:string" />
+						<xs:element name="service" minOccurs="0" maxOccurs="unbounded" type="service" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 		</xs:all>
+	</xs:complexType>
+
+	<xs:complexType name="service">
+		<xs:sequence>
+			<xs:element name="param" minOccurs="0" maxOccurs="unbounded" type="param" />
+		</xs:sequence>
+		<xs:attribute name="class" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="param">
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="value" type="xs:string" />
 	</xs:complexType>
 
 </xs:schema>

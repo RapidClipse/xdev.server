@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -28,9 +28,11 @@ import java.util.function.Consumer;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
-import com.xdev.mobile.service.MobileService;
-import com.xdev.mobile.service.MobileServiceDescriptor;
+import com.xdev.mobile.config.MobileServiceConfiguration;
+import com.xdev.mobile.service.AbstractMobileService;
 import com.xdev.mobile.service.MobileServiceError;
+import com.xdev.mobile.service.annotations.MobileService;
+import com.xdev.mobile.service.annotations.Plugin;
 
 import elemental.json.JsonArray;
 import elemental.json.JsonNumber;
@@ -62,12 +64,12 @@ import elemental.json.JsonValue;
  * Privacy Guide</a>.
  *
  * @author XDEV Software
- * 		
+ *		
  */
 
-@MobileServiceDescriptor("geolocation-descriptor.xml")
+@MobileService(plugins = @Plugin(name = "cordova-plugin-geolocation", spec = "2.2.0") )
 @JavaScript("geolocation.js")
-public class GeolocationService extends MobileService
+public class GeolocationService extends AbstractMobileService
 {
 
 	/**
@@ -94,9 +96,10 @@ public class GeolocationService extends MobileService
 	private final Map<String, Position>										waitMap		= new HashMap<>();
 
 
-	public GeolocationService(final AbstractClientConnector connector)
+	public GeolocationService(final AbstractClientConnector connector,
+			final MobileServiceConfiguration configuration)
 	{
-		super(connector);
+		super(connector,configuration);
 
 		this.addFunction("geolocation_get_success",this::geolocation_get_success);
 		this.addFunction("geolocation_get_error",this::geolocation_get_error);

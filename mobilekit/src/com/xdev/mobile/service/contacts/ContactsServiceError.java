@@ -21,7 +21,7 @@
 package com.xdev.mobile.service.contacts;
 
 
-import com.xdev.mobile.service.MobileService;
+import com.xdev.mobile.service.AbstractMobileService;
 import com.xdev.mobile.service.MobileServiceError;
 
 
@@ -67,7 +67,7 @@ public class ContactsServiceError extends MobileServiceError
 	private final Reason reason;
 
 
-	public ContactsServiceError(final MobileService source, final String message, final Reason reason)
+	public ContactsServiceError(final AbstractMobileService source, final String message, final Reason reason)
 	{
 		super(source,message);
 

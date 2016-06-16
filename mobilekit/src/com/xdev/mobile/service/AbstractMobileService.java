@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -27,15 +27,16 @@ import java.util.function.Consumer;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractJavaScriptExtension;
 import com.vaadin.ui.UI;
+import com.xdev.mobile.config.MobileServiceConfiguration;
 
 import elemental.json.JsonArray;
 
 
 /**
  * @author XDEV Software
- *
+ * 		
  */
-public abstract class MobileService extends AbstractJavaScriptExtension
+public abstract class AbstractMobileService extends AbstractJavaScriptExtension
 {
 	/**
 	 * Returns a registered service.
@@ -56,23 +57,82 @@ public abstract class MobileService extends AbstractJavaScriptExtension
 	 * @param type
 	 * @return
 	 */
-	public static <T extends MobileService> T getMobileService(final Class<T> clazz)
+	public static <T extends AbstractMobileService> T getMobileService(final Class<T> clazz)
 	{
 		final UI ui = UI.getCurrent();
 		return ui.getExtensions().stream().filter(e -> e.getClass().equals(clazz)).map(clazz::cast)
 				.findFirst().orElse(null);
 	}
 	
+	private final MobileServiceConfiguration configuration;
 	
-	protected MobileService(final AbstractClientConnector target)
+	
+	protected AbstractMobileService(final AbstractClientConnector target,
+			final MobileServiceConfiguration configuration)
 	{
 		super(target);
+
+		this.configuration = configuration;
+	}
+
+
+	public MobileServiceConfiguration getConfiguration()
+	{
+		return this.configuration;
 	}
 	
 	
 	protected String generateCallerID()
 	{
 		return Long.toString(System.nanoTime(),Character.MAX_RADIX);
+	}
+	
+	
+	protected String toLiteral(final String str)
+	{
+		final StringBuilder sb = new StringBuilder(str.length() + 2);
+		
+		sb.append('"');
+		
+		for(int i = 0, len = str.length(); i < len; i++)
+		{
+			final char ch = str.charAt(i);
+			
+			switch(ch)
+			{
+				case '\b':
+					sb.append("\\b");
+				break;
+				case '\t':
+					sb.append("\\t");
+				break;
+				case '\n':
+					sb.append("\\n");
+				break;
+				case '\f':
+					sb.append("\\f");
+				break;
+				case '\r':
+					sb.append("\\r");
+				break;
+				case '\"':
+					sb.append("\\\"");
+				break;
+				case '\'':
+					sb.append("\\\'");
+				break;
+				case '\\':
+					sb.append("\\\\");
+				break;
+				default:
+					sb.append(ch);
+				break;
+			}
+		}
+		
+		sb.append('"');
+		
+		return sb.toString();
 	}
 	
 	

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -24,6 +24,7 @@ package com.xdev.mobile.communication;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -45,12 +46,14 @@ import com.xdev.communication.ClientInfo;
 import com.xdev.communication.ContentSecurityPolicy;
 import com.xdev.communication.XdevServlet;
 import com.xdev.communication.XdevServletExtension;
-import com.xdev.mobile.service.MobileService;
+import com.xdev.mobile.config.MobileConfiguration;
+import com.xdev.mobile.config.MobileServiceConfiguration;
+import com.xdev.mobile.service.AbstractMobileService;
 
 
 /**
  * @author XDEV Software
- *
+ * 		
  */
 public class MobileServletExtension implements XdevServletExtension
 {
@@ -65,7 +68,7 @@ public class MobileServletExtension implements XdevServletExtension
 		this.mobileConfiguration = readMobileConfiguration(servlet);
 
 		servlet.getService().addSessionInitListener(event -> initSession(event));
-		
+
 		final ContentSecurityPolicy csp = servlet.getContentSecurityPolicy();
 		csp.addDirectives(ContentSecurityPolicy.DEFAULT_SRC,"*");
 		csp.addDirectives(ContentSecurityPolicy.STYLE_SRC,"'self'","'unsafe-inline'");
@@ -76,7 +79,8 @@ public class MobileServletExtension implements XdevServletExtension
 
 	protected boolean isMobileRequest(final VaadinRequest request)
 	{
-		return "true".equals(request.getParameter("cordova"));
+		return true;
+		// return "true".equals(request.getParameter("cordova"));
 	}
 
 
@@ -94,25 +98,7 @@ public class MobileServletExtension implements XdevServletExtension
 			{
 				if(isMobileRequest(response.getRequest()))
 				{
-					final ClientInfo clientInfo = ClientInfo.get(response.getRequest());
-					if(clientInfo.isAndroid())
-					{
-						response.getDocument().body().prependElement("script")
-								.attr("type","text/javascript")
-								.attr("src","VAADIN/cordova/android/cordova.js");
-					}
-					else if(clientInfo.isIOS())
-					{
-						response.getDocument().body().prependElement("script")
-								.attr("type","text/javascript")
-								.attr("src","VAADIN/cordova/ios/cordova.js");
-					}
-					// else
-					// {
-					// response.getDocument().body().prependElement("script")
-					// .attr("type","text/javascript")
-					// .attr("src","VAADIN/cordova/windows/cordova.js");
-					// }
+					addMobileResources(response);
 				}
 			}
 
@@ -122,6 +108,73 @@ public class MobileServletExtension implements XdevServletExtension
 			{
 			}
 		});
+	}
+	
+	
+	protected void addMobileResources(final BootstrapPageResponse response)
+	{
+		// final StringBuilder initScriptBuilder = new StringBuilder();
+		//
+		// for(final MobileServiceConfiguration mobileServiceConfiguration :
+		// this.mobileConfiguration
+		// .getMobileServices())
+		// {
+		// final Class<? extends MobileService> serviceClass =
+		// mobileServiceConfiguration
+		// .getServiceClass();
+		// final InitScript initScript =
+		// serviceClass.getAnnotation(InitScript.class);
+		// if(initScript != null)
+		// {
+		// try
+		// {
+		// final InitScriptProvider initScriptProvider = initScript.provider()
+		// .newInstance();
+		// final String script = initScriptProvider
+		// .getInitScript(mobileServiceConfiguration);
+		// if(script != null)
+		// {
+		// if(initScriptBuilder.length() > 0)
+		// {
+		// initScriptBuilder.append("\n\n\n");
+		// }
+		// initScriptBuilder.append(script);
+		// }
+		// }
+		// catch(final Exception e)
+		// {
+		// LOG.log(Level.SEVERE,e.getMessage(),e);
+		// }
+		// }
+		// }
+		//
+		// if(initScriptBuilder.length() > 0)
+		// {
+		// final InitScriptRequestHandler requestHandler = new
+		// InitScriptRequestHandler(
+		// initScriptBuilder.toString());
+		// response.getSession().addRequestHandler(requestHandler);
+		// response.getDocument().body().prependElement("script").attr("type","text/javascript")
+		// .attr("src",requestHandler.getPath());
+		// }
+
+		final ClientInfo clientInfo = ClientInfo.get(response.getRequest());
+		if(clientInfo.isAndroid())
+		{
+			response.getDocument().body().prependElement("script").attr("type","text/javascript")
+					.attr("src","VAADIN/cordova/android/cordova.js");
+		}
+		else if(clientInfo.isIOS())
+		{
+			response.getDocument().body().prependElement("script").attr("type","text/javascript")
+					.attr("src","VAADIN/cordova/ios/cordova.js");
+		}
+		// else
+		// {
+		// response.getDocument().body().prependElement("script")
+		// .attr("type","text/javascript")
+		// .attr("src","VAADIN/cordova/windows/cordova.js");
+		// }
 	}
 
 
@@ -145,7 +198,7 @@ public class MobileServletExtension implements XdevServletExtension
 							config.setMobileServices(((List<?>)servicesElement.elements("service"))
 									.stream().filter(Element.class::isInstance)
 									.map(Element.class::cast)
-									.map(serviceElement -> createService(classLoader,
+									.map(serviceElement -> createServiceConfiguration(classLoader,
 											serviceElement))
 									.filter(Objects::nonNull).collect(Collectors.toList()));
 						});
@@ -161,23 +214,28 @@ public class MobileServletExtension implements XdevServletExtension
 
 
 	@SuppressWarnings("unchecked")
-	private Class<? extends MobileService> createService(final ClassLoader classLoader,
+	private MobileServiceConfiguration createServiceConfiguration(final ClassLoader classLoader,
 			final Element serviceElement)
 	{
-		final String className = serviceElement.getTextTrim();
+		final String className = serviceElement.attributeValue("class");
 
 		try
 		{
 			final Class<?> serviceClass = classLoader.loadClass(className);
-			if(MobileService.class.isAssignableFrom(serviceClass))
-			{
-				return (Class<? extends MobileService>)serviceClass;
-			}
-			else
+			if(!AbstractMobileService.class.isAssignableFrom(serviceClass))
 			{
 				throw new IllegalArgumentException(
-						className + " is not a " + MobileService.class.getSimpleName());
+						className + " is not a " + AbstractMobileService.class.getSimpleName());
 			}
+
+			final Map<String, String> params = ((List<?>)serviceElement.elements("param")).stream()
+					.filter(Element.class::isInstance).map(Element.class::cast).collect(Collectors
+							.toMap(e -> e.attributeValue("name"),e -> e.attributeValue("value")));
+
+			final MobileServiceConfiguration.Default configuration = new MobileServiceConfiguration.Default();
+			configuration.setServiceClass((Class<? extends AbstractMobileService>)serviceClass);
+			configuration.setParameters(params);
+			return configuration;
 		}
 		catch(final Exception e)
 		{
@@ -202,4 +260,41 @@ public class MobileServletExtension implements XdevServletExtension
 		}
 		return resourceUrl;
 	}
+	
+	// private static class InitScriptRequestHandler implements RequestHandler
+	// {
+	// private final String script;
+	// private final String path;
+	//
+	//
+	// public InitScriptRequestHandler(final String script)
+	// {
+	// this.script = script;
+	//
+	// this.path = "mobilekit/init" + System.currentTimeMillis() + ".js";
+	// }
+	//
+	//
+	// public String getPath()
+	// {
+	// return this.path;
+	// }
+	//
+	//
+	// @Override
+	// public boolean handleRequest(final VaadinSession session, final
+	// VaadinRequest request,
+	// final VaadinResponse response) throws IOException
+	// {
+	// if(request.getPathInfo().endsWith(this.path))
+	// {
+	// response.setContentType("application/javascript");
+	// response.getWriter().append(this.script);
+	//
+	// return true;
+	// }
+	//
+	// return false;
+	// }
+	// }
 }

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -27,8 +27,9 @@ import java.util.logging.Logger;
 
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.VaadinSession;
-import com.xdev.mobile.communication.MobileConfiguration;
-import com.xdev.mobile.service.MobileService;
+import com.xdev.mobile.config.MobileConfiguration;
+import com.xdev.mobile.config.MobileServiceConfiguration;
+import com.xdev.mobile.service.AbstractMobileService;
 import com.xdev.ui.XdevUI;
 import com.xdev.ui.XdevUIExtension;
 
@@ -40,8 +41,8 @@ import com.xdev.ui.XdevUIExtension;
 public class MobileUIExtension implements XdevUIExtension
 {
 	private static Logger LOG = Logger.getLogger(MobileUIExtension.class.getName());
-
-
+	
+	
 	@Override
 	public void uiInitialized(final XdevUI ui)
 	{
@@ -49,14 +50,15 @@ public class MobileUIExtension implements XdevUIExtension
 				.getAttribute(MobileConfiguration.class);
 		if(mobileConfiguration != null)
 		{
-			for(final Class<? extends MobileService> clazz : mobileConfiguration
+			for(final MobileServiceConfiguration configuration : mobileConfiguration
 					.getMobileServices())
 			{
 				try
 				{
-					final Constructor<? extends MobileService> constructor = clazz
-							.getConstructor(AbstractClientConnector.class);
-					constructor.newInstance(ui);
+					final Class<? extends AbstractMobileService> clazz = configuration.getServiceClass();
+					final Constructor<? extends AbstractMobileService> constructor = clazz.getConstructor(
+							AbstractClientConnector.class,MobileServiceConfiguration.class);
+					constructor.newInstance(ui,configuration);
 					LOG.log(Level.INFO,"Mobile service registered: " + clazz.getName());
 				}
 				catch(final Exception e)

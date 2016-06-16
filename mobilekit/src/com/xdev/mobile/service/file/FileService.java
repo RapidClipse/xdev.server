@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -28,8 +28,10 @@ import java.util.function.Consumer;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
-import com.xdev.mobile.service.MobileService;
-import com.xdev.mobile.service.MobileServiceDescriptor;
+import com.xdev.mobile.config.MobileServiceConfiguration;
+import com.xdev.mobile.service.AbstractMobileService;
+import com.xdev.mobile.service.annotations.MobileService;
+import com.xdev.mobile.service.annotations.Plugin;
 import com.xdev.mobile.service.file.FileServiceError.Reason;
 
 import elemental.json.JsonArray;
@@ -42,12 +44,12 @@ import elemental.json.JsonValue;
  * residing on the device.
  *
  * @author XDEV Software
- *		
+ *
  */
 
-@MobileServiceDescriptor("file-descriptor.xml")
+@MobileService(plugins = @Plugin(name = "cordova-plugin-file", spec = "4.2.0") )
 @JavaScript("file.js")
-public class FileService extends MobileService
+public class FileService extends AbstractMobileService
 {
 	/**
 	 * Returns the file service.<br>
@@ -71,9 +73,10 @@ public class FileService extends MobileService
 	private final Map<String, ServiceCall<FileData, FileServiceError>> readFileCalls = new HashMap<>();
 	
 	
-	public FileService(final AbstractClientConnector connector)
+	public FileService(final AbstractClientConnector connector,
+			final MobileServiceConfiguration configuration)
 	{
-		super(connector);
+		super(connector,configuration);
 		
 		this.addFunction("file_readFile_success",this::file_readFile_success);
 		this.addFunction("file_readFile_error",this::file_readFile_error);

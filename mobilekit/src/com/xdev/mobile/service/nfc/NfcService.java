@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -29,9 +29,11 @@ import com.google.gson.Gson;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
-import com.xdev.mobile.service.MobileService;
-import com.xdev.mobile.service.MobileServiceDescriptor;
+import com.xdev.mobile.config.MobileServiceConfiguration;
+import com.xdev.mobile.service.AbstractMobileService;
 import com.xdev.mobile.service.MobileServiceError;
+import com.xdev.mobile.service.annotations.MobileService;
+import com.xdev.mobile.service.annotations.Plugin;
 
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
@@ -48,12 +50,12 @@ import elemental.json.JsonObject;
  * </ul>
  *
  * @author XDEV Software
- *		
+ *
  */
 
-@MobileServiceDescriptor("nfc-descriptor.xml")
+@MobileService(plugins = @Plugin(name = "phonegap-nfc", spec = "0.6.6") )
 @JavaScript("nfc.js")
-public class NfcService extends MobileService
+public class NfcService extends AbstractMobileService
 {
 	
 	/**
@@ -110,9 +112,10 @@ public class NfcService extends MobileService
 	private final Map<String, ServiceCall<String, MobileServiceError>>	showSettingsCalls				= new HashMap<>();
 
 
-	public NfcService(final AbstractClientConnector connector)
+	public NfcService(final AbstractClientConnector connector,
+			final MobileServiceConfiguration configuration)
 	{
-		super(connector);
+		super(connector,configuration);
 
 		this.addFunction("nfc_startNdefListener_success",this::nfc_startNdefListener_success);
 		this.addFunction("nfc_startNdefListener_error",this::nfc_startNdefListener_error);

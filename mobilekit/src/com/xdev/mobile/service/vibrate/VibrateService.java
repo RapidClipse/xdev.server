@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -24,19 +24,21 @@ package com.xdev.mobile.service.vibrate;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
-import com.xdev.mobile.service.MobileService;
-import com.xdev.mobile.service.MobileServiceDescriptor;
+import com.xdev.mobile.config.MobileServiceConfiguration;
+import com.xdev.mobile.service.AbstractMobileService;
+import com.xdev.mobile.service.annotations.MobileService;
+import com.xdev.mobile.service.annotations.Plugin;
 
 
 /**
  * This service provides a way to vibrate the device.
  *
  * @author XDEV Software
- * 
+ *
  */
-@MobileServiceDescriptor("vibrate-descriptor.xml")
+@MobileService(plugins = @Plugin(name = "cordova-plugin-vibration", spec = "2.1.1") )
 @JavaScript("vibrate.js")
-public class VibrateService extends MobileService
+public class VibrateService extends AbstractMobileService
 {
 	/**
 	 * Returns the vibrate service.<br>
@@ -58,9 +60,10 @@ public class VibrateService extends MobileService
 	}
 	
 	
-	public VibrateService(final AbstractClientConnector target)
+	public VibrateService(final AbstractClientConnector target,
+			final MobileServiceConfiguration configuration)
 	{
-		super(target);
+		super(target,configuration);
 	}
 	
 	

@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -31,8 +31,10 @@ import com.google.gson.Gson;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.Page;
-import com.xdev.mobile.service.MobileService;
-import com.xdev.mobile.service.MobileServiceDescriptor;
+import com.xdev.mobile.config.MobileServiceConfiguration;
+import com.xdev.mobile.service.AbstractMobileService;
+import com.xdev.mobile.service.annotations.MobileService;
+import com.xdev.mobile.service.annotations.Plugin;
 import com.xdev.mobile.service.contacts.ContactsServiceError.Reason;
 
 import elemental.json.JsonArray;
@@ -64,9 +66,9 @@ import elemental.json.JsonObject;
  * @author XDEV Software
  *
  */
-@MobileServiceDescriptor("contacts-descriptor.xml")
+@MobileService(plugins = @Plugin(name = "cordova-plugin-contacts", spec = "2.1.0") )
 @JavaScript("contacts.js")
-public class ContactsService extends MobileService
+public class ContactsService extends AbstractMobileService
 {
 	/**
 	 * Returns the contacts service.<br>
@@ -86,27 +88,28 @@ public class ContactsService extends MobileService
 	{
 		return getMobileService(ContactsService.class);
 	}
-	
+
 	private final Map<String, ServiceCall<List<Contact>, ContactsServiceError>>	findCalls	= new HashMap<>();
 	private final Map<String, ServiceCall<Contact, ContactsServiceError>>		pickCalls	= new HashMap<>();
 	private final Map<String, ServiceCall<Contact, ContactsServiceError>>		saveCalls	= new HashMap<>();
-	
-	
-	public ContactsService(final AbstractClientConnector connector)
+
+
+	public ContactsService(final AbstractClientConnector connector,
+			final MobileServiceConfiguration configuration)
 	{
-		super(connector);
-		
+		super(connector,configuration);
+
 		this.addFunction("contacts_find_success",this::contacts_find_success);
 		this.addFunction("contacts_find_error",this::contacts_find_error);
-		
+
 		this.addFunction("contacts_pick_success",this::contacts_pick_success);
 		this.addFunction("contacts_pick_error",this::contacts_pick_error);
-		
+
 		this.addFunction("contacts_save_success",this::contacts_save_success);
 		this.addFunction("contacts_save_error",this::contacts_save_error);
 	}
-	
-	
+
+
 	/**
 	 * Finds contacts in the device contacts database.
 	 * <p>
@@ -126,16 +129,16 @@ public class ContactsService extends MobileService
 		final ServiceCall<List<Contact>, ContactsServiceError> call = ServiceCall
 				.New(successCallback,errorCallback);
 		this.findCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		appendFields(js,options);
 		appendOptions(js,options);
 		js.append("contacts_find('").append(id).append("',fields,options);");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private void appendFields(final StringBuilder js, final ContactFindOptions options)
 	{
 		js.append("var fields = [");
@@ -158,8 +161,8 @@ public class ContactsService extends MobileService
 		}
 		js.append("];\n");
 	}
-	
-	
+
+
 	private void appendOptions(final StringBuilder js, final ContactFindOptions options)
 	{
 		js.append("var options = new ContactFindOptions();\n");
@@ -184,8 +187,8 @@ public class ContactsService extends MobileService
 			js.append("];\n");
 		}
 	}
-	
-	
+
+
 	private void contacts_find_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -193,7 +196,7 @@ public class ContactsService extends MobileService
 		if(call != null)
 		{
 			final List<Contact> contacts = new ArrayList<Contact>();
-			
+
 			final JsonArray arrayData = arguments.get(1);
 			for(int i = 0; i < arrayData.length(); i++)
 			{
@@ -202,12 +205,12 @@ public class ContactsService extends MobileService
 				final Contact contact = gson.fromJson(jsonObject.toJson(),Contact.class);
 				contacts.add(contact);
 			}
-			
+
 			call.success(contacts);
 		}
 	}
-	
-	
+
+
 	private void contacts_find_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -217,8 +220,8 @@ public class ContactsService extends MobileService
 			call.error(createContactsServiceError(arguments.get(1).asString()));
 		}
 	}
-	
-	
+
+
 	/**
 	 * Launches the Contact Picker to select a single contact.
 	 * <p>
@@ -237,14 +240,14 @@ public class ContactsService extends MobileService
 		final ServiceCall<Contact, ContactsServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.pickCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("contacts_pick('").append(id).append("');");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private void contacts_pick_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -254,12 +257,12 @@ public class ContactsService extends MobileService
 			final Gson gson = new Gson();
 			final JsonObject jsonObject = arguments.getObject(1);
 			final Contact contact = gson.fromJson(jsonObject.toJson(),Contact.class);
-			
+
 			call.success(contact);
 		}
 	}
-	
-	
+
+
 	private void contacts_pick_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -269,8 +272,8 @@ public class ContactsService extends MobileService
 			call.error(createContactsServiceError(arguments.get(1).asString()));
 		}
 	}
-	
-	
+
+
 	/**
 	 * Saves a new contact to the device contacts database, or updates an
 	 * existing contact if a contact with the same id already exists.
@@ -290,16 +293,16 @@ public class ContactsService extends MobileService
 		final ServiceCall<Contact, ContactsServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.saveCalls.put(id,call);
-		
+
 		final Gson gson = new Gson();
 		final String json = gson.toJson(contact);
 		final StringBuilder js = new StringBuilder();
 		js.append("contacts_save('").append(id).append("','").append(json).append("')");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private void contacts_save_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -309,12 +312,12 @@ public class ContactsService extends MobileService
 			final Gson gson = new Gson();
 			final JsonObject jsonObject = arguments.getObject(1);
 			final Contact contact = gson.fromJson(jsonObject.toJson(),Contact.class);
-			
+
 			call.success(contact);
 		}
 	}
-	
-	
+
+
 	private void contacts_save_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -324,12 +327,12 @@ public class ContactsService extends MobileService
 			call.error(createContactsServiceError(arguments.get(1).asString()));
 		}
 	}
-	
-	
+
+
 	private ContactsServiceError createContactsServiceError(final String message)
 	{
 		Reason reason = null;
-		
+
 		try
 		{
 			final int code = Integer.parseInt(message);
@@ -339,7 +342,7 @@ public class ContactsService extends MobileService
 		{
 			// swallow
 		}
-		
+
 		return new ContactsServiceError(this,message,reason);
 	}
 }

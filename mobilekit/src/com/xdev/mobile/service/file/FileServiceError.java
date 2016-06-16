@@ -21,7 +21,7 @@
 package com.xdev.mobile.service.file;
 
 
-import com.xdev.mobile.service.MobileService;
+import com.xdev.mobile.service.AbstractMobileService;
 import com.xdev.mobile.service.MobileServiceError;
 
 
@@ -71,7 +71,7 @@ public class FileServiceError extends MobileServiceError
 	private final Reason reason;
 	
 	
-	public FileServiceError(final MobileService source, final String message, final Reason reason)
+	public FileServiceError(final AbstractMobileService source, final String message, final Reason reason)
 	{
 		super(source,message);
 		

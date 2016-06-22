@@ -21,28 +21,34 @@
 package com.xdev.ui.util;
 
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import javax.persistence.metamodel.Attribute;
+
+
 public class NestedProperty<K, V> implements KeyValueType<K, V>
 {
 	private final K			property;
 	private final V			value;
 	private final Class<V>	type;
-	
-	
+
+
 	public NestedProperty(final K property, final V value, final Class<V> type)
 	{
 		this.property = property;
 		this.type = type;
 		this.value = value;
 	}
-	
-	
+
+
 	public static <K, V> KeyValueType<K, V> of(final K key, final V value, final Class<V> type)
 	{
 		final KeyValueType<K, V> pair = new NestedProperty<>(key,value,type);
 		return pair;
 	}
-	
-	
+
+
 	public static <K, V> KeyValueType<K, V> of(final K key, final Class<V> type)
 	{
 		final KeyValueType<K, V> pair = new NestedProperty<>(key,null,type);
@@ -58,6 +64,24 @@ public class NestedProperty<K, V> implements KeyValueType<K, V>
 
 
 	/**
+	 *
+	 * @param attributes
+	 * @return
+	 * @since 3.0
+	 */
+	public static KeyValueType<String, ?> of(final Attribute<?, ?>... attributes)
+	{
+		return of(path(attributes),attributes[attributes.length - 1].getJavaType());
+	}
+
+
+	public static String path(final Attribute<?, ?>... attributes)
+	{
+		return Arrays.stream(attributes).map(Attribute::getName).collect(Collectors.joining("."));
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -65,8 +89,8 @@ public class NestedProperty<K, V> implements KeyValueType<K, V>
 	{
 		return this.property;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -75,8 +99,8 @@ public class NestedProperty<K, V> implements KeyValueType<K, V>
 	{
 		return this.value;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

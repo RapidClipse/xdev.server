@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -55,85 +55,105 @@ import com.xdev.persistence.PersistenceUtils;
 public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements GenericDAO<T, ID>
 {
 	private final Class<T> persistentClass;
-	
-	
+
+
 	public JPADAO(final Class<T> persistentClass)
 	{
 		this.persistentClass = persistentClass;
 		this.setSearchProcessor(new JPASearchProcessor(new JPAAnnotationMetadataUtil()));
 	}
-	
-	
+
+
 	@Override
 	protected EntityManager em()
 	{
 		return PersistenceUtils.getEntityManager(this.persistentClass);
 	}
-	
-	
+
+
 	public void beginTransaction()
 	{
 		em().getTransaction().begin();
 	}
-	
-	
+
+
 	public void rollback()
 	{
 		em().getTransaction().rollback();
 	}
-	
-	
+
+
 	public void commit()
 	{
 		em().getTransaction().commit();
 	}
-	
-	
+
+
 	protected Session getSession()
 	{
 		return em().unwrap(Session.class);
 	}
-	
-	
+
+
 	protected boolean isQueryCacheEnabled()
 	{
 		final PersistenceManager persistenceManager = PersistenceManager.getCurrent();
 		final String persistenceUnit = persistenceManager.getPersistenceUnit(this.persistentClass);
 		return persistenceManager.isQueryCacheEnabled(persistenceUnit);
 	}
-	
-	
+
+
 	public CriteriaQuery<T> buildCriteriaQuery(final Class<T> exampleType)
 	{
 		final CriteriaBuilder cb = em().getCriteriaBuilder();
 		return cb.createQuery(exampleType);
 	}
+
+
+	/**
+	 *
+	 * @since 3.0
+	 */
+	public Criteria buildHibernateCriteriaQuery()
+	{
+		return buildHibernateCriteriaQuery(this.persistentClass);
+	}
 	
 	
+	/**
+	 *
+	 * @since 3.0
+	 */
+	public Criteria buildHibernateCriteriaQuery(final String alias)
+	{
+		return buildHibernateCriteriaQuery(this.persistentClass,alias);
+	}
+
+
 	public Criteria buildHibernateCriteriaQuery(final Class<T> entityType)
 	{
 		final Criteria crit = getSession().createCriteria(entityType);
 		crit.setCacheable(isQueryCacheEnabled());
 		return crit;
 	}
-	
-	
+
+
 	public Criteria buildHibernateCriteriaQuery(final Class<T> entityType, final String alias)
 	{
 		final Criteria crit = getSession().createCriteria(entityType,alias);
 		crit.setCacheable(isQueryCacheEnabled());
 		return crit;
 	}
-	
-	
+
+
 	public List<T> findByExample(final Class<T> entityType, final Object example)
 	{
 		final Criteria crit = getSession().createCriteria(entityType);
 		crit.setCacheable(isQueryCacheEnabled());
 		return crit.add(Example.create(example)).list();
 	}
-	
-	
+
+
 	public List<T> findByExample(final Class<T> entityType, final String alias,
 			final Object example)
 	{
@@ -141,8 +161,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		crit.setCacheable(isQueryCacheEnabled());
 		return crit.add(Example.create(example)).list();
 	}
-	
-	
+
+
 	@Override
 	public int count(ISearch search)
 	{
@@ -152,22 +172,22 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		}
 		return _count(this.persistentClass,search);
 	}
-	
-	
+
+
 	@Override
 	public T find(final ID id)
 	{
 		return _find(this.persistentClass,id);
 	}
-	
-	
+
+
 	@Override
 	public T[] find(final ID... ids)
 	{
 		return _find(this.persistentClass,ids);
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -185,8 +205,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		}
 		return query.getResultList();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -199,8 +219,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 				"select count(_it_) from " + getMetadataUtil().get(type).getEntityName() + " _it_");
 		return ((Number)query.getSingleResult()).intValue();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -219,7 +239,7 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		{
 			return false;
 		}
-		
+
 		final Query query = em().createQuery("select _it_.id from "
 				+ getMetadataUtil().get(type).getEntityName() + " _it_ where _it_.id = :id");
 		if(isQueryCacheEnabled())
@@ -229,8 +249,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		query.setParameter("id",id);
 		return query.getResultList().size() == 1;
 	}
-	
-	
+
+
 	private boolean validId(final Serializable id)
 	{
 		if(id == null)
@@ -247,8 +267,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		}
 		return true;
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -263,7 +283,7 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		for(final Object entity : pullByIds("select _it_",type,ids))
 		{
 			final Serializable id = getMetadataUtil().getId(entity);
-			
+
 			for(int i = 0; i < ids.length; i++)
 			{
 				if(id.equals(ids[i]))
@@ -273,15 +293,15 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 				}
 			}
 		}
-		
+
 		return (T[])retList;
 	}
-	
-	
+
+
 	private List<?> pullByIds(final String select, final Class<?> type, final Serializable[] ids)
 	{
 		final List<Serializable> nonNulls = new LinkedList<Serializable>();
-		
+
 		final StringBuilder sb = new StringBuilder(select);
 		sb.append(" from ");
 		sb.append(getMetadataUtil().get(type).getEntityName());
@@ -305,7 +325,7 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		{
 			return new ArrayList<Object>(0);
 		}
-		
+
 		final Query query = em().createQuery(sb.toString());
 		if(isQueryCacheEnabled())
 		{
@@ -318,113 +338,113 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		}
 		return query.getResultList();
 	}
-	
-	
+
+
 	@Override
 	public List<T> findAll()
 	{
 		return _all(this.persistentClass);
 	}
-	
-	
+
+
 	@Override
 	public void flush()
 	{
 		_flush();
 	}
-	
-	
+
+
 	@Override
 	public T getReference(final ID id)
 	{
 		return _getReference(this.persistentClass,id);
 	}
-	
-	
+
+
 	@Override
 	public T[] getReferences(final ID... ids)
 	{
 		return _getReferences(this.persistentClass,ids);
 	}
-	
-	
+
+
 	@Override
 	public boolean isAttached(final T entity)
 	{
 		return _contains(entity);
 	}
-	
-	
+
+
 	@Override
 	public void refresh(final T... entities)
 	{
 		_refresh(entities);
 	}
-	
-	
+
+
 	@Override
 	public boolean remove(final T entity)
 	{
 		return _removeEntity(entity);
 	}
-	
-	
+
+
 	@Override
 	public void remove(final T... entities)
 	{
 		_removeEntities((Object[])entities);
 	}
-	
-	
+
+
 	@Override
 	public boolean removeById(final ID id)
 	{
 		return _removeById(this.persistentClass,id);
 	}
-	
-	
+
+
 	@Override
 	public void removeByIds(final ID... ids)
 	{
 		_removeByIds(this.persistentClass,ids);
 	}
-	
-	
+
+
 	@Override
 	public T merge(final T entity)
 	{
 		return _merge(entity);
 	}
-	
-	
+
+
 	@Override
 	public T[] merge(final T... entities)
 	{
 		return _merge(this.persistentClass,entities);
 	}
-	
-	
+
+
 	@Override
 	public void persist(final T... entities)
 	{
 		_persist(entities);
 	}
-	
-	
+
+
 	@Override
 	public T save(final T entity)
 	{
 		return _persistOrMerge(entity);
 	}
-	
-	
+
+
 	@Override
 	public T[] save(final T... entities)
 	{
 		return _persistOrMerge(this.persistentClass,entities);
 	}
-	
-	
+
+
 	@Override
 	public <RT> List<RT> search(final ISearch search)
 	{
@@ -434,8 +454,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		}
 		return _search(this.persistentClass,search);
 	}
-	
-	
+
+
 	@Override
 	public <RT> SearchResult<RT> searchAndCount(final ISearch search)
 	{
@@ -448,29 +468,29 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		}
 		return _searchAndCount(this.persistentClass,search);
 	}
-	
-	
+
+
 	@Override
 	public <RT> RT searchUnique(final ISearch search)
 	{
 		return (RT)_searchUnique(this.persistentClass,search);
 	}
-	
-	
+
+
 	@Override
 	public Filter getFilterFromExample(final T example)
 	{
 		return _getFilterFromExample(example);
 	}
-	
-	
+
+
 	@Override
 	public Filter getFilterFromExample(final T example, final ExampleOptions options)
 	{
 		return _getFilterFromExample(example,options);
 	}
-	
-	
+
+
 	public T reattach(final T object)
 	{
 		final Session session = getSession();

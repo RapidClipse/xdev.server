@@ -21,16 +21,18 @@
 package com.xdev.ui.util.masterdetail;
 
 
-import java.lang.reflect.Field;
 import java.util.Collection;
+
+import org.apache.log4j.Logger;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItem;
 import com.xdev.dal.DAOs;
 import com.xdev.ui.entitycomponent.BeanComponent;
+import com.xdev.util.DTOUtils;
 import com.xdev.util.EntityReferenceResolver;
-import com.xdev.util.XdevEntityReferenceResolver;
+import com.xdev.util.JPAEntityReferenceResolver;
 
 
 @SuppressWarnings("rawtypes")
@@ -39,23 +41,23 @@ public interface EntityMasterDetail extends JPAMasterDetail
 	@Override
 	public void connectMasterDetail(BeanComponent master, BeanComponent detail, Class masterClass,
 			Class detailClass);
-			
-			
-			
+
+
+
 	public class Implementation extends MasterDetail.Implementation implements EntityMasterDetail
 	{
 		// private final EntityIDResolver idResolver;
 		private final EntityReferenceResolver referenceResolver;
-		
-		
+
+
 		public Implementation()
 		{
 			super();
 			// this.idResolver = new HibernateEntityIDResolver();
-			this.referenceResolver = XdevEntityReferenceResolver.getInstance();
+			this.referenceResolver = JPAEntityReferenceResolver.getInstance();
 		}
-		
-		
+
+
 		@Override
 		public void connectMasterDetail(final BeanComponent master,
 				final BeanComponent detailContainer, final Class masterClass,
@@ -65,34 +67,33 @@ public interface EntityMasterDetail extends JPAMasterDetail
 			// 2. get referencing property from detail class
 			master.addValueChangeListener(
 					new MasterDetailValueChangeListener(master,detailContainer,
-							this.referenceResolver.getReferenceEntityPropertyName(detailClass,
+							this.referenceResolver.getReferenceEntityAttributeName(detailClass,
 									masterClass),
-					this.referenceResolver.getReferenceEntityPropertyName(masterClass,
-							detailClass)));
+							this.referenceResolver.getReferenceEntityAttributeName(masterClass,
+									detailClass)));
 		}
-		
-		
-		
+
+
+
 		private class MasterDetailValueChangeListener implements ValueChangeListener
 		{
 			private static final long	serialVersionUID	= 3306467309764402175L;
-															
+
 			private final BeanComponent	masterComponent;
 			private final BeanComponent	detailComponent;
-			private final Object		masterProperty;
-										
-										
+			private final String		masterProperty;
+
+
 			public MasterDetailValueChangeListener(final BeanComponent filter,
-					final BeanComponent detailContainer, final Object masterProperty,
+					final BeanComponent detailContainer, final String masterProperty,
 					final Object detailProperty)
 			{
 				this.masterComponent = filter;
 				this.detailComponent = detailContainer;
-				// this.detailProperty = detailProperty;
 				this.masterProperty = masterProperty;
 			}
-			
-			
+
+
 			@SuppressWarnings("unchecked")
 			@Override
 			public void valueChange(final ValueChangeEvent event)
@@ -108,28 +109,27 @@ public interface EntityMasterDetail extends JPAMasterDetail
 
 					try
 					{
-						final Field f = selectedBean.getClass()
-								.getDeclaredField(this.masterProperty.toString());
-						f.setAccessible(true);
-						final Object value = f.get(selectedBean);
-						
-						if(value instanceof Collection)
+						final Object value = DTOUtils.resolveAttributeValue(selectedBean,
+								this.masterProperty);
+						if(value != null)
 						{
-							final Collection values = (Collection)value;
-							this.detailComponent.getContainerDataSource().addAll(values);
-						}
-						else
-						{
-							this.detailComponent.getContainerDataSource().addBean(value);
+							if(value instanceof Collection)
+							{
+								final Collection values = (Collection)value;
+								this.detailComponent.getContainerDataSource().addAll(values);
+							}
+							else
+							{
+								this.detailComponent.getContainerDataSource().addBean(value);
+							}
 						}
 					}
-					catch(IllegalArgumentException | IllegalAccessException | NoSuchFieldException
-							| SecurityException e)
+					catch(final Exception e)
 					{
-						e.printStackTrace();
+						Logger.getLogger(EntityMasterDetail.class).error(e);
 					}
 				}
-				
+
 				// if(this.filterComponent.getSelectedItem() != null)
 				// {
 				// clearFiltering(this.detailComponent.getContainerDataSource(),

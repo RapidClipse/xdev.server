@@ -27,7 +27,7 @@ import java.util.List;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.xdev.util.DTOUtils;
-import com.xdev.util.HibernateEntityIDResolver;
+import com.xdev.util.JPAEntityIDResolver;
 
 
 /**
@@ -215,6 +215,6 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 			properties[i] = this.requiredProperties[i].toString();
 		}
 
-		DTOUtils.preload(bean,HibernateEntityIDResolver.getInstance(),properties);
+		DTOUtils.preload(bean,JPAEntityIDResolver.getInstance(),properties);
 	}
 }

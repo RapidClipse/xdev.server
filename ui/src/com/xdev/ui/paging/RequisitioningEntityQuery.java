@@ -59,7 +59,7 @@ import com.xdev.data.util.filter.CompareBIDirect;
 import com.xdev.persistence.PersistenceManager;
 import com.xdev.persistence.PersistenceUtils;
 import com.xdev.util.DTOUtils;
-import com.xdev.util.HibernateEntityIDResolver;
+import com.xdev.util.JPAEntityIDResolver;
 
 
 @SuppressWarnings("unchecked")
@@ -261,7 +261,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			properties[i] = this.requiredProperties[i].toString();
 		}
 		
-		DTOUtils.preload(entity,HibernateEntityIDResolver.getInstance(),properties);
+		DTOUtils.preload(entity,JPAEntityIDResolver.getInstance(),properties);
 	}
 	
 	

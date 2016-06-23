@@ -24,9 +24,8 @@ package com.xdev.ui.util.masterdetail;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.xdev.ui.entitycomponent.BeanComponent;
-import com.xdev.util.EntityReferenceResolver;
-import com.xdev.util.HibernateEntityIDResolver;
-import com.xdev.util.XdevEntityReferenceResolver;
+import com.xdev.util.JPAEntityIDResolver;
+import com.xdev.util.JPAEntityReferenceResolver;
 
 
 @SuppressWarnings("rawtypes")
@@ -34,22 +33,11 @@ public interface JPAMasterDetail extends MasterDetail
 {
 	public void connectMasterDetail(BeanComponent master, BeanComponent detail, Class masterClass,
 			Class detailClass);
-			
-			
-			
+
+
+
 	public class Implementation extends MasterDetail.Implementation implements JPAMasterDetail
 	{
-		private final EntityReferenceResolver referenceResolver;
-		
-		
-		public Implementation()
-		{
-			super();
-			
-			this.referenceResolver = XdevEntityReferenceResolver.getInstance();
-		}
-		
-		
 		@Override
 		public void connectMasterDetail(final BeanComponent master,
 				final BeanComponent detailContainer, final Class masterClass,
@@ -59,10 +47,9 @@ public interface JPAMasterDetail extends MasterDetail
 			// 2. get referencing property from detail class
 			master.addValueChangeListener(
 					new MasterDetailValueChangeListener(master,detailContainer,
-							HibernateEntityIDResolver.getInstance().getEntityIDProperty(masterClass)
-									.getName(),
-							this.referenceResolver.getReferenceEntityPropertyName(masterClass,
-									detailClass)));
+							JPAEntityIDResolver.getInstance().getEntityIDAttributeName(masterClass),
+							JPAEntityReferenceResolver.getInstance()
+									.getReferenceEntityAttributeName(masterClass,detailClass)));
 		}
 		
 		
@@ -70,12 +57,12 @@ public interface JPAMasterDetail extends MasterDetail
 		private class MasterDetailValueChangeListener implements ValueChangeListener
 		{
 			private static final long	serialVersionUID	= 3306467309764402175L;
-															
+
 			private final BeanComponent	filterComponent;
 			private final BeanComponent	detailComponent;
 			private final Object		detailProperty, filterProperty;
-										
-										
+
+
 			public MasterDetailValueChangeListener(final BeanComponent filter,
 					final BeanComponent detailContainer, final Object filterProperty,
 					final Object detailProperty)
@@ -96,7 +83,7 @@ public interface JPAMasterDetail extends MasterDetail
 				{
 					clearFiltering(this.detailComponent.getContainerDataSource(),
 							this.filterProperty);
-							
+
 					prepareFilter(this.detailComponent.getContainerDataSource(),this.detailProperty,
 							this.filterComponent.getSelectedItem().getBean()
 					// .getItemProperty(this.filterProperty).getValue().toString(),

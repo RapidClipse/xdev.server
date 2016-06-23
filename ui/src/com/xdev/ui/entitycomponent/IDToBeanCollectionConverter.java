@@ -21,7 +21,6 @@
 package com.xdev.ui.entitycomponent;
 
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -29,11 +28,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.hibernate.mapping.Property;
-
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
-import com.xdev.util.HibernateEntityIDResolver;
+import com.xdev.util.JPAEntityIDResolver;
 
 
 //TODO check if object as ID type is always suitable
@@ -43,8 +40,8 @@ public class IDToBeanCollectionConverter<T>
 	private final XdevBeanContainer<T>	container;
 	private Collection<T>				beanCollection	= new ArrayList<T>();
 	private Collection<Object>			idCollection	= new HashSet<>();
-														
-														
+
+
 	/**
 	 *
 	 */
@@ -81,7 +78,7 @@ public class IDToBeanCollectionConverter<T>
 	@Override
 	public Collection<? extends Object> convertToModel(final Set<T> itemIds,
 			final Class<? extends Collection<? extends Object>> targetType, final Locale locale)
-					throws Converter.ConversionException
+			throws Converter.ConversionException
 	{
 		// TODO create suitable type provider
 		if(targetType.isAssignableFrom(List.class))
@@ -92,7 +89,7 @@ public class IDToBeanCollectionConverter<T>
 		{
 			this.beanCollection = new HashSet<>();
 		}
-		
+
 		if(itemIds != null)
 		{
 			for(final Object itemId : itemIds)
@@ -105,7 +102,7 @@ public class IDToBeanCollectionConverter<T>
 			}
 			return this.beanCollection;
 		}
-		
+
 		return this.beanCollection;
 	}
 
@@ -121,33 +118,20 @@ public class IDToBeanCollectionConverter<T>
 	@Override
 	public Set<T> convertToPresentation(final Collection<? extends Object> values,
 			final Class<? extends Set<T>> targetType, final Locale locale)
-					throws Converter.ConversionException
+			throws Converter.ConversionException
 	{
 		this.idCollection = new HashSet<>();
 		if(values != null)
 		{
 			for(final Object bean : values)
 			{
-				try
-				{
-					/*
-					 * TODO rather make entity manager accesible within
-					 * entitycontainer and use it for this purpose
-					 */
-					
-					final HibernateEntityIDResolver idResolver = HibernateEntityIDResolver
-							.getInstance();
-					final Property idProperty = idResolver.getEntityIDProperty(bean.getClass());
-					final Field idField = bean.getClass().getDeclaredField(idProperty.getName());
-					idField.setAccessible(true);
-
-					this.idCollection.add(idField.get(bean));
-				}
-				catch(NoSuchFieldException | SecurityException | IllegalArgumentException
-						| IllegalAccessException e)
-				{
-					throw new RuntimeException(e);
-				}
+				/*
+				 * TODO rather make entity manager accessible within
+				 * entitycontainer and use it for this purpose
+				 */
+				final JPAEntityIDResolver idResolver = JPAEntityIDResolver
+						.getInstance();
+				this.idCollection.add(idResolver.getEntityIDAttributeValue(bean));
 			}
 		}
 		return (Set<T>)this.idCollection;

@@ -26,7 +26,7 @@ import java.util.Locale;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
-import com.xdev.util.HibernateEntityIDResolver;
+import com.xdev.util.JPAEntityIDResolver;
 
 
 //TODO check if object as ID type is always suitable
@@ -80,7 +80,7 @@ public class IDToBeanConverter<T> implements Converter<Object, T>
 	{
 		if(value != null)
 		{
-			return HibernateEntityIDResolver.getInstance().getEntityIDPropertyValue(value);
+			return JPAEntityIDResolver.getInstance().getEntityIDAttributeValue(value);
 		}
 		return null;
 	}

@@ -29,8 +29,7 @@ import com.xdev.lang.ExecutableCommandObject;
 import com.xdev.ui.entitycomponent.hierarchical.FillTree;
 import com.xdev.ui.entitycomponent.hierarchical.FillTree.Strategy;
 import com.xdev.ui.entitycomponent.hierarchical.Group;
-import com.xdev.util.EntityReferenceResolver;
-import com.xdev.util.HibernateEntityReferenceResolver;
+import com.xdev.util.JPAEntityReferenceResolver;
 
 
 /**
@@ -40,8 +39,8 @@ import com.xdev.util.HibernateEntityReferenceResolver;
 @Deprecated
 public class XdevFillTree implements ExecutableCommandObject
 {
-	private final FillTree					fillTreeComposite;
-	private final EntityReferenceResolver	referenceResolver;
+	private final FillTree						fillTreeComposite;
+	private final JPAEntityReferenceResolver	referenceResolver;
 
 
 	/**
@@ -52,7 +51,7 @@ public class XdevFillTree implements ExecutableCommandObject
 		super();
 		this.fillTreeComposite = new FillTree.Implementation();
 		this.fillTreeComposite.setHierarchicalReceiver(tree);
-		this.referenceResolver = HibernateEntityReferenceResolver.getInstance();
+		this.referenceResolver = JPAEntityReferenceResolver.getInstance();
 	}
 
 	/*
@@ -70,7 +69,7 @@ public class XdevFillTree implements ExecutableCommandObject
 	{
 		// TODO check bidirectionals
 		final String propertyName = this.referenceResolver
-				.getReferenceEntityPropertyName(parentClazz,clazz);
+				.getReferenceEntityAttributeName(parentClazz,clazz);
 		try
 		{
 			return this.fillTreeComposite.addGroup(clazz,clazz.getDeclaredField(propertyName));

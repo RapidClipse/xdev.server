@@ -26,7 +26,7 @@ import java.util.Arrays;
 
 import com.xdev.dal.DAOs;
 import com.xdev.util.EntityIDResolver;
-import com.xdev.util.HibernateEntityIDResolver;
+import com.xdev.util.JPAEntityIDResolver;
 import com.xdev.util.JPAMetaDataUtils;
 
 
@@ -112,7 +112,7 @@ public class FilterData
 		}
 		else
 		{
-			final EntityIDResolver idResolver = HibernateEntityIDResolver.getInstance();
+			final EntityIDResolver idResolver = JPAEntityIDResolver.getInstance();
 			this.values = Arrays.stream(values).map(value -> storeFilterValue(value,idResolver))
 					.toArray();
 		}
@@ -129,7 +129,7 @@ public class FilterData
 		final Class<? extends Object> entityType = value.getClass();
 		if(JPAMetaDataUtils.isManaged(entityType))
 		{
-			return new EntityID(entityType,idResolver.getEntityIDPropertyValue(value));
+			return new EntityID(entityType,idResolver.getEntityIDAttributeValue(value));
 		}
 		
 		return value;

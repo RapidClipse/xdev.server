@@ -25,7 +25,7 @@ import java.util.Locale;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
-import com.xdev.util.HibernateEntityIDResolver;
+import com.xdev.util.JPAEntityIDResolver;
 
 
 public class BeanToBeanConverter<T> implements Converter<T, T>
@@ -67,8 +67,8 @@ public class BeanToBeanConverter<T> implements Converter<T, T>
 		}
 		
 		// find by id
-		final HibernateEntityIDResolver idResolver = HibernateEntityIDResolver.getInstance();
-		final Object id = idResolver.getEntityIDPropertyValue(value);
+		final JPAEntityIDResolver idResolver = JPAEntityIDResolver.getInstance();
+		final Object id = idResolver.getEntityIDAttributeValue(value);
 		if(id == null)
 		{
 			return value;
@@ -76,7 +76,7 @@ public class BeanToBeanConverter<T> implements Converter<T, T>
 		final T containerValue = this.container.getItemIds().stream()
 				.map(propertyId -> this.container.getItem(propertyId).getBean())
 				.filter(bean -> bean.equals(value)
-						|| (id != null && id.equals(idResolver.getEntityIDPropertyValue(bean))))
+						|| (id != null && id.equals(idResolver.getEntityIDAttributeValue(bean))))
 				.findFirst().orElse(null);
 		return containerValue != null ? containerValue : value;
 	}

@@ -29,7 +29,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import com.vaadin.data.util.converter.Converter;
-import com.xdev.util.HibernateEntityIDResolver;
+import com.xdev.util.JPAEntityIDResolver;
 
 
 public class BeanToBeanCollectionConverter<T> implements Converter<Set<T>, Collection<? extends T>>
@@ -129,12 +129,12 @@ public class BeanToBeanCollectionConverter<T> implements Converter<Set<T>, Colle
 			return null;
 		}
 
-		final HibernateEntityIDResolver idResolver = HibernateEntityIDResolver.getInstance();
-		final Object id = idResolver.getEntityIDPropertyValue(value);
+		final JPAEntityIDResolver idResolver = JPAEntityIDResolver.getInstance();
+		final Object id = idResolver.getEntityIDAttributeValue(value);
 		final T containerValue = this.container.getItemIds().stream()
 				.map(propertyId -> this.container.getItem(propertyId).getBean())
 				.filter(bean -> bean.equals(value)
-						|| (id != null && id.equals(idResolver.getEntityIDPropertyValue(bean))))
+						|| (id != null && id.equals(idResolver.getEntityIDAttributeValue(bean))))
 				.findFirst().orElse(null);
 		return containerValue != null ? containerValue : value;
 	}

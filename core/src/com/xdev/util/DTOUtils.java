@@ -21,9 +21,6 @@
 package com.xdev.util;
 
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
@@ -45,8 +42,8 @@ public final class DTOUtils
 	private DTOUtils()
 	{
 	}
-	
-	
+
+
 	public static void preload(final Object bean, final EntityIDResolver idResolver,
 			final String... requiredProperties)
 	{
@@ -63,19 +60,19 @@ public final class DTOUtils
 					{
 						if(JPAMetaDataUtils.isManaged(object.getClass()))
 						{
-							idResolver.getEntityIDPropertyValue(object);
+							idResolver.getEntityIDAttributeValue(object);
 						}
 					}
 				}
 				else if(JPAMetaDataUtils.isManaged(propertyValue.getClass()))
 				{
-					idResolver.getEntityIDPropertyValue(propertyValue);
+					idResolver.getEntityIDAttributeValue(propertyValue);
 				}
 			}
 		}
 	}
-	
-	
+
+
 	public static Object resolveAttributeValue(Object managedObject, final String propertyPath)
 	{
 		final EntityManager entityManager = PersistenceUtils
@@ -84,12 +81,12 @@ public final class DTOUtils
 		{
 			return null;
 		}
-		
+
 		Object propertyValue = null;
-		
+
 		final Metamodel metamodel = entityManager.getMetamodel();
 		ManagedType<?> managedType = null;
-		
+
 		final String[] parts = propertyPath.split("\\.");
 		for(int i = 0; i < parts.length; i++)
 		{
@@ -103,7 +100,7 @@ public final class DTOUtils
 				// not a managed type, XWS-870
 				return null;
 			}
-			
+
 			final String name = parts[i];
 			Attribute<?, ?> attribute = null;
 			try
@@ -132,43 +129,14 @@ public final class DTOUtils
 					return null;
 				}
 			}
-			
-			if(attribute.getJavaMember() instanceof Field)
+
+			propertyValue = ReflectionUtils.getMemberValue(managedObject,attribute.getJavaMember());
+			if(propertyValue != null && JPAMetaDataUtils.isManaged(propertyValue.getClass()))
 			{
-				try
-				{
-					propertyValue = ((Field)attribute.getJavaMember()).get(managedObject);
-					if(propertyValue != null
-							&& JPAMetaDataUtils.isManaged(propertyValue.getClass()))
-					{
-						managedObject = propertyValue;
-					}
-				}
-				catch(IllegalArgumentException | IllegalAccessException e)
-				{
-					throw new RuntimeException(e);
-				}
-			}
-			else if(attribute.getJavaMember() instanceof Method)
-			{
-				// invoke getter
-				try
-				{
-					propertyValue = ((Method)attribute.getJavaMember()).invoke(managedObject);
-					if(propertyValue != null
-							&& JPAMetaDataUtils.isManaged(propertyValue.getClass()))
-					{
-						managedObject = propertyValue;
-					}
-				}
-				catch(IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException e)
-				{
-					throw new RuntimeException(e);
-				}
+				managedObject = propertyValue;
 			}
 		}
-		
+
 		return propertyValue;
 	}
 }

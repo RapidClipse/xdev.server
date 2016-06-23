@@ -31,7 +31,7 @@ import java.util.Set;
 import javax.persistence.metamodel.EntityType;
 
 import com.xdev.util.EntityIDResolver;
-import com.xdev.util.HibernateEntityIDResolver;
+import com.xdev.util.JPAEntityIDResolver;
 import com.xdev.util.JPAMetaDataUtils;
 
 
@@ -67,7 +67,7 @@ public class URLParameterRegistry implements Serializable
 		if(value != null && JPAMetaDataUtils.isManaged(value.getClass()))
 		{
 			// See XWS-545
-			final Object id = getIdResolver().getEntityIDPropertyValue(value);
+			final Object id = getIdResolver().getEntityIDAttributeValue(value);
 			if(id instanceof Serializable)
 			{
 				this.internal.put(parameterKey,new URLParameterRegistryValue(value.getClass(),null,
@@ -134,6 +134,6 @@ public class URLParameterRegistry implements Serializable
 	
 	public EntityIDResolver getIdResolver()
 	{
-		return HibernateEntityIDResolver.getInstance();
+		return JPAEntityIDResolver.getInstance();
 	}
 }

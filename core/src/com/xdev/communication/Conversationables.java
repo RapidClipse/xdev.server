@@ -55,15 +55,15 @@ public final class Conversationables implements Serializable
 		}
 		return CurrentInstance.get(Conversationables.class);
 	}
-	
+
 	private transient Map<String, Conversationable> unitToConversationable;
-	
-	
+
+
 	public Conversationables()
 	{
 	}
-	
-	
+
+
 	private Map<String, Conversationable> unitToConversationable()
 	{
 		if(this.unitToConversationable == null)
@@ -72,43 +72,43 @@ public final class Conversationables implements Serializable
 		}
 		return this.unitToConversationable;
 	}
-	
-	
+
+
 	public Conversationables put(final String persistenceUnit, final Conversationable conversation)
 	{
 		unitToConversationable().put(persistenceUnit,conversation);
 		return this;
 	}
-	
-	
+
+
 	public Conversationable remove(final String persistenceUnit)
 	{
 		return unitToConversationable().remove(persistenceUnit);
 	}
-	
-	
+
+
 	public Conversationable get(final String persistenceUnit)
 	{
 		return unitToConversationable().get(persistenceUnit);
 	}
-	
-	
+
+
 	public void forEach(final Consumer<Conversationable> consumer)
 	{
 		unitToConversationable().values().forEach(consumer);
 	}
-	
-	
+
+
 	public void closeAll()
 	{
 		unitToConversationable().values().forEach(this::close);
 	}
-	
-	
+
+
 	public void close(final Conversationable conversationable)
 	{
 		final EntityManager em = conversationable.getEntityManager();
-		if(em != null)
+		if(em != null && em.isOpen())
 		{
 			final EntityTransaction transaction = em.getTransaction();
 			if(transaction != null && transaction.isActive())
@@ -125,7 +125,7 @@ public final class Conversationables implements Serializable
 					}
 				}
 			}
-			
+
 			try
 			{
 				em.close();

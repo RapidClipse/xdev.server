@@ -23,10 +23,10 @@ package com.xdev.util;
 
 /**
  *
- * @author XDEV Software (JW)
- *		
+ * @author XDEV Software
+ * 
  */
 public interface EntityReferenceResolver
 {
-	public String getReferenceEntityPropertyName(Class<?> referenceEntity, Class<?> entity);
+	public String getReferenceEntityAttributeName(Class<?> referenceEntity, Class<?> entity);
 }

@@ -20,14 +20,10 @@
 
 package com.xdev.util;
 
-
-import org.hibernate.mapping.Property;
-
-
 public interface EntityIDResolver
 {
-	public Property getEntityIDProperty(Class<?> entityClass);
+	public String getEntityIDAttributeName(Class<?> entityType);
 
 
-	public Object getEntityIDPropertyValue(Object entity);
+	public Object getEntityIDAttributeValue(Object entity);
 }

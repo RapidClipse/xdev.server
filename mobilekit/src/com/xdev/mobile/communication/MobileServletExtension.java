@@ -37,13 +37,7 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.vaadin.server.BootstrapFragmentResponse;
-import com.vaadin.server.BootstrapListener;
-import com.vaadin.server.BootstrapPageResponse;
-import com.vaadin.server.SessionInitEvent;
-import com.vaadin.server.VaadinRequest;
-import com.xdev.communication.ClientInfo;
-import com.xdev.communication.ContentSecurityPolicy;
+import com.vaadin.server.CustomizedSystemMessages;
 import com.xdev.communication.XdevServlet;
 import com.xdev.communication.XdevServletExtension;
 import com.xdev.mobile.config.MobileConfiguration;
@@ -53,128 +47,26 @@ import com.xdev.mobile.service.AbstractMobileService;
 
 /**
  * @author XDEV Software
- * 		
+ *
  */
 public class MobileServletExtension implements XdevServletExtension
 {
 	private static Logger LOG = Logger.getLogger(MobileServletExtension.class.getName());
 
-	private MobileConfiguration mobileConfiguration;
-
 
 	@Override
 	public void servletInitialized(final XdevServlet servlet) throws ServletException
 	{
-		this.mobileConfiguration = readMobileConfiguration(servlet);
-
-		servlet.getService().addSessionInitListener(event -> initSession(event));
-
-		final ContentSecurityPolicy csp = servlet.getContentSecurityPolicy();
-		csp.addDirectives(ContentSecurityPolicy.DEFAULT_SRC,"*");
-		csp.addDirectives(ContentSecurityPolicy.STYLE_SRC,"'self'","'unsafe-inline'");
-		csp.addDirectives(ContentSecurityPolicy.SCRIPT_SRC,"'self'","'unsafe-inline'",
-				"'unsafe-eval'");
-	}
-
-
-	protected boolean isMobileRequest(final VaadinRequest request)
-	{
-		return true;
-		// return "true".equals(request.getParameter("cordova"));
-	}
-
-
-	protected void initSession(final SessionInitEvent event)
-	{
-		if(isMobileRequest(event.getRequest()))
-		{
-			event.getSession().setAttribute(MobileConfiguration.class,this.mobileConfiguration);
-		}
-
-		event.getSession().addBootstrapListener(new BootstrapListener()
-		{
-			@Override
-			public void modifyBootstrapPage(final BootstrapPageResponse response)
-			{
-				if(isMobileRequest(response.getRequest()))
-				{
-					addMobileResources(response);
-				}
-			}
-
-
-			@Override
-			public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
-			{
-			}
+		servlet.getService().setSystemMessagesProvider(systemMessagesInfo -> {
+			final CustomizedSystemMessages messages = new CustomizedSystemMessages();
+			messages.setSessionExpiredNotificationEnabled(false);
+			messages.setCommunicationErrorNotificationEnabled(false);
+			return messages;
 		});
-	}
-	
-	
-	protected void addMobileResources(final BootstrapPageResponse response)
-	{
-		// final StringBuilder initScriptBuilder = new StringBuilder();
-		//
-		// for(final MobileServiceConfiguration mobileServiceConfiguration :
-		// this.mobileConfiguration
-		// .getMobileServices())
-		// {
-		// final Class<? extends MobileService> serviceClass =
-		// mobileServiceConfiguration
-		// .getServiceClass();
-		// final InitScript initScript =
-		// serviceClass.getAnnotation(InitScript.class);
-		// if(initScript != null)
-		// {
-		// try
-		// {
-		// final InitScriptProvider initScriptProvider = initScript.provider()
-		// .newInstance();
-		// final String script = initScriptProvider
-		// .getInitScript(mobileServiceConfiguration);
-		// if(script != null)
-		// {
-		// if(initScriptBuilder.length() > 0)
-		// {
-		// initScriptBuilder.append("\n\n\n");
-		// }
-		// initScriptBuilder.append(script);
-		// }
-		// }
-		// catch(final Exception e)
-		// {
-		// LOG.log(Level.SEVERE,e.getMessage(),e);
-		// }
-		// }
-		// }
-		//
-		// if(initScriptBuilder.length() > 0)
-		// {
-		// final InitScriptRequestHandler requestHandler = new
-		// InitScriptRequestHandler(
-		// initScriptBuilder.toString());
-		// response.getSession().addRequestHandler(requestHandler);
-		// response.getDocument().body().prependElement("script").attr("type","text/javascript")
-		// .attr("src",requestHandler.getPath());
-		// }
 
-		final ClientInfo clientInfo = ClientInfo.get(response.getRequest());
-		if(clientInfo.isAndroid())
-		{
-			response.getDocument().body().prependElement("script").attr("type","text/javascript")
-					.attr("src","VAADIN/cordova/android/cordova.js");
-		}
-		else if(clientInfo.isIOS())
-		{
-			response.getDocument().body().prependElement("script").attr("type","text/javascript")
-					.attr("src","VAADIN/cordova/ios/cordova.js");
-		}
-		// else
-		// {
-		// response.getDocument().body().prependElement("script")
-		// .attr("type","text/javascript")
-		// .attr("src","VAADIN/cordova/windows/cordova.js");
-		// }
+		final MobileConfiguration mobileConfiguration = readMobileConfiguration(servlet);
+		servlet.getService().addSessionInitListener(event -> event.getSession()
+				.setAttribute(MobileConfiguration.class,mobileConfiguration));
 	}
 
 
@@ -214,7 +106,7 @@ public class MobileServletExtension implements XdevServletExtension
 
 
 	@SuppressWarnings("unchecked")
-	private MobileServiceConfiguration createServiceConfiguration(final ClassLoader classLoader,
+	protected MobileServiceConfiguration createServiceConfiguration(final ClassLoader classLoader,
 			final Element serviceElement)
 	{
 		final String className = serviceElement.attributeValue("class");
@@ -248,11 +140,11 @@ public class MobileServletExtension implements XdevServletExtension
 
 	protected URL findMobileXML(final XdevServlet servlet) throws MalformedURLException
 	{
-		URL resourceUrl = servlet.getServletContext().getResource("/mobile.xml");
+		final ClassLoader classLoader = servlet.getService().getClassLoader();
+		URL resourceUrl = classLoader.getResource("META-INF/mobile.xml");
 		if(resourceUrl == null)
 		{
-			final ClassLoader classLoader = servlet.getService().getClassLoader();
-			resourceUrl = classLoader.getResource("META-INF/mobile.xml");
+			resourceUrl = servlet.getServletContext().getResource("/mobile.xml");
 			if(resourceUrl == null)
 			{
 				resourceUrl = classLoader.getResource("mobile.xml");
@@ -260,41 +152,4 @@ public class MobileServletExtension implements XdevServletExtension
 		}
 		return resourceUrl;
 	}
-	
-	// private static class InitScriptRequestHandler implements RequestHandler
-	// {
-	// private final String script;
-	// private final String path;
-	//
-	//
-	// public InitScriptRequestHandler(final String script)
-	// {
-	// this.script = script;
-	//
-	// this.path = "mobilekit/init" + System.currentTimeMillis() + ".js";
-	// }
-	//
-	//
-	// public String getPath()
-	// {
-	// return this.path;
-	// }
-	//
-	//
-	// @Override
-	// public boolean handleRequest(final VaadinSession session, final
-	// VaadinRequest request,
-	// final VaadinResponse response) throws IOException
-	// {
-	// if(request.getPathInfo().endsWith(this.path))
-	// {
-	// response.setContentType("application/javascript");
-	// response.getWriter().append(this.script);
-	//
-	// return true;
-	// }
-	//
-	// return false;
-	// }
-	// }
 }

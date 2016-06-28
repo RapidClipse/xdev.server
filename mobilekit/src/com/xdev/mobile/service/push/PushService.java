@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * For further information see
+ * 
+ * For further information see 
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -35,6 +35,7 @@ import com.xdev.mobile.config.MobileServiceConfiguration;
 import com.xdev.mobile.service.AbstractMobileService;
 import com.xdev.mobile.service.MobileServiceError;
 import com.xdev.mobile.service.annotations.MobileService;
+import com.xdev.mobile.service.annotations.Parameter;
 import com.xdev.mobile.service.annotations.Plugin;
 
 import elemental.json.JsonArray;
@@ -47,7 +48,7 @@ import elemental.json.JsonObject;
  * @author XDEV Software
  *
  */
-@MobileService(plugins = @Plugin(name = "phonegap-plugin-push", spec = "1.7.0") )
+@MobileService(plugins = @Plugin(name = "phonegap-plugin-push", spec = "1.7.0"), params = @Parameter(name = "SENDER_ID"))
 @JavaScript("push.js")
 public class PushService extends AbstractMobileService
 {
@@ -69,37 +70,37 @@ public class PushService extends AbstractMobileService
 	{
 		return getMobileService(PushService.class);
 	}
-	
+
 	private final Set<Consumer<RegistrationData>>				registrationListener	= new HashSet<>();
 	private final Set<Consumer<NotificationData>>				notificationListener	= new HashSet<>();
 	private final Set<Consumer<MobileServiceError>>				errorListener			= new HashSet<>();
 	private final Map<String, Set<Consumer<NotificationData>>>	actionCallbackHandlers	= new HashMap<>();
-	
-	
+
+
 	public PushService(final AbstractClientConnector target,
 			final MobileServiceConfiguration configuration)
 	{
 		super(target,configuration);
-		
+
 		this.addFunction("push_on_registration",this::push_on_registration);
 		this.addFunction("push_on_notification",this::push_on_notification);
 		this.addFunction("push_on_error",this::push_on_error);
 		this.addFunction("push_action_callback",this::push_action_callback);
 	}
-	
-	
+
+
 	public void init(final String androidSenderID)
 	{
 		final StringBuilder js = new StringBuilder();
-		
+
 		js.append("push_init(");
 		js.append(toLiteral(androidSenderID));
 		js.append(");");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	public void addRegistrationListener(final Consumer<RegistrationData> consumer)
 	{
 		if(this.registrationListener.add(consumer) && this.registrationListener.size() == 1)
@@ -107,8 +108,8 @@ public class PushService extends AbstractMobileService
 			Page.getCurrent().getJavaScript().execute("push_addRegistrationListener();");
 		}
 	}
-	
-	
+
+
 	public void removeRegistrationListener(final Consumer<RegistrationData> consumer)
 	{
 		if(this.registrationListener.remove(consumer) && this.registrationListener.isEmpty())
@@ -116,16 +117,16 @@ public class PushService extends AbstractMobileService
 			Page.getCurrent().getJavaScript().execute("push_removeRegistrationListener();");
 		}
 	}
-	
-	
+
+
 	private void push_on_registration(final JsonArray arguments)
 	{
 		final JsonObject obj = arguments.getObject(0);
 		final RegistrationData data = new RegistrationData(obj.getString("registrationId"));
 		this.registrationListener.forEach(c -> c.accept(data));
 	}
-	
-	
+
+
 	public void addNotificationListener(final Consumer<NotificationData> consumer)
 	{
 		if(this.notificationListener.add(consumer) && this.notificationListener.size() == 1)
@@ -133,8 +134,8 @@ public class PushService extends AbstractMobileService
 			Page.getCurrent().getJavaScript().execute("push_addNotificationListener();");
 		}
 	}
-	
-	
+
+
 	public void removeNotificationListener(final Consumer<NotificationData> consumer)
 	{
 		if(this.notificationListener.remove(consumer) && this.notificationListener.isEmpty())
@@ -142,16 +143,16 @@ public class PushService extends AbstractMobileService
 			Page.getCurrent().getJavaScript().execute("push_removeNotificationListener();");
 		}
 	}
-	
-	
+
+
 	private void push_on_notification(final JsonArray arguments)
 	{
 		final JsonObject obj = arguments.getObject(0);
 		final NotificationData data = toNotificationData(obj);
 		this.notificationListener.forEach(c -> c.accept(data));
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	private NotificationData toNotificationData(final JsonObject obj)
 	{
@@ -168,8 +169,8 @@ public class PushService extends AbstractMobileService
 				obj.getString("title"),additionalData);
 		return data;
 	}
-	
-	
+
+
 	public void addErrorListener(final Consumer<MobileServiceError> consumer)
 	{
 		if(this.errorListener.add(consumer) && this.errorListener.size() == 1)
@@ -177,8 +178,8 @@ public class PushService extends AbstractMobileService
 			Page.getCurrent().getJavaScript().execute("push_addErrorListener();");
 		}
 	}
-	
-	
+
+
 	public void removeErrorListener(final Consumer<MobileServiceError> consumer)
 	{
 		if(this.errorListener.remove(consumer) && this.errorListener.isEmpty())
@@ -186,16 +187,16 @@ public class PushService extends AbstractMobileService
 			Page.getCurrent().getJavaScript().execute("push_removeErrorListener();");
 		}
 	}
-	
-	
+
+
 	private void push_on_error(final JsonArray arguments)
 	{
 		final JsonObject obj = arguments.getObject(0);
 		final MobileServiceError error = new MobileServiceError(this,obj.getString("message"));
 		this.errorListener.forEach(c -> c.accept(error));
 	}
-	
-	
+
+
 	// public void registerCallbackActions(final String... names)
 	// {
 	// if(names != null && names.length > 0)
@@ -207,7 +208,7 @@ public class PushService extends AbstractMobileService
 	// Page.getCurrent().getJavaScript().execute(sb.toString());
 	// }
 	// }
-	
+
 	public void addActionCallbackHandler(final String name,
 			final Consumer<NotificationData> handler)
 	{
@@ -216,14 +217,14 @@ public class PushService extends AbstractMobileService
 		{
 			handlers = new HashSet<>();
 			this.actionCallbackHandlers.put(name,handlers);
-			
+
 			Page.getCurrent().getJavaScript()
 					.execute("push_register_action_callback(" + toLiteral(name) + ");");
 		}
 		handlers.add(handler);
 	}
-	
-	
+
+
 	private void push_action_callback(final JsonArray arguments)
 	{
 		final String name = arguments.getString(0);

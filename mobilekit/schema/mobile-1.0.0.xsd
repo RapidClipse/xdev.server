@@ -5,30 +5,94 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
 	xmlns="http://rapidclipse.com/mobile/1.0.0" targetNamespace="http://rapidclipse.com/mobile/1.0.0">
 
-	<xs:element name="mobile-app" type="app" />
+	<xs:element name="mobile-app">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" default="${maven:project.name}" />
+				<xs:element name="id" minOccurs="0" maxOccurs="1" type="xs:string"
+					default="${maven:project.groupId}.${maven:project.artifactId}" />
+				<xs:element name="version" minOccurs="0" maxOccurs="1" type="xs:string" default="${maven:project.version}" />
+				<xs:element name="description" minOccurs="0" maxOccurs="1" type="xs:string" default="${maven:project.description}" />
+				<xs:element name="url" minOccurs="0" maxOccurs="1" type="xs:string" default="${maven:project.url}" />
+				<xs:element name="icon" minOccurs="0" maxOccurs="1" type="xs:string" />
+				<xs:element name="author" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:all>
+							<xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" default="${maven:project.organization.name}" />
+							<xs:element name="url" minOccurs="0" maxOccurs="1" type="xs:string" default="${maven:project.organization.url}" />
+						</xs:all>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="debuggable" minOccurs="0" maxOccurs="1" type="boolean" />
+				<xs:element name="android" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:all>
+							<xs:element name="keystore" minOccurs="0" maxOccurs="1" type="xs:string" />
+							<xs:element name="storepass" minOccurs="0" maxOccurs="1" type="xs:string" />
+							<xs:element name="keypass" minOccurs="0" maxOccurs="1" type="xs:string" />
+							<xs:element name="alias" minOccurs="0" maxOccurs="1" type="xs:string" />
+						</xs:all>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ios" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:all>
+							<xs:element name="certificate" minOccurs="0" maxOccurs="1" type="xs:string" />
+							<xs:element name="profile" minOccurs="0" maxOccurs="1" type="xs:string" />
+							<xs:element name="password" minOccurs="0" maxOccurs="1" type="xs:string" />
+						</xs:all>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="services" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="service" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="param" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attribute name="name" type="non-empty-string" use="required" />
+												<xs:attribute name="value" type="non-empty-string" use="required" />
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="class" type="xs:string" use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="theme" minOccurs="0" maxOccurs="1" type="xs:string" />
+				<xs:element name="widgetset" minOccurs="0" maxOccurs="1" type="xs:string" />
+				<xs:element name="content-security-policy" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="directive" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="value" minOccurs="0" maxOccurs="unbounded" type="xs:string" />
+									</xs:sequence>
+									<xs:attribute name="name" type="non-empty-string" use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
 
-	<xs:complexType name="app">
-		<xs:all>
-			<xs:element minOccurs="0" maxOccurs="1" name="services">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="service" minOccurs="0" maxOccurs="unbounded" type="service" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-		</xs:all>
-	</xs:complexType>
+	<xs:simpleType name="boolean">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="true" />
+			<xs:enumeration value="false" />
+		</xs:restriction>
+	</xs:simpleType>
 
-	<xs:complexType name="service">
-		<xs:sequence>
-			<xs:element name="param" minOccurs="0" maxOccurs="unbounded" type="param" />
-		</xs:sequence>
-		<xs:attribute name="class" type="xs:string" />
-	</xs:complexType>
-
-	<xs:complexType name="param">
-		<xs:attribute name="name" type="xs:string" />
-		<xs:attribute name="value" type="xs:string" />
-	</xs:complexType>
+	<xs:simpleType name="non-empty-string">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+		</xs:restriction>
+	</xs:simpleType>
 
 </xs:schema>

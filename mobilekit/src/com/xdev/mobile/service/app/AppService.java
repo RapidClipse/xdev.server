@@ -41,8 +41,9 @@ import elemental.json.JsonArray;
  * @author XDEV Software
  *
  */
-@MobileService(plugins = {@Plugin(name = "cordova-plugin-exitapp", spec = "1.0.0"),
-		@Plugin(name = "cordova-plugin-cache", spec = "1.0.5")})
+@MobileService(plugins = {@Plugin(name = "cordova-plugin-exitapp", spec = "1.0.0")
+		// ,@Plugin(name = "cordova-plugin-cache", spec = "1.0.5")
+})
 @JavaScript("app.js")
 public class AppService extends AbstractMobileService
 {
@@ -91,22 +92,21 @@ public class AppService extends AbstractMobileService
 	}
 	
 	
-	/**
-	 * Clears the local cache of the application.
-	 * <p>
-	 * Supported platforms:
-	 * <ul>
-	 * <li>Android</li>
-	 * <li>iOS</li>
-	 * </ul>
-	 *
-	 */
-	public void clearCache()
-	{
-		Page.getCurrent().getJavaScript().execute("app_clearCache()");
-	}
-
-
+	// /**
+	// * Clears the local cache of the application.
+	// * <p>
+	// * Supported platforms:
+	// * <ul>
+	// * <li>Android</li>
+	// * <li>iOS</li>
+	// * </ul>
+	// *
+	// */
+	// public void clearCache()
+	// {
+	// Page.getCurrent().getJavaScript().execute("app_clearCache()");
+	// }
+	
 	/**
 	 * Adds an handler for the pause event.
 	 * <p>

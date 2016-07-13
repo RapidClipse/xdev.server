@@ -34,18 +34,18 @@ function app_closeApp() {
 	navigator.app.exitApp();
 }
 
-function app_clearCache() {
-	var success = function(status) {
-		console.log("Cache cleared successfully: " + status)
-	}
-
-	var error = function(status) {
-		console.log("Error clearing cache: " + status);
-	}
-
-	window.cache.clear(success, error);
-	window.cache.cleartemp();
-}
+//function app_clearCache() {
+//	var success = function(status) {
+//		console.log("Cache cleared successfully: " + status)
+//	}
+//
+//	var error = function(status) {
+//		console.log("Error clearing cache: " + status);
+//	}
+//
+//	window.cache.clear(success, error);
+//	window.cache.cleartemp();
+//}
 
 var pauseDelegate = function() {
 	window.app_onPause();

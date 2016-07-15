@@ -41,30 +41,40 @@ import com.xdev.ui.XdevUIExtension;
 public class MobileUIExtension implements XdevUIExtension
 {
 	private static Logger LOG = Logger.getLogger(MobileUIExtension.class.getName());
-	
-	
+
+
 	@Override
 	public void uiInitialized(final XdevUI ui)
 	{
-		final MobileConfiguration mobileConfiguration = VaadinSession.getCurrent()
-				.getAttribute(MobileConfiguration.class);
-		if(mobileConfiguration != null)
+		final VaadinSession session = VaadinSession.getCurrent();
+		if(session == null)
 		{
-			for(final MobileServiceConfiguration configuration : mobileConfiguration
-					.getMobileServices())
+			return;
+		}
+
+		final MobileConfiguration mobileConfiguration = session
+				.getAttribute(MobileConfiguration.class);
+		if(mobileConfiguration == null)
+		{
+			return;
+		}
+
+		for(final MobileServiceConfiguration configuration : mobileConfiguration
+				.getMobileServices())
+		{
+			try
 			{
-				try
-				{
-					final Class<? extends AbstractMobileService> clazz = configuration.getServiceClass();
-					final Constructor<? extends AbstractMobileService> constructor = clazz.getConstructor(
-							AbstractClientConnector.class,MobileServiceConfiguration.class);
-					constructor.newInstance(ui,configuration);
-					LOG.log(Level.INFO,"Mobile service registered: " + clazz.getName());
-				}
-				catch(final Exception e)
-				{
-					LOG.log(Level.SEVERE,e.getMessage(),e);
-				}
+				final Class<? extends AbstractMobileService> clazz = configuration
+						.getServiceClass();
+				final Constructor<? extends AbstractMobileService> constructor = clazz
+						.getConstructor(AbstractClientConnector.class,
+								MobileServiceConfiguration.class);
+				constructor.newInstance(ui,configuration);
+				LOG.log(Level.INFO,"Mobile service registered: " + clazz.getName());
+			}
+			catch(final Exception e)
+			{
+				LOG.log(Level.SEVERE,e.getMessage(),e);
 			}
 		}
 	}

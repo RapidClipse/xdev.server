@@ -26,7 +26,7 @@
 	<properties>
 		<repositoryName>xdev.server.core</repositoryName>
 		<pluginProject>xdev.eclipse.server.core</pluginProject>
-		<vaadinVersion>7.6.6</vaadinVersion>
+		<vaadinVersion>7.6.8</vaadinVersion>
 		<hibernateVersion>5.2.1.Final</hibernateVersion>
 	</properties>
 

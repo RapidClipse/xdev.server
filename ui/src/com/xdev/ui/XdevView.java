@@ -21,10 +21,15 @@
 package com.xdev.ui;
 
 
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.declarative.DesignContext;
+import com.vaadin.ui.declarative.DesignException;
 import com.xdev.ui.persistence.GuiPersistence;
 
 
@@ -109,5 +114,48 @@ public class XdevView extends CustomComponent implements View, XdevComponent
 	public void restoreState(final String data)
 	{
 		GuiPersistence.load(this,getClass().getName(),data);
+	}
+	
+	
+	@Override
+	public void readDesign(final Element design, final DesignContext designContext)
+	{
+		// process default attributes
+		super.readDesign(design,designContext);
+		readDesignChildren(design.children(),designContext);
+	}
+	
+	
+	protected void readDesignChildren(final Elements children, final DesignContext context)
+	{
+		if(children.size() > 1)
+		{
+			throw new DesignException("The container of type " + getClass().toString()
+					+ " can have only one child component.");
+		}
+		else if(children.size() == 1)
+		{
+			setCompositionRoot(context.readDesign(children.first()));
+		}
+	}
+	
+	
+	@Override
+	public void writeDesign(final Element design, final DesignContext designContext)
+	{
+		// write default attributes (also clears children and attributes)
+		super.writeDesign(design,designContext);
+		final Component def = designContext.getDefaultInstance(this);
+		if(!designContext.shouldWriteChildren(this,def))
+		{
+			return;
+		}
+		// handle child component
+		final Component child = getCompositionRoot();
+		if(child != null)
+		{
+			final Element childNode = designContext.createElement(child);
+			design.appendChild(childNode);
+		}
 	}
 }

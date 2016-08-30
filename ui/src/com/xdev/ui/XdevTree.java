@@ -21,8 +21,13 @@
 package com.xdev.ui;
 
 
+import java.util.Set;
+
+import org.jsoup.nodes.Element;
+
 import com.vaadin.data.Container;
 import com.vaadin.ui.Tree;
+import com.vaadin.ui.declarative.DesignContext;
 import com.xdev.ui.entitycomponent.hierarchical.XdevHierarchicalBeanItemContainer;
 import com.xdev.ui.hierarchical.DynamicHierarchicalContainer;
 import com.xdev.ui.hierarchical.TreeDataProvider;
@@ -77,17 +82,22 @@ public class XdevTree extends Tree implements XdevField
 		super(caption);
 	}
 
-
 	// init defaults
 	{
 		addExpandListener(event -> {
-			final Container dataSource = getContainerDataSource();
-			if(dataSource instanceof DynamicHierarchicalContainer)
+			try
 			{
-				if(((DynamicHierarchicalContainer)dataSource).expand(event.getItemId()))
+				final Container dataSource = getContainerDataSource();
+				if(dataSource instanceof DynamicHierarchicalContainer)
 				{
-					markAsDirty();
+					if(((DynamicHierarchicalContainer)dataSource).expand(event.getItemId()))
+					{
+						markAsDirty();
+					}
 				}
+			}
+			catch(final Throwable t)
+			{
 			}
 		});
 	}
@@ -141,7 +151,7 @@ public class XdevTree extends Tree implements XdevField
 	 *
 	 * @param itemCaptionFromAnnotation
 	 *            the itemCaptionFromAnnotation to set
-	 * 			
+	 *
 	 * @since 1.1
 	 */
 	public void setItemCaptionFromAnnotation(final boolean itemCaptionFromAnnotation)
@@ -153,7 +163,7 @@ public class XdevTree extends Tree implements XdevField
 	/**
 	 * @return if the item's caption should be derived from its {@link Caption}
 	 *         annotation
-	 * 
+	 *
 	 * @since 1.1
 	 */
 	public boolean isItemCaptionFromAnnotation()
@@ -169,7 +179,7 @@ public class XdevTree extends Tree implements XdevField
 	 * @see #setItemCaptionFromAnnotation(boolean)
 	 * @param itemCaptionValue
 	 *            the itemCaptionValue to set
-	 * 			
+	 *
 	 * @since 1.1
 	 */
 	public void setItemCaptionValue(final String itemCaptionValue)
@@ -222,5 +232,35 @@ public class XdevTree extends Tree implements XdevField
 			container.preloadAll();
 		}
 		setContainerDataSource(container);
+	}
+
+
+	@Override
+	protected Element writeItem(final Element design, final Object itemId,
+			final DesignContext context)
+	{
+		final Element element = super.writeItem(design,itemId,context);
+
+		if(isExpanded(itemId))
+		{
+			element.attributes().put("expanded",true);
+		}
+
+		return element;
+	}
+
+
+	@Override
+	protected String readItem(final Element node, final Set<String> selected,
+			final DesignContext context)
+	{
+		final String itemId = super.readItem(node,selected,context);
+
+		if(node.hasAttr("expanded"))
+		{
+			expandItem(itemId);
+		}
+
+		return itemId;
 	}
 }

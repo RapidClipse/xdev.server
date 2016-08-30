@@ -67,7 +67,7 @@ import com.vaadin.ui.Component;
  * </pre>
  *
  * @author XDEV Software
- *		
+ *
  */
 @SuppressWarnings("serial")
 public class XdevBorderLayout extends XdevGridLayout implements XdevComponent
@@ -78,30 +78,30 @@ public class XdevBorderLayout extends XdevGridLayout implements XdevComponent
 		 * The center layout constraint (middle of container).
 		 */
 		CENTER,
-		
+
 		/**
 		 * The north layout constraint (top of container).
 		 */
 		NORTH,
-		
+
 		/**
 		 * The south layout constraint (bottom of container).
 		 */
 		SOUTH,
-		
+
 		/**
 		 * The east layout constraint (right side of container).
 		 */
 		EAST,
-		
+
 		/**
 		 * The west layout constraint (left side of container).
 		 */
 		WEST
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Mode enumeration for the border layout behavior as it's described in
 	 * {@link XdevBorderLayout}.
@@ -109,30 +109,30 @@ public class XdevBorderLayout extends XdevGridLayout implements XdevComponent
 	public static enum Mode
 	{
 		NORTH_SOUTH_FULL_WIDTH,
-		
+
 		WEST_EAST_FULL_HEIGHT
 	}
-	
+
 	private final Extensions					extensions	= new Extensions();
 	private final Map<Component, Constraint>	components	= new HashMap<>();
 	private Mode								mode		= Mode.NORTH_SOUTH_FULL_WIDTH;
-															
-															
+	
+	
 	/**
 	 * Creates a new empty border layout.
 	 */
 	public XdevBorderLayout()
 	{
 		super(3,3);
-		
+
 		setColumnExpandRatio(1,1f);
 		setRowExpandRatio(1,1f);
-		
+		setHideEmptyRowsAndColumns(true);
 		setMargin(true);
 		setSpacing(true);
 	}
-	
-	
+
+
 	/**
 	 * @return the mode
 	 */
@@ -140,8 +140,8 @@ public class XdevBorderLayout extends XdevGridLayout implements XdevComponent
 	{
 		return this.mode;
 	}
-	
-	
+
+
 	/**
 	 * @param mode
 	 *            the mode to set
@@ -149,14 +149,14 @@ public class XdevBorderLayout extends XdevGridLayout implements XdevComponent
 	public void setMode(final Mode mode)
 	{
 		this.mode = mode;
-		
+
 		if(getComponentCount() > 0)
 		{
 			rebuild();
 		}
 	}
-	
-	
+
+
 	protected void rebuild()
 	{
 		final Map<Component, Constraint> components = new HashMap<>(this.components);
@@ -166,12 +166,12 @@ public class XdevBorderLayout extends XdevGridLayout implements XdevComponent
 			addComponent(component,components.get(component));
 		}
 	}
-	
-	
+
+
 	public void addComponent(final Component component, final Constraint constraint)
 	{
 		this.components.put(component,constraint);
-		
+
 		switch(constraint)
 		{
 			case CENTER:
@@ -246,17 +246,17 @@ public class XdevBorderLayout extends XdevGridLayout implements XdevComponent
 			break;
 		}
 	}
-	
-	
+
+
 	@Override
 	public void removeComponent(final Component component)
 	{
 		super.removeComponent(component);
-		
+
 		this.components.remove(component);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -265,8 +265,8 @@ public class XdevBorderLayout extends XdevGridLayout implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

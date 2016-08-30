@@ -33,9 +33,9 @@ public interface JPAMasterDetail extends MasterDetail
 {
 	public void connectMasterDetail(BeanComponent master, BeanComponent detail, Class masterClass,
 			Class detailClass);
-
-
-
+	
+	
+	
 	public class Implementation extends MasterDetail.Implementation implements JPAMasterDetail
 	{
 		@Override
@@ -51,18 +51,18 @@ public interface JPAMasterDetail extends MasterDetail
 							JPAEntityReferenceResolver.getInstance()
 									.getReferenceEntityAttributeName(masterClass,detailClass)));
 		}
-		
-		
-		
+
+
+
 		private class MasterDetailValueChangeListener implements ValueChangeListener
 		{
 			private static final long	serialVersionUID	= 3306467309764402175L;
-
+			
 			private final BeanComponent	filterComponent;
 			private final BeanComponent	detailComponent;
 			private final Object		detailProperty, filterProperty;
-
-
+			
+			
 			public MasterDetailValueChangeListener(final BeanComponent filter,
 					final BeanComponent detailContainer, final Object filterProperty,
 					final Object detailProperty)
@@ -72,8 +72,8 @@ public interface JPAMasterDetail extends MasterDetail
 				this.detailProperty = detailProperty;
 				this.filterProperty = filterProperty;
 			}
-			
-			
+
+
 			@Override
 			public void valueChange(final ValueChangeEvent event)
 			{
@@ -81,17 +81,17 @@ public interface JPAMasterDetail extends MasterDetail
 				detailComponent.select(null);
 				if(this.filterComponent.getSelectedItem() != null)
 				{
-					clearFiltering(this.detailComponent.getContainerDataSource(),
+					clearFiltering(this.detailComponent.getBeanContainerDataSource(),
 							this.filterProperty);
-
-					prepareFilter(this.detailComponent.getContainerDataSource(),this.detailProperty,
-							this.filterComponent.getSelectedItem().getBean()
+					
+					prepareFilter(this.detailComponent.getBeanContainerDataSource(),
+							this.detailProperty,this.filterComponent.getSelectedItem().getBean()
 					// .getItemProperty(this.filterProperty).getValue().toString(),
 					);
 				}
 				else
 				{
-					clearFiltering(this.detailComponent.getContainerDataSource(),
+					clearFiltering(this.detailComponent.getBeanContainerDataSource(),
 							this.filterProperty);
 				}
 			}

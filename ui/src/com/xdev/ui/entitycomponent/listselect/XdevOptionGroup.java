@@ -48,38 +48,37 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	private boolean				persistValue				= PERSIST_VALUE_DEFAULT;
 	private boolean				itemCaptionFromAnnotation	= true;
 	private String				itemCaptionValue			= null;
-															
-															
+	
+	
 	public XdevOptionGroup()
 	{
 		super();
 	}
-	
-	
+
+
 	public XdevOptionGroup(final String caption, final XdevBeanContainer<T> dataSource)
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	public XdevOptionGroup(final String caption)
 	{
 		super(caption);
 	}
-	
-	
+
+
 	public XdevOptionGroup(final XdevBeanContainer<T> dataSource)
 	{
 		super(dataSource);
 	}
 	
-	
 	// init defaults
 	{
 		setImmediate(true);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -88,8 +87,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -98,8 +97,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -108,8 +107,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		return this.persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -118,8 +117,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		this.persistValue = persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -131,7 +130,7 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-
+		
 		// Workaround for OptionGroup internal size behavior.
 		if(container instanceof XdevEntityLazyQueryContainer)
 		{
@@ -150,8 +149,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 		}
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -162,8 +161,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
-
-
+	
+	
 	@SafeVarargs
 	@Override
 	public final void setContainerDataSource(final Class<T> beanClass, final Collection<T> data,
@@ -173,11 +172,11 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-
+		
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -190,17 +189,17 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 		super.setMultiSelect(multiSelect);
 		if(this.isAutoQueryData())
 		{
-			this.setConverter(new IDToBeanCollectionConverter(this.getContainerDataSource()));
+			this.setConverter(new IDToBeanCollectionConverter(this.getBeanContainerDataSource()));
 		}
 	}
-
-
+	
+	
 	/**
 	 * Sets if the item's caption should be derived from its {@link Caption}
 	 * annotation.
 	 *
 	 * @see CaptionResolver
-	 * 		
+	 *
 	 * @param itemCaptionFromAnnotation
 	 *            the itemCaptionFromAnnotation to set
 	 */
@@ -208,8 +207,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
 	 * @return if the item's caption should be derived from its {@link Caption}
 	 *         annotation
@@ -218,8 +217,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		return this.itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
 	 * Sets a user defined caption value for the items to display.
 	 *
@@ -232,8 +231,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		this.itemCaptionValue = itemCaptionValue;
 	}
-
-
+	
+	
 	/**
 	 * Returns the user defined caption value for the items to display
 	 *
@@ -243,16 +242,16 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		return this.itemCaptionValue;
 	}
-
-
+	
+	
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
-		if(itemId != null && this.getContainerDataSource() != null)
+		if(itemId != null && this.getBeanContainerDataSource() != null)
 		{
 			if(isItemCaptionFromAnnotation())
 			{
-				final BeanItem<T> item = getItem(itemId);
+				final BeanItem<T> item = getBeanItem(itemId);
 				if(item != null)
 				{
 					final T bean = item.getBean();
@@ -264,7 +263,7 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 			}
 			else if(this.itemCaptionValue != null)
 			{
-				final BeanItem<T> item = getItem(itemId);
+				final BeanItem<T> item = getBeanItem(itemId);
 				if(item != null)
 				{
 					final T bean = item.getBean();
@@ -275,7 +274,7 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 				}
 			}
 		}
-
+		
 		return super.getItemCaption(itemId);
 	}
 }

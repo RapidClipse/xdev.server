@@ -55,21 +55,21 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 {
 	private final Extensions	extensions						= new Extensions();
 	private boolean				persistValue					= PERSIST_VALUE_DEFAULT;
-
+	
 	/**
 	 *
 	 */
 	private static final long	serialVersionUID				= -836170197198239894L;
-																
+	
 	private boolean				autoUpdateRequiredProperties	= true;
-																
-																
+	
+	
 	public XdevTable()
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new empty table with caption.
 	 *
@@ -79,22 +79,21 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		super(caption);
 	}
-	
-	
+
+
 	public XdevTable(final int pageLength)
 	{
 		super();
 		super.setPageLength(pageLength);
 	}
 	
-	
 	// init defaults
 	{
 		setSelectable(true);
 		setImmediate(true);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -103,8 +102,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -113,8 +112,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -123,8 +122,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -133,8 +132,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		this.persistValue = persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -146,11 +145,11 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-				
+		
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -161,8 +160,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -176,11 +175,11 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 				nestedProperties);
 		container.setRequiredProperties(getVisibleColumns());
 		container.addAll(data);
-		
+
 		try
 		{
 			this.autoUpdateRequiredProperties = false;
-
+			
 			this.setContainerDataSource(container);
 		}
 		finally
@@ -188,8 +187,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 			this.autoUpdateRequiredProperties = true;
 		}
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -199,18 +198,18 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	public void setVisibleColumns(final Object... visibleColumns)
 	{
 		super.setVisibleColumns(visibleColumns);
-		
+
 		if(this.autoUpdateRequiredProperties)
 		{
-			final XdevBeanContainer<T> beanContainer = getContainerDataSource();
+			final XdevBeanContainer<T> beanContainer = getBeanContainerDataSource();
 			if(beanContainer != null)
 			{
 				beanContainer.setRequiredProperties(visibleColumns);
 			}
 		}
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -223,19 +222,19 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 		super.setMultiSelect(multiSelect);
 		if(this.isAutoQueryData())
 		{
-			this.setConverter(new IDToBeanCollectionConverter(this.getContainerDataSource()));
+			this.setConverter(new IDToBeanCollectionConverter(this.getBeanContainerDataSource()));
 		}
 	}
-	
-	
+
+
 	@Override
 	public void setPageLength(final int pageLength)
 	{
 		// FIXME property change to create new model!
 		super.setPageLength(pageLength);
 	}
-	
-	
+
+
 	@Override
 	public String getColumnHeader(final Object propertyId)
 	{
@@ -243,7 +242,7 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 		if(header.equals(propertyId.toString()))
 		{
 			// Header not set explicitly, resolve @Caption
-			final XdevBeanContainer<T> container = getContainerDataSource();
+			final XdevBeanContainer<T> container = getBeanContainerDataSource();
 			if(container != null)
 			{
 				header = CaptionUtils.resolveEntityMemberCaption(container.getBeanType(),header);

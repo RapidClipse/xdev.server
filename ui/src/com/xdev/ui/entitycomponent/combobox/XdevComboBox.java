@@ -40,8 +40,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 	private boolean				persistValue				= PERSIST_VALUE_DEFAULT;
 	private boolean				itemCaptionFromAnnotation	= true;
 	private String				itemCaptionValue			= null;
-															
-															
+
+
 	public XdevComboBox()
 	{
 		super();
@@ -53,8 +53,7 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 		super();
 		super.setPageLength(pageLength);
 	}
-	
-	
+
 	// init defaults
 	{
 		setImmediate(true);
@@ -106,7 +105,7 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 	 * annotation.
 	 *
 	 * @see CaptionResolver
-	 *		
+	 *
 	 * @param itemCaptionFromAnnotation
 	 *            the itemCaptionFromAnnotation to set
 	 */
@@ -162,7 +161,7 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-				
+
 		this.setContainerDataSource(container);
 	}
 	
@@ -204,11 +203,11 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
-		if(itemId != null && this.getContainerDataSource() != null)
+		if(itemId != null && this.getBeanContainerDataSource() != null)
 		{
 			if(isItemCaptionFromAnnotation())
 			{
-				final BeanItem<T> item = getItem(itemId);
+				final BeanItem<T> item = getBeanItem(itemId);
 				if(item != null)
 				{
 					final T bean = item.getBean();
@@ -220,7 +219,7 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 			}
 			else if(this.itemCaptionValue != null)
 			{
-				final BeanItem<T> item = getItem(itemId);
+				final BeanItem<T> item = getBeanItem(itemId);
 				if(item != null)
 				{
 					final T bean = item.getBean();

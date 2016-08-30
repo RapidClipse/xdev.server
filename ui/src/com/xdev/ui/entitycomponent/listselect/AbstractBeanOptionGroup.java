@@ -37,43 +37,43 @@ import com.xdev.ui.paging.LazyLoadingUIModelProvider;
 
 /**
  * @author XDEV Software
- * 		
+ *
  * @since 1.1
  */
 public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 		implements BeanComponent<BEANTYPE>
 {
 	private boolean autoQueryData = true;
-
-
+	
+	
 	public AbstractBeanOptionGroup()
 	{
 		super();
 	}
-	
-	
+
+
 	public AbstractBeanOptionGroup(final String caption)
 	{
 		super(caption);
 	}
-	
-	
+
+
 	public AbstractBeanOptionGroup(final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
 	}
-	
-	
+
+
 	public AbstractBeanOptionGroup(final String caption,
 			final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public XdevBeanContainer<BEANTYPE> getContainerDataSource()
+	public XdevBeanContainer<BEANTYPE> getBeanContainerDataSource()
 	{
 		if(super.getContainerDataSource() instanceof XdevBeanContainer)
 		{
@@ -87,8 +87,8 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 		// }
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -107,8 +107,8 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 			super.setContainerDataSource(newDataSource);
 		}
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -119,8 +119,8 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 	{
 		return this.autoQueryData;
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -131,28 +131,28 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 	{
 		this.autoQueryData = autoQuery;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public BeanItem<BEANTYPE> getItem(final Object itemId)
+	public BeanItem<BEANTYPE> getBeanItem(final Object itemId)
 	{
-		return this.getContainerDataSource().getItem(itemId);
+		return this.getBeanContainerDataSource().getItem(itemId);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public BeanItem<BEANTYPE> getSelectedItem()
 	{
-		return this.getContainerDataSource().getItem(this.getValue());
+		return this.getBeanContainerDataSource().getItem(this.getValue());
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -161,7 +161,7 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 	{
 		if(this.isMultiSelect())
 		{
-			final XdevBeanContainer<BEANTYPE> container = this.getContainerDataSource();
+			final XdevBeanContainer<BEANTYPE> container = this.getBeanContainerDataSource();
 			return ((Collection<?>)this.getValue()).stream().map(id -> container.getItem(id))
 					.collect(Collectors.toList());
 		}
@@ -172,8 +172,8 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 			return list;
 		}
 	}
-	
-	
+
+
 	protected UIModelProvider<BEANTYPE> getModelProvider()
 	{
 		if(this.isAutoQueryData())

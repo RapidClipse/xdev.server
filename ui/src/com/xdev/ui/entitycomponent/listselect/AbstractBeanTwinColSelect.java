@@ -43,8 +43,8 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	 */
 	private static final long	serialVersionUID	= 897703398940222936L;
 	private boolean				autoQueryData		= true;
-													
-													
+
+
 	public AbstractBeanTwinColSelect()
 	{
 		super();
@@ -72,7 +72,7 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public XdevBeanContainer<BEANTYPE> getContainerDataSource()
+	public XdevBeanContainer<BEANTYPE> getBeanContainerDataSource()
 	{
 		if(super.getContainerDataSource() instanceof XdevBeanContainer)
 		{
@@ -136,9 +136,9 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	 * {@inheritDoc}
 	 */
 	@Override
-	public BeanItem<BEANTYPE> getItem(final Object itemId)
+	public BeanItem<BEANTYPE> getBeanItem(final Object itemId)
 	{
-		return this.getContainerDataSource().getItem(itemId);
+		return this.getBeanContainerDataSource().getItem(itemId);
 	}
 	
 	
@@ -148,7 +148,7 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	@Override
 	public BeanItem<BEANTYPE> getSelectedItem()
 	{
-		return this.getContainerDataSource().getItem(this.getValue());
+		return this.getBeanContainerDataSource().getItem(this.getValue());
 	}
 	
 	
@@ -160,7 +160,7 @@ public abstract class AbstractBeanTwinColSelect<BEANTYPE> extends TwinColSelect
 	{
 		if(this.isMultiSelect())
 		{
-			final XdevBeanContainer<BEANTYPE> container = this.getContainerDataSource();
+			final XdevBeanContainer<BEANTYPE> container = this.getBeanContainerDataSource();
 			return ((Collection<?>)this.getValue()).stream().map(id -> container.getItem(id))
 					.collect(Collectors.toList());
 		}

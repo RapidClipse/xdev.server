@@ -71,9 +71,9 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public XdevBeanContainer<BEANTYPE> getContainerDataSource()
+	@SuppressWarnings("unchecked")
+	public XdevBeanContainer<BEANTYPE> getBeanContainerDataSource()
 	{
 		if(super.getContainerDataSource() instanceof XdevBeanContainer)
 		{
@@ -137,9 +137,9 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	 * {@inheritDoc}
 	 */
 	@Override
-	public BeanItem<BEANTYPE> getItem(final Object itemId)
+	public BeanItem<BEANTYPE> getBeanItem(final Object itemId)
 	{
-		return this.getContainerDataSource().getItem(itemId);
+		return this.getBeanContainerDataSource().getItem(itemId);
 	}
 
 
@@ -151,7 +151,7 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	{
 		if(!this.isMultiSelect())
 		{
-			return this.getContainerDataSource().getItem(this.getValue());
+			return this.getBeanContainerDataSource().getItem(this.getValue());
 		}
 		return null;
 	}
@@ -165,7 +165,7 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	{
 		if(this.isMultiSelect())
 		{
-			final XdevBeanContainer<BEANTYPE> container = this.getContainerDataSource();
+			final XdevBeanContainer<BEANTYPE> container = this.getBeanContainerDataSource();
 			return ((Collection<?>)this.getValue()).stream().map(id -> container.getItem(id))
 					.collect(Collectors.toList());
 		}

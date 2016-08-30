@@ -41,8 +41,8 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	 */
 	private static final long	serialVersionUID	= 897703398940222936L;
 	private boolean				autoQueryData		= true;
-													
-													
+
+
 	public AbstractBeanComboBox()
 	{
 		super();
@@ -69,7 +69,7 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public XdevBeanContainer<BEANTYPE> getContainerDataSource()
+	public XdevBeanContainer<BEANTYPE> getBeanContainerDataSource()
 	{
 		if(super.getContainerDataSource() instanceof XdevBeanContainer)
 		{
@@ -109,9 +109,9 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	 * {@inheritDoc}
 	 */
 	@Override
-	public BeanItem<BEANTYPE> getItem(final Object itemId)
+	public BeanItem<BEANTYPE> getBeanItem(final Object itemId)
 	{
-		return this.getContainerDataSource().getItem(itemId);
+		return this.getBeanContainerDataSource().getItem(itemId);
 	}
 	
 	
@@ -121,7 +121,7 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	@Override
 	public BeanItem<BEANTYPE> getSelectedItem()
 	{
-		return this.getContainerDataSource().getItem(this.getValue());
+		return this.getBeanContainerDataSource().getItem(this.getValue());
 	}
 	
 	

@@ -41,23 +41,23 @@ public interface EntityMasterDetail extends JPAMasterDetail
 	@Override
 	public void connectMasterDetail(BeanComponent master, BeanComponent detail, Class masterClass,
 			Class detailClass);
-
-
-
+	
+	
+	
 	public class Implementation extends MasterDetail.Implementation implements EntityMasterDetail
 	{
 		// private final EntityIDResolver idResolver;
 		private final EntityReferenceResolver referenceResolver;
-
-
+		
+		
 		public Implementation()
 		{
 			super();
 			// this.idResolver = new HibernateEntityIDResolver();
 			this.referenceResolver = JPAEntityReferenceResolver.getInstance();
 		}
-
-
+		
+		
 		@Override
 		public void connectMasterDetail(final BeanComponent master,
 				final BeanComponent detailContainer, final Class masterClass,
@@ -72,18 +72,18 @@ public interface EntityMasterDetail extends JPAMasterDetail
 							this.referenceResolver.getReferenceEntityAttributeName(masterClass,
 									detailClass)));
 		}
-
-
-
+		
+		
+		
 		private class MasterDetailValueChangeListener implements ValueChangeListener
 		{
 			private static final long	serialVersionUID	= 3306467309764402175L;
-
+			
 			private final BeanComponent	masterComponent;
 			private final BeanComponent	detailComponent;
 			private final String		masterProperty;
-
-
+			
+			
 			public MasterDetailValueChangeListener(final BeanComponent filter,
 					final BeanComponent detailContainer, final String masterProperty,
 					final Object detailProperty)
@@ -92,21 +92,21 @@ public interface EntityMasterDetail extends JPAMasterDetail
 				this.detailComponent = detailContainer;
 				this.masterProperty = masterProperty;
 			}
-
-
+			
+			
 			@SuppressWarnings("unchecked")
 			@Override
 			public void valueChange(final ValueChangeEvent event)
 			{
 				// reset selection
-				detailComponent.getContainerDataSource().removeAll();
+				detailComponent.getBeanContainerDataSource().removeAll();
 				final BeanItem selectedItem = masterComponent.getSelectedItem();
 				Object selectedBean;
 				if(selectedItem != null && (selectedBean = selectedItem.getBean()) != null)
 				{
 					// reattach
 					DAOs.get(selectedBean).reattach(selectedBean);
-
+					
 					try
 					{
 						final Object value = DTOUtils.resolveAttributeValue(selectedBean,
@@ -116,11 +116,11 @@ public interface EntityMasterDetail extends JPAMasterDetail
 							if(value instanceof Collection)
 							{
 								final Collection values = (Collection)value;
-								this.detailComponent.getContainerDataSource().addAll(values);
+								this.detailComponent.getBeanContainerDataSource().addAll(values);
 							}
 							else
 							{
-								this.detailComponent.getContainerDataSource().addBean(value);
+								this.detailComponent.getBeanContainerDataSource().addBean(value);
 							}
 						}
 					}
@@ -129,7 +129,7 @@ public interface EntityMasterDetail extends JPAMasterDetail
 						Logger.getLogger(EntityMasterDetail.class).error(e);
 					}
 				}
-
+				
 				// if(this.filterComponent.getSelectedItem() != null)
 				// {
 				// clearFiltering(this.detailComponent.getContainerDataSource(),

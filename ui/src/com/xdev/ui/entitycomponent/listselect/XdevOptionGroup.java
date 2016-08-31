@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -27,7 +27,6 @@ import java.util.List;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
 import com.xdev.ui.XdevField;
-import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.paging.XdevEntityLazyQueryContainer;
 import com.xdev.ui.util.KeyValueType;
@@ -54,20 +53,20 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		super();
 	}
-
-
+	
+	
 	public XdevOptionGroup(final String caption, final XdevBeanContainer<T> dataSource)
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	public XdevOptionGroup(final String caption)
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public XdevOptionGroup(final XdevBeanContainer<T> dataSource)
 	{
 		super(dataSource);
@@ -77,8 +76,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -87,8 +86,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -97,8 +96,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -107,8 +106,8 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -174,23 +173,6 @@ public class XdevOptionGroup<T> extends AbstractBeanOptionGroup<T> implements Xd
 		container.addAll(data);
 		
 		this.setContainerDataSource(container);
-	}
-	
-	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.vaadin.ui.AbstractSelect#setMultiSelect(boolean)
-	 */
-	@SuppressWarnings({"rawtypes","unchecked"})
-	@Override
-	public void setMultiSelect(final boolean multiSelect)
-	{
-		super.setMultiSelect(multiSelect);
-		if(this.isAutoQueryData())
-		{
-			this.setConverter(new IDToBeanCollectionConverter(this.getBeanContainerDataSource()));
-		}
 	}
 	
 	

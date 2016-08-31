@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -28,8 +28,10 @@ import java.util.stream.Collectors;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.OptionGroup;
 import com.xdev.ui.entitycomponent.BeanComponent;
+import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.UIModelProvider;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.paging.LazyLoadingUIModelProvider;
@@ -106,6 +108,22 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 		{
 			super.setContainerDataSource(newDataSource);
 		}
+
+		updateConverter();
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.vaadin.ui.AbstractSelect#setMultiSelect(boolean)
+	 */
+	@Override
+	public void setMultiSelect(final boolean multiSelect)
+	{
+		super.setMultiSelect(multiSelect);
+
+		updateConverter();
 	}
 
 
@@ -130,6 +148,27 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 	public void setAutoQueryData(final boolean autoQuery)
 	{
 		this.autoQueryData = autoQuery;
+		
+		updateConverter();
+	}
+	
+	
+	/**
+	 * @since 3.0
+	 */
+	@SuppressWarnings({"rawtypes","unchecked"})
+	protected void updateConverter()
+	{
+		XdevBeanContainer<?> beanContainerDataSource;
+		if(isAutoQueryData() && isMultiSelect()
+				&& (beanContainerDataSource = this.getBeanContainerDataSource()) != null)
+		{
+			this.setConverter(new IDToBeanCollectionConverter(beanContainerDataSource));
+		}
+		else if(this.getConverter() instanceof IDToBeanCollectionConverter)
+		{
+			this.setConverter((Converter)null);
+		}
 	}
 
 

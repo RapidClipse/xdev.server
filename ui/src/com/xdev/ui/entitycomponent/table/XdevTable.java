@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -24,7 +24,6 @@ package com.xdev.ui.entitycomponent.table;
 import java.util.Collection;
 
 import com.xdev.ui.XdevField;
-import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
 import com.xdev.util.CaptionUtils;
@@ -55,21 +54,21 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 {
 	private final Extensions	extensions						= new Extensions();
 	private boolean				persistValue					= PERSIST_VALUE_DEFAULT;
-	
+
 	/**
 	 *
 	 */
 	private static final long	serialVersionUID				= -836170197198239894L;
-	
+
 	private boolean				autoUpdateRequiredProperties	= true;
-	
-	
+
+
 	public XdevTable()
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Creates a new empty table with caption.
 	 *
@@ -79,21 +78,21 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public XdevTable(final int pageLength)
 	{
 		super();
 		super.setPageLength(pageLength);
 	}
-	
+
 	// init defaults
 	{
 		setSelectable(true);
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -102,8 +101,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -112,8 +111,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -122,8 +121,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		return this.persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -132,8 +131,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		this.persistValue = persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -145,11 +144,11 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-		
+
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -160,8 +159,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -175,11 +174,11 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 				nestedProperties);
 		container.setRequiredProperties(getVisibleColumns());
 		container.addAll(data);
-
+		
 		try
 		{
 			this.autoUpdateRequiredProperties = false;
-			
+
 			this.setContainerDataSource(container);
 		}
 		finally
@@ -187,8 +186,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 			this.autoUpdateRequiredProperties = true;
 		}
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -198,7 +197,7 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	public void setVisibleColumns(final Object... visibleColumns)
 	{
 		super.setVisibleColumns(visibleColumns);
-
+		
 		if(this.autoUpdateRequiredProperties)
 		{
 			final XdevBeanContainer<T> beanContainer = getBeanContainerDataSource();
@@ -208,33 +207,16 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 			}
 		}
 	}
-
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.vaadin.ui.AbstractSelect#setMultiSelect(boolean)
-	 */
-	@SuppressWarnings({"rawtypes","unchecked"})
-	@Override
-	public void setMultiSelect(final boolean multiSelect)
-	{
-		super.setMultiSelect(multiSelect);
-		if(this.isAutoQueryData())
-		{
-			this.setConverter(new IDToBeanCollectionConverter(this.getBeanContainerDataSource()));
-		}
-	}
-
-
+	
+	
 	@Override
 	public void setPageLength(final int pageLength)
 	{
 		// FIXME property change to create new model!
 		super.setPageLength(pageLength);
 	}
-
-
+	
+	
 	@Override
 	public String getColumnHeader(final Object propertyId)
 	{

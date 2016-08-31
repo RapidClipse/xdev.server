@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -28,8 +28,10 @@ import java.util.stream.Collectors;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.Table;
 import com.xdev.ui.entitycomponent.BeanComponent;
+import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.UIModelProvider;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.paging.LazyLoadingUIModelProvider;
@@ -41,36 +43,36 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	 *
 	 */
 	private static final long	serialVersionUID	= 897703398940222936L;
-
+	
 	private boolean				autoQueryData		= true;
-
-
+	
+	
 	public AbstractBeanTable()
 	{
 		super();
 	}
-
-
+	
+	
 	public AbstractBeanTable(final String caption)
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public AbstractBeanTable(final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
 		this.setContainerDataSource(dataSource);
 	}
-
-
+	
+	
 	public AbstractBeanTable(final String caption, final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
 		this.setContainerDataSource(dataSource);
 	}
-
-
+	
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public XdevBeanContainer<BEANTYPE> getBeanContainerDataSource()
@@ -87,8 +89,8 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 		// }
 		return null;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -106,9 +108,25 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 		{
 			super.setContainerDataSource(newDataSource);
 		}
+
+		updateConverter();
 	}
-
-
+	
+	
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.vaadin.ui.AbstractSelect#setMultiSelect(boolean)
+	 */
+	@Override
+	public void setMultiSelect(final boolean multiSelect)
+	{
+		super.setMultiSelect(multiSelect);
+		
+		updateConverter();
+	}
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -119,8 +137,8 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	{
 		return this.autoQueryData;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -130,9 +148,30 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	public void setAutoQueryData(final boolean autoQuery)
 	{
 		this.autoQueryData = autoQuery;
+
+		updateConverter();
 	}
 
 
+	/**
+	 * @since 3.0
+	 */
+	@SuppressWarnings({"rawtypes","unchecked"})
+	protected void updateConverter()
+	{
+		XdevBeanContainer<?> beanContainerDataSource;
+		if(isAutoQueryData() && isMultiSelect()
+				&& (beanContainerDataSource = this.getBeanContainerDataSource()) != null)
+		{
+			this.setConverter(new IDToBeanCollectionConverter(beanContainerDataSource));
+		}
+		else if(this.getConverter() instanceof IDToBeanCollectionConverter)
+		{
+			this.setConverter((Converter)null);
+		}
+	}
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -141,8 +180,8 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	{
 		return this.getBeanContainerDataSource().getItem(itemId);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -155,8 +194,8 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 		}
 		return null;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -176,8 +215,8 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 			return list;
 		}
 	}
-
-
+	
+	
 	protected UIModelProvider<BEANTYPE> getModelProvider()
 	{
 		if(this.isAutoQueryData())
@@ -190,5 +229,5 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 			return new UIModelProvider.Implementation<BEANTYPE>();
 		}
 	}
-
+	
 }

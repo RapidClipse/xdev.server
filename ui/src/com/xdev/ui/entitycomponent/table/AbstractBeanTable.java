@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- * For further information see
+ * 
+ * For further information see 
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -26,10 +26,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jsoup.nodes.Element;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.declarative.DesignContext;
 import com.xdev.ui.entitycomponent.BeanComponent;
 import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.UIModelProvider;
@@ -230,4 +234,12 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 		}
 	}
 	
+	
+	@Override
+	public void readDesign(final Element design, final DesignContext context)
+	{
+		setContainerDataSource(new IndexedContainer());
+		
+		super.readDesign(design,context);
+	}
 }

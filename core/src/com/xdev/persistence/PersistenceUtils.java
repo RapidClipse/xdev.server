@@ -42,9 +42,17 @@ public final class PersistenceUtils
 	
 	public static EntityManager getEntityManager(final Class<?> managedType)
 	{
-		final String persistenceUnit = PersistenceManager.getCurrent()
-				.getPersistenceUnit(managedType);
-		return persistenceUnit != null ? getEntityManager(persistenceUnit) : null;
+		final PersistenceManager persistenceManager = PersistenceManager.getCurrent();
+		if(persistenceManager != null)
+		{
+			final String persistenceUnit = persistenceManager.getPersistenceUnit(managedType);
+			if(persistenceUnit != null)
+			{
+				return getEntityManager(persistenceUnit);
+			}
+		}
+		
+		return null;
 	}
 	
 	
@@ -54,8 +62,8 @@ public final class PersistenceUtils
 				.get(persistenceUnit);
 		return conversationable != null ? conversationable.getEntityManager() : null;
 	}
-
-
+	
+	
 	public static <T> CriteriaQuery<T> getCriteriaQuery(final Class<T> managedType)
 	{
 		final EntityManager em = getEntityManager(managedType);

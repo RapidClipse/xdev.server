@@ -88,8 +88,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 			event.getDetachedComponent());
 	private Component						lastFocusedComponent;
 	private XdevActionManager				xdevActionManager;
-	
-	
+
+
 	/**
 	 * Creates a new empty UI without a caption. The content of the UI must be
 	 * set by calling {@link #setContent(Component)} before using the UI.
@@ -98,8 +98,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new UI with the given component (often a layout) as its
 	 * content.
@@ -113,11 +113,11 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		super(content);
 	}
-
+	
 	// init defaults
 	{
 		setLocale(Locale.getDefault());
-		
+
 		// https://www.xdevissues.com/browse/XWS-666
 		// System.out.println("attach listener");
 		// addDetachListener(new DetachListener()
@@ -135,12 +135,12 @@ public abstract class XdevUI extends UI implements XdevComponent
 		// EntityManagerUtils.getEntityManager().close();
 		// }
 		// });
-		
+
 		try
 		{
 			final List<XdevUIExtension> extensions = ExtensionUtils.readExtensions("ui",
 					XdevUIExtension.class);
-
+			
 			for(final XdevUIExtension extension : extensions)
 			{
 				extension.uiInitialized(this);
@@ -151,8 +151,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -161,8 +161,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -171,8 +171,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
 	 * Ensures {@link UI#access(Runnable)} runs inside an
 	 * {@link UIAccessWrapper}.
@@ -183,12 +183,12 @@ public abstract class XdevUI extends UI implements XdevComponent
 	public Future<Void> access(final Runnable runnable)
 	{
 		final VaadinSession session = getSession();
-
+		
 		if(session == null)
 		{
 			throw new UIDetachedException();
 		}
-		
+
 		final Runnable accessRunnable = getAccessRunnable(runnable);
 		return session.access(new ErrorHandlingRunnable()
 		{
@@ -197,8 +197,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 			{
 				accessSynchronouslyDefault(accessRunnable);
 			}
-
-
+			
+			
 			@Override
 			public void handleError(final Exception exception)
 			{
@@ -207,22 +207,22 @@ public abstract class XdevUI extends UI implements XdevComponent
 					if(runnable instanceof ErrorHandlingRunnable)
 					{
 						final ErrorHandlingRunnable errorHandlingRunnable = (ErrorHandlingRunnable)runnable;
-
+						
 						errorHandlingRunnable.handleError(exception);
 					}
 					else
 					{
 						final ConnectorErrorEvent errorEvent = new ConnectorErrorEvent(XdevUI.this,
 								exception);
-
+						
 						ErrorHandler errorHandler = com.vaadin.server.ErrorEvent
 								.findErrorHandler(XdevUI.this);
-
+						
 						if(errorHandler == null)
 						{
 							errorHandler = new DefaultErrorHandler();
 						}
-
+						
 						errorHandler.error(errorEvent);
 					}
 				}
@@ -233,8 +233,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 			}
 		});
 	}
-	
-	
+
+
 	/**
 	 * Ensures {@link UI#accessSynchronously(Runnable)} runs inside an
 	 * {@link UIAccessWrapper}.
@@ -247,8 +247,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		super.accessSynchronously(getAccessRunnable(runnable));
 	}
-	
-	
+
+
 	/**
 	 * Ensures that <code>runnable</code> is an {@link UIAccessWrapper}.
 	 *
@@ -263,8 +263,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 		}
 		return new UIAccessWrapper(runnable);
 	}
-	
-	
+
+
 	/**
 	 * Calls {@link UI#access(Runnable)} without an {@link UIAccessWrapper}.
 	 *
@@ -273,10 +273,58 @@ public abstract class XdevUI extends UI implements XdevComponent
 	 */
 	public Future<Void> accessDefault(final Runnable runnable)
 	{
-		return super.access(runnable);
+		final VaadinSession session = getSession();
+		
+		if(session == null)
+		{
+			throw new UIDetachedException();
+		}
+
+		return session.access(new ErrorHandlingRunnable()
+		{
+			@Override
+			public void run()
+			{
+				accessSynchronouslyDefault(runnable);
+			}
+			
+			
+			@Override
+			public void handleError(final Exception exception)
+			{
+				try
+				{
+					if(runnable instanceof ErrorHandlingRunnable)
+					{
+						final ErrorHandlingRunnable errorHandlingRunnable = (ErrorHandlingRunnable)runnable;
+						
+						errorHandlingRunnable.handleError(exception);
+					}
+					else
+					{
+						final ConnectorErrorEvent errorEvent = new ConnectorErrorEvent(XdevUI.this,
+								exception);
+						
+						ErrorHandler errorHandler = com.vaadin.server.ErrorEvent
+								.findErrorHandler(XdevUI.this);
+						
+						if(errorHandler == null)
+						{
+							errorHandler = new DefaultErrorHandler();
+						}
+						
+						errorHandler.error(errorEvent);
+					}
+				}
+				catch(final Exception e)
+				{
+					Logger.getLogger(UI.class.getName()).log(Level.SEVERE,e.getMessage(),e);
+				}
+			}
+		});
 	}
-
-
+	
+	
 	/**
 	 * Calls {@link UI#accessSynchronouslyDefault(Runnable)} without an
 	 * {@link UIAccessWrapper}.
@@ -288,8 +336,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		super.accessSynchronously(runnable);
 	}
-	
-	
+
+
 	/**
 	 * @return the xdevActionManager
 	 */
@@ -299,11 +347,11 @@ public abstract class XdevUI extends UI implements XdevComponent
 		{
 			this.xdevActionManager = new XdevActionManager(this);
 		}
-		
+
 		return this.xdevActionManager;
 	}
-	
-	
+
+
 	public void addFocusChangeListener(final FocusChangeListener listener)
 	{
 		if(getListeners(FocusChangeEvent.class).isEmpty())
@@ -314,16 +362,16 @@ public abstract class XdevUI extends UI implements XdevComponent
 				addFocusWatcher(content);
 			}
 		}
-		
+
 		addListener(FocusChangeEvent.EVENT_ID,FocusChangeEvent.class,listener,
 				FocusChangeListener.focusChangedMethod);
 	}
-	
-	
+
+
 	public void removeFocusChangeListener(final FocusChangeListener listener)
 	{
 		removeListener(FocusChangeEvent.EVENT_ID,FocusChangeEvent.class,listener);
-		
+
 		if(getListeners(FocusChangeEvent.class).isEmpty())
 		{
 			final Component content = getContent();
@@ -333,27 +381,27 @@ public abstract class XdevUI extends UI implements XdevComponent
 			}
 		}
 	}
-	
-	
+
+
 	private void focusedComponentChanged(final FocusEvent event)
 	{
 		this.lastFocusedComponent = event.getComponent();
 		fireEvent(new FocusChangeEvent(this.lastFocusedComponent));
 	}
-	
-	
+
+
 	@Override
 	public void setContent(final Component content)
 	{
 		super.setContent(content);
-		
+
 		if(content != null && !getListeners(FocusChangeEvent.class).isEmpty())
 		{
 			addFocusWatcher(content);
 		}
 	}
-	
-	
+
+
 	private void addFocusWatcher(final Component root)
 	{
 		UIUtils.lookupComponentTree(root,c -> {
@@ -369,15 +417,15 @@ public abstract class XdevUI extends UI implements XdevComponent
 				((ComponentAttachDetachNotifier)c)
 						.addComponentDetachListener(this.focusDetachListener);
 			}
-			
+
 			return null;
 		});
-		
+
 		fireEvent(new FocusChangeEvent(
 				this.lastFocusedComponent != null ? this.lastFocusedComponent : this));
 	}
-	
-	
+
+
 	private void removeFocusWatcher(final Component component)
 	{
 		UIUtils.lookupComponentTree(component,c -> {
@@ -393,7 +441,7 @@ public abstract class XdevUI extends UI implements XdevComponent
 				((ComponentAttachDetachNotifier)c)
 						.removeComponentDetachListener(this.focusDetachListener);
 			}
-			
+
 			return null;
 		});
 	}

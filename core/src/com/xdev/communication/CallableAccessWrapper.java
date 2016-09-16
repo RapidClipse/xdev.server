@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -40,9 +40,9 @@ import com.xdev.persistence.PersistenceManager;
  * @see EntityManager
  * @see Conversation
  * @see RunnableAccessWrapper
- *		
+ *
  * @author XDEV Software
- *		
+ *
  * @since 1.2
  */
 public class CallableAccessWrapper<V> implements Callable<V>
@@ -61,6 +61,16 @@ public class CallableAccessWrapper<V> implements Callable<V>
 	{
 		this.callable = callable;
 		this.session = session;
+	}
+	
+	
+	/**
+	 * @return the session
+	 * @since 3.0
+	 */
+	public VaadinSession getSession()
+	{
+		return this.session;
 	}
 
 

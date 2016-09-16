@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -38,23 +38,23 @@ import com.xdev.persistence.PersistenceManager;
  * @see EntityManager
  * @see Conversation
  * @see CallableAccessWrapper
- * 		
+ * 
  * @author XDEV Software
- * 		
+ * 
  * @since 1.3
  */
 public class RunnableAccessWrapper implements Runnable
 {
 	private final Runnable		runnable;
 	private final VaadinSession	session;
-	
-	
+
+
 	public RunnableAccessWrapper(final Runnable runnable)
 	{
 		this(runnable,VaadinSession.getCurrent());
 	}
-	
-	
+
+
 	public RunnableAccessWrapper(final Runnable runnable, final VaadinSession session)
 	{
 		this.runnable = runnable;
@@ -62,17 +62,27 @@ public class RunnableAccessWrapper implements Runnable
 	}
 	
 	
+	/**
+	 * @return the session
+	 * @since 3.0
+	 */
+	public VaadinSession getSession()
+	{
+		return this.session;
+	}
+
+
 	@Override
 	public void run()
 	{
 		final XdevServletService service = XdevServletService.getCurrent();
-		
+
 		if(this.session != null)
 		{
 			try
 			{
 				service.handleRequestStart(this.session);
-				
+
 				this.runnable.run();
 			}
 			finally
@@ -85,10 +95,10 @@ public class RunnableAccessWrapper implements Runnable
 			final PersistenceManager persistenceManager = PersistenceManager
 					.get(service.getServlet().getServletContext());
 			CurrentInstance.set(PersistenceManager.class,persistenceManager);
-			
+
 			final Conversationables conversationables = new Conversationables();
 			CurrentInstance.set(Conversationables.class,conversationables);
-			
+
 			final VaadinSessionStrategyProvider sessionStrategyProvider = createVaadinSessionStrategyProvider();
 			for(final String persistenceUnit : persistenceManager.getPersistenceUnits())
 			{
@@ -96,7 +106,7 @@ public class RunnableAccessWrapper implements Runnable
 						.getRequestStartVaadinSessionStrategy(conversationables,persistenceUnit)
 						.requestStart(conversationables,persistenceUnit);
 			}
-			
+
 			try
 			{
 				this.runnable.run();
@@ -109,14 +119,14 @@ public class RunnableAccessWrapper implements Runnable
 							.getRequestEndVaadinSessionStrategy(conversationables,persistenceUnit)
 							.requestEnd(conversationables,persistenceUnit);
 				}
-
+				
 				CurrentInstance.set(PersistenceManager.class,null);
 				CurrentInstance.set(Conversationables.class,null);
 			}
 		}
 	}
-	
-	
+
+
 	protected VaadinSessionStrategyProvider createVaadinSessionStrategyProvider()
 	{
 		return new VaadinSessionStrategyProvider.Implementation();

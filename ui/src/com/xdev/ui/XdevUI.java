@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -24,10 +24,15 @@ package com.xdev.ui;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.event.FieldEvents.FocusNotifier;
+import com.vaadin.server.DefaultErrorHandler;
+import com.vaadin.server.ErrorHandler;
+import com.vaadin.server.ErrorHandlingRunnable;
 import com.vaadin.server.UIProvider;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
@@ -101,15 +106,14 @@ public abstract class XdevUI extends UI implements XdevComponent
 	 *
 	 * @param content
 	 *            the component to use as this UIs content.
-	 *			
+	 *
 	 * @see #setContent(Component)
 	 */
 	public XdevUI(final Component content)
 	{
 		super(content);
 	}
-	
-	
+
 	// init defaults
 	{
 		setLocale(Locale.getDefault());
@@ -136,7 +140,7 @@ public abstract class XdevUI extends UI implements XdevComponent
 		{
 			final List<XdevUIExtension> extensions = ExtensionUtils.readExtensions("ui",
 					XdevUIExtension.class);
-					
+
 			for(final XdevUIExtension extension : extensions)
 			{
 				extension.uiInitialized(this);
@@ -178,7 +182,56 @@ public abstract class XdevUI extends UI implements XdevComponent
 	@Override
 	public Future<Void> access(final Runnable runnable)
 	{
-		return super.access(getAccessRunnable(runnable));
+		final VaadinSession session = getSession();
+
+		if(session == null)
+		{
+			throw new UIDetachedException();
+		}
+		
+		final Runnable accessRunnable = getAccessRunnable(runnable);
+		return session.access(new ErrorHandlingRunnable()
+		{
+			@Override
+			public void run()
+			{
+				accessSynchronouslyDefault(accessRunnable);
+			}
+
+
+			@Override
+			public void handleError(final Exception exception)
+			{
+				try
+				{
+					if(runnable instanceof ErrorHandlingRunnable)
+					{
+						final ErrorHandlingRunnable errorHandlingRunnable = (ErrorHandlingRunnable)runnable;
+
+						errorHandlingRunnable.handleError(exception);
+					}
+					else
+					{
+						final ConnectorErrorEvent errorEvent = new ConnectorErrorEvent(XdevUI.this,
+								exception);
+
+						ErrorHandler errorHandler = com.vaadin.server.ErrorEvent
+								.findErrorHandler(XdevUI.this);
+
+						if(errorHandler == null)
+						{
+							errorHandler = new DefaultErrorHandler();
+						}
+
+						errorHandler.error(errorEvent);
+					}
+				}
+				catch(final Exception e)
+				{
+					Logger.getLogger(UI.class.getName()).log(Level.SEVERE,e.getMessage(),e);
+				}
+			}
+		});
 	}
 	
 	

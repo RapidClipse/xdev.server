@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -32,13 +32,14 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinResponse;
 import com.vaadin.server.VaadinServletService;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.util.CurrentInstance;
 import com.xdev.persistence.PersistenceManager;
 
 
 /**
  * @author XDEV Software
- *		
+ *
  */
 public class XdevServletService extends VaadinServletService
 {
@@ -49,11 +50,11 @@ public class XdevServletService extends VaadinServletService
 	{
 		return instance;
 	}
-	
+
 	private PersistenceManager				persistenceManager;
 	private VaadinSessionStrategyProvider	sessionStrategyProvider;
-	
-	
+
+
 	public XdevServletService(final XdevServlet servlet,
 			final DeploymentConfiguration deploymentConfiguration) throws ServiceException
 	{
@@ -93,7 +94,7 @@ public class XdevServletService extends VaadinServletService
 				conversationables.closeAll();
 			}
 		});
-		
+
 		addServiceDestroyListener(event -> {
 			if(this.persistenceManager != null)
 			{
@@ -104,8 +105,8 @@ public class XdevServletService extends VaadinServletService
 
 		super.init();
 	}
-	
-	
+
+
 	protected PersistenceManager createPersistenceManager() throws PersistenceException
 	{
 		return PersistenceManager.get(getServlet().getServletContext());
@@ -118,10 +119,18 @@ public class XdevServletService extends VaadinServletService
 	}
 
 
+	protected boolean isHeartbeatRequest(final VaadinRequest request)
+	{
+		final String pathInfo = request.getPathInfo();
+		return pathInfo != null
+				&& pathInfo.startsWith("/" + ApplicationConstants.HEARTBEAT_PATH + "/");
+	}
+
+
 	@Override
 	public void requestStart(final VaadinRequest request, final VaadinResponse response)
 	{
-		if(request.getMethod().equals("POST"))
+		if(request.getMethod().equals("POST") && !isHeartbeatRequest(request))
 		{
 			try
 			{
@@ -170,7 +179,10 @@ public class XdevServletService extends VaadinServletService
 	public void requestEnd(final VaadinRequest request, final VaadinResponse response,
 			final VaadinSession session)
 	{
-		handleRequestEnd(session);
+		if(!isHeartbeatRequest(request))
+		{
+			handleRequestEnd(session);
+		}
 
 		super.requestEnd(request,response,session);
 	}

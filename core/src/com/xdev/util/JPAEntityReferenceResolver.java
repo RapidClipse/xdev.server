@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -25,8 +25,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 import javax.persistence.metamodel.ManagedType;
-import javax.persistence.metamodel.PluralAttribute;
+import javax.persistence.metamodel.SingularAttribute;
 
 import org.apache.log4j.Logger;
 
@@ -63,12 +64,19 @@ public class JPAEntityReferenceResolver implements EntityReferenceResolver
 		final ManagedType<?> managedType = JPAMetaDataUtils.getManagedType(entity);
 
 		final List<String> matchingAttributeNames = managedType.getAttributes().stream()
-				.filter(PluralAttribute.class::isInstance).map(PluralAttribute.class::cast)
-				.filter(pa -> pa.getBindableJavaType().equals(referenceEntity))
+				.filter(SingularAttribute.class::isInstance).map(SingularAttribute.class::cast)
+				.filter(pa -> pa.getBindableJavaType().equals(referenceEntity)
+						&& (pa.getPersistentAttributeType() == PersistentAttributeType.MANY_TO_ONE
+								|| pa.getPersistentAttributeType() == PersistentAttributeType.ONE_TO_ONE))
 				.map(Attribute::getName).collect(Collectors.toList());
 
 		if(matchingAttributeNames.isEmpty())
 		{
+			Logger.getLogger(JPAEntityReferenceResolver.class)
+					.info("No matching reference attribute for relation: "
+							+ entity.getCanonicalName() + " -> "
+							+ referenceEntity.getCanonicalName());
+
 			return null;
 		}
 

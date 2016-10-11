@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -25,7 +25,6 @@ import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 
-import com.vaadin.server.VaadinSession;
 import com.vaadin.util.CurrentInstance;
 import com.xdev.persistence.PersistenceManager;
 
@@ -47,90 +46,56 @@ import com.xdev.persistence.PersistenceManager;
  */
 public class CallableAccessWrapper<V> implements Callable<V>
 {
-	private final Callable<V>	callable;
-	private final VaadinSession	session;
-
-
+	public static <T> T execute(final Callable<T> callable) throws Exception
+	{
+		return new CallableAccessWrapper<>(callable).call();
+	}
+	
+	private final Callable<V> callable;
+	
+	
 	public CallableAccessWrapper(final Callable<V> callable)
 	{
-		this(callable,VaadinSession.getCurrent());
-	}
-
-
-	public CallableAccessWrapper(final Callable<V> callable, final VaadinSession session)
-	{
 		this.callable = callable;
-		this.session = session;
 	}
 	
 	
-	/**
-	 * @return the session
-	 * @since 3.0
-	 */
-	public VaadinSession getSession()
-	{
-		return this.session;
-	}
-
-
 	@Override
 	public V call() throws Exception
 	{
 		final XdevServletService service = XdevServletService.getCurrent();
-
-		if(this.session != null)
+		
+		final PersistenceManager persistenceManager = PersistenceManager
+				.get(service.getServlet().getServletContext());
+		CurrentInstance.set(PersistenceManager.class,persistenceManager);
+		
+		final Conversationables conversationables = new Conversationables();
+		CurrentInstance.set(Conversationables.class,conversationables);
+		
+		final VaadinSessionStrategyProvider sessionStrategyProvider = service
+				.getSessionStrategyProvider();
+		for(final String persistenceUnit : persistenceManager.getPersistenceUnits())
 		{
-			try
-			{
-				service.handleRequestStart(this.session);
-
-				return this.callable.call();
-			}
-			finally
-			{
-				service.handleRequestEnd(this.session);
-			}
+			sessionStrategyProvider
+					.getRequestStartVaadinSessionStrategy(conversationables,persistenceUnit)
+					.requestStart(conversationables,persistenceUnit);
 		}
-		else
+		
+		try
 		{
-			final PersistenceManager persistenceManager = PersistenceManager
-					.get(service.getServlet().getServletContext());
-			CurrentInstance.set(PersistenceManager.class,persistenceManager);
-
-			final Conversationables conversationables = new Conversationables();
-			CurrentInstance.set(Conversationables.class,conversationables);
-
-			final VaadinSessionStrategyProvider sessionStrategyProvider = createVaadinSessionStrategyProvider();
+			return this.callable.call();
+		}
+		finally
+		{
 			for(final String persistenceUnit : persistenceManager.getPersistenceUnits())
 			{
 				sessionStrategyProvider
-						.getRequestStartVaadinSessionStrategy(conversationables,persistenceUnit)
-						.requestStart(conversationables,persistenceUnit);
+						.getRequestEndVaadinSessionStrategy(conversationables,persistenceUnit)
+						.requestEnd(conversationables,persistenceUnit);
 			}
-
-			try
-			{
-				return this.callable.call();
-			}
-			finally
-			{
-				for(final String persistenceUnit : persistenceManager.getPersistenceUnits())
-				{
-					sessionStrategyProvider
-							.getRequestEndVaadinSessionStrategy(conversationables,persistenceUnit)
-							.requestEnd(conversationables,persistenceUnit);
-				}
-				
-				CurrentInstance.set(PersistenceManager.class,null);
-				CurrentInstance.set(Conversationables.class,null);
-			}
+			
+			CurrentInstance.set(PersistenceManager.class,null);
+			CurrentInstance.set(Conversationables.class,null);
 		}
-	}
-
-
-	protected VaadinSessionStrategyProvider createVaadinSessionStrategyProvider()
-	{
-		return new VaadinSessionStrategyProvider.Implementation();
 	}
 }

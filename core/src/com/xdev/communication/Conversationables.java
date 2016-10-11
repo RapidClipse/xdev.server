@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * For further information see 
+ *
+ * For further information see
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
@@ -43,27 +43,29 @@ public final class Conversationables implements Serializable
 {
 	public final static Conversationables getCurrent()
 	{
+		final Conversationables conversationables = CurrentInstance.get(Conversationables.class);
+		if(conversationables != null)
+		{
+			return conversationables;
+		}
+
 		final VaadinSession session = VaadinSession.getCurrent();
 		if(session != null && session.getState() == State.OPEN)
 		{
-			final Conversationables conversationables = session
-					.getAttribute(Conversationables.class);
-			if(conversationables != null)
-			{
-				return conversationables;
-			}
+			return session.getAttribute(Conversationables.class);
 		}
-		return CurrentInstance.get(Conversationables.class);
+
+		return null;
 	}
-
+	
 	private transient Map<String, Conversationable> unitToConversationable;
-
-
+	
+	
 	public Conversationables()
 	{
 	}
-
-
+	
+	
 	private Map<String, Conversationable> unitToConversationable()
 	{
 		if(this.unitToConversationable == null)
@@ -72,39 +74,39 @@ public final class Conversationables implements Serializable
 		}
 		return this.unitToConversationable;
 	}
-
-
+	
+	
 	public Conversationables put(final String persistenceUnit, final Conversationable conversation)
 	{
 		unitToConversationable().put(persistenceUnit,conversation);
 		return this;
 	}
-
-
+	
+	
 	public Conversationable remove(final String persistenceUnit)
 	{
 		return unitToConversationable().remove(persistenceUnit);
 	}
-
-
+	
+	
 	public Conversationable get(final String persistenceUnit)
 	{
 		return unitToConversationable().get(persistenceUnit);
 	}
-
-
+	
+	
 	public void forEach(final Consumer<Conversationable> consumer)
 	{
 		unitToConversationable().values().forEach(consumer);
 	}
-
-
+	
+	
 	public void closeAll()
 	{
 		unitToConversationable().values().forEach(this::close);
 	}
-
-
+	
+	
 	public void close(final Conversationable conversationable)
 	{
 		final EntityManager em = conversationable.getEntityManager();
@@ -125,7 +127,7 @@ public final class Conversationables implements Serializable
 					}
 				}
 			}
-
+			
 			try
 			{
 				em.close();

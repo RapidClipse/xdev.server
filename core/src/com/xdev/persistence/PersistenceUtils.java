@@ -25,6 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
+import com.xdev.Application;
 import com.xdev.communication.Conversationable;
 import com.xdev.communication.Conversationables;
 
@@ -38,11 +39,11 @@ public final class PersistenceUtils
 	private PersistenceUtils()
 	{
 	}
-	
-	
+
+
 	public static EntityManager getEntityManager(final Class<?> managedType)
 	{
-		final PersistenceManager persistenceManager = PersistenceManager.getCurrent();
+		final PersistenceManager persistenceManager = Application.getPersistenceManager();
 		if(persistenceManager != null)
 		{
 			final String persistenceUnit = persistenceManager.getPersistenceUnit(managedType);
@@ -51,19 +52,19 @@ public final class PersistenceUtils
 				return getEntityManager(persistenceUnit);
 			}
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	public static EntityManager getEntityManager(final String persistenceUnit)
 	{
 		final Conversationable conversationable = Conversationables.getCurrent()
 				.get(persistenceUnit);
 		return conversationable != null ? conversationable.getEntityManager() : null;
 	}
-	
-	
+
+
 	public static <T> CriteriaQuery<T> getCriteriaQuery(final Class<T> managedType)
 	{
 		final EntityManager em = getEntityManager(managedType);

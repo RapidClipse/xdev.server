@@ -24,6 +24,7 @@ package com.xdev.communication;
 import javax.persistence.EntityManager;
 
 import com.vaadin.util.CurrentInstance;
+import com.xdev.Application;
 import com.xdev.persistence.PersistenceManager;
 
 
@@ -61,21 +62,17 @@ public class RunnableAccessWrapper implements Runnable
 	@Override
 	public void run()
 	{
-		final XdevServletService service = XdevServletService.getCurrent();
-		
-		final PersistenceManager persistenceManager = PersistenceManager
-				.get(service.getServlet().getServletContext());
-		CurrentInstance.set(PersistenceManager.class,persistenceManager);
+		final PersistenceManager persistenceManager = Application.getPersistenceManager();
 		
 		final Conversationables conversationables = new Conversationables();
 		CurrentInstance.set(Conversationables.class,conversationables);
 		
-		final VaadinSessionStrategyProvider sessionStrategyProvider = service
+		final SessionStrategyProvider sessionStrategyProvider = Application
 				.getSessionStrategyProvider();
 		for(final String persistenceUnit : persistenceManager.getPersistenceUnits())
 		{
 			sessionStrategyProvider
-					.getRequestStartVaadinSessionStrategy(conversationables,persistenceUnit)
+					.getRequestStartSessionStrategy(conversationables,persistenceUnit)
 					.requestStart(conversationables,persistenceUnit);
 		}
 		
@@ -88,11 +85,10 @@ public class RunnableAccessWrapper implements Runnable
 			for(final String persistenceUnit : persistenceManager.getPersistenceUnits())
 			{
 				sessionStrategyProvider
-						.getRequestEndVaadinSessionStrategy(conversationables,persistenceUnit)
+						.getRequestEndSessionStrategy(conversationables,persistenceUnit)
 						.requestEnd(conversationables,persistenceUnit);
 			}
 			
-			CurrentInstance.set(PersistenceManager.class,null);
 			CurrentInstance.set(Conversationables.class,null);
 		}
 	}

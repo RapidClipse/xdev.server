@@ -24,45 +24,53 @@ package com.xdev.communication;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+
 
 /**
  * @author XDEV Software
  *
  */
-public interface VaadinSessionStrategyProvider
+public interface SessionStrategyProvider
 {
-	public VaadinSessionStrategy getRequestStartVaadinSessionStrategy(
-			Conversationables conversationables, String persistenceUnit);
-
-
-	public VaadinSessionStrategy getRequestEndVaadinSessionStrategy(
-			Conversationables conversationables, String persistenceUnit);
-
-
-
-	public class Implementation implements VaadinSessionStrategyProvider
+	public static interface Factory
 	{
-		protected final VaadinSessionStrategy				perRequest					= new VaadinSessionStrategy.PerRequest();
-		protected final VaadinSessionStrategy				perConversation				= new VaadinSessionStrategy.PerConversation();
-		protected final VaadinSessionStrategy				perConversationPessimistic	= new VaadinSessionStrategy.PerConversationPessimistic();
-		protected final Map<String, VaadinSessionStrategy>	currentStrategies			= new HashMap<>();
+		public SessionStrategyProvider createSessionStrategyProvider(final ServletContext context);
+	}
 
 
-		protected VaadinSessionStrategy storeSessionStrategy(final String persistenceUnit,
-				final VaadinSessionStrategy strategy)
+	public SessionStrategy getRequestStartSessionStrategy(Conversationables conversationables,
+			String persistenceUnit);
+	
+	
+	public SessionStrategy getRequestEndSessionStrategy(Conversationables conversationables,
+			String persistenceUnit);
+	
+	
+	
+	public class Implementation implements SessionStrategyProvider
+	{
+		protected final SessionStrategy					perRequest					= new SessionStrategy.PerRequest();
+		protected final SessionStrategy					perConversation				= new SessionStrategy.PerConversation();
+		protected final SessionStrategy					perConversationPessimistic	= new SessionStrategy.PerConversationPessimistic();
+		protected final Map<String, SessionStrategy>	currentStrategies			= new HashMap<>();
+		
+		
+		protected SessionStrategy storeSessionStrategy(final String persistenceUnit,
+				final SessionStrategy strategy)
 		{
 			this.currentStrategies.put(persistenceUnit,strategy);
 			return strategy;
 		}
-
-
+		
+		
 		@Override
-		public VaadinSessionStrategy getRequestStartVaadinSessionStrategy(
+		public SessionStrategy getRequestStartSessionStrategy(
 				final Conversationables conversationables, final String persistenceUnit)
-						throws RuntimeException
+				throws RuntimeException
 		{
 			final Conversationable conversationable = conversationables.get(persistenceUnit);
-
+			
 			if(conversationable != null)
 			{
 				if(conversationable.getConversation() != null)
@@ -81,28 +89,28 @@ public interface VaadinSessionStrategyProvider
 					}
 				}
 			}
-
+			
 			// return default strategy
 			return storeSessionStrategy(persistenceUnit,this.perRequest);
 		}
-
-
+		
+		
 		@Override
-		public VaadinSessionStrategy getRequestEndVaadinSessionStrategy(
+		public SessionStrategy getRequestEndSessionStrategy(
 				final Conversationables conversationables, final String persistenceUnit)
 		{
 			/*
 			 * end request with existing strategy - don't exchange strategies
 			 * between request / response
 			 */
-			final VaadinSessionStrategy strategy = this.currentStrategies.get(persistenceUnit);
+			final SessionStrategy strategy = this.currentStrategies.get(persistenceUnit);
 			if(strategy != null)
 			{
 				return strategy;
 			}
-
+			
 			final Conversationable conversationable = conversationables.get(persistenceUnit);
-
+			
 			if(conversationable != null)
 			{
 				if(conversationable.getConversation() != null)
@@ -121,7 +129,7 @@ public interface VaadinSessionStrategyProvider
 					}
 				}
 			}
-
+			
 			// return default strategy
 			return storeSessionStrategy(persistenceUnit,this.perRequest);
 		}

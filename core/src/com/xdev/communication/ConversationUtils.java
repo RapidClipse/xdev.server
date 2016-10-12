@@ -27,7 +27,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.LockModeType;
 
-import com.xdev.persistence.PersistenceManager;
+import com.xdev.Application;
 import com.xdev.persistence.PersistenceUtils;
 
 
@@ -39,7 +39,7 @@ public class ConversationUtils
 {
 	public static Conversation getConversation()
 	{
-		return getConversation(PersistenceManager.getCurrent().getDefaultPersistenceUnit());
+		return getConversation(Application.getPersistenceManager().getDefaultPersistenceUnit());
 	}
 
 
@@ -77,7 +77,7 @@ public class ConversationUtils
 
 	public static Conversation startConversation()
 	{
-		return startConversation(PersistenceManager.getCurrent().getDefaultPersistenceUnit());
+		return startConversation(Application.getPersistenceManager().getDefaultPersistenceUnit());
 	}
 
 
@@ -107,7 +107,7 @@ public class ConversationUtils
 	public static Conversation startPessimisticConversation(final LockModeType lockMode)
 	{
 		return startPessimisticConversation(
-				PersistenceManager.getCurrent().getDefaultPersistenceUnit(),lockMode);
+				Application.getPersistenceManager().getDefaultPersistenceUnit(),lockMode);
 	}
 
 
@@ -126,7 +126,7 @@ public class ConversationUtils
 
 	public static void lockConversation(final Object entity)
 	{
-		final String persistenceUnit = PersistenceManager.getCurrent()
+		final String persistenceUnit = Application.getPersistenceManager()
 				.getPersistenceUnit(entity.getClass());
 		final Conversationable conversationable = Conversationables.getCurrent()
 				.get(persistenceUnit);
@@ -143,7 +143,7 @@ public class ConversationUtils
 
 	public static void lockConversation(final Object entity, final Map<String, Object> properties)
 	{
-		final String persistenceUnit = PersistenceManager.getCurrent()
+		final String persistenceUnit = Application.getPersistenceManager()
 				.getPersistenceUnit(entity.getClass());
 		final Conversationable conversationable = Conversationables.getCurrent()
 				.get(persistenceUnit);
@@ -161,7 +161,7 @@ public class ConversationUtils
 
 	public static void releaseConversationLock()
 	{
-		releaseConversationLock(PersistenceManager.getCurrent().getDefaultPersistenceUnit());
+		releaseConversationLock(Application.getPersistenceManager().getDefaultPersistenceUnit());
 	}
 
 

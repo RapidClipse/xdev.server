@@ -29,52 +29,52 @@ import javax.persistence.RollbackException;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 
-import com.xdev.persistence.PersistenceManager;
+import com.xdev.Application;
 
 
 /**
  * Manages Session propagation.
  *
  * @author XDEV Software
- * 
+ *
  */
-public interface VaadinSessionStrategy
+public interface SessionStrategy
 {
 	public void requestStart(Conversationables conversationables, String persistenceUnit);
-
-
+	
+	
 	public void requestEnd(Conversationables conversationables, String persistenceUnit);
-
-
-
+	
+	
+	
 	/**
 	 * Request / Response propagation to avoid session per operation anti
 	 * pattern.
 	 *
 	 * @author XDEV Software
-	 * 
+	 *
 	 */
-	public class PerRequest implements VaadinSessionStrategy
+	public class PerRequest implements SessionStrategy
 	{
 		@Override
 		public void requestStart(final Conversationables conversationables,
 				final String persistenceUnit)
 		{
-			final EntityManagerFactory factory = PersistenceManager.getCurrent()
+			final EntityManagerFactory factory = Application.getPersistenceManager()
 					.getEntityManagerFactory(persistenceUnit);
 			final EntityManager manager = factory.createEntityManager();
-			
+
 			// instantiate conversationable wrapper with entity manager.
 			final Conversationable.Implementation conversationable = new Conversationable.Implementation();
 			conversationable.setEntityManager(manager);
-			
+
 			// Begin a database transaction, start the unit of work
 			manager.getTransaction().begin();
-			
+
 			conversationables.put(persistenceUnit,conversationable);
 		}
-		
-		
+
+
 		@Override
 		public void requestEnd(final Conversationables conversationables,
 				final String persistenceUnit)
@@ -120,16 +120,16 @@ public interface VaadinSessionStrategy
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 * 
+	 *
 	 */
-	public class PerConversation implements VaadinSessionStrategy
+	public class PerConversation implements SessionStrategy
 	{
 		@Override
 		public void requestStart(final Conversationables conversationables,
@@ -151,7 +151,7 @@ public interface VaadinSessionStrategy
 						 */
 						session.setHibernateFlushMode(FlushMode.MANUAL);
 					}
-					
+
 					/*
 					 * Begin a database transaction, reconnects Session -
 					 * continues the unit of work
@@ -164,8 +164,8 @@ public interface VaadinSessionStrategy
 				}
 			}
 		}
-		
-		
+
+
 		@Override
 		public void requestEnd(final Conversationables conversationables,
 				final String persistenceUnit)
@@ -195,7 +195,7 @@ public interface VaadinSessionStrategy
 									transaction.rollback();
 								}
 							}
-							
+
 						}
 						else
 						{
@@ -222,14 +222,14 @@ public interface VaadinSessionStrategy
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Extended persistence context pattern.
 	 *
 	 * @author XDEV Software
-	 * 
+	 *
 	 */
 	public class PerConversationPessimistic extends PerConversation
 	{

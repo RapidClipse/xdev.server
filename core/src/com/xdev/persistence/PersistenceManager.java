@@ -38,225 +38,209 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.vaadin.util.CurrentInstance;
-import com.xdev.communication.XdevServlet;
-import com.xdev.communication.XdevServletService;
-
 
 /**
  * @author XDEV Software
  * @since 1.2
  */
-public class PersistenceManager
+public interface PersistenceManager
 {
-	public final static PersistenceManager getCurrent()
+	public static interface Factory
 	{
-		PersistenceManager manager = null;
-		final XdevServlet servlet = XdevServlet.getServlet();
-		if(servlet != null)
-		{
-			final XdevServletService service = servlet.getService();
-			if(service != null)
-			{
-				manager = service.getPersistenceManager();
-			}
-		}
-		if(manager == null)
-		{
-			manager = CurrentInstance.get(PersistenceManager.class);
-		}
-		return manager;
+		public PersistenceManager createPersistenceManager(final ServletContext context);
 	}
-
-	private final Map<String, Collection<Class<?>>>	unitToClasses;
-	private final Map<Class<?>, String>				classToUnit;
-	private final Map<String, EntityManagerFactory>	entityManagerFactories	= new HashMap<>();
-	private EntityManagerFactoryProvider			entityManagerFactoryProvider;
-
-
-	public static PersistenceManager get(final ServletContext servletContext)
-	{
-		PersistenceManager manager = (PersistenceManager)servletContext
-				.getAttribute(PersistenceManager.class.getName());
-		if(manager == null)
-		{
-			manager = new PersistenceManager(servletContext);
-			servletContext.setAttribute(PersistenceManager.class.getName(),manager);
-		}
-		return manager;
-	}
-
-
-	/**
-	 *
-	 * @noapi use {@link #getCurrent()} to get the {@link PersistenceManager},
-	 *        initialization is done by {@link XdevServletService}.
-	 * @throws PersistenceException
-	 */
-	protected PersistenceManager(final ServletContext servletContext) throws PersistenceException
-	{
-		this.unitToClasses = readPersistenceUnitTypes(servletContext);
-		this.classToUnit = createClassToUnitMap(this.unitToClasses);
-	}
-
-
-	protected Map<String, Collection<Class<?>>> readPersistenceUnitTypes(
-			final ServletContext servletContext) throws PersistenceException
-	{
-		final Map<String, Collection<Class<?>>> persistenceUnitTypes = new LinkedHashMap<>();
-
-		try
-		{
-			final URL url = findPersistenceXML(servletContext);
-			if(url != null)
-			{
-				final ClassLoader classLoader = servletContext.getClassLoader();
-				final Document document = new SAXReader().read(url);
-				final Element rootElement = document.getRootElement();
-				if(rootElement != null)
-				{
-					for(final Object o : rootElement.elements("persistence-unit"))
-					{
-						final Element unitElement = (Element)o;
-						final String name = unitElement.attributeValue("name");
-						final List<Class<?>> classes = new ArrayList<>();
-						for(final Object clazzElem : unitElement.elements("class"))
-						{
-							final String className = ((Element)clazzElem).getTextTrim();
-							if(className.length() > 0)
-							{
-								classes.add(classLoader.loadClass(className));
-							}
-						}
-						persistenceUnitTypes.put(name,classes);
-					}
-				}
-			}
-		}
-		catch(final Exception e)
-		{
-			throw new PersistenceException(e);
-		}
-
-		return persistenceUnitTypes;
-	}
-
-
-	protected URL findPersistenceXML(final ServletContext servletContext)
-			throws MalformedURLException
-	{
-		URL resourceUrl = servletContext.getResource("/META-INF/persistence.xml");
-		if(resourceUrl == null)
-		{
-			final ClassLoader classLoader = servletContext.getClassLoader();
-			resourceUrl = classLoader.getResource("META-INF/persistence.xml");
-		}
-		return resourceUrl;
-	}
-
-
-	protected Map<Class<?>, String> createClassToUnitMap(
-			final Map<String, Collection<Class<?>>> unitToClasses)
-	{
-		final Map<Class<?>, String> classToUnit = new HashMap<>();
-		unitToClasses.entrySet().forEach(entry -> {
-			final String unit = entry.getKey();
-			entry.getValue().forEach(clazz -> classToUnit.put(clazz,unit));
-		});
-		return classToUnit;
-	}
-
-
-	public String getDefaultPersistenceUnit()
-	{
-		if(this.unitToClasses.isEmpty())
-		{
-			return null;
-		}
-		return getPersistenceUnits().iterator().next();
-	}
-
-
-	public Iterable<String> getPersistenceUnits()
-	{
-		return this.unitToClasses.keySet();
-	}
-
-
-	public Iterable<Class<?>> getPersistenceUnitClasses(final String persistenceUnit)
-	{
-		return this.unitToClasses.get(persistenceUnit);
-	}
-
-
-	public String getPersistenceUnit(Class<?> clazz)
-	{
-		while(clazz != null && clazz != Object.class)
-		{
-			final String unit = this.classToUnit.get(clazz);
-			if(unit != null)
-			{
-				return unit;
-			}
-			clazz = clazz.getSuperclass();
-		}
-
-		return null;
-	}
-
-
-	public EntityManagerFactory getEntityManagerFactory(final String persistenceUnit)
-	{
-		EntityManagerFactory factory = this.entityManagerFactories.get(persistenceUnit);
-		if(factory == null)
-		{
-			factory = getEntityManagerFactoryProvider().createEntityManagerFactory(persistenceUnit);
-			this.entityManagerFactories.put(persistenceUnit,factory);
-		}
-		return factory;
-	}
-
-
-	public void setEntityManagerFactoryProvider(
-			final EntityManagerFactoryProvider entityManagerFactoryProvider)
-	{
-		this.entityManagerFactoryProvider = entityManagerFactoryProvider;
-	}
-
-
-	public EntityManagerFactoryProvider getEntityManagerFactoryProvider()
-	{
-		if(this.entityManagerFactoryProvider == null)
-		{
-			this.entityManagerFactoryProvider = EntityManagerFactoryProvider.DEFAULT;
-		}
-
-		return this.entityManagerFactoryProvider;
-	}
-
-
-	public boolean isQueryCacheEnabled(final String persistenceUnit)
+	
+	
+	public String getDefaultPersistenceUnit();
+	
+	
+	public Iterable<String> getPersistenceUnits();
+	
+	
+	public Iterable<Class<?>> getPersistenceUnitClasses(final String persistenceUnit);
+	
+	
+	public String getPersistenceUnit(Class<?> clazz);
+	
+	
+	public EntityManagerFactory getEntityManagerFactory(final String persistenceUnit);
+	
+	
+	public default boolean isQueryCacheEnabled(final String persistenceUnit)
 	{
 		return isQueryCacheEnabled(getEntityManagerFactory(persistenceUnit));
 	}
-
-
-	public boolean isQueryCacheEnabled(final EntityManagerFactory factory)
+	
+	
+	public boolean isQueryCacheEnabled(final EntityManagerFactory factory);
+	
+	
+	public void close();
+	
+	
+	
+	public static class Implementation implements PersistenceManager
 	{
-		final Map<String, Object> properties = factory.getProperties();
-		final Object queryCacheProperty = properties.get("hibernate.cache.use_query_cache");
-		return "true".equals(queryCacheProperty);
-	}
-
-
-	public void close()
-	{
-		this.entityManagerFactories.values().forEach(factory -> {
-			if(factory.isOpen())
+		private final Map<String, Collection<Class<?>>>	unitToClasses;
+		private final Map<Class<?>, String>				classToUnit;
+		private final Map<String, EntityManagerFactory>	entityManagerFactories	= new HashMap<>();
+		
+		
+		public Implementation(final ServletContext servletContext) throws PersistenceException
+		{
+			this.unitToClasses = readPersistenceUnitTypes(servletContext);
+			this.classToUnit = createClassToUnitMap(this.unitToClasses);
+		}
+		
+		
+		protected Map<String, Collection<Class<?>>> readPersistenceUnitTypes(
+				final ServletContext servletContext) throws PersistenceException
+		{
+			final Map<String, Collection<Class<?>>> persistenceUnitTypes = new LinkedHashMap<>();
+			
+			try
 			{
-				factory.close();
+				final URL url = findPersistenceXML(servletContext);
+				if(url != null)
+				{
+					final ClassLoader classLoader = servletContext.getClassLoader();
+					final Document document = new SAXReader().read(url);
+					final Element rootElement = document.getRootElement();
+					if(rootElement != null)
+					{
+						for(final Object o : rootElement.elements("persistence-unit"))
+						{
+							final Element unitElement = (Element)o;
+							final String name = unitElement.attributeValue("name");
+							final List<Class<?>> classes = new ArrayList<>();
+							for(final Object clazzElem : unitElement.elements("class"))
+							{
+								final String className = ((Element)clazzElem).getTextTrim();
+								if(className.length() > 0)
+								{
+									classes.add(classLoader.loadClass(className));
+								}
+							}
+							persistenceUnitTypes.put(name,classes);
+						}
+					}
+				}
 			}
-		});
-		this.entityManagerFactories.clear();
+			catch(final Exception e)
+			{
+				throw new PersistenceException(e);
+			}
+			
+			return persistenceUnitTypes;
+		}
+		
+		
+		protected URL findPersistenceXML(final ServletContext servletContext)
+				throws MalformedURLException
+		{
+			URL resourceUrl = servletContext.getResource("/META-INF/persistence.xml");
+			if(resourceUrl == null)
+			{
+				final ClassLoader classLoader = servletContext.getClassLoader();
+				resourceUrl = classLoader.getResource("META-INF/persistence.xml");
+			}
+			return resourceUrl;
+		}
+		
+		
+		protected Map<Class<?>, String> createClassToUnitMap(
+				final Map<String, Collection<Class<?>>> unitToClasses)
+		{
+			final Map<Class<?>, String> classToUnit = new HashMap<>();
+			unitToClasses.entrySet().forEach(entry -> {
+				final String unit = entry.getKey();
+				entry.getValue().forEach(clazz -> classToUnit.put(clazz,unit));
+			});
+			return classToUnit;
+		}
+		
+		
+		@Override
+		public String getDefaultPersistenceUnit()
+		{
+			if(this.unitToClasses.isEmpty())
+			{
+				return null;
+			}
+			return getPersistenceUnits().iterator().next();
+		}
+		
+		
+		@Override
+		public Iterable<String> getPersistenceUnits()
+		{
+			return this.unitToClasses.keySet();
+		}
+		
+		
+		@Override
+		public Iterable<Class<?>> getPersistenceUnitClasses(final String persistenceUnit)
+		{
+			return this.unitToClasses.get(persistenceUnit);
+		}
+		
+		
+		@Override
+		public String getPersistenceUnit(Class<?> clazz)
+		{
+			while(clazz != null && clazz != Object.class)
+			{
+				final String unit = this.classToUnit.get(clazz);
+				if(unit != null)
+				{
+					return unit;
+				}
+				clazz = clazz.getSuperclass();
+			}
+			
+			return null;
+		}
+		
+		
+		@Override
+		public EntityManagerFactory getEntityManagerFactory(final String persistenceUnit)
+		{
+			EntityManagerFactory factory = this.entityManagerFactories.get(persistenceUnit);
+			if(factory == null)
+			{
+				factory = getEntityManagerFactoryProvider()
+						.createEntityManagerFactory(persistenceUnit);
+				this.entityManagerFactories.put(persistenceUnit,factory);
+			}
+			return factory;
+		}
+		
+		
+		protected EntityManagerFactoryProvider getEntityManagerFactoryProvider()
+		{
+			return EntityManagerFactoryProvider.DEFAULT;
+		}
+		
+		
+		@Override
+		public boolean isQueryCacheEnabled(final EntityManagerFactory factory)
+		{
+			final Map<String, Object> properties = factory.getProperties();
+			final Object queryCacheProperty = properties.get("hibernate.cache.use_query_cache");
+			return "true".equals(queryCacheProperty);
+		}
+		
+		
+		@Override
+		public void close()
+		{
+			this.entityManagerFactories.values().forEach(factory -> {
+				if(factory.isOpen())
+				{
+					factory.close();
+				}
+			});
+			this.entityManagerFactories.clear();
+		}
 	}
 }

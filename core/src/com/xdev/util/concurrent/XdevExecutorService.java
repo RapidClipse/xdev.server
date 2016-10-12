@@ -18,7 +18,7 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.communication;
+package com.xdev.util.concurrent;
 
 
 import java.util.concurrent.Callable;
@@ -30,9 +30,10 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
+
+import com.xdev.Application;
+import com.xdev.communication.CallableAccessWrapper;
+import com.xdev.communication.RunnableAccessWrapper;
 
 
 /**
@@ -52,47 +53,20 @@ import javax.servlet.annotation.WebListener;
  * The instantiation and the shutdown process is handled by the framework. To
  * use the executor just call one of the static get methods.
  *
- * @see #get()
+ * @see Application#getExecutorService()
  *
  * @author XDEV Software
  * @since 3.0
  */
 public interface XdevExecutorService extends Executor
 {
-	@WebListener
-	public static class ContextListener implements ServletContextListener
+	public static interface Factory
 	{
-		public static XdevExecutorService executorService;
-		
-		
-		@Override
-		public void contextInitialized(final ServletContextEvent event)
-		{
-			executorService = new XdevExecutorService.Implementation(event.getServletContext());
-		}
-		
-		
-		@Override
-		public void contextDestroyed(final ServletContextEvent event)
-		{
-			if(executorService != null)
-			{
-				executorService.shutdown();
-			}
-		}
+		public XdevExecutorService createXdevExecutorService(final ServletContext context);
 	}
-	
-	
-	/**
-	 * Returns the executor service singleton
-	 */
-	public static XdevExecutorService get()
-	{
-		return ContextListener.executorService;
-	}
-	
-	public static final String	THREAD_COUNT_INIT_PARAMETER			= "xdev.executor.threadCount";
-	public static final String	GRACEFUL_SHUTDOWN_INIT_PARAMETER	= "xdev.executor.gracefulShutdown";
+
+	public static final String	THREAD_COUNT_INIT_PARAMETER			= "xdev.executorService.threadCount";
+	public static final String	GRACEFUL_SHUTDOWN_INIT_PARAMETER	= "xdev.executorService.gracefulShutdown";
 	
 	
 	/**
@@ -172,7 +146,7 @@ public interface XdevExecutorService extends Executor
 		private boolean			gracefulShutdown;
 		
 		
-		protected Implementation(final ServletContext context)
+		public Implementation(final ServletContext context)
 		{
 			this.gracefulShutdown = Boolean
 					.valueOf(context.getInitParameter(GRACEFUL_SHUTDOWN_INIT_PARAMETER));

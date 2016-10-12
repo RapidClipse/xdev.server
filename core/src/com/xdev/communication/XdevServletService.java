@@ -24,8 +24,6 @@ package com.xdev.communication;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.persistence.PersistenceException;
-
 import com.vaadin.server.DeploymentConfiguration;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.VaadinRequest;
@@ -33,8 +31,7 @@ import com.vaadin.server.VaadinResponse;
 import com.vaadin.server.VaadinServletService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ApplicationConstants;
-import com.vaadin.util.CurrentInstance;
-import com.xdev.persistence.PersistenceManager;
+import com.xdev.Application;
 
 
 /**
@@ -43,48 +40,16 @@ import com.xdev.persistence.PersistenceManager;
  */
 public class XdevServletService extends VaadinServletService
 {
-	private static XdevServletService instance;
-	
-	
-	public static XdevServletService getCurrent()
-	{
-		return instance;
-	}
-	
-	private PersistenceManager				persistenceManager;
-	private VaadinSessionStrategyProvider	sessionStrategyProvider;
-	
-	
 	public XdevServletService(final XdevServlet servlet,
 			final DeploymentConfiguration deploymentConfiguration) throws ServiceException
 	{
 		super(servlet,deploymentConfiguration);
-		
-		instance = this;
-	}
-	
-	
-	@Override
-	public XdevServlet getServlet()
-	{
-		return (XdevServlet)super.getServlet();
 	}
 	
 	
 	@Override
 	public void init() throws ServiceException
 	{
-		try
-		{
-			this.persistenceManager = createPersistenceManager();
-		}
-		catch(final PersistenceException e)
-		{
-			throw new ServiceException(e);
-		}
-		
-		this.sessionStrategyProvider = createVaadinSessionStrategyProvider();
-		
 		addSessionDestroyListener(event -> {
 			final VaadinSession session = event.getSession();
 			final Conversationables conversationables = session
@@ -95,27 +60,7 @@ public class XdevServletService extends VaadinServletService
 			}
 		});
 		
-		addServiceDestroyListener(event -> {
-			if(this.persistenceManager != null)
-			{
-				this.persistenceManager.close();
-				this.persistenceManager = null;
-			}
-		});
-		
 		super.init();
-	}
-	
-	
-	protected PersistenceManager createPersistenceManager() throws PersistenceException
-	{
-		return PersistenceManager.get(getServlet().getServletContext());
-	}
-	
-	
-	protected VaadinSessionStrategyProvider createVaadinSessionStrategyProvider()
-	{
-		return new VaadinSessionStrategyProvider.Implementation();
 	}
 	
 	
@@ -152,18 +97,17 @@ public class XdevServletService extends VaadinServletService
 	
 	public void handleRequestStart(final VaadinSession session)
 	{
-		CurrentInstance.set(PersistenceManager.class,this.persistenceManager);
-		
 		try
 		{
 			final Conversationables conversationables = session
 					.getAttribute(Conversationables.class);
 			if(conversationables != null)
 			{
-				for(final String persistenceUnit : this.persistenceManager.getPersistenceUnits())
+				for(final String persistenceUnit : Application.getPersistenceManager()
+						.getPersistenceUnits())
 				{
-					this.sessionStrategyProvider
-							.getRequestStartVaadinSessionStrategy(conversationables,persistenceUnit)
+					Application.getSessionStrategyProvider()
+							.getRequestStartSessionStrategy(conversationables,persistenceUnit)
 							.requestStart(conversationables,persistenceUnit);
 				}
 			}
@@ -190,7 +134,9 @@ public class XdevServletService extends VaadinServletService
 	
 	public void handleRequestEnd(final VaadinSession session)
 	{
-		if(session != null && this.persistenceManager != null)
+		final SessionStrategyProvider sessionStrategyProvider = Application
+				.getSessionStrategyProvider();
+		if(session != null && sessionStrategyProvider != null)
 		{
 			try
 			{
@@ -198,12 +144,11 @@ public class XdevServletService extends VaadinServletService
 						.getAttribute(Conversationables.class);
 				if(conversationables != null)
 				{
-					for(final String persistenceUnit : this.persistenceManager
+					for(final String persistenceUnit : Application.getPersistenceManager()
 							.getPersistenceUnits())
 					{
-						this.sessionStrategyProvider
-								.getRequestEndVaadinSessionStrategy(conversationables,
-										persistenceUnit)
+						sessionStrategyProvider
+								.getRequestEndSessionStrategy(conversationables,persistenceUnit)
 								.requestEnd(conversationables,persistenceUnit);
 					}
 				}
@@ -230,21 +175,5 @@ public class XdevServletService extends VaadinServletService
 		session.setAttribute(Conversationables.class,new Conversationables());
 		session.setAttribute(ClientInfo.class,ClientInfo.get(request));
 		return session;
-	}
-	
-	
-	public PersistenceManager getPersistenceManager()
-	{
-		return this.persistenceManager;
-	}
-
-
-	/**
-	 *
-	 * @since 3.0
-	 */
-	public VaadinSessionStrategyProvider getSessionStrategyProvider()
-	{
-		return this.sessionStrategyProvider;
 	}
 }

@@ -26,6 +26,7 @@ import java.util.concurrent.Callable;
 import javax.persistence.EntityManager;
 
 import com.vaadin.util.CurrentInstance;
+import com.xdev.Application;
 import com.xdev.persistence.PersistenceManager;
 
 
@@ -50,37 +51,33 @@ public class CallableAccessWrapper<V> implements Callable<V>
 	{
 		return new CallableAccessWrapper<>(callable).call();
 	}
-	
+
 	private final Callable<V> callable;
-	
-	
+
+
 	public CallableAccessWrapper(final Callable<V> callable)
 	{
 		this.callable = callable;
 	}
-	
-	
+
+
 	@Override
 	public V call() throws Exception
 	{
-		final XdevServletService service = XdevServletService.getCurrent();
-		
-		final PersistenceManager persistenceManager = PersistenceManager
-				.get(service.getServlet().getServletContext());
-		CurrentInstance.set(PersistenceManager.class,persistenceManager);
+		final PersistenceManager persistenceManager = Application.getPersistenceManager();
 		
 		final Conversationables conversationables = new Conversationables();
 		CurrentInstance.set(Conversationables.class,conversationables);
-		
-		final VaadinSessionStrategyProvider sessionStrategyProvider = service
+
+		final SessionStrategyProvider sessionStrategyProvider = Application
 				.getSessionStrategyProvider();
 		for(final String persistenceUnit : persistenceManager.getPersistenceUnits())
 		{
 			sessionStrategyProvider
-					.getRequestStartVaadinSessionStrategy(conversationables,persistenceUnit)
+					.getRequestStartSessionStrategy(conversationables,persistenceUnit)
 					.requestStart(conversationables,persistenceUnit);
 		}
-		
+
 		try
 		{
 			return this.callable.call();
@@ -90,11 +87,10 @@ public class CallableAccessWrapper<V> implements Callable<V>
 			for(final String persistenceUnit : persistenceManager.getPersistenceUnits())
 			{
 				sessionStrategyProvider
-						.getRequestEndVaadinSessionStrategy(conversationables,persistenceUnit)
+						.getRequestEndSessionStrategy(conversationables,persistenceUnit)
 						.requestEnd(conversationables,persistenceUnit);
 			}
-			
-			CurrentInstance.set(PersistenceManager.class,null);
+
 			CurrentInstance.set(Conversationables.class,null);
 		}
 	}

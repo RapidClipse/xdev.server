@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import com.xdev.persistence.PersistenceManager;
+import com.xdev.Application;
 import com.xdev.persistence.PersistenceUtils;
 import com.xdev.security.authorization.AuthorizationConfiguration;
 import com.xdev.security.authorization.AuthorizationConfigurationProvider;
@@ -52,7 +52,7 @@ public class SQLAuthorizationConfigurationProvider implements AuthorizationConfi
 			final String rolesAndPermissionsSelect)
 	{
 		this(usersAndGroupsSelect,rolesAndPermissionsSelect,
-				PersistenceManager.getCurrent().getDefaultPersistenceUnit());
+				Application.getPersistenceManager().getDefaultPersistenceUnit());
 	}
 
 

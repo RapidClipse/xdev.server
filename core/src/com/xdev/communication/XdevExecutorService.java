@@ -13,6 +13,9 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * For further information see
+ * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
 package com.xdev.communication;
@@ -26,7 +29,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -51,8 +53,6 @@ import javax.servlet.annotation.WebListener;
  * use the executor just call one of the static get methods.
  *
  * @see #get()
- * @see #get(Servlet)
- * @see #get(ServletContext)
  *
  * @author XDEV Software
  * @since 3.0
@@ -62,64 +62,35 @@ public interface XdevExecutorService extends Executor
 	@WebListener
 	public static class ContextListener implements ServletContextListener
 	{
+		public static XdevExecutorService executorService;
+		
+		
 		@Override
 		public void contextInitialized(final ServletContextEvent event)
 		{
-			final ServletContext context = event.getServletContext();
-			context.setAttribute(EXECUTOR_CONTEXT_PARAMETER,
-					new XdevExecutorService.Implementation(context));
+			executorService = new XdevExecutorService.Implementation(event.getServletContext());
 		}
 		
 		
 		@Override
 		public void contextDestroyed(final ServletContextEvent event)
 		{
-			final XdevExecutorService executor = XdevExecutorService.get(event.getServletContext());
-			if(executor != null)
+			if(executorService != null)
 			{
-				executor.shutdown();
+				executorService.shutdown();
 			}
 		}
 	}
 	
 	
 	/**
-	 * Returns the executor for the current {@link XdevServlet}.
-	 *
-	 * @return the executor for the current {@link XdevServlet}
+	 * Returns the executor service singleton
 	 */
 	public static XdevExecutorService get()
 	{
-		return get(XdevServlet.getServlet());
+		return ContextListener.executorService;
 	}
 	
-	
-	/**
-	 * Returns the executor associated with the given servlet.
-	 *
-	 * @param servlet
-	 *            the servlet
-	 * @return the executor
-	 */
-	public static XdevExecutorService get(final Servlet servlet)
-	{
-		return get(servlet.getServletConfig().getServletContext());
-	}
-	
-	
-	/**
-	 * Returns the executor associated with the given servlet context.
-	 *
-	 * @param context
-	 *            the servlet's context
-	 * @return the executor
-	 */
-	public static XdevExecutorService get(final ServletContext context)
-	{
-		return (XdevExecutorService)context.getAttribute(EXECUTOR_CONTEXT_PARAMETER);
-	}
-	
-	public static final String	EXECUTOR_CONTEXT_PARAMETER			= "xdev.executor";
 	public static final String	THREAD_COUNT_INIT_PARAMETER			= "xdev.executor.threadCount";
 	public static final String	GRACEFUL_SHUTDOWN_INIT_PARAMETER	= "xdev.executor.gracefulShutdown";
 	
@@ -188,16 +159,16 @@ public interface XdevExecutorService extends Executor
 	 * shouldn't be called by the user.
 	 */
 	public void shutdown();
-
-
-
+	
+	
+	
 	/**
 	 * Default implementation of the {@link XdevExecutorService} contract.
 	 *
 	 */
 	public static class Implementation implements XdevExecutorService
 	{
-		private ExecutorService	executor;
+		private ExecutorService	executorService;
 		private boolean			gracefulShutdown;
 		
 		
@@ -225,40 +196,41 @@ public interface XdevExecutorService extends Executor
 			
 			if(threadCount <= 1)
 			{
-				this.executor = Executors.newSingleThreadExecutor(daemonThreadFactory);
+				this.executorService = Executors.newSingleThreadExecutor(daemonThreadFactory);
 			}
 			else
 			{
-				this.executor = Executors.newFixedThreadPool(threadCount,daemonThreadFactory);
+				this.executorService = Executors.newFixedThreadPool(threadCount,
+						daemonThreadFactory);
 			}
 		}
-
-
+		
+		
 		@Override
 		public void execute(final Runnable command)
 		{
-			this.executor.execute(getRunnableAccessWrapper(command));
+			this.executorService.execute(getRunnableAccessWrapper(command));
 		}
 		
 		
 		@Override
 		public Future<?> submit(final Runnable task)
 		{
-			return this.executor.submit(getRunnableAccessWrapper(task));
+			return this.executorService.submit(getRunnableAccessWrapper(task));
 		}
 		
 		
 		@Override
 		public <T> Future<T> submit(final Runnable task, final T result)
 		{
-			return this.executor.submit(getRunnableAccessWrapper(task),result);
+			return this.executorService.submit(getRunnableAccessWrapper(task),result);
 		}
 		
 		
 		@Override
 		public <T> Future<T> submit(final Callable<T> task)
 		{
-			return this.executor.submit(getCallableAccessWrapper(task));
+			return this.executorService.submit(getCallableAccessWrapper(task));
 		}
 		
 		
@@ -287,11 +259,11 @@ public interface XdevExecutorService extends Executor
 		{
 			if(this.gracefulShutdown)
 			{
-				this.executor.shutdown();
+				this.executorService.shutdown();
 			}
 			else
 			{
-				this.executor.shutdownNow();
+				this.executorService.shutdownNow();
 			}
 		}
 	}

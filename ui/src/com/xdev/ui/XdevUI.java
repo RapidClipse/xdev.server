@@ -41,12 +41,12 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.UIDetachedException;
 import com.xdev.communication.Conversationables;
-import com.xdev.communication.XdevExecutorService;
 import com.xdev.ui.action.XdevActionManager;
 import com.xdev.ui.event.FocusChangeEvent;
 import com.xdev.ui.event.FocusChangeListener;
 import com.xdev.ui.util.UIUtils;
 import com.xdev.util.ExtensionUtils;
+import com.xdev.util.concurrent.XdevExecutorService;
 
 
 /**

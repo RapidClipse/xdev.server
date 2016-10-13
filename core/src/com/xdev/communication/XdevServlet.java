@@ -35,6 +35,7 @@ import com.vaadin.server.ServiceException;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletService;
+import com.xdev.Application;
 import com.xdev.util.ExtensionUtils;
 
 
@@ -50,10 +51,10 @@ public class XdevServlet extends VaadinServlet
 	{
 		return (XdevServlet)VaadinServlet.getCurrent();
 	}
-	
+
 	private final ContentSecurityPolicy contentSecurityPolicy = new ContentSecurityPolicy();
-	
-	
+
+
 	/**
 	 * @since 1.3
 	 */
@@ -61,8 +62,8 @@ public class XdevServlet extends VaadinServlet
 	{
 		return this.contentSecurityPolicy;
 	}
-	
-	
+
+
 	@Override
 	protected VaadinServletService createServletService(
 			final DeploymentConfiguration deploymentConfiguration) throws ServiceException
@@ -72,25 +73,27 @@ public class XdevServlet extends VaadinServlet
 		servletService.init();
 		return servletService;
 	}
-	
-	
+
+
 	@Override
 	public XdevServletService getService()
 	{
 		return (XdevServletService)super.getService();
 	}
-	
-	
+
+
 	@Override
 	protected void servletInitialized() throws ServletException
 	{
 		super.servletInitialized();
-		
+
+		Application.init(getServletContext());
+
 		try
 		{
 			final List<XdevServletExtension> extensions = ExtensionUtils.readExtensions("servlet",
 					XdevServletExtension.class);
-					
+			
 			for(final XdevServletExtension extension : extensions)
 			{
 				extension.servletInitialized(this);
@@ -100,19 +103,19 @@ public class XdevServlet extends VaadinServlet
 		{
 			throw new ServletException(e);
 		}
-		
+
 		getService().addSessionInitListener(event -> initSession(event));
 	}
-	
-	
+
+
 	protected void initSession(final SessionInitEvent event)
 	{
 		event.getSession().setAttribute(URLParameterRegistry.class,new URLParameterRegistry());
-		
+
 		initSession(event,ClientInfo.get(event.getRequest()));
 	}
-	
-	
+
+
 	protected void initSession(final SessionInitEvent event, final ClientInfo clientInfo)
 	{
 		event.getSession().addBootstrapListener(new BootstrapListener()
@@ -130,14 +133,14 @@ public class XdevServlet extends VaadinServlet
 							.attr("content",csp.toString());
 				}
 			}
-			
-			
+
+
 			@Override
 			public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
 			{
 			}
 		});
-		
+
 		if(clientInfo.isMobile() || clientInfo.isTablet())
 		{
 			event.getSession().addBootstrapListener(new BootstrapListener()
@@ -150,8 +153,8 @@ public class XdevServlet extends VaadinServlet
 					// + ", maximum-scale=1.0, user-scalable=0"
 					);
 				}
-				
-				
+
+
 				@Override
 				public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
 				{

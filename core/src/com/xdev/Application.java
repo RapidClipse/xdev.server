@@ -45,8 +45,8 @@ public final class Application
 	private static XdevExecutorService		executorService;
 	private static PersistenceManager		persistenceManager;
 	private static SessionStrategyProvider	sessionStrategyProvider;
-	
-	
+
+
 	/**
 	 * @return the executorService
 	 */
@@ -54,8 +54,8 @@ public final class Application
 	{
 		return executorService;
 	}
-	
-	
+
+
 	/**
 	 * @return the persistenceManager
 	 */
@@ -63,8 +63,8 @@ public final class Application
 	{
 		return persistenceManager;
 	}
-	
-	
+
+
 	/**
 	 * @return the sessionStrategyProvider
 	 */
@@ -72,86 +72,98 @@ public final class Application
 	{
 		return sessionStrategyProvider;
 	}
-	
-	
-	
+
+
+	/**
+	 * @param servletContext
+	 * @noapi
+	 */
+	public static void init(final ServletContext servletContext)
+	{
+		if(executorService == null)
+		{
+			executorService = createXdevExecutorService(servletContext);
+			persistenceManager = createPersistenceManager(servletContext);
+			sessionStrategyProvider = createSessionStrategyProvider(servletContext);
+		}
+	}
+
+
+	private static XdevExecutorService createXdevExecutorService(final ServletContext context)
+	{
+		final String className = context.getInitParameter("xdev.executorService.factory");
+		if(className != null && className.length() > 0)
+		{
+			try
+			{
+				final XdevExecutorService.Factory factory = (XdevExecutorService.Factory)Class
+						.forName(className).newInstance();
+				return factory.createXdevExecutorService(context);
+			}
+			catch(final Throwable t)
+			{
+				Logger.getLogger(Application.class).error(t.getMessage(),t);
+			}
+		}
+
+		return new XdevExecutorService.Implementation(context);
+	}
+
+
+	private static PersistenceManager createPersistenceManager(final ServletContext context)
+	{
+		final String className = context.getInitParameter("xdev.persistenceManager.factory");
+		if(className != null && className.length() > 0)
+		{
+			try
+			{
+				final PersistenceManager.Factory factory = (PersistenceManager.Factory)Class
+						.forName(className).newInstance();
+				return factory.createPersistenceManager(context);
+			}
+			catch(final Throwable t)
+			{
+				Logger.getLogger(Application.class).error(t.getMessage(),t);
+			}
+		}
+
+		return new PersistenceManager.Implementation(context);
+	}
+
+
+	private static SessionStrategyProvider createSessionStrategyProvider(
+			final ServletContext context)
+	{
+		final String className = context.getInitParameter("xdev.sessionStrategyProvider.factory");
+		if(className != null && className.length() > 0)
+		{
+			try
+			{
+				final SessionStrategyProvider.Factory factory = (SessionStrategyProvider.Factory)Class
+						.forName(className).newInstance();
+				return factory.createSessionStrategyProvider(context);
+			}
+			catch(final Throwable t)
+			{
+				Logger.getLogger(Application.class).error(t.getMessage(),t);
+			}
+		}
+
+		return new SessionStrategyProvider.Implementation();
+	}
+
+
+
 	@WebListener
 	public static class ContextListener implements ServletContextListener
 	{
 		@Override
 		public void contextInitialized(final ServletContextEvent event)
 		{
-			final ServletContext servletContext = event.getServletContext();
-			Application.executorService = createXdevExecutorService(servletContext);
-			Application.persistenceManager = createPersistenceManager(servletContext);
-			Application.sessionStrategyProvider = createSessionStrategyProvider(servletContext);
+			Application.init(event.getServletContext());
 		}
-		
-		
-		private XdevExecutorService createXdevExecutorService(final ServletContext context)
-		{
-			final String className = context.getInitParameter("xdev.executorService.factory");
-			if(className != null && className.length() > 0)
-			{
-				try
-				{
-					final XdevExecutorService.Factory factory = (XdevExecutorService.Factory)Class
-							.forName(className).newInstance();
-					return factory.createXdevExecutorService(context);
-				}
-				catch(final Throwable t)
-				{
-					Logger.getLogger(Application.class).error(t.getMessage(),t);
-				}
-			}
-			
-			return new XdevExecutorService.Implementation(context);
-		}
-		
-		
-		private PersistenceManager createPersistenceManager(final ServletContext context)
-		{
-			final String className = context.getInitParameter("xdev.persistenceManager.factory");
-			if(className != null && className.length() > 0)
-			{
-				try
-				{
-					final PersistenceManager.Factory factory = (PersistenceManager.Factory)Class
-							.forName(className).newInstance();
-					return factory.createPersistenceManager(context);
-				}
-				catch(final Throwable t)
-				{
-					Logger.getLogger(Application.class).error(t.getMessage(),t);
-				}
-			}
-			
-			return new PersistenceManager.Implementation(context);
-		}
-		
-		
-		private SessionStrategyProvider createSessionStrategyProvider(final ServletContext context)
-		{
-			final String className = context
-					.getInitParameter("xdev.sessionStrategyProvider.factory");
-			if(className != null && className.length() > 0)
-			{
-				try
-				{
-					final SessionStrategyProvider.Factory factory = (SessionStrategyProvider.Factory)Class
-							.forName(className).newInstance();
-					return factory.createSessionStrategyProvider(context);
-				}
-				catch(final Throwable t)
-				{
-					Logger.getLogger(Application.class).error(t.getMessage(),t);
-				}
-			}
-			
-			return new SessionStrategyProvider.Implementation();
-		}
-		
-		
+
+
 		@Override
 		public void contextDestroyed(final ServletContextEvent event)
 		{
@@ -159,8 +171,8 @@ public final class Application
 			Application.persistenceManager.close();
 		}
 	}
-	
-	
+
+
 	/*
 	 * no instantiation
 	 */

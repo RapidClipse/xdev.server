@@ -21,9 +21,12 @@
 package com.xdev.communication;
 
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.jsoup.nodes.Element;
 
@@ -93,7 +96,7 @@ public class XdevServlet extends VaadinServlet
 		{
 			final List<XdevServletExtension> extensions = ExtensionUtils.readExtensions("servlet",
 					XdevServletExtension.class);
-			
+
 			for(final XdevServletExtension extension : extensions)
 			{
 				extension.servletInitialized(this);
@@ -161,5 +164,46 @@ public class XdevServlet extends VaadinServlet
 				}
 			});
 		}
+	}
+
+
+	@Override
+	protected void service(final HttpServletRequest request, final HttpServletResponse response)
+			throws ServletException, IOException
+	{
+		final String origin = request.getHeader("Origin");
+		if(origin != null)
+		{
+			// Handle a preflight "option" requests
+			final String requestMethod = request.getMethod();
+			if("options".equalsIgnoreCase(requestMethod))
+			{
+				response.addHeader("Access-Control-Allow-Origin",origin);
+				response.setHeader("Allow","GET, HEAD, POST, PUT, DELETE,TRACE,OPTIONS");
+
+				// allow the requested method
+				final String method = request.getHeader("Access-Control-Request-Method");
+				response.addHeader("Access-Control-Allow-Methods",method);
+
+				// allow the requested headers
+				final String headers = request.getHeader("Access-Control-Request-Headers");
+				response.addHeader("Access-Control-Allow-Headers",headers);
+
+				response.addHeader("Access-Control-Allow-Credentials","true");
+				response.setContentType("text/plain");
+				response.setCharacterEncoding("utf-8");
+				response.getWriter().flush();
+				return;
+			} // Handle UIDL post requests
+			else if("post".equalsIgnoreCase(requestMethod))
+			{
+				response.addHeader("Access-Control-Allow-Origin",origin);
+				response.addHeader("Access-Control-Allow-Credentials","true");
+				super.service(request,response);
+				return;
+			}
+		}
+
+		super.service(request,response);
 	}
 }

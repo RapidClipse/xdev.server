@@ -27,7 +27,7 @@
 		<repositoryName>xdev.server.core</repositoryName>
 		<pluginProject>xdev.eclipse.server.core</pluginProject>
 		<vaadinVersion>7.6.8</vaadinVersion>
-		<hibernateVersion>5.2.1.Final</hibernateVersion>
+		<hibernateVersion>5.2.3.Final</hibernateVersion>
 	</properties>
 
 	<repositories>
@@ -86,6 +86,11 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-envers</artifactId>
+			<version>${hibernateVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
 			<version>${hibernateVersion}</version>
 		</dependency>
 		<dependency>

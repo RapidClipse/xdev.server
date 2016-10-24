@@ -22,8 +22,10 @@ package com.xdev.mobile.service.camera;
 
 
 /**
+ * Choose the camera to use (front- or back-facing).
+ *
  * @author XDEV Software
- *		
+ * 
  */
 public enum Direction
 {
@@ -31,7 +33,7 @@ public enum Direction
 	 * Use the back-facing camera
 	 */
 	BACK,
-	
+
 	/**
 	 * Use the front-facing camera
 	 */

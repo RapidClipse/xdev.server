@@ -22,6 +22,8 @@ package com.xdev.mobile.service.camera;
 
 
 /**
+ * Set the type of media to select from.
+ *
  * @author XDEV Software
  *
  */
@@ -32,12 +34,12 @@ public enum MediaType
 	 * specified via {@link DestinationType}.
 	 */
 	PICTURE,
-
+	
 	/**
 	 * Allow selection of video only, ONLY RETURNS URL.
 	 */
 	VIDEO,
-
+	
 	/**
 	 * Allow selection from all media types.
 	 */

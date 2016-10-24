@@ -22,8 +22,10 @@ package com.xdev.mobile.service.camera;
 
 
 /**
+ * Set the source of the picture.
+ *
  * @author XDEV Software
- * 		
+ * 
  */
 public enum PictureSourceType
 {
@@ -32,27 +34,27 @@ public enum PictureSourceType
 	 * {@link PictureSourceType#SAVED_PHOTO_ALBUM} for Android)
 	 */
 	PHOTO_LIBRARY("PHOTOLIBRARY"),
-
+	
 	/**
 	 * Take picture from camera
 	 */
 	CAMERA("CAMERA"),
-
+	
 	/**
 	 * Choose image from picture library (same as
 	 * {@link PictureSourceType#PHOTO_LIBRARY} for Android)
 	 */
 	SAVED_PHOTO_ALBUM("SAVEDPHOTOALBUM");
-
+	
 	private String fieldName;
-
-
+	
+	
 	private PictureSourceType(final String fieldName)
 	{
 		this.fieldName = fieldName;
 	}
-
-
+	
+	
 	public String getFieldName()
 	{
 		return this.fieldName;

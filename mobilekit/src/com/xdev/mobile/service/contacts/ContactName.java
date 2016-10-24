@@ -22,8 +22,10 @@ package com.xdev.mobile.service.contacts;
 
 
 /**
+ * Contains different kinds of information about a Contact object's name.
+ *
  * @author XDEV Software
- * 		
+ *
  */
 public class ContactName
 {
@@ -50,74 +52,110 @@ public class ContactName
 		this.prefix = prefix;
 		this.suffix = suffix;
 	}
-
-
+	
+	
+	/**
+	 * The complete name of the contact.
+	 */
 	public String getFormatted()
 	{
 		return this.formatted;
 	}
-
-
+	
+	
+	/**
+	 * The complete name of the contact.
+	 */
 	public void setFormatted(final String formatted)
 	{
 		this.formatted = formatted;
 	}
-
-
+	
+	
+	/**
+	 * The contact's family name.
+	 */
 	public String getFamilyName()
 	{
 		return this.familyName;
 	}
-
-
+	
+	
+	/**
+	 * The contact's family name.
+	 */
 	public void setFamilyName(final String familyName)
 	{
 		this.familyName = familyName;
 	}
-
-
+	
+	
+	/**
+	 * The contact's given name.
+	 */
 	public String getGivenName()
 	{
 		return this.givenName;
 	}
-
-
+	
+	
+	/**
+	 * The contact's given name.
+	 */
 	public void setGivenName(final String givenName)
 	{
 		this.givenName = givenName;
 	}
-
-
+	
+	
+	/**
+	 * The contact's middle name.
+	 */
 	public String getMiddle()
 	{
 		return this.middle;
 	}
-
-
+	
+	
+	/**
+	 * The contact's middle name.
+	 */
 	public void setMiddle(final String middle)
 	{
 		this.middle = middle;
 	}
-
-
+	
+	
+	/**
+	 * The contact's prefix (example Mr. or Dr.)
+	 */
 	public String getPrefix()
 	{
 		return this.prefix;
 	}
-
-
+	
+	
+	/**
+	 * The contact's prefix (example Mr. or Dr.)
+	 */
 	public void setPrefix(final String prefix)
 	{
 		this.prefix = prefix;
 	}
-
-
+	
+	
+	/**
+	 * The contact's suffix (example Esq.)
+	 */
 	public String getSuffix()
 	{
 		return this.suffix;
 	}
-
-
+	
+	
+	/**
+	 * The contact's suffix (example Esq.)
+	 */
 	public void setSuffix(final String suffix)
 	{
 		this.suffix = suffix;

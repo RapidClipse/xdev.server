@@ -22,8 +22,10 @@ package com.xdev.mobile.service.camera;
 
 
 /**
+ * The format of the return value the {@link CameraService} uses.
+ *
  * @author XDEV Software
- * 		
+ *
  */
 public enum DestinationType
 {
@@ -43,15 +45,15 @@ public enum DestinationType
 	NATIVE_URI("NATIVE_URI");
 	
 	private String fieldName;
-
-
+	
+	
 	private DestinationType(final String fieldName)
 	{
 		this.fieldName = fieldName;
 	}
-
-
-	public String getFieldName()
+	
+	
+	String getFieldName()
 	{
 		return this.fieldName;
 	}

@@ -22,8 +22,10 @@ package com.xdev.mobile.service.camera;
 
 
 /**
+ * Choose the returned image file's encoding.
+ *
  * @author XDEV Software
- * 		
+ *
  */
 public enum EncodingType
 {
@@ -31,7 +33,7 @@ public enum EncodingType
 	 * Return JPEG encoded image
 	 */
 	JPEG,
-	
+
 	/**
 	 * Return PNG encoded image
 	 */

@@ -22,6 +22,9 @@ package com.xdev.mobile.service.geolocation;
 
 
 /**
+ * Contains position coordinates and timestamp created by the
+ * {@link GeolocationService}.
+ *
  * @author XDEV Software
  *
  */
@@ -29,14 +32,14 @@ public class Position
 {
 	private Coordinates	coords;
 	private long		timestamp;
-	
-	
+
+
 	Position()
 	{
-
+		
 	}
-	
-	
+
+
 	/**
 	 * @param coordinates
 	 * @param timestamp
@@ -47,46 +50,44 @@ public class Position
 		this.coords = coordinates;
 		this.timestamp = timestamp;
 	}
-	
-	
+
+
 	/**
-	 * @return the coordinates
+	 * A set of geographic coordinates.
 	 */
 	public Coordinates getCoordinates()
 	{
 		return this.coords;
 	}
-	
-	
+
+
 	/**
-	 * @param coordinates
-	 *            the coordinates to set
+	 * A set of geographic coordinates.
 	 */
 	public void setCoordinates(final Coordinates coordinates)
 	{
 		this.coords = coordinates;
 	}
-	
-	
+
+
 	/**
-	 * @return the timestamp
+	 * Creation timestamp.
 	 */
 	public long getTimestamp()
 	{
 		return this.timestamp;
 	}
-	
-	
+
+
 	/**
-	 * @param timestamp
-	 *            the timestamp to set
+	 * Creation timestamp.
 	 */
 	public void setTimestamp(final long timestamp)
 	{
 		this.timestamp = timestamp;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -97,5 +98,5 @@ public class Position
 	{
 		return "Position [coordinates=" + this.coords + ", timestamp=" + this.timestamp + "]";
 	}
-
+	
 }

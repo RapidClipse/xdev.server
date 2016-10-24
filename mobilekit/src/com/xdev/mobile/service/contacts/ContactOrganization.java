@@ -22,8 +22,12 @@ package com.xdev.mobile.service.contacts;
 
 
 /**
+ * The ContactOrganization object stores a contact's organization properties. A
+ * {@link Contact} object stores one or more ContactOrganization objects in a
+ * list.
+ *
  * @author XDEV Software
- * 		
+ *
  */
 public class ContactOrganization
 {
@@ -62,68 +66,102 @@ public class ContactOrganization
 	{
 		this.id = id;
 	}
-
-
+	
+	
+	/**
+	 * Set to <code>true</code> if this ContactOrganization contains the user's
+	 * preferred value.
+	 */
 	public boolean isPref()
 	{
 		return this.pref;
 	}
-
-
+	
+	
+	/**
+	 * Set to <code>true</code> if this ContactOrganization contains the user's
+	 * preferred value.
+	 */
 	public void setPref(final boolean pref)
 	{
 		this.pref = pref;
 	}
-
-
+	
+	
+	/**
+	 * A string that indicates what type of field this is, &quot;home&quot; for
+	 * example.
+	 */
 	public String getType()
 	{
 		return this.type;
 	}
-
-
+	
+	
+	/**
+	 * A string that indicates what type of field this is, &quot;home&quot; for
+	 * example.
+	 */
 	public void setType(final String type)
 	{
 		this.type = type;
 	}
-
-
+	
+	
+	/**
+	 * The name of the organization.
+	 */
 	public String getName()
 	{
 		return this.name;
 	}
-
-
+	
+	
+	/**
+	 * The name of the organization.
+	 */
 	public void setName(final String name)
 	{
 		this.name = name;
 	}
-
-
+	
+	
+	/**
+	 * The department the contact works for.
+	 */
 	public String getDepartment()
 	{
 		return this.department;
 	}
-
-
+	
+	
+	/**
+	 * The department the contact works for.
+	 */
 	public void setDepartment(final String department)
 	{
 		this.department = department;
 	}
-
-
+	
+	
+	/**
+	 * The contact's title at the organization.
+	 */
 	public String getTitle()
 	{
 		return this.title;
 	}
-
-
+	
+	
+	/**
+	 * The contact's title at the organization.
+	 */
 	public void setTitle(final String title)
 	{
 		this.title = title;
 	}
-	
-	
+
+
 	@Override
 	public String toString()
 	{

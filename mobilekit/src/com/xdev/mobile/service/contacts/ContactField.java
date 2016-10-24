@@ -22,8 +22,22 @@ package com.xdev.mobile.service.contacts;
 
 
 /**
+ * The ContactField object is a reusable component that represents contact
+ * fields generically. Each ContactField object contains a value, type, and pref
+ * property. A {@link Contact} object stores several properties in ContactField
+ * lists, such as phone numbers and email addresses.
+ * <p>
+ * In most instances, there are no pre-determined values for a ContactField
+ * object's type attribute. For example, a phone number can specify type values
+ * of home, work, mobile, iPhone, or any other value that is supported by a
+ * particular device platform's contact database. However, for the
+ * {@link Contact} photos property, the type property indicates the format of
+ * the returned image: url when the value attribute contains a URL to the photo
+ * image, or base64 when the value contains a base64-encoded image string.
+ *
+ *
  * @author XDEV Software
- * 		
+ *
  */
 public class ContactField
 {
@@ -59,36 +73,56 @@ public class ContactField
 	}
 
 
+	/**
+	 * A string that indicates what type of field this is, home for example.
+	 */
 	public String getType()
 	{
 		return this.type;
 	}
 
 
+	/**
+	 * A string that indicates what type of field this is, home for example.
+	 */
 	public void setType(final String type)
 	{
 		this.type = type;
 	}
 
 
+	/**
+	 * The value of the field, such as a phone number or email address.
+	 */
 	public String getValue()
 	{
 		return this.value;
 	}
 
 
+	/**
+	 * The value of the field, such as a phone number or email address.
+	 */
 	public void setValue(final String value)
 	{
 		this.value = value;
 	}
 
 
+	/**
+	 * Set to <code>true</code> if this ContactField contains the user's
+	 * preferred value.
+	 */
 	public boolean isPref()
 	{
 		return this.pref;
 	}
 
 
+	/**
+	 * Set to <code>true</code> if this ContactField contains the user's
+	 * preferred value.
+	 */
 	public void setPref(final boolean pref)
 	{
 		this.pref = pref;

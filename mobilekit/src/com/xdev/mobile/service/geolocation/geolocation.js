@@ -6,14 +6,6 @@ com_xdev_mobile_service_geolocation_GeolocationService = function() {
 	window.geolocation_get_error = function(caller, error) {
 		connector.geolocation_get_error(caller, error);
 	};
-
-	window.geolocation_get_future_success = function(position) {
-		connector.geolocation_get_future_success(position);
-	};
-	window.geolocation_get_future_error = function(error) {
-		connector.geolocation_get_future_error(error);
-	};
-
 	window.geolocation_watch_success = function(caller, position, watchID) {
 		connector.geolocation_watch_success(caller, position, watchID);
 	};
@@ -22,16 +14,16 @@ com_xdev_mobile_service_geolocation_GeolocationService = function() {
 	};
 };
 
-function geolocation_watch(caller, timeout) {
+function geolocation_watch(caller, options) {
 	var success = function(position) {
-		window.geolocation_watch_success(caller, makeSerializable(position), watchID);
+		window.geolocation_watch_success(caller, makeSerializablePosition(position), watchID);
 	};
 
 	var error = function(error) {
-		window.geolocation_watch_error(caller, error, watchID);
+		window.geolocation_watch_error(caller, makeSerializableError(error), watchID);
 	};
 
-	var watchID = navigator.geolocation.watchPosition(success, error, timeout);
+	var watchID = navigator.geolocation.watchPosition(success, error, options);
 }
 
 function geolocation_clear_watch(watchID) {
@@ -39,36 +31,24 @@ function geolocation_clear_watch(watchID) {
 	watchID = null;
 }
 
-function geolocation_get(caller) {
+function geolocation_get(caller,options) {
 
 	var success = function(position) {
-		window.geolocation_get_success(caller, makeSerializable(position));
+		window.geolocation_get_success(caller, makeSerializablePosition(position));
 	};
 
 	var error = function(error) {
-		window.geolocation_get_error(caller, error);
+		window.geolocation_get_error(caller, makeSerializableError(error));
 	};
 
-	navigator.geolocation.getCurrentPosition(success, error);
-}
-
-function geolocation_get_future() {
-	var success = function(position) {
-		window.geolocation_get_future_success(makeSerializable(position));
-	};
-
-	var error = function(error) {
-		window.geolocation_get_future_error(error);
-	};
-
-	navigator.geolocation.getCurrentPosition(success, error);
+	navigator.geolocation.getCurrentPosition(success, error, options);
 }
 
 /**
  * Fix to serialize position object, see
  * http://stackoverflow.com/questions/32882035/cordova-geolocation-plugin-returning-empty-position-object-on-android
  */
-function makeSerializable(position) {
+function makeSerializablePosition(position) {
 	var positionObject = {};
 
 	if ('coords' in position) {
@@ -102,4 +82,18 @@ function makeSerializable(position) {
 	}
 	
 	return positionObject;
+}
+
+function makeSerializableError(error) {
+	var errorObject = {};
+
+	if ('code' in error) {
+		errorObject.code = error.code;
+	}
+	
+	if ('message' in error) {
+		errorObject.message = error.message;
+	}
+	
+	return errorObject;
 }

@@ -21,13 +21,12 @@
 package com.xdev.mobile.service.contacts;
 
 
-import com.xdev.mobile.service.AbstractMobileService;
 import com.xdev.mobile.service.MobileServiceError;
 
 
 /**
  * @author XDEV Software
- *		
+ * 
  */
 public class ContactsServiceError extends MobileServiceError
 {
@@ -41,16 +40,16 @@ public class ContactsServiceError extends MobileServiceError
 		NOT_SUPPORTED_ERROR(5),
 		OPERATION_CANCELLED_ERROR(6),
 		PERMISSION_DENIED_ERROR(20);
-
+		
 		private final int code;
-		
-		
+
+
 		private Reason(final int code)
 		{
 			this.code = code;
 		}
-
-
+		
+		
 		public static Reason getByCode(final int code)
 		{
 			for(final Reason reason : values())
@@ -63,18 +62,26 @@ public class ContactsServiceError extends MobileServiceError
 			return null;
 		}
 	}
-	
+
 	private final Reason reason;
-
-
-	public ContactsServiceError(final AbstractMobileService source, final String message, final Reason reason)
+	
+	
+	public ContactsServiceError(final ContactsService source, final String message,
+			final Reason reason)
 	{
 		super(source,message);
-
+		
 		this.reason = reason;
 	}
 
 
+	@Override
+	public ContactsService getSource()
+	{
+		return (ContactsService)super.getSource();
+	}
+	
+	
 	public Reason getReason()
 	{
 		return this.reason;

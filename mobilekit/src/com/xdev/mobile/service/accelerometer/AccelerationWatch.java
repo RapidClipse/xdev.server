@@ -30,15 +30,15 @@ public class AccelerationWatch
 {
 	private final Acceleration	acceleration;
 	private final String		watchID;
-	
-	
+
+
 	AccelerationWatch(final Acceleration acceleration, final String watchID)
 	{
 		this.acceleration = acceleration;
 		this.watchID = watchID;
 	}
-	
-	
+
+
 	/**
 	 * @return the acceleration
 	 */
@@ -46,8 +46,8 @@ public class AccelerationWatch
 	{
 		return this.acceleration;
 	}
-	
-	
+
+
 	/**
 	 * @return the watchID
 	 */
@@ -55,23 +55,23 @@ public class AccelerationWatch
 	{
 		return this.watchID;
 	}
-	
-	
+
+
 	/**
 	 * Convenience method to clear this watch position.
 	 * <p>
 	 * Synonym for:
 	 * <p>
 	 * {@code
-	 * AccelerometerService.getInstance().clearWatchPosition(accelerationWatch.getWatchID());
+	 * AccelerometerService.getInstance().clearWatch(accelerationWatch.getWatchID());
 	 * }
 	 */
 	public void clear()
 	{
-		AccelerometerService.getInstance().clearWatchPosition(this.watchID);
+		AccelerometerService.getInstance().clearWatch(this.watchID);
 	}
-	
-	
+
+
 	@Override
 	public String toString()
 	{

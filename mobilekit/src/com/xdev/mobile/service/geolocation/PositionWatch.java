@@ -32,15 +32,15 @@ public class PositionWatch
 {
 	private final Position	position;
 	private final String	watchID;
-	
-	
+
+
 	PositionWatch(final Position position, final String watchID)
 	{
 		this.position = position;
 		this.watchID = watchID;
 	}
-	
-	
+
+
 	/**
 	 * @return the position
 	 */
@@ -48,8 +48,8 @@ public class PositionWatch
 	{
 		return this.position;
 	}
-	
-	
+
+
 	/**
 	 * @return the watchID
 	 */
@@ -57,23 +57,23 @@ public class PositionWatch
 	{
 		return this.watchID;
 	}
-	
-	
+
+
 	/**
 	 * Convenience method to clear this watch position.
 	 * <p>
 	 * Synonym for:
 	 * <p>
 	 * {@code
-	 * GeolocationService.getInstance().clearWatchPosition(positionWatch.getWatchID());
+	 * GeolocationService.getInstance().clearWatch(positionWatch.getWatchID());
 	 * }
 	 */
 	public void clear()
 	{
-		GeolocationService.getInstance().clearWatchPosition(this.watchID);
+		GeolocationService.getInstance().clearWatch(this.watchID);
 	}
-	
-	
+
+
 	@Override
 	public String toString()
 	{

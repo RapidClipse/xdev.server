@@ -38,29 +38,29 @@ public interface AccelerometerServiceAccess
 	 * These acceleration values are returned to the success callback function.
 	 *
 	 * @param successCallback
-	 *            The function to call when the position data is available
+	 *            The function to call when the acceleration data is available
 	 */
 	default public void getCurrentAcceleration(final Consumer<Acceleration> successCallback)
 	{
 		getCurrentAcceleration(successCallback,null);
 	}
-	
-	
+
+
 	/**
 	 * Get the current acceleration along the x, y, and z axes.
 	 *
 	 * These acceleration values are returned to the success callback function.
 	 *
 	 * @param successCallback
-	 *            The function to call when the position data is available
+	 *            The function to call when the acceleration data is available
 	 * @param errorCallback
 	 *            The function to call when there is an error getting the
-	 *            heading position.
+	 *            acceleration data.
 	 */
 	public void getCurrentAcceleration(Consumer<Acceleration> successCallback,
 			Consumer<MobileServiceError> errorCallback);
-	
-	
+
+
 	/**
 	 * Retrieves the device's current acceleration at a regular interval,
 	 * executing the success callback each time. Specify the interval in
@@ -68,18 +68,19 @@ public interface AccelerometerServiceAccess
 	 *
 	 * @param options
 	 * @param successCallback
-	 *            The function to call each time the location data is available
+	 *            The function to call each time the acceleration data is
+	 *            available
 	 * @param errorCallback
 	 *            The function to call when there is an error getting the
-	 *            location data.
+	 *            acceleration data.
 	 */
 	default public void watchAcceleration(final AccelerometerOptions options,
 			final Consumer<AccelerationWatch> successCallback)
 	{
 		watchAcceleration(options,successCallback,null);
 	}
-	
-	
+
+
 	/**
 	 * Retrieves the device's current acceleration at a regular interval,
 	 * executing the success callback each time. Specify the interval in
@@ -96,12 +97,12 @@ public interface AccelerometerServiceAccess
 	public void watchAcceleration(AccelerometerOptions options,
 			Consumer<AccelerationWatch> successCallback,
 			Consumer<MobileServiceError> errorCallback);
-	
-	
+
+
 	/**
 	 * Clears the specified heading watch.
 	 *
 	 * @param watchID
 	 */
-	public void clearWatchPosition(String watchID);
+	public void clearWatch(String watchID);
 }

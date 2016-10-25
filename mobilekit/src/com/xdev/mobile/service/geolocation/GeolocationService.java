@@ -225,7 +225,7 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 	
 	
 	@Override
-	public void clearWatchPosition(final String watchID)
+	public void clearWatch(final String watchID)
 	{
 		final StringBuilder js = new StringBuilder();
 		js.append("geolocation_clear_watch(");

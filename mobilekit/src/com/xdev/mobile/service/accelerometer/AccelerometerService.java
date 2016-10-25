@@ -174,7 +174,7 @@ public class AccelerometerService extends AbstractMobileService
 
 
 	@Override
-	public void clearWatchPosition(final String watchID)
+	public void clearWatch(final String watchID)
 	{
 		final StringBuilder js = new StringBuilder();
 		js.append("accelerometer_clear_watch(");

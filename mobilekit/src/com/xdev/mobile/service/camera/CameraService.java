@@ -48,9 +48,9 @@ import elemental.json.JsonArray;
  * TODO camera.cleanup() see
  * https://github.com/apache/cordova-plugin-camera#cameracleanup
  */
-@MobileService(plugins = @Plugin(name = "cordova-plugin-camera", spec = "2.2.0") )
+@MobileService(plugins = @Plugin(name = "cordova-plugin-camera", spec = "2.2.0"))
 @JavaScript("camera.js")
-public class CameraService extends AbstractMobileService
+public class CameraService extends AbstractMobileService implements CameraServiceAccess
 {
 	/**
 	 * Returns the camera service.<br>
@@ -66,7 +66,7 @@ public class CameraService extends AbstractMobileService
 	 *
 	 * @return the camera service if available
 	 */
-	public static CameraService getInstance()
+	public static CameraServiceAccess getInstance()
 	{
 		return getMobileService(CameraService.class);
 	}
@@ -84,53 +84,15 @@ public class CameraService extends AbstractMobileService
 	}
 	
 	
-	/**
-	 * Takes a photo using the camera, or retrieves a photo from the device's
-	 * image gallery. The image is passed to the success callback as a
-	 * base64-encoded String, or as the URI for the image file.
-	 * <p>
-	 * Photo resolution on newer devices is quite good. Photos selected from the
-	 * device's gallery are not downscaled to a lower quality, even if a quality
-	 * parameter is specified. To avoid common memory problems, set
-	 * destinationType to {@link DestinationType#FILE_URI} rather than
-	 * {@link DestinationType#IMAGE}.
-	 * <p>
-	 * Supported platforms:
-	 * <ul>
-	 * <li>Android</li>
-	 * <li>iOS</li>
-	 * <li>Windows</li>
-	 * <li>Windows Phone 8</li>
-	 * </ul>
-	 *
-	 */
+	@Override
 	public synchronized void getPicture(final CameraOptions options,
 			final Consumer<ImageData> successCallback)
 	{
 		this.getPicture(options,successCallback,null);
 	}
-	
-	
-	/**
-	 * Takes a photo using the camera, or retrieves a photo from the device's
-	 * image gallery. The image is passed to the success callback as a
-	 * base64-encoded String, or as the URI for the image file.
-	 * <p>
-	 * Photo resolution on newer devices is quite good. Photos selected from the
-	 * device's gallery are not downscaled to a lower quality, even if a quality
-	 * parameter is specified. To avoid common memory problems, set
-	 * destinationType to {@link DestinationType#FILE_URI} rather than
-	 * {@link DestinationType#IMAGE}.
-	 * <p>
-	 * Supported platforms:
-	 * <ul>
-	 * <li>Android</li>
-	 * <li>iOS</li>
-	 * <li>Windows</li>
-	 * <li>Windows Phone 8</li>
-	 * </ul>
-	 *
-	 */
+
+
+	@Override
 	public synchronized void getPicture(final CameraOptions options,
 			final Consumer<ImageData> successCallback,
 			final Consumer<MobileServiceError> errorCallback)

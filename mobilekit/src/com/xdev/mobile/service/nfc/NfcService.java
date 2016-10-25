@@ -53,11 +53,11 @@ import elemental.json.JsonObject;
  *
  */
 
-@MobileService(plugins = @Plugin(name = "phonegap-nfc", spec = "0.6.6") )
+@MobileService(plugins = @Plugin(name = "phonegap-nfc", spec = "0.6.6"))
 @JavaScript("nfc.js")
-public class NfcService extends AbstractMobileService
+public class NfcService extends AbstractMobileService implements NfcServiceAccess
 {
-	
+
 	/**
 	 * Returns the nfc service.<br>
 	 * To activate the service it has to be registered in the mobile.xml.
@@ -70,9 +70,9 @@ public class NfcService extends AbstractMobileService
 	 * }
 	 * </pre>
 	 *
-	 * @return the file service if available
+	 * @return the nfc service if available
 	 */
-	public static NfcService getInstance()
+	public static NfcServiceAccess getInstance()
 	{
 		return getMobileService(NfcService.class);
 	}
@@ -150,19 +150,15 @@ public class NfcService extends AbstractMobileService
 	}
 
 
-	/**
-	 * Registers an event listener for any NDEF tag.
-	 * <p>
-	 * A ndef event is fired when a NDEF tag is read.
+	/*
+	 * (non-Javadoc)
 	 *
-	 * @param callback
-	 *            The callback that is called when an NDEF tag is read.
-	 * @param successCallback
-	 *            (Optional) The callback that is called when the listener is
-	 *            added.
-	 * @param errorCallback
-	 *            (Optional) The callback that is called if there was an error.
+	 * @see
+	 * com.xdev.mobile.service.nfc.NfcServiceInterface#startNdefListener(java.
+	 * util.function.Consumer, java.util.function.Consumer,
+	 * java.util.function.Consumer)
 	 */
+	@Override
 	public synchronized void startNdefListener(final Consumer<Ndef> callback,
 			final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
@@ -211,17 +207,7 @@ public class NfcService extends AbstractMobileService
 	}
 
 
-	/**
-	 * Removes the previously registered event listener for NDEF tags added via
-	 * {@link #addNdefListener(Consumer, Consumer, Consumer)}.
-	 *
-	 * @param successCallback
-	 *            (Optional) The callback that is called when the listener is
-	 *            successfully removed.
-	 * @param errorCallback
-	 *            (Optional) The callback that is called if there was an error
-	 *            during removal.
-	 */
+	@Override
 	public synchronized void stopNdefListener(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
@@ -254,19 +240,7 @@ public class NfcService extends AbstractMobileService
 	}
 
 
-	/**
-	 * Registers an event listener for tags matching any tag type.
-	 * <p>
-	 * This event occurs when any tag is detected by the phone.
-	 *
-	 * @param callback
-	 *            The callback that is called when a tag is detected.
-	 * @param successCallback
-	 *            (Optional) The callback that is called when the listener is
-	 *            added.
-	 * @param errorCallback
-	 *            (Optional) The callback that is called if there was an error.
-	 */
+	@Override
 	public synchronized void startTagDiscoveredListener(final Consumer<Ndef> callback,
 			final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
@@ -315,24 +289,14 @@ public class NfcService extends AbstractMobileService
 	}
 
 
-	/**
-	 * Removes the previously registered event listener added via
-	 * {@link #startTagDiscoveredListener(Consumer, Consumer, Consumer)}.
-	 *
-	 * @param successCallback
-	 *            (Optional) The callback that is called when the listener is
-	 *            successfully removed.
-	 * @param errorCallback
-	 *            (Optional) The callback that is called if there was an error
-	 *            during removal.
-	 */
+	@Override
 	public synchronized void stopTagDiscoveredListener(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
 		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
-				
+
 		this.stopTagDiscoveredListenerCalls.put(id,call);
 
 		final StringBuilder js = new StringBuilder();
@@ -360,13 +324,7 @@ public class NfcService extends AbstractMobileService
 	}
 
 
-	/**
-	 * Erase a NDEF tag by writing an empty message. Will format unformatted
-	 * tags before writing.
-	 *
-	 * @param successCallback
-	 * @param errorCallback
-	 */
+	@Override
 	public synchronized void eraseTag(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
@@ -400,15 +358,7 @@ public class NfcService extends AbstractMobileService
 	}
 
 
-	/**
-	 * Writes an NDEF Message to a NFC tag.
-	 * <p>
-	 * A NDEF Message is an array of one or more NDEF Records
-	 *
-	 * @param message
-	 * @param successCallback
-	 * @param errorCallback
-	 */
+	@Override
 	public synchronized void write(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback, final Record... records)
 	{
@@ -446,20 +396,20 @@ public class NfcService extends AbstractMobileService
 									.append("\")");
 						}
 						break;
-						
+
 						case RTD_URI:
 						{
 							message.append("ndef.uriRecord(\"").append(record.getPayloadAsString())
 									.append("\",\"").append(record.getIdAsString()).append("\")");
 						}
 						break;
-						
+
 						default:
 							throw new IllegalArgumentException("Unsupported record");
 					}
 				}
 				break;
-				
+
 				case TNF_ABSOLUTE_URI:
 				{
 					message.append("ndef.absoluteUriRecord(\"").append(record.getTypeAsString())
@@ -467,7 +417,7 @@ public class NfcService extends AbstractMobileService
 							.append(record.getIdAsString()).append("\")");
 				}
 				break;
-				
+
 				case TNF_MIME_MEDIA:
 				{
 					message.append("ndef.mimeMediaRecord(\"").append(record.getTypeAsString())
@@ -475,7 +425,7 @@ public class NfcService extends AbstractMobileService
 							.append(record.getIdAsString()).append("\")");
 				}
 				break;
-				
+
 				default:
 					throw new IllegalArgumentException("Unsupported record");
 			}
@@ -504,16 +454,9 @@ public class NfcService extends AbstractMobileService
 	{
 		callError(arguments,this.writeCalls,true);
 	}
-	
-	
-	/**
-	 * Makes a NFC tag read only.
-	 * <p>
-	 * <b> Warning this is permanent.</b>
-	 *
-	 * @param successCallback
-	 * @param errorCallback
-	 */
+
+
+	@Override
 	public synchronized void makeReadOnly(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
@@ -548,12 +491,7 @@ public class NfcService extends AbstractMobileService
 	}
 
 
-	/**
-	 * Show the NFC settings on the device.
-	 *
-	 * @param successCallback
-	 * @param errorCallback
-	 */
+	@Override
 	public synchronized void showSettings(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
@@ -586,6 +524,7 @@ public class NfcService extends AbstractMobileService
 	}
 
 
+	@Override
 	public synchronized void removeAllListener()
 	{
 		// clear all Maps because of highlander

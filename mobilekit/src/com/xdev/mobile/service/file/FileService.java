@@ -47,9 +47,9 @@ import elemental.json.JsonValue;
  *
  */
 
-@MobileService(plugins = @Plugin(name = "cordova-plugin-file", spec = "4.2.0") )
+@MobileService(plugins = @Plugin(name = "cordova-plugin-file", spec = "4.2.0"))
 @JavaScript("file.js")
-public class FileService extends AbstractMobileService
+public class FileService extends AbstractMobileService implements FileServiceAccess
 {
 	/**
 	 * Returns the file service.<br>
@@ -65,7 +65,7 @@ public class FileService extends AbstractMobileService
 	 *
 	 * @return the file service if available
 	 */
-	public static FileService getInstance()
+	public static FileServiceAccess getInstance()
 	{
 		return getMobileService(FileService.class);
 	}
@@ -83,6 +83,7 @@ public class FileService extends AbstractMobileService
 	}
 	
 	
+	@Override
 	public void readFile(final String path, final Consumer<FileData> successCallback,
 			final Consumer<FileServiceError> errorCallback)
 	{

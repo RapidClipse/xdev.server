@@ -36,9 +36,9 @@ import com.xdev.mobile.service.annotations.Plugin;
  * @author XDEV Software
  *
  */
-@MobileService(plugins = @Plugin(name = "cordova-plugin-vibration", spec = "2.1.1") )
+@MobileService(plugins = @Plugin(name = "cordova-plugin-vibration", spec = "2.1.1"))
 @JavaScript("vibrate.js")
-public class VibrateService extends AbstractMobileService
+public class VibrateService extends AbstractMobileService implements VibrateServiceAccess
 {
 	/**
 	 * Returns the vibrate service.<br>
@@ -54,44 +54,20 @@ public class VibrateService extends AbstractMobileService
 	 *
 	 * @return the vibrate service if available
 	 */
-	public static VibrateService getInstance()
+	public static VibrateServiceAccess getInstance()
 	{
 		return getMobileService(VibrateService.class);
 	}
-	
-	
+
+
 	public VibrateService(final AbstractClientConnector target,
 			final MobileServiceConfiguration configuration)
 	{
 		super(target,configuration);
 	}
-	
-	
-	/**
-	 * Vibrates with the specified pattern.
-	 * <p>
-	 * Single vibration for one second:
-	 *
-	 * <pre>
-	 * {@code
-	 * vibrate(1000);
-	 * }
-	 * </pre>
-	 * <p>
-	 * Vibrate for one second,<br>
-	 * Pause for half a second,<br>
-	 * Vibrate for 200 milliseconds:
-	 *
-	 * <pre>
-	 * {@code
-	 * vibrate(1000,500,200);
-	 * }
-	 * </pre>
-	 *
-	 *
-	 * @param pattern
-	 *            time/pause pattern to vibrate in milliseconds
-	 */
+
+
+	@Override
 	public void vibrate(final int... pattern)
 	{
 		final StringBuilder js = new StringBuilder();
@@ -114,7 +90,7 @@ public class VibrateService extends AbstractMobileService
 			js.append(']');
 		}
 		js.append(");");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
 }

@@ -72,7 +72,7 @@ import elemental.json.JsonValue;
 
 @MobileService(plugins = @Plugin(name = "cordova-plugin-geolocation", spec = "2.4.0"))
 @JavaScript("geolocation.js")
-public class GeolocationService extends AbstractMobileService
+public class GeolocationService extends AbstractMobileService implements GeolocationServiceAccess
 {
 	
 	/**
@@ -89,7 +89,7 @@ public class GeolocationService extends AbstractMobileService
 	 *
 	 * @return the geolocation service if available
 	 */
-	public static GeolocationService getInstance()
+	public static GeolocationServiceAccess getInstance()
 	{
 		return getMobileService(GeolocationService.class);
 	}
@@ -111,17 +111,7 @@ public class GeolocationService extends AbstractMobileService
 	}
 	
 	
-	/**
-	 * Asynchronously acquires the current position.
-	 *
-	 * @param options
-	 *            optional options
-	 * @param successCallback
-	 *            The function to call when the position data is available
-	 * @param errorCallback
-	 *            The function to call when there is an error getting the
-	 *            heading position.
-	 */
+	@Override
 	public synchronized void getCurrentPosition(final GeolocationOptions options,
 			final Consumer<Position> successCallback,
 			final Consumer<GeolocationServiceError> errorCallback)
@@ -163,20 +153,7 @@ public class GeolocationService extends AbstractMobileService
 	}
 	
 	
-	/**
-	 *
-	 * Asynchronously watches the geolocation for changes to geolocation. When a
-	 * change occurs, the successCallback is called with the new location.
-	 *
-	 * @param options
-	 *            optional options
-	 * @param successCallback
-	 *            The function to call each time the location data is available
-	 * @param errorCallback
-	 *            The function to call when there is an error getting the
-	 *            location data.
-	 */
-	
+	@Override
 	public synchronized void watchPosition(final GeolocationOptions options,
 			final Consumer<Geolocation> successCallback,
 			final Consumer<GeolocationServiceError> errorCallback)
@@ -245,13 +222,9 @@ public class GeolocationService extends AbstractMobileService
 			call.error(createGeolocationServiceError(arguments.get(1)));
 		}
 	}
-	
-	
-	/**
-	 * Clears the specified heading watch.
-	 *
-	 * @param watchID
-	 */
+
+
+	@Override
 	public void clearWatchPosition(final double watchID)
 	{
 		final StringBuilder js = new StringBuilder();
@@ -295,7 +268,7 @@ public class GeolocationService extends AbstractMobileService
 	{
 		String message = "";
 		Reason reason = null;
-
+		
 		try
 		{
 			message = error.getString("message");

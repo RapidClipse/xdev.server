@@ -94,11 +94,12 @@ import elemental.json.JsonObject;
  * </ul>
  *
  * @author XDEV Software
- * 		
+ *
  */
-@MobileService(plugins = @Plugin(name = "phonegap-plugin-barcodescanner", spec = "5.0.0") )
+@MobileService(plugins = @Plugin(name = "phonegap-plugin-barcodescanner", spec = "5.0.0"))
 @JavaScript("barcodescanner.js")
 public class BarcodescannerService extends AbstractMobileService
+		implements BarcodescannerServiceAccess
 {
 	/**
 	 * Returns the barcodescanner service.<br>
@@ -114,7 +115,7 @@ public class BarcodescannerService extends AbstractMobileService
 	 *
 	 * @return the barcodescanner service if available
 	 */
-	public static BarcodescannerService getInstance()
+	public static BarcodescannerServiceAccess getInstance()
 	{
 		return getMobileService(BarcodescannerService.class);
 	}
@@ -132,39 +133,14 @@ public class BarcodescannerService extends AbstractMobileService
 	}
 	
 	
-	/**
-	 * Opens the barcode scanner and passes the result to the callback if the
-	 * scan was completed successfully.
-	 * <p>
-	 * For more information on suported formats see {@link BarcodescannerService
-	 * class doc}.
-	 *
-	 * @param successCallback
-	 * 			
-	 * @see BarcodescannerService
-	 * @see BarcodeFormat
-	 * @see BarcodeData
-	 */
+	@Override
 	public synchronized void scan(final Consumer<BarcodeData> successCallback)
 	{
 		this.scan(successCallback,null);
 	}
 
 
-	/**
-	 * Opens the barcode scanner and passes the result to the callback if the
-	 * scan was completed successfully.
-	 * <p>
-	 * For more information on suported formats see {@link BarcodescannerService
-	 * class doc}.
-	 *
-	 * @param successCallback
-	 * @param errorCallback
-	 * 			
-	 * @see BarcodescannerService
-	 * @see BarcodeFormat
-	 * @see BarcodeData
-	 */
+	@Override
 	public synchronized void scan(final Consumer<BarcodeData> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{

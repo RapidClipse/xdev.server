@@ -42,7 +42,7 @@ import elemental.json.JsonObject;
 /**
  * Service which describes the device's hardware and software.
  *
- * 
+ *
  * @author XDEV Software
  *
  */
@@ -68,33 +68,33 @@ public class DeviceInfoService extends AbstractMobileService implements DeviceIn
 	{
 		return getMobileService(DeviceInfoService.class);
 	}
-
+	
 	private final Map<String, ServiceCall<DeviceInfo, MobileServiceError>> getCalls = new HashMap<>();
-
-
+	
+	
 	public DeviceInfoService(final AbstractClientConnector connector,
 			final MobileServiceConfiguration configuration)
 	{
 		super(connector,configuration);
-
+		
 		this.addFunction("deviceinfo_callback",this::deviceinfo_callback);
 	}
-
-
+	
+	
 	@Override
 	public void getDeviceInfo(final Consumer<DeviceInfo> callback)
 	{
 		final String id = generateCallerID();
 		final ServiceCall<DeviceInfo, MobileServiceError> call = ServiceCall.New(callback,null);
 		this.getCalls.put(id,call);
-		
-		final StringBuilder js = new StringBuilder();
-		js.append("deviceinfo_get('").append(id).append("');");
 
+		final StringBuilder js = new StringBuilder();
+		js.append("deviceinfo_get(").append(toLiteral(id)).append(");");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private void deviceinfo_callback(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -104,7 +104,7 @@ public class DeviceInfoService extends AbstractMobileService implements DeviceIn
 			final Gson gson = new Gson();
 			final JsonObject jsonObject = arguments.getObject(1);
 			final DeviceInfo info = gson.fromJson(jsonObject.toJson(),DeviceInfo.class);
-
+			
 			call.success(info);
 		}
 	}

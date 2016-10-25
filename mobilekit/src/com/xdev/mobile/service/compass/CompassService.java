@@ -53,7 +53,7 @@ import elemental.json.JsonObject;
 @JavaScript("compass.js")
 public class CompassService extends AbstractMobileService implements CompassServiceAccess
 {
-	
+
 	/**
 	 * Returns the compass service.<br>
 	 * To activate the service it has to be registered in the mobile.xml.
@@ -72,24 +72,24 @@ public class CompassService extends AbstractMobileService implements CompassServ
 	{
 		return getMobileService(CompassService.class);
 	}
-	
+
 	private final Map<String, ServiceCall<Heading, CompassServiceError>>		getCalls	= new HashMap<>();
 	private final Map<String, ServiceCall<HeadingWatch, CompassServiceError>>	watchCalls	= new HashMap<>();
-	
-	
+
+
 	public CompassService(final AbstractClientConnector connector,
 			final MobileServiceConfiguration configuration)
 	{
 		super(connector,configuration);
-		
+
 		this.addFunction("compass_get_success",this::compass_get_success);
 		this.addFunction("compass_get_error",this::compass_get_error);
-		
+
 		this.addFunction("compass_watch_success",this::compass_watch_success);
 		this.addFunction("compass_watch_error",this::compass_watch_error);
 	}
-	
-	
+
+
 	@Override
 	public synchronized void getCurrentHeading(final Consumer<Heading> successCallback,
 			final Consumer<CompassServiceError> errorCallback)
@@ -98,13 +98,13 @@ public class CompassService extends AbstractMobileService implements CompassServ
 		final ServiceCall<Heading, CompassServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.getCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
-		js.append("compass_get('").append(id).append("');");
+		js.append("compass_get(").append(toLiteral(id)).append(");");
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private void compass_get_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -116,8 +116,8 @@ public class CompassService extends AbstractMobileService implements CompassServ
 			call.success(heading);
 		}
 	}
-	
-	
+
+
 	private void compass_get_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -127,8 +127,8 @@ public class CompassService extends AbstractMobileService implements CompassServ
 			call.error(createGeolocationServiceError(arguments.get(1)));
 		}
 	}
-	
-	
+
+
 	@Override
 	public synchronized void watchHeading(final CompassOptions options,
 			final Consumer<HeadingWatch> successCallback,
@@ -138,22 +138,22 @@ public class CompassService extends AbstractMobileService implements CompassServ
 		final ServiceCall<HeadingWatch, CompassServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.watchCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
-		js.append("compass_watch('").append(id).append("',");
+		js.append("compass_watch(").append(toLiteral(id)).append(",");
 		js.append(toJson(options));
 		js.append(");");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private String toJson(final CompassOptions options)
 	{
 		return "{frequency:" + options.getFrequency() + "}";
 	}
-	
-	
+
+
 	private void compass_watch_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -167,8 +167,8 @@ public class CompassService extends AbstractMobileService implements CompassServ
 			call.success(watch);
 		}
 	}
-	
-	
+
+
 	private void compass_watch_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -178,23 +178,23 @@ public class CompassService extends AbstractMobileService implements CompassServ
 			call.error(createGeolocationServiceError(arguments.get(1)));
 		}
 	}
-	
-	
+
+
 	@Override
 	public void clearWatch(final String watchID)
 	{
 		final StringBuilder js = new StringBuilder();
 		js.append("compass_clear_watch(");
 		js.append(toLiteral(watchID)).append(");");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private CompassServiceError createGeolocationServiceError(final JsonObject error)
 	{
 		Reason reason = null;
-		
+
 		try
 		{
 			reason = Reason.getByCode((int)error.getNumber("code"));
@@ -203,7 +203,7 @@ public class CompassService extends AbstractMobileService implements CompassServ
 		{
 			// swallow
 		}
-		
+
 		return new CompassServiceError(this,"",reason);
 	}
 }

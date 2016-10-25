@@ -48,7 +48,7 @@ import elemental.json.JsonArray;
 @JavaScript("sms.js")
 public class SmsService extends AbstractMobileService implements SmsServiceAccess
 {
-
+	
 	/**
 	 * Returns the SMS service.<br>
 	 * To activate the service it has to be registered in the mobile.xml.
@@ -67,39 +67,40 @@ public class SmsService extends AbstractMobileService implements SmsServiceAcces
 	{
 		return getMobileService(SmsService.class);
 	}
-
+	
 	private final Map<String, ServiceCall<Object, MobileServiceError>> sendCalls = new HashMap<>();
-
-
+	
+	
 	public SmsService(final AbstractClientConnector connector,
 			final MobileServiceConfiguration configuration)
 	{
 		super(connector,configuration);
-
+		
 		this.addFunction("sms_send_success",this::sms_send_success);
 		this.addFunction("sms_send_error",this::sms_send_error);
 	}
-
-
+	
+	
 	@Override
 	public void send(final String number, final String message, final SmsOptions options,
 			final Runnable successCallback, final Consumer<MobileServiceError> errorCallback)
 	{
 		final Consumer<Object> consumerWrapper = successCallback != null
 				? object -> successCallback.run() : null;
-
+		
 		final String id = generateCallerID();
 		final ServiceCall<Object, MobileServiceError> call = ServiceCall.New(consumerWrapper,
 				errorCallback);
 		this.sendCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
-		js.append("sms_send('").append(id).append("',").append(toLiteral(number)).append(",")
-				.append(toLiteral(message)).append(",").append(toJson(options)).append(");");
+		js.append("sms_send(").append(toLiteral(id)).append(",").append(toLiteral(number))
+				.append(",").append(toLiteral(message)).append(",").append(toJson(options))
+				.append(");");
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private String toJson(final SmsOptions options)
 	{
 		final StringBuilder sb = new StringBuilder();
@@ -108,8 +109,8 @@ public class SmsService extends AbstractMobileService implements SmsServiceAcces
 				.append("}}");
 		return sb.toString();
 	}
-
-
+	
+	
 	private void sms_send_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -119,8 +120,8 @@ public class SmsService extends AbstractMobileService implements SmsServiceAcces
 			call.success(null);
 		}
 	}
-
-
+	
+	
 	private void sms_send_error(final JsonArray arguments)
 	{
 		callError(arguments,this.sendCalls,true);

@@ -69,20 +69,20 @@ public class FileService extends AbstractMobileService implements FileServiceAcc
 	{
 		return getMobileService(FileService.class);
 	}
-	
+
 	private final Map<String, ServiceCall<FileData, FileServiceError>> readFileCalls = new HashMap<>();
-	
-	
+
+
 	public FileService(final AbstractClientConnector connector,
 			final MobileServiceConfiguration configuration)
 	{
 		super(connector,configuration);
-		
+
 		this.addFunction("file_readFile_success",this::file_readFile_success);
 		this.addFunction("file_readFile_error",this::file_readFile_error);
 	}
-	
-	
+
+
 	@Override
 	public void readFile(final String path, final Consumer<FileData> successCallback,
 			final Consumer<FileServiceError> errorCallback)
@@ -91,15 +91,16 @@ public class FileService extends AbstractMobileService implements FileServiceAcc
 		final ServiceCall<FileData, FileServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.readFileCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
-		
-		js.append("file_readFile('").append(id).append("','").append(path).append("');");
-		
+
+		js.append("file_readFile(").append(toLiteral(id)).append(",").append(toLiteral(path))
+				.append(");");
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private void file_readFile_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -109,8 +110,8 @@ public class FileService extends AbstractMobileService implements FileServiceAcc
 			call.success(new FileData(arguments.get(1).asString()));
 		}
 	}
-	
-	
+
+
 	private void file_readFile_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -120,8 +121,8 @@ public class FileService extends AbstractMobileService implements FileServiceAcc
 			call.error(createFileServiceError("Error reading file",arguments.get(1)));
 		}
 	}
-
-
+	
+	
 	private FileServiceError createFileServiceError(final String message, final JsonValue value)
 	{
 		Reason reason = null;

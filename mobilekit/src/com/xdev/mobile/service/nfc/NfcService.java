@@ -57,7 +57,7 @@ import elemental.json.JsonObject;
 @JavaScript("nfc.js")
 public class NfcService extends AbstractMobileService implements NfcServiceAccess
 {
-
+	
 	/**
 	 * Returns the nfc service.<br>
 	 * To activate the service it has to be registered in the mobile.xml.
@@ -76,23 +76,23 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 	{
 		return getMobileService(NfcService.class);
 	}
-
-
-
+	
+	
+	
 	protected static class NfcCallbackServiceCall
 			extends ServiceCall.Implementation<String, MobileServiceError>
 	{
 		private final Consumer<Ndef> callback;
-
-
+		
+		
 		public NfcCallbackServiceCall(final Consumer<String> successCallback,
 				final Consumer<MobileServiceError> errorCallback, final Consumer<Ndef> callback)
 		{
 			super(successCallback,errorCallback);
 			this.callback = callback;
 		}
-
-
+		
+		
 		public void callback(final Ndef ndef)
 		{
 			if(this.callback != null)
@@ -101,7 +101,7 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 			}
 		}
 	}
-
+	
 	private final Map<String, NfcCallbackServiceCall>					startNdefListenerCalls			= new HashMap<>();
 	private final Map<String, ServiceCall<String, MobileServiceError>>	removeNdefListenerCalls			= new HashMap<>();
 	private final Map<String, NfcCallbackServiceCall>					startTagDiscoveredListenerCalls	= new HashMap<>();
@@ -110,46 +110,46 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 	private final Map<String, ServiceCall<String, MobileServiceError>>	writeCalls						= new HashMap<>();
 	private final Map<String, ServiceCall<String, MobileServiceError>>	makeReadOnlyCalls				= new HashMap<>();
 	private final Map<String, ServiceCall<String, MobileServiceError>>	showSettingsCalls				= new HashMap<>();
-
-
+	
+	
 	public NfcService(final AbstractClientConnector connector,
 			final MobileServiceConfiguration configuration)
 	{
 		super(connector,configuration);
-
+		
 		this.addFunction("nfc_startNdefListener_success",this::nfc_startNdefListener_success);
 		this.addFunction("nfc_startNdefListener_error",this::nfc_startNdefListener_error);
 		this.addFunction("nfc_startNdefListener_callback",this::nfc_startNdefListener_callback);
-
+		
 		this.addFunction("nfc_stopNdefListener_success",this::nfc_stopNdefListener_success);
 		this.addFunction("nfc_stopNdefListener_error",this::nfc_stopNdefListener_error);
-
+		
 		this.addFunction("nfc_startTagDiscoveredListener_callback",
 				this::nfc_startTagDiscoveredListener_callback);
 		this.addFunction("nfc_startTagDiscoveredListener_success",
 				this::nfc_startTagDiscoveredListener_success);
 		this.addFunction("nfc_startTagDiscoveredListener_error",
 				this::nfc_startTagDiscoveredListener_error);
-
+		
 		this.addFunction("nfc_stopTagDiscoveredListener_success",
 				this::nfc_stopTagDiscoveredListener_success);
 		this.addFunction("nfc_stopTagDiscoveredListener_error",
 				this::nfc_stopTagDiscoveredListener_error);
-
+		
 		this.addFunction("nfc_erase_success",this::nfc_erase_success);
 		this.addFunction("nfc_erase_error",this::nfc_erase_error);
-
+		
 		this.addFunction("nfc_write_success",this::nfc_write_success);
 		this.addFunction("nfc_write_error",this::nfc_write_error);
-
+		
 		this.addFunction("nfc_makeReadOnly_success",this::nfc_makeReadOnly_success);
 		this.addFunction("nfc_makeReadOnly_error",this::nfc_makeReadOnly_error);
-
+		
 		this.addFunction("nfc_showSettings_success",this::nfc_showSettings_success);
 		this.addFunction("nfc_showSettings_error",this::nfc_showSettings_error);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -164,19 +164,19 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		removeAllListener();
-
+		
 		final String id = generateCallerID();
 		final NfcCallbackServiceCall call = new NfcCallbackServiceCall(successCallback,
 				errorCallback,callback);
 		this.startNdefListenerCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
-		js.append("nfc_startNdefListener('").append(id).append("');");
-
+		js.append("nfc_startNdefListener(").append(toLiteral(id)).append(");");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private void nfc_startNdefListener_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -186,14 +186,14 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 			call.success(arguments.getString(1));
 		}
 	}
-
-
+	
+	
 	private void nfc_startNdefListener_error(final JsonArray arguments)
 	{
 		callError(arguments,this.startNdefListenerCalls,true);
 	}
-
-
+	
+	
 	private void nfc_startNdefListener_callback(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -205,8 +205,8 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 			call.callback(ndef);
 		}
 	}
-
-
+	
+	
 	@Override
 	public synchronized void stopNdefListener(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
@@ -215,14 +215,14 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.removeNdefListenerCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
-		js.append("nfc_stopNdefListener('").append(id).append("');");
-
+		js.append("nfc_stopNdefListener(").append(toLiteral(id)).append(");");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private void nfc_stopNdefListener_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -232,33 +232,33 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 			call.success(arguments.getString(1));
 		}
 	}
-
-
+	
+	
 	private void nfc_stopNdefListener_error(final JsonArray arguments)
 	{
 		callError(arguments,this.removeNdefListenerCalls,true);
 	}
-
-
+	
+	
 	@Override
 	public synchronized void startTagDiscoveredListener(final Consumer<Ndef> callback,
 			final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		removeAllListener();
-
+		
 		final String id = generateCallerID();
 		final NfcCallbackServiceCall call = new NfcCallbackServiceCall(successCallback,
 				errorCallback,callback);
 		this.startTagDiscoveredListenerCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
-		js.append("nfc_startTagDiscoveredListener('").append(id).append("');");
-
+		js.append("nfc_startTagDiscoveredListener(").append(toLiteral(id)).append(");");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private void nfc_startTagDiscoveredListener_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -268,14 +268,14 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 			call.success(arguments.getString(1));
 		}
 	}
-
-
+	
+	
 	private void nfc_startTagDiscoveredListener_error(final JsonArray arguments)
 	{
 		callError(arguments,this.startTagDiscoveredListenerCalls,true);
 	}
-
-
+	
+	
 	private void nfc_startTagDiscoveredListener_callback(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -287,8 +287,8 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 			call.callback(ndef);
 		}
 	}
-
-
+	
+	
 	@Override
 	public synchronized void stopTagDiscoveredListener(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
@@ -296,16 +296,16 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 		final String id = generateCallerID();
 		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
-
+		
 		this.stopTagDiscoveredListenerCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
-		js.append("nfc_stopTagDiscoveredListener('").append(id).append("');");
-
+		js.append("nfc_stopTagDiscoveredListener(").append(toLiteral(id)).append(");");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private void nfc_stopTagDiscoveredListener_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -316,14 +316,14 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 			call.success(arguments.getString(1));
 		}
 	}
-
-
+	
+	
 	private void nfc_stopTagDiscoveredListener_error(final JsonArray arguments)
 	{
 		callError(arguments,this.stopTagDiscoveredListenerCalls,true);
 	}
-
-
+	
+	
 	@Override
 	public synchronized void eraseTag(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
@@ -333,14 +333,14 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.eraseTagCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
-		js.append("nfc_erase_tag('").append(id).append("');");
-
+		js.append("nfc_erase_tag(").append(toLiteral(id)).append(");");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private void nfc_erase_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -350,14 +350,14 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 			call.success(arguments.getString(1));
 		}
 	}
-
-
+	
+	
 	private void nfc_erase_error(final JsonArray arguments)
 	{
 		callError(arguments,this.eraseTagCalls,true);
 	}
-
-
+	
+	
 	@Override
 	public synchronized void write(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback, final Record... records)
@@ -366,14 +366,14 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 		{
 			throw new IllegalArgumentException("At least one record is required");
 		}
-
+		
 		removeAllListener();
-
+		
 		final String id = generateCallerID();
 		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.writeCalls.put(id,call);
-
+		
 		final StringBuilder message = new StringBuilder();
 		message.append("[");
 		for(int i = 0; i < records.length; i++)
@@ -391,54 +391,57 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 					{
 						case RTD_TEXT:
 						{
-							message.append("ndef.textRecord(\"").append(record.getPayloadAsString())
-									.append("\",null,\"").append(record.getIdAsString())
-									.append("\")");
+							message.append("ndef.textRecord(")
+									.append(toLiteral(record.getPayloadAsString())).append(",null,")
+									.append(toLiteral(record.getIdAsString())).append(")");
 						}
 						break;
-
+					
 						case RTD_URI:
 						{
-							message.append("ndef.uriRecord(\"").append(record.getPayloadAsString())
-									.append("\",\"").append(record.getIdAsString()).append("\")");
+							message.append("ndef.uriRecord(")
+									.append(toLiteral(record.getPayloadAsString())).append(",")
+									.append(toLiteral(record.getIdAsString())).append(")");
 						}
 						break;
-
+					
 						default:
 							throw new IllegalArgumentException("Unsupported record");
 					}
 				}
 				break;
-
+			
 				case TNF_ABSOLUTE_URI:
 				{
-					message.append("ndef.absoluteUriRecord(\"").append(record.getTypeAsString())
-							.append("\",\"").append(record.getPayloadAsString()).append("\",\"")
-							.append(record.getIdAsString()).append("\")");
+					message.append("ndef.absoluteUriRecord(")
+							.append(toLiteral(record.getTypeAsString())).append(",")
+							.append(toLiteral(record.getPayloadAsString())).append(",")
+							.append(toLiteral(record.getIdAsString())).append(")");
 				}
 				break;
-
+			
 				case TNF_MIME_MEDIA:
 				{
-					message.append("ndef.mimeMediaRecord(\"").append(record.getTypeAsString())
-							.append("\",\"").append(record.getPayloadAsString()).append("\",\"")
-							.append(record.getIdAsString()).append("\")");
+					message.append("ndef.mimeMediaRecord(")
+							.append(toLiteral(record.getTypeAsString())).append(",")
+							.append(toLiteral(record.getPayloadAsString())).append(",")
+							.append(toLiteral(record.getIdAsString())).append(")");
 				}
 				break;
-
+			
 				default:
 					throw new IllegalArgumentException("Unsupported record");
 			}
 		}
 		message.append("]");
-
+		
 		final StringBuilder js = new StringBuilder();
-		js.append("nfc_write('").append(id).append("',").append(message).append(");");
-
+		js.append("nfc_write(").append(toLiteral(id)).append(",").append(message).append(");");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private void nfc_write_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -448,32 +451,32 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 			call.success(arguments.getString(1));
 		}
 	}
-
-
+	
+	
 	private void nfc_write_error(final JsonArray arguments)
 	{
 		callError(arguments,this.writeCalls,true);
 	}
-
-
+	
+	
 	@Override
 	public synchronized void makeReadOnly(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		removeAllListener();
-
+		
 		final String id = generateCallerID();
 		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.makeReadOnlyCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
-		js.append("nfc_makeReadOnly('").append(id).append("');");
-
+		js.append("nfc_makeReadOnly(").append(toLiteral(id)).append(");");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private void nfc_makeReadOnly_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -483,14 +486,14 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 			call.success(arguments.getString(1));
 		}
 	}
-
-
+	
+	
 	private void nfc_makeReadOnly_error(final JsonArray arguments)
 	{
 		callError(arguments,this.makeReadOnlyCalls,true);
 	}
-
-
+	
+	
 	@Override
 	public synchronized void showSettings(final Consumer<String> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
@@ -499,14 +502,14 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 		final ServiceCall<String, MobileServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.showSettingsCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
-		js.append("nfc_showSettings('").append(id).append("');");
-
+		js.append("nfc_showSettings(").append(toLiteral(id)).append(");");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private void nfc_showSettings_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -516,14 +519,14 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 			call.success(arguments.getString(1));
 		}
 	}
-
-
+	
+	
 	private void nfc_showSettings_error(final JsonArray arguments)
 	{
 		callError(arguments,this.showSettingsCalls,true);
 	}
-
-
+	
+	
 	@Override
 	public synchronized void removeAllListener()
 	{
@@ -536,10 +539,10 @@ public class NfcService extends AbstractMobileService implements NfcServiceAcces
 		this.writeCalls.clear();
 		this.makeReadOnlyCalls.clear();
 		this.showSettingsCalls.clear();
-
+		
 		final StringBuilder js = new StringBuilder();
 		js.append("nfc_remove_all_Listener();");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
 }

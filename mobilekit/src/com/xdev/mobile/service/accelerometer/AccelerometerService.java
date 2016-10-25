@@ -54,7 +54,7 @@ import elemental.json.JsonObject;
 public class AccelerometerService extends AbstractMobileService
 		implements AccelerometerServiceAccess
 {
-
+	
 	/**
 	 * Returns the accelerometer service.<br>
 	 * To activate the service it has to be registered in the mobile.xml.
@@ -73,24 +73,24 @@ public class AccelerometerService extends AbstractMobileService
 	{
 		return getMobileService(AccelerometerService.class);
 	}
-
+	
 	private final Map<String, ServiceCall<Acceleration, MobileServiceError>>		getCalls	= new HashMap<>();
 	private final Map<String, ServiceCall<AccelerationWatch, MobileServiceError>>	watchCalls	= new HashMap<>();
-
-
+	
+	
 	public AccelerometerService(final AbstractClientConnector connector,
 			final MobileServiceConfiguration configuration)
 	{
 		super(connector,configuration);
-
+		
 		this.addFunction("accelerometer_get_success",this::accelerometer_get_success);
 		this.addFunction("accelerometer_get_error",this::accelerometer_get_error);
-
+		
 		this.addFunction("accelerometer_watch_success",this::accelerometer_watch_success);
 		this.addFunction("accelerometer_watch_error",this::accelerometer_watch_error);
 	}
-
-
+	
+	
 	@Override
 	public synchronized void getCurrentAcceleration(final Consumer<Acceleration> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
@@ -99,13 +99,13 @@ public class AccelerometerService extends AbstractMobileService
 		final ServiceCall<Acceleration, MobileServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.getCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
-		js.append("accelerometer_get('").append(id).append("');");
+		js.append("accelerometer_get(").append(toLiteral(id)).append(");");
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private void accelerometer_get_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -118,14 +118,14 @@ public class AccelerometerService extends AbstractMobileService
 			call.success(acceleration);
 		}
 	}
-
-
+	
+	
 	private void accelerometer_get_error(final JsonArray arguments)
 	{
 		callError(arguments,this.getCalls,true);
 	}
-
-
+	
+	
 	@Override
 	public synchronized void watchAcceleration(final AccelerometerOptions options,
 			final Consumer<AccelerationWatch> successCallback,
@@ -135,22 +135,22 @@ public class AccelerometerService extends AbstractMobileService
 		final ServiceCall<AccelerationWatch, MobileServiceError> call = ServiceCall
 				.New(successCallback,errorCallback);
 		this.watchCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
-		js.append("accelerometer_watch('").append(id).append("',");
+		js.append("accelerometer_watch(").append(toLiteral(id)).append(",");
 		js.append(toJson(options));
 		js.append(");");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-
-
+	
+	
 	private String toJson(final AccelerometerOptions options)
 	{
 		return "{frequency:" + options.getFrequency() + "}";
 	}
-
-
+	
+	
 	private void accelerometer_watch_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -165,21 +165,21 @@ public class AccelerometerService extends AbstractMobileService
 			call.success(watch);
 		}
 	}
-
-
+	
+	
 	private void accelerometer_watch_error(final JsonArray arguments)
 	{
 		callError(arguments,this.watchCalls,false);
 	}
-
-
+	
+	
 	@Override
 	public void clearWatch(final String watchID)
 	{
 		final StringBuilder js = new StringBuilder();
 		js.append("accelerometer_clear_watch(");
 		js.append(toLiteral(watchID)).append(");");
-
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
 }

@@ -8,7 +8,7 @@ com_xdev_mobile_service_barcodescanner_BarcodescannerService = function() {
 	};
 };
 
-function barcodescanner_scan(caller) {
+function barcodescanner_scan(caller, options) {
 
 	var success = function(result) {
 		window.barcodescanner_scan_success(caller, result);
@@ -18,5 +18,5 @@ function barcodescanner_scan(caller) {
 		window.barcodescanner_scan_error(caller, error);
 	};
 
-	cordova.plugins.barcodeScanner.scan(success, error);
+	cordova.plugins.barcodeScanner.scan(success, error, options);
 }

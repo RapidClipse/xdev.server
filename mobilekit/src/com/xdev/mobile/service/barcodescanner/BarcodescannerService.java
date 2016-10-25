@@ -21,9 +21,12 @@
 package com.xdev.mobile.service.barcodescanner;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.AbstractClientConnector;
@@ -96,7 +99,7 @@ import elemental.json.JsonObject;
  * @author XDEV Software
  *
  */
-@MobileService(plugins = @Plugin(name = "phonegap-plugin-barcodescanner", spec = "5.0.0"))
+@MobileService(plugins = @Plugin(name = "phonegap-plugin-barcodescanner", spec = "6.0.3"))
 @JavaScript("barcodescanner.js")
 public class BarcodescannerService extends AbstractMobileService
 		implements BarcodescannerServiceAccess
@@ -119,43 +122,78 @@ public class BarcodescannerService extends AbstractMobileService
 	{
 		return getMobileService(BarcodescannerService.class);
 	}
-
+	
 	private final Map<String, ServiceCall<BarcodeData, MobileServiceError>> scanCalls = new HashMap<>();
-
-
+	
+	
 	public BarcodescannerService(final AbstractClientConnector target,
 			final MobileServiceConfiguration configuration)
 	{
 		super(target,configuration);
-
+		
 		this.addFunction("barcodescanner_scan_success",this::barcodescanner_scan_success);
 		this.addFunction("barcodescanner_scan_error",this::barcodescanner_scan_error);
 	}
 	
 	
 	@Override
-	public synchronized void scan(final Consumer<BarcodeData> successCallback)
-	{
-		this.scan(successCallback,null);
-	}
-
-
-	@Override
-	public synchronized void scan(final Consumer<BarcodeData> successCallback,
+	public synchronized void scan(final BarcodescannerOptions options,
+			final Consumer<BarcodeData> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
 		final ServiceCall<BarcodeData, MobileServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.scanCalls.put(id,call);
-
+		
 		final StringBuilder js = new StringBuilder();
-		js.append("barcodescanner_scan('").append(id).append("');");
-
+		js.append("barcodescanner_scan('").append(id).append("',");
+		js.append(toJson(options));
+		js.append(");");
+		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
 
 
+	private String toJson(final BarcodescannerOptions options)
+	{
+		final List<String> list = new ArrayList<>();
+
+		final Boolean preferFrontCamera = options.getPreferFrontCamera();
+		if(preferFrontCamera != null)
+		{
+			list.add("preferFrontCamera:" + preferFrontCamera);
+		}
+
+		final Boolean showFlipCameraButton = options.getShowFlipCameraButton();
+		if(showFlipCameraButton != null)
+		{
+			list.add("showFlipCameraButton:" + showFlipCameraButton);
+		}
+
+		final String prompt = options.getPrompt();
+		if(prompt != null)
+		{
+			list.add("prompt:" + toLiteral(prompt));
+		}
+
+		final List<BarcodeFormat> formats = options.getFormats();
+		if(!formats.isEmpty())
+		{
+			list.add("formats:" + toLiteral(
+					formats.stream().map(BarcodeFormat::name).collect(Collectors.joining(","))));
+		}
+
+		final Orientation orientation = options.getOrientation();
+		if(orientation != null)
+		{
+			list.add("orientation:" + orientation.getValue());
+		}
+
+		return list.stream().collect(Collectors.joining(",","{","}"));
+	}
+	
+	
 	private void barcodescanner_scan_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -175,23 +213,23 @@ public class BarcodescannerService extends AbstractMobileService
 				{
 					barcodeFormat = BarcodeFormat.UNKNOWN;
 				}
-
+				
 				final String text = object.getString("text");
-
+				
 				final BarcodeData barcodeData = new BarcodeData(barcodeFormat,text);
 				call.success(barcodeData);
 			}
 		}
 	}
-	
-	
+
+
 	private boolean isCancelled(final JsonObject object)
 	{
 		final String cancelled = object.get("cancelled").asString();
 		return "1".equals(cancelled) || "true".equalsIgnoreCase(cancelled);
 	}
-
-
+	
+	
 	private void barcodescanner_scan_error(final JsonArray arguments)
 	{
 		callError(arguments,this.scanCalls,true);

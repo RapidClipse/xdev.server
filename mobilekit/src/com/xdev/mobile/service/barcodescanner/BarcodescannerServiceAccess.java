@@ -32,7 +32,6 @@ import com.xdev.mobile.service.MobileServiceError;
  */
 public interface BarcodescannerServiceAccess
 {
-	
 	/**
 	 * Opens the barcode scanner and passes the result to the callback if the
 	 * scan was completed successfully.
@@ -41,14 +40,17 @@ public interface BarcodescannerServiceAccess
 	 * class doc}.
 	 *
 	 * @param successCallback
-	 * 			
+	 *
 	 * @see BarcodescannerService
 	 * @see BarcodeFormat
 	 * @see BarcodeData
 	 */
-	void scan(Consumer<BarcodeData> successCallback);
-	
-	
+	default void scan(final Consumer<BarcodeData> successCallback)
+	{
+		scan(BarcodescannerOptions.defaults(),successCallback,null);
+	}
+
+
 	/**
 	 * Opens the barcode scanner and passes the result to the callback if the
 	 * scan was completed successfully.
@@ -58,11 +60,55 @@ public interface BarcodescannerServiceAccess
 	 *
 	 * @param successCallback
 	 * @param errorCallback
-	 * 			
+	 *
 	 * @see BarcodescannerService
 	 * @see BarcodeFormat
 	 * @see BarcodeData
 	 */
-	void scan(Consumer<BarcodeData> successCallback, Consumer<MobileServiceError> errorCallback);
-	
+	default void scan(final Consumer<BarcodeData> successCallback,
+			final Consumer<MobileServiceError> errorCallback)
+	{
+		scan(BarcodescannerOptions.defaults(),successCallback,errorCallback);
+	}
+
+
+	/**
+	 * Opens the barcode scanner and passes the result to the callback if the
+	 * scan was completed successfully.
+	 * <p>
+	 * For more information on suported formats see {@link BarcodescannerService
+	 * class doc}.
+	 *
+	 * @param options
+	 * @param successCallback
+	 *
+	 * @see BarcodescannerService
+	 * @see BarcodeFormat
+	 * @see BarcodeData
+	 */
+	default void scan(final BarcodescannerOptions options,
+			final Consumer<BarcodeData> successCallback)
+	{
+		scan(options,successCallback,null);
+	}
+
+
+	/**
+	 * Opens the barcode scanner and passes the result to the callback if the
+	 * scan was completed successfully.
+	 * <p>
+	 * For more information on suported formats see {@link BarcodescannerService
+	 * class doc}.
+	 *
+	 * @param options
+	 * @param successCallback
+	 * @param errorCallback
+	 *
+	 * @see BarcodescannerService
+	 * @see BarcodeFormat
+	 * @see BarcodeData
+	 */
+	void scan(BarcodescannerOptions options, Consumer<BarcodeData> successCallback,
+			Consumer<MobileServiceError> errorCallback);
+
 }

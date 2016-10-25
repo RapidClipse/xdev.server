@@ -74,7 +74,7 @@ import elemental.json.JsonValue;
 @JavaScript("geolocation.js")
 public class GeolocationService extends AbstractMobileService implements GeolocationServiceAccess
 {
-	
+
 	/**
 	 * Returns the geolocation service.<br>
 	 * To activate the service it has to be registered in the mobile.xml.
@@ -93,24 +93,24 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 	{
 		return getMobileService(GeolocationService.class);
 	}
-	
+
 	private final Map<String, ServiceCall<Position, GeolocationServiceError>>		getCalls	= new HashMap<>();
 	private final Map<String, ServiceCall<PositionWatch, GeolocationServiceError>>	watchCalls	= new HashMap<>();
-	
-	
+
+
 	public GeolocationService(final AbstractClientConnector connector,
 			final MobileServiceConfiguration configuration)
 	{
 		super(connector,configuration);
-		
+
 		this.addFunction("geolocation_get_success",this::geolocation_get_success);
 		this.addFunction("geolocation_get_error",this::geolocation_get_error);
-		
+
 		this.addFunction("geolocation_watch_success",this::geolocation_watch_success);
 		this.addFunction("geolocation_watch_error",this::geolocation_watch_error);
 	}
-	
-	
+
+
 	@Override
 	public synchronized void getCurrentPosition(final GeolocationOptions options,
 			final Consumer<Position> successCallback,
@@ -120,15 +120,15 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 		final ServiceCall<Position, GeolocationServiceError> call = ServiceCall.New(successCallback,
 				errorCallback);
 		this.getCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("geolocation_get('").append(id).append("',");
 		js.append(toJson(options));
 		js.append(");");
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private void geolocation_get_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -140,8 +140,8 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 			call.success(position);
 		}
 	}
-	
-	
+
+
 	private void geolocation_get_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -151,8 +151,8 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 			call.error(createGeolocationServiceError(arguments.get(1)));
 		}
 	}
-	
-	
+
+
 	@Override
 	public synchronized void watchPosition(final GeolocationOptions options,
 			final Consumer<PositionWatch> successCallback,
@@ -162,42 +162,42 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 		final ServiceCall<PositionWatch, GeolocationServiceError> call = ServiceCall
 				.New(successCallback,errorCallback);
 		this.watchCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("geolocation_watch('").append(id).append("',");
 		js.append(toJson(options));
 		js.append(");");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private String toJson(final GeolocationOptions options)
 	{
 		final List<String> list = new ArrayList<>();
-		
+
 		final Boolean enableHighAccuracy = options.getEnableHighAccuracy();
 		if(enableHighAccuracy != null)
 		{
 			list.add("enableHighAccuracy:" + enableHighAccuracy);
 		}
-		
+
 		final Long timeout = options.getTimeout();
 		if(timeout != null)
 		{
 			list.add("timeout:" + timeout);
 		}
-		
+
 		final Long maximumAge = options.getMaximumAge();
 		if(maximumAge != null)
 		{
 			list.add("maximumAge:" + maximumAge);
 		}
-		
+
 		return list.stream().collect(Collectors.joining(",","{","}"));
 	}
-	
-	
+
+
 	private void geolocation_watch_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -207,12 +207,12 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 			final JsonObject jsonObject = arguments.getObject(1);
 			final Position position = parsePosition(jsonObject);
 			final String watchID = arguments.getString(2);
-			final PositionWatch geolocation = new PositionWatch(position,watchID);
-			call.success(geolocation);
+			final PositionWatch watch = new PositionWatch(position,watchID);
+			call.success(watch);
 		}
 	}
-	
-	
+
+
 	private void geolocation_watch_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -222,34 +222,34 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 			call.error(createGeolocationServiceError(arguments.get(1)));
 		}
 	}
-
-
+	
+	
 	@Override
 	public void clearWatchPosition(final String watchID)
 	{
 		final StringBuilder js = new StringBuilder();
 		js.append("geolocation_clear_watch(");
 		js.append(toLiteral(watchID)).append(");");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private Position parsePosition(final JsonObject object)
 	{
 		final JsonObject coordsObj = object.getObject("coords");
-		
+
 		final Coordinates coords = new Coordinates(getDouble(coordsObj,"latitude"),
 				getDouble(coordsObj,"longitude"),getDouble(coordsObj,"altitude"),
 				getDouble(coordsObj,"accuracy"),getDouble(coordsObj,"altitudeAccuracy"),
 				getDouble(coordsObj,"heading"),getDouble(coordsObj,"speed"));
-		
+
 		final long timestamp = (long)getDouble(object,"timestamp");
-		
+
 		return new Position(coords,timestamp);
 	}
-	
-	
+
+
 	private double getDouble(final JsonObject object, final String key)
 	{
 		if(object.hasKey(key))
@@ -262,13 +262,13 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 		}
 		return -1;
 	}
-	
-	
+
+
 	private GeolocationServiceError createGeolocationServiceError(final JsonObject error)
 	{
 		String message = "";
 		Reason reason = null;
-		
+
 		try
 		{
 			message = error.getString("message");
@@ -277,7 +277,7 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 		{
 			// swallow
 		}
-		
+
 		try
 		{
 			reason = Reason.getByCode((int)error.getNumber("code"));
@@ -286,7 +286,7 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 		{
 			// swallow
 		}
-		
+
 		return new GeolocationServiceError(this,message,reason);
 	}
 }

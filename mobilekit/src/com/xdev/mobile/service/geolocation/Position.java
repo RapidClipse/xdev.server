@@ -30,28 +30,17 @@ package com.xdev.mobile.service.geolocation;
  */
 public class Position
 {
-	private Coordinates	coords;
-	private long		timestamp;
-
-
-	Position()
+	private final Coordinates	coords;
+	private final long			timestamp;
+	
+	
+	Position(final Coordinates coords, final long timestamp)
 	{
-		
-	}
-
-
-	/**
-	 * @param coordinates
-	 * @param timestamp
-	 */
-	public Position(final Coordinates coordinates, final long timestamp)
-	{
-		super();
-		this.coords = coordinates;
+		this.coords = coords;
 		this.timestamp = timestamp;
 	}
-
-
+	
+	
 	/**
 	 * A set of geographic coordinates.
 	 */
@@ -59,32 +48,14 @@ public class Position
 	{
 		return this.coords;
 	}
-
-
-	/**
-	 * A set of geographic coordinates.
-	 */
-	public void setCoordinates(final Coordinates coordinates)
-	{
-		this.coords = coordinates;
-	}
-
-
+	
+	
 	/**
 	 * Creation timestamp.
 	 */
 	public long getTimestamp()
 	{
 		return this.timestamp;
-	}
-
-
-	/**
-	 * Creation timestamp.
-	 */
-	public void setTimestamp(final long timestamp)
-	{
-		this.timestamp = timestamp;
 	}
 	
 	
@@ -98,5 +69,5 @@ public class Position
 	{
 		return "Position [coordinates=" + this.coords + ", timestamp=" + this.timestamp + "]";
 	}
-	
+
 }

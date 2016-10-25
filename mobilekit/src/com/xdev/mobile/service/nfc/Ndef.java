@@ -20,7 +20,6 @@
 
 package com.xdev.mobile.service.nfc;
 
-
 /**
  * Represents an NDEF (NFC Data Exchange Format) data message.
  *
@@ -29,28 +28,17 @@ package com.xdev.mobile.service.nfc;
  */
 public class Ndef
 {
-	private boolean	isTrusted;
-	private Tag		tag;
-
-
-	public Ndef()
+	private final boolean	isTrusted;
+	private final Tag		tag;
+	
+	
+	Ndef(final boolean isTrusted, final Tag tag)
 	{
-		super();
-	}
-
-
-	/**
-	 * @param isTrusted
-	 * @param tag
-	 */
-	public Ndef(final boolean isTrusted, final Tag tag)
-	{
-		super();
 		this.isTrusted = isTrusted;
 		this.tag = tag;
 	}
-
-
+	
+	
 	/**
 	 * @return the isTrusted
 	 */
@@ -58,18 +46,8 @@ public class Ndef
 	{
 		return this.isTrusted;
 	}
-
-
-	/**
-	 * @param isTrusted
-	 *            the isTrusted to set
-	 */
-	public void setTrusted(final boolean isTrusted)
-	{
-		this.isTrusted = isTrusted;
-	}
-
-
+	
+	
 	/**
 	 * @return the tag
 	 */
@@ -77,22 +55,12 @@ public class Ndef
 	{
 		return this.tag;
 	}
-
-
-	/**
-	 * @param tag
-	 *            the tag to set
-	 */
-	public void setTag(final Tag tag)
-	{
-		this.tag = tag;
-	}
-
-
+	
+	
 	@Override
 	public String toString()
 	{
 		return "Ndef [isTrusted=" + this.isTrusted + ", tag=" + this.tag + "]";
 	}
-
+	
 }

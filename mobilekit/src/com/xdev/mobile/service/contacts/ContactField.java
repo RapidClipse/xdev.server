@@ -45,13 +45,13 @@ public class ContactField
 	private String	type;
 	private String	value;
 	private boolean	pref;
-
-
+	
+	
 	public ContactField()
 	{
 	}
-
-
+	
+	
 	public ContactField(final String id, final String type, final String value, final boolean pref)
 	{
 		this.id = id;
@@ -59,20 +59,27 @@ public class ContactField
 		this.value = value;
 		this.pref = pref;
 	}
-
-
+	
+	
+	/**
+	 * Unique identifier
+	 */
 	public String getId()
 	{
 		return this.id;
 	}
-
-
-	public void setId(final String id)
+	
+	
+	/**
+	 * Unique identifier
+	 */
+	public ContactField setId(final String id)
 	{
 		this.id = id;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * A string that indicates what type of field this is, home for example.
 	 */
@@ -80,17 +87,18 @@ public class ContactField
 	{
 		return this.type;
 	}
-
-
+	
+	
 	/**
 	 * A string that indicates what type of field this is, home for example.
 	 */
-	public void setType(final String type)
+	public ContactField setType(final String type)
 	{
 		this.type = type;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * The value of the field, such as a phone number or email address.
 	 */
@@ -98,17 +106,18 @@ public class ContactField
 	{
 		return this.value;
 	}
-
-
+	
+	
 	/**
 	 * The value of the field, such as a phone number or email address.
 	 */
-	public void setValue(final String value)
+	public ContactField setValue(final String value)
 	{
 		this.value = value;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * Set to <code>true</code> if this ContactField contains the user's
 	 * preferred value.
@@ -117,18 +126,19 @@ public class ContactField
 	{
 		return this.pref;
 	}
-
-
+	
+	
 	/**
 	 * Set to <code>true</code> if this ContactField contains the user's
 	 * preferred value.
 	 */
-	public void setPref(final boolean pref)
+	public ContactField setPref(final boolean pref)
 	{
 		this.pref = pref;
+		return this;
 	}
-
-
+	
+	
 	@Override
 	public String toString()
 	{

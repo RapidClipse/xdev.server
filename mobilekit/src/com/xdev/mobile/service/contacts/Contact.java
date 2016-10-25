@@ -37,7 +37,6 @@ import java.util.Collection;
 public class Contact
 {
 	private String							id;
-	private String							rawId;
 	private String							displayName;
 	private ContactName						name;
 	private String							nickname;
@@ -51,23 +50,21 @@ public class Contact
 	private Collection<ContactField>		photos;
 	private Collection<ContactField>		categories;
 	private Collection<ContactField>		urls;
-
-
+	
+	
 	public Contact()
 	{
 	}
-
-
-	public Contact(final String id, final String rawId, final String displayName,
-			final ContactName name, final String nickname,
-			final Collection<ContactField> phoneNumbers, final Collection<ContactField> emails,
-			final Collection<ContactAddress> addresses, final Collection<ContactField> ims,
-			final Collection<ContactOrganization> organizations, final String birthday,
-			final String note, final Collection<ContactField> photos,
+	
+	
+	public Contact(final String id, final String displayName, final ContactName name,
+			final String nickname, final Collection<ContactField> phoneNumbers,
+			final Collection<ContactField> emails, final Collection<ContactAddress> addresses,
+			final Collection<ContactField> ims, final Collection<ContactOrganization> organizations,
+			final String birthday, final String note, final Collection<ContactField> photos,
 			final Collection<ContactField> categories, final Collection<ContactField> urls)
 	{
 		this.id = id;
-		this.rawId = rawId;
 		this.displayName = displayName;
 		this.name = name;
 		this.nickname = nickname;
@@ -82,8 +79,8 @@ public class Contact
 		this.categories = categories;
 		this.urls = urls;
 	}
-
-
+	
+	
 	/**
 	 * A globally unique identifier.
 	 */
@@ -91,29 +88,18 @@ public class Contact
 	{
 		return this.id;
 	}
-
-
+	
+	
 	/**
 	 * A globally unique identifier.
 	 */
-	public void setId(final String id)
+	public Contact setId(final String id)
 	{
 		this.id = id;
+		return this;
 	}
-
-
-	public String getRawId()
-	{
-		return this.rawId;
-	}
-
-
-	public void setRawId(final String rawId)
-	{
-		this.rawId = rawId;
-	}
-
-
+	
+	
 	/**
 	 * The name of this Contact, suitable for display to end users.
 	 */
@@ -121,17 +107,18 @@ public class Contact
 	{
 		return this.displayName;
 	}
-
-
+	
+	
 	/**
 	 * The name of this Contact, suitable for display to end users.
 	 */
-	public void setDisplayName(final String displayName)
+	public Contact setDisplayName(final String displayName)
 	{
 		this.displayName = displayName;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * An object containing all components of a persons name.
 	 */
@@ -139,17 +126,18 @@ public class Contact
 	{
 		return this.name;
 	}
-
-
+	
+	
 	/**
 	 * An object containing all components of a persons name.
 	 */
-	public void setName(final ContactName name)
+	public Contact setName(final ContactName name)
 	{
 		this.name = name;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * A casual name by which to address the contact.
 	 */
@@ -157,17 +145,18 @@ public class Contact
 	{
 		return this.nickname;
 	}
-
-
+	
+	
 	/**
 	 * A casual name by which to address the contact.
 	 */
-	public void setNickname(final String nickname)
+	public Contact setNickname(final String nickname)
 	{
 		this.nickname = nickname;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * A list of all the contact's phone numbers.
 	 */
@@ -175,17 +164,18 @@ public class Contact
 	{
 		return this.phoneNumbers;
 	}
-
-
+	
+	
 	/**
 	 * A list of all the contact's phone numbers.
 	 */
-	public void setPhoneNumbers(final Collection<ContactField> phoneNumbers)
+	public Contact setPhoneNumbers(final Collection<ContactField> phoneNumbers)
 	{
 		this.phoneNumbers = phoneNumbers;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * A list of all the contact's email addresses.
 	 */
@@ -193,17 +183,18 @@ public class Contact
 	{
 		return this.emails;
 	}
-
-
+	
+	
 	/**
 	 * A list of all the contact's email addresses.
 	 */
-	public void setEmails(final Collection<ContactField> emails)
+	public Contact setEmails(final Collection<ContactField> emails)
 	{
 		this.emails = emails;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * A list of all the contact's addresses.
 	 */
@@ -211,17 +202,18 @@ public class Contact
 	{
 		return this.addresses;
 	}
-
-
+	
+	
 	/**
 	 * A list of all the contact's addresses.
 	 */
-	public void setAddresses(final Collection<ContactAddress> addresses)
+	public Contact setAddresses(final Collection<ContactAddress> addresses)
 	{
 		this.addresses = addresses;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * A list of all the contact's IM addresses.
 	 */
@@ -229,17 +221,18 @@ public class Contact
 	{
 		return this.ims;
 	}
-
-
+	
+	
 	/**
 	 * A list of all the contact's IM addresses.
 	 */
-	public void setIms(final Collection<ContactField> ims)
+	public Contact setIms(final Collection<ContactField> ims)
 	{
 		this.ims = ims;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * A list of all the contact's organizations.
 	 */
@@ -247,17 +240,18 @@ public class Contact
 	{
 		return this.organizations;
 	}
-
-
+	
+	
 	/**
 	 * A list of all the contact's organizations.
 	 */
-	public void setOrganizations(final Collection<ContactOrganization> organizations)
+	public Contact setOrganizations(final Collection<ContactOrganization> organizations)
 	{
 		this.organizations = organizations;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * The birthday of the contact.
 	 */
@@ -265,17 +259,18 @@ public class Contact
 	{
 		return this.birthday;
 	}
-
-
+	
+	
 	/**
 	 * The birthday of the contact.
 	 */
-	public void setBirthday(final String birthday)
+	public Contact setBirthday(final String birthday)
 	{
 		this.birthday = birthday;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * A note about the contact.
 	 */
@@ -283,17 +278,18 @@ public class Contact
 	{
 		return this.note;
 	}
-
-
+	
+	
 	/**
 	 * A note about the contact.
 	 */
-	public void setNote(final String note)
+	public Contact setNote(final String note)
 	{
 		this.note = note;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * A list of the contact's photos.
 	 */
@@ -301,17 +297,18 @@ public class Contact
 	{
 		return this.photos;
 	}
-
-
+	
+	
 	/**
 	 * A list of the contact's photos.
 	 */
-	public void setPhotos(final Collection<ContactField> photos)
+	public Contact setPhotos(final Collection<ContactField> photos)
 	{
 		this.photos = photos;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * A list of all the user-defined categories associated with the contact.
 	 */
@@ -319,17 +316,18 @@ public class Contact
 	{
 		return this.categories;
 	}
-
-
+	
+	
 	/**
 	 * A list of all the user-defined categories associated with the contact.
 	 */
-	public void setCategories(final Collection<ContactField> categories)
+	public Contact setCategories(final Collection<ContactField> categories)
 	{
 		this.categories = categories;
+		return this;
 	}
-
-
+	
+	
 	/**
 	 * A list of web pages associated with the contact.
 	 */
@@ -337,17 +335,18 @@ public class Contact
 	{
 		return this.urls;
 	}
-
-
+	
+	
 	/**
 	 * A list of web pages associated with the contact.
 	 */
-	public void setUrls(final Collection<ContactField> urls)
+	public Contact setUrls(final Collection<ContactField> urls)
 	{
 		this.urls = urls;
+		return this;
 	}
-
-
+	
+	
 	@Override
 	public String toString()
 	{
@@ -355,7 +354,7 @@ public class Contact
 		{
 			return this.displayName;
 		}
-
+		
 		return super.toString();
 	}
 }

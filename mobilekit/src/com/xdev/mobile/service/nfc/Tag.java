@@ -31,38 +31,19 @@ import java.util.Collection;
  */
 public class Tag
 {
-	private boolean				isWritable;
-	private byte[]				id;
-	private Collection<String>	techTypes;
-	private String				type;
-	private boolean				canMakeReadOnly;
-	private double				maxSize;
-	private Collection<Record>	ndefMessage;
-
-
-	/**
-	 *
-	 */
-	public Tag()
-	{
-		super();
-	}
-
-
-	/**
-	 * @param isWritable
-	 * @param id
-	 * @param techTypes
-	 * @param type
-	 * @param canMakeReadOnly
-	 * @param maxSize
-	 * @param ndefMessage
-	 */
-	public Tag(final boolean isWritable, final byte[] id, final Collection<String> techTypes,
+	private final boolean				isWritable;
+	private final byte[]				id;
+	private final Collection<String>	techTypes;
+	private final String				type;
+	private final boolean				canMakeReadOnly;
+	private final double				maxSize;
+	private final Collection<Record>	ndefMessage;
+	
+	
+	Tag(final boolean isWritable, final byte[] id, final Collection<String> techTypes,
 			final String type, final boolean canMakeReadOnly, final double maxSize,
 			final Collection<Record> ndefMessage)
 	{
-		super();
 		this.isWritable = isWritable;
 		this.id = id;
 		this.techTypes = techTypes;
@@ -71,8 +52,8 @@ public class Tag
 		this.maxSize = maxSize;
 		this.ndefMessage = ndefMessage;
 	}
-
-
+	
+	
 	/**
 	 * @return the isWritable
 	 */
@@ -80,18 +61,8 @@ public class Tag
 	{
 		return this.isWritable;
 	}
-
-
-	/**
-	 * @param isWritable
-	 *            the isWritable to set
-	 */
-	public void setWritable(final boolean isWritable)
-	{
-		this.isWritable = isWritable;
-	}
-
-
+	
+	
 	/**
 	 * @return the id
 	 */
@@ -99,18 +70,8 @@ public class Tag
 	{
 		return this.id;
 	}
-
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(final byte[] id)
-	{
-		this.id = id;
-	}
-
-
+	
+	
 	/**
 	 * @return the techTypes
 	 */
@@ -118,18 +79,8 @@ public class Tag
 	{
 		return this.techTypes;
 	}
-
-
-	/**
-	 * @param techTypes
-	 *            the techTypes to set
-	 */
-	public void setTechTypes(final Collection<String> techTypes)
-	{
-		this.techTypes = techTypes;
-	}
-
-
+	
+	
 	/**
 	 * @return the type
 	 */
@@ -137,18 +88,8 @@ public class Tag
 	{
 		return this.type;
 	}
-
-
-	/**
-	 * @param type
-	 *            the type to set
-	 */
-	public void setType(final String type)
-	{
-		this.type = type;
-	}
-
-
+	
+	
 	/**
 	 * @return the canMakeReadOnly
 	 */
@@ -156,18 +97,8 @@ public class Tag
 	{
 		return this.canMakeReadOnly;
 	}
-
-
-	/**
-	 * @param canMakeReadOnly
-	 *            the canMakeReadOnly to set
-	 */
-	public void setCanMakeReadOnly(final boolean canMakeReadOnly)
-	{
-		this.canMakeReadOnly = canMakeReadOnly;
-	}
-
-
+	
+	
 	/**
 	 * @return the maxSize
 	 */
@@ -175,18 +106,8 @@ public class Tag
 	{
 		return this.maxSize;
 	}
-
-
-	/**
-	 * @param maxSize
-	 *            the maxSize to set
-	 */
-	public void setMaxSize(final double maxSize)
-	{
-		this.maxSize = maxSize;
-	}
-
-
+	
+	
 	/**
 	 * @return the ndefMessage
 	 */
@@ -194,18 +115,8 @@ public class Tag
 	{
 		return this.ndefMessage;
 	}
-
-
-	/**
-	 * @param ndefMessage
-	 *            the ndefMessage to set
-	 */
-	public void setNdefMessage(final Collection<Record> ndefMessage)
-	{
-		this.ndefMessage = ndefMessage;
-	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *

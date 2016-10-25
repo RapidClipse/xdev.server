@@ -35,13 +35,13 @@ public class ContactName
 	private String	middle;
 	private String	prefix;
 	private String	suffix;
-
-
+	
+	
 	public ContactName()
 	{
 	}
-
-
+	
+	
 	public ContactName(final String formatted, final String familyName, final String givenName,
 			final String middle, final String prefix, final String suffix)
 	{
@@ -52,8 +52,8 @@ public class ContactName
 		this.prefix = prefix;
 		this.suffix = suffix;
 	}
-	
-	
+
+
 	/**
 	 * The complete name of the contact.
 	 */
@@ -61,17 +61,18 @@ public class ContactName
 	{
 		return this.formatted;
 	}
-	
-	
+
+
 	/**
 	 * The complete name of the contact.
 	 */
-	public void setFormatted(final String formatted)
+	public ContactName setFormatted(final String formatted)
 	{
 		this.formatted = formatted;
+		return this;
 	}
-	
-	
+
+
 	/**
 	 * The contact's family name.
 	 */
@@ -79,17 +80,18 @@ public class ContactName
 	{
 		return this.familyName;
 	}
-	
-	
+
+
 	/**
 	 * The contact's family name.
 	 */
-	public void setFamilyName(final String familyName)
+	public ContactName setFamilyName(final String familyName)
 	{
 		this.familyName = familyName;
+		return this;
 	}
-	
-	
+
+
 	/**
 	 * The contact's given name.
 	 */
@@ -97,17 +99,18 @@ public class ContactName
 	{
 		return this.givenName;
 	}
-	
-	
+
+
 	/**
 	 * The contact's given name.
 	 */
-	public void setGivenName(final String givenName)
+	public ContactName setGivenName(final String givenName)
 	{
 		this.givenName = givenName;
+		return this;
 	}
-	
-	
+
+
 	/**
 	 * The contact's middle name.
 	 */
@@ -115,17 +118,18 @@ public class ContactName
 	{
 		return this.middle;
 	}
-	
-	
+
+
 	/**
 	 * The contact's middle name.
 	 */
-	public void setMiddle(final String middle)
+	public ContactName setMiddle(final String middle)
 	{
 		this.middle = middle;
+		return this;
 	}
-	
-	
+
+
 	/**
 	 * The contact's prefix (example Mr. or Dr.)
 	 */
@@ -133,17 +137,18 @@ public class ContactName
 	{
 		return this.prefix;
 	}
-	
-	
+
+
 	/**
 	 * The contact's prefix (example Mr. or Dr.)
 	 */
-	public void setPrefix(final String prefix)
+	public ContactName setPrefix(final String prefix)
 	{
 		this.prefix = prefix;
+		return this;
 	}
-	
-	
+
+
 	/**
 	 * The contact's suffix (example Esq.)
 	 */
@@ -151,17 +156,18 @@ public class ContactName
 	{
 		return this.suffix;
 	}
-	
-	
+
+
 	/**
 	 * The contact's suffix (example Esq.)
 	 */
-	public void setSuffix(final String suffix)
+	public ContactName setSuffix(final String suffix)
 	{
 		this.suffix = suffix;
+		return this;
 	}
-	
-	
+
+
 	@Override
 	public String toString()
 	{
@@ -169,7 +175,7 @@ public class ContactName
 		{
 			return this.formatted;
 		}
-		
+
 		return super.toString();
 	}
 }

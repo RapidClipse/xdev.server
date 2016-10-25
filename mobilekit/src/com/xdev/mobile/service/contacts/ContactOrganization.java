@@ -37,13 +37,13 @@ public class ContactOrganization
 	private String	name;
 	private String	department;
 	private String	title;
-
-
+	
+	
 	public ContactOrganization()
 	{
 	}
-
-
+	
+	
 	public ContactOrganization(final String id, final boolean pref, final String type,
 			final String name, final String department, final String title)
 	{
@@ -54,20 +54,27 @@ public class ContactOrganization
 		this.department = department;
 		this.title = title;
 	}
-
-
+	
+	
+	/**
+	 * Unique identifier
+	 */
 	public String getId()
 	{
 		return this.id;
 	}
-
-
-	public void setId(final String id)
+	
+	
+	/**
+	 * Unique identifier
+	 */
+	public ContactOrganization setId(final String id)
 	{
 		this.id = id;
+		return this;
 	}
-	
-	
+
+
 	/**
 	 * Set to <code>true</code> if this ContactOrganization contains the user's
 	 * preferred value.
@@ -76,18 +83,19 @@ public class ContactOrganization
 	{
 		return this.pref;
 	}
-	
-	
+
+
 	/**
 	 * Set to <code>true</code> if this ContactOrganization contains the user's
 	 * preferred value.
 	 */
-	public void setPref(final boolean pref)
+	public ContactOrganization setPref(final boolean pref)
 	{
 		this.pref = pref;
+		return this;
 	}
-	
-	
+
+
 	/**
 	 * A string that indicates what type of field this is, &quot;home&quot; for
 	 * example.
@@ -96,18 +104,19 @@ public class ContactOrganization
 	{
 		return this.type;
 	}
-	
-	
+
+
 	/**
 	 * A string that indicates what type of field this is, &quot;home&quot; for
 	 * example.
 	 */
-	public void setType(final String type)
+	public ContactOrganization setType(final String type)
 	{
 		this.type = type;
+		return this;
 	}
-	
-	
+
+
 	/**
 	 * The name of the organization.
 	 */
@@ -115,17 +124,18 @@ public class ContactOrganization
 	{
 		return this.name;
 	}
-	
-	
+
+
 	/**
 	 * The name of the organization.
 	 */
-	public void setName(final String name)
+	public ContactOrganization setName(final String name)
 	{
 		this.name = name;
+		return this;
 	}
-	
-	
+
+
 	/**
 	 * The department the contact works for.
 	 */
@@ -133,17 +143,18 @@ public class ContactOrganization
 	{
 		return this.department;
 	}
-	
-	
+
+
 	/**
 	 * The department the contact works for.
 	 */
-	public void setDepartment(final String department)
+	public ContactOrganization setDepartment(final String department)
 	{
 		this.department = department;
+		return this;
 	}
-	
-	
+
+
 	/**
 	 * The contact's title at the organization.
 	 */
@@ -151,17 +162,18 @@ public class ContactOrganization
 	{
 		return this.title;
 	}
-	
-	
+
+
 	/**
 	 * The contact's title at the organization.
 	 */
-	public void setTitle(final String title)
+	public ContactOrganization setTitle(final String title)
 	{
 		this.title = title;
+		return this;
 	}
-
-
+	
+	
 	@Override
 	public String toString()
 	{

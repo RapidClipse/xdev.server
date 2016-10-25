@@ -95,7 +95,7 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 	}
 	
 	private final Map<String, ServiceCall<Position, GeolocationServiceError>>		getCalls	= new HashMap<>();
-	private final Map<String, ServiceCall<Geolocation, GeolocationServiceError>>	watchCalls	= new HashMap<>();
+	private final Map<String, ServiceCall<PositionWatch, GeolocationServiceError>>	watchCalls	= new HashMap<>();
 	
 	
 	public GeolocationService(final AbstractClientConnector connector,
@@ -155,11 +155,11 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 	
 	@Override
 	public synchronized void watchPosition(final GeolocationOptions options,
-			final Consumer<Geolocation> successCallback,
+			final Consumer<PositionWatch> successCallback,
 			final Consumer<GeolocationServiceError> errorCallback)
 	{
 		final String id = generateCallerID();
-		final ServiceCall<Geolocation, GeolocationServiceError> call = ServiceCall
+		final ServiceCall<PositionWatch, GeolocationServiceError> call = ServiceCall
 				.New(successCallback,errorCallback);
 		this.watchCalls.put(id,call);
 		
@@ -201,13 +201,13 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 	private void geolocation_watch_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<Geolocation, GeolocationServiceError> call = this.watchCalls.get(id);
+		final ServiceCall<PositionWatch, GeolocationServiceError> call = this.watchCalls.get(id);
 		if(call != null)
 		{
 			final JsonObject jsonObject = arguments.getObject(1);
 			final Position position = parsePosition(jsonObject);
-			final double watchID = arguments.getNumber(2);
-			final Geolocation geolocation = new Geolocation(position,watchID);
+			final String watchID = arguments.getString(2);
+			final PositionWatch geolocation = new PositionWatch(position,watchID);
 			call.success(geolocation);
 		}
 	}
@@ -216,7 +216,7 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 	private void geolocation_watch_error(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
-		final ServiceCall<Geolocation, GeolocationServiceError> call = this.watchCalls.remove(id);
+		final ServiceCall<PositionWatch, GeolocationServiceError> call = this.watchCalls.remove(id);
 		if(call != null)
 		{
 			call.error(createGeolocationServiceError(arguments.get(1)));
@@ -225,11 +225,11 @@ public class GeolocationService extends AbstractMobileService implements Geoloca
 
 
 	@Override
-	public void clearWatchPosition(final double watchID)
+	public void clearWatchPosition(final String watchID)
 	{
 		final StringBuilder js = new StringBuilder();
 		js.append("geolocation_clear_watch(");
-		js.append(watchID).append(");");
+		js.append(toLiteral(watchID)).append(");");
 		
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}

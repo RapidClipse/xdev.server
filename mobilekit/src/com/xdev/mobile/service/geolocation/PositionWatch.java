@@ -22,28 +22,20 @@ package com.xdev.mobile.service.geolocation;
 
 
 /**
+ * Callback object for
+ * {@link GeolocationService#watchPosition(GeolocationOptions, java.util.function.Consumer, java.util.function.Consumer)}
+ *
  * @author XDEV Software
  *
  */
-public class Geolocation
+public class PositionWatch
 {
-	private Position	position;
-	private double		watchID;
-
-
-	public Geolocation()
+	private final Position	position;
+	private final String	watchID;
+	
+	
+	PositionWatch(final Position position, final String watchID)
 	{
-		
-	}
-
-
-	/**
-	 * @param position
-	 * @param watchID
-	 */
-	public Geolocation(final Position position, final double watchID)
-	{
-		super();
 		this.position = position;
 		this.watchID = watchID;
 	}
@@ -56,45 +48,35 @@ public class Geolocation
 	{
 		return this.position;
 	}
-
-
-	/**
-	 * @param position
-	 *            the position to set
-	 */
-	public void setPosition(final Position position)
-	{
-		this.position = position;
-	}
-
-
+	
+	
 	/**
 	 * @return the watchID
 	 */
-	public double getWatchID()
+	public String getWatchID()
 	{
 		return this.watchID;
 	}
-
-
+	
+	
 	/**
-	 * @param watchID
-	 *            the watchID to set
+	 * Convenience method to clear this watch position.
+	 * <p>
+	 * Synonym for:
+	 * <p>
+	 * {@code
+	 * GeolocationService.getInstance().clearWatchPosition(positionWatch.getWatchID());
+	 * }
 	 */
-	public void setWatchID(final double watchID)
+	public void clear()
 	{
-		this.watchID = watchID;
+		GeolocationService.getInstance().clearWatchPosition(this.watchID);
 	}
-
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.lang.Object#toString()
-	 */
+	
+	
 	@Override
 	public String toString()
 	{
-		return "Geolocation [position=" + this.position + ", watchID=" + this.watchID + "]";
+		return "PositionWatch [position=" + this.position + ", watchID=" + this.watchID + "]";
 	}
 }

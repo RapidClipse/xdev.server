@@ -33,15 +33,15 @@ public class BarcodeData
 {
 	private final BarcodeFormat	format;
 	private final String		data;
-
-
-	public BarcodeData(final BarcodeFormat format, final String data)
+	
+	
+	BarcodeData(final BarcodeFormat format, final String data)
 	{
 		this.format = format;
 		this.data = data;
 	}
-
-
+	
+	
 	/**
 	 *
 	 * @return the format of the scanned barcode
@@ -50,8 +50,8 @@ public class BarcodeData
 	{
 		return this.format;
 	}
-
-
+	
+	
 	/**
 	 *
 	 * @return the data of the scanned barcode
@@ -60,8 +60,8 @@ public class BarcodeData
 	{
 		return this.data;
 	}
-
-
+	
+	
 	@Override
 	public String toString()
 	{

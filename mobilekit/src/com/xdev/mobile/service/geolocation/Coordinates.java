@@ -32,31 +32,16 @@ package com.xdev.mobile.service.geolocation;
  */
 public class Coordinates
 {
-	private double	latitude;
-	private double	longitude;
-	private double	altitude;
-	private double	accuracy;
-	private double	altitudeAccuracy;
-	private double	heading;
-	private double	speed;
-
-
-	public Coordinates()
-	{
-
-	}
-
-
-	/**
-	 * @param latitude
-	 * @param longitude
-	 * @param altitude
-	 * @param accuracy
-	 * @param altitudeAccuracy
-	 * @param heading
-	 * @param speed
-	 */
-	public Coordinates(final double latitude, final double longitude, final double altitude,
+	private final double	latitude;
+	private final double	longitude;
+	private final double	altitude;
+	private final double	accuracy;
+	private final double	altitudeAccuracy;
+	private final double	heading;
+	private final double	speed;
+	
+	
+	Coordinates(final double latitude, final double longitude, final double altitude,
 			final double accuracy, final double altitudeAccuracy, final double heading,
 			final double speed)
 	{
@@ -69,8 +54,8 @@ public class Coordinates
 		this.heading = heading;
 		this.speed = speed;
 	}
-
-
+	
+	
 	/**
 	 * Latitude in decimal degrees.
 	 */
@@ -78,17 +63,8 @@ public class Coordinates
 	{
 		return this.latitude;
 	}
-
-
-	/**
-	 * Latitude in decimal degrees.
-	 */
-	public void setLatitude(final double latitude)
-	{
-		this.latitude = latitude;
-	}
-
-
+	
+	
 	/**
 	 * Longitude in decimal degrees.
 	 */
@@ -96,17 +72,8 @@ public class Coordinates
 	{
 		return this.longitude;
 	}
-
-
-	/**
-	 * Longitude in decimal degrees.
-	 */
-	public void setLongitude(final double longitude)
-	{
-		this.longitude = longitude;
-	}
-
-
+	
+	
 	/**
 	 * Height of the position in meters above the ellipsoid.
 	 */
@@ -114,17 +81,8 @@ public class Coordinates
 	{
 		return this.altitude;
 	}
-
-
-	/**
-	 * Height of the position in meters above the ellipsoid.
-	 */
-	public void setAltitude(final double altitude)
-	{
-		this.altitude = altitude;
-	}
-
-
+	
+	
 	/**
 	 * Accuracy level of the latitude and longitude coordinates in meters.
 	 */
@@ -132,17 +90,8 @@ public class Coordinates
 	{
 		return this.accuracy;
 	}
-
-
-	/**
-	 * Accuracy level of the latitude and longitude coordinates in meters.
-	 */
-	public void setAccuracy(final double accuracy)
-	{
-		this.accuracy = accuracy;
-	}
-
-
+	
+	
 	/**
 	 * Accuracy level of the altitude coordinate in meters.
 	 */
@@ -150,17 +99,8 @@ public class Coordinates
 	{
 		return this.altitudeAccuracy;
 	}
-
-
-	/**
-	 * Accuracy level of the altitude coordinate in meters.
-	 */
-	public void setAltitudeAccuracy(final double altitudeAccuracy)
-	{
-		this.altitudeAccuracy = altitudeAccuracy;
-	}
-
-
+	
+	
 	/**
 	 * Direction of travel, specified in degrees counting clockwise relative to
 	 * the true north.
@@ -169,18 +109,8 @@ public class Coordinates
 	{
 		return this.heading;
 	}
-
-
-	/**
-	 * Direction of travel, specified in degrees counting clockwise relative to
-	 * the true north.
-	 */
-	public void setHeading(final double heading)
-	{
-		this.heading = heading;
-	}
-
-
+	
+	
 	/**
 	 * Current ground speed of the device, specified in meters per second.
 	 */
@@ -188,17 +118,8 @@ public class Coordinates
 	{
 		return this.speed;
 	}
-
-
-	/**
-	 * Current ground speed of the device, specified in meters per second.
-	 */
-	public void setSpeed(final double speed)
-	{
-		this.speed = speed;
-	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *

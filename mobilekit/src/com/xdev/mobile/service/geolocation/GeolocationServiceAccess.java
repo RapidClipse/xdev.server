@@ -43,8 +43,8 @@ public interface GeolocationServiceAccess
 	{
 		getCurrentPosition(options,successCallback,null);
 	}
-
-
+	
+	
 	/**
 	 * Asynchronously acquires the current position.
 	 *
@@ -58,8 +58,8 @@ public interface GeolocationServiceAccess
 	 */
 	public void getCurrentPosition(GeolocationOptions options, Consumer<Position> successCallback,
 			Consumer<GeolocationServiceError> errorCallback);
-	
-	
+
+
 	/**
 	 *
 	 * Asynchronously watches the geolocation for changes to geolocation. When a
@@ -74,12 +74,12 @@ public interface GeolocationServiceAccess
 	 *            location data.
 	 */
 	default public void watchPosition(final GeolocationOptions options,
-			final Consumer<Geolocation> successCallback)
+			final Consumer<PositionWatch> successCallback)
 	{
 		watchPosition(options,successCallback,null);
 	}
-
-
+	
+	
 	/**
 	 *
 	 * Asynchronously watches the geolocation for changes to geolocation. When a
@@ -93,14 +93,14 @@ public interface GeolocationServiceAccess
 	 *            The function to call when there is an error getting the
 	 *            location data.
 	 */
-	public void watchPosition(GeolocationOptions options, Consumer<Geolocation> successCallback,
+	public void watchPosition(GeolocationOptions options, Consumer<PositionWatch> successCallback,
 			Consumer<GeolocationServiceError> errorCallback);
-
-
+	
+	
 	/**
 	 * Clears the specified heading watch.
 	 *
 	 * @param watchID
 	 */
-	public void clearWatchPosition(double watchID);
+	public void clearWatchPosition(String watchID);
 }

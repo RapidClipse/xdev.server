@@ -63,15 +63,22 @@ public class ContactAddress
 	}
 
 
+	/**
+	 * Unique identifier
+	 */
 	public String getId()
 	{
 		return this.id;
 	}
-
-
-	public void setId(final String id)
+	
+	
+	/**
+	 * Unique identifier
+	 */
+	public ContactAddress setId(final String id)
 	{
 		this.id = id;
+		return this;
 	}
 
 
@@ -89,9 +96,10 @@ public class ContactAddress
 	 * Set to <code>true</code> if this ContactAddress contains the user's
 	 * preferred value.
 	 */
-	public void setPref(final boolean pref)
+	public ContactAddress setPref(final boolean pref)
 	{
 		this.pref = pref;
+		return this;
 	}
 	
 	
@@ -109,9 +117,10 @@ public class ContactAddress
 	 * A string indicating what type of field this is, &quot;home&quot; for
 	 * example.
 	 */
-	public void setType(final String type)
+	public ContactAddress setType(final String type)
 	{
 		this.type = type;
+		return this;
 	}
 	
 	
@@ -127,9 +136,10 @@ public class ContactAddress
 	/**
 	 * The full address formatted for display.
 	 */
-	public void setFormatted(final String formatted)
+	public ContactAddress setFormatted(final String formatted)
 	{
 		this.formatted = formatted;
+		return this;
 	}
 	
 	
@@ -145,9 +155,10 @@ public class ContactAddress
 	/**
 	 * The full street address.
 	 */
-	public void setStreetAddress(final String streetAddress)
+	public ContactAddress setStreetAddress(final String streetAddress)
 	{
 		this.streetAddress = streetAddress;
+		return this;
 	}
 	
 	
@@ -163,9 +174,10 @@ public class ContactAddress
 	/**
 	 * The city or locality.
 	 */
-	public void setLocality(final String locality)
+	public ContactAddress setLocality(final String locality)
 	{
 		this.locality = locality;
+		return this;
 	}
 	
 	
@@ -181,9 +193,10 @@ public class ContactAddress
 	/**
 	 * The state or region.
 	 */
-	public void setRegion(final String region)
+	public ContactAddress setRegion(final String region)
 	{
 		this.region = region;
+		return this;
 	}
 	
 	
@@ -199,9 +212,10 @@ public class ContactAddress
 	/**
 	 * The zip code or postal code.
 	 */
-	public void setPostalCode(final String postalCode)
+	public ContactAddress setPostalCode(final String postalCode)
 	{
 		this.postalCode = postalCode;
+		return this;
 	}
 	
 	
@@ -217,9 +231,10 @@ public class ContactAddress
 	/**
 	 * The country name.
 	 */
-	public void setCountry(final String country)
+	public ContactAddress setCountry(final String country)
 	{
 		this.country = country;
+		return this;
 	}
 
 

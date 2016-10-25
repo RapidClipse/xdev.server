@@ -32,7 +32,24 @@ import com.xdev.mobile.service.MobileServiceError;
  */
 public interface NfcServiceAccess
 {
-	
+	/**
+	 * Registers an event listener for any NDEF tag.
+	 * <p>
+	 * A ndef event is fired when a NDEF tag is read.
+	 *
+	 * @param callback
+	 *            The callback that is called when an NDEF tag is read.
+	 * @param successCallback
+	 *            (Optional) The callback that is called when the listener is
+	 *            added.
+	 */
+	default public void startNdefListener(final Consumer<Ndef> callback,
+			final Consumer<String> successCallback)
+	{
+		startNdefListener(callback,successCallback,null);
+	}
+
+
 	/**
 	 * Registers an event listener for any NDEF tag.
 	 * <p>
@@ -46,10 +63,24 @@ public interface NfcServiceAccess
 	 * @param errorCallback
 	 *            (Optional) The callback that is called if there was an error.
 	 */
-	void startNdefListener(Consumer<Ndef> callback, Consumer<String> successCallback,
+	public void startNdefListener(Consumer<Ndef> callback, Consumer<String> successCallback,
 			Consumer<MobileServiceError> errorCallback);
-	
-	
+
+
+	/**
+	 * Removes the previously registered event listener for NDEF tags added via
+	 * {@link #addNdefListener(Consumer, Consumer, Consumer)}.
+	 *
+	 * @param successCallback
+	 *            (Optional) The callback that is called when the listener is
+	 *            successfully removed.
+	 */
+	default public void stopNdefListener(final Consumer<String> successCallback)
+	{
+		stopNdefListener(successCallback,null);
+	}
+
+
 	/**
 	 * Removes the previously registered event listener for NDEF tags added via
 	 * {@link #addNdefListener(Consumer, Consumer, Consumer)}.
@@ -61,10 +92,28 @@ public interface NfcServiceAccess
 	 *            (Optional) The callback that is called if there was an error
 	 *            during removal.
 	 */
-	void stopNdefListener(Consumer<String> successCallback,
+	public void stopNdefListener(Consumer<String> successCallback,
 			Consumer<MobileServiceError> errorCallback);
-	
-	
+
+
+	/**
+	 * Registers an event listener for tags matching any tag type.
+	 * <p>
+	 * This event occurs when any tag is detected by the phone.
+	 *
+	 * @param callback
+	 *            The callback that is called when a tag is detected.
+	 * @param successCallback
+	 *            (Optional) The callback that is called when the listener is
+	 *            added.
+	 */
+	default public void startTagDiscoveredListener(final Consumer<Ndef> callback,
+			final Consumer<String> successCallback)
+	{
+		startTagDiscoveredListener(callback,successCallback,null);
+	}
+
+
 	/**
 	 * Registers an event listener for tags matching any tag type.
 	 * <p>
@@ -78,10 +127,24 @@ public interface NfcServiceAccess
 	 * @param errorCallback
 	 *            (Optional) The callback that is called if there was an error.
 	 */
-	void startTagDiscoveredListener(Consumer<Ndef> callback, Consumer<String> successCallback,
-			Consumer<MobileServiceError> errorCallback);
-	
-	
+	public void startTagDiscoveredListener(Consumer<Ndef> callback,
+			Consumer<String> successCallback, Consumer<MobileServiceError> errorCallback);
+
+
+	/**
+	 * Removes the previously registered event listener added via
+	 * {@link #startTagDiscoveredListener(Consumer, Consumer, Consumer)}.
+	 *
+	 * @param successCallback
+	 *            (Optional) The callback that is called when the listener is
+	 *            successfully removed.
+	 */
+	default public void stopTagDiscoveredListener(final Consumer<String> successCallback)
+	{
+		stopTagDiscoveredListener(successCallback,null);
+	}
+
+
 	/**
 	 * Removes the previously registered event listener added via
 	 * {@link #startTagDiscoveredListener(Consumer, Consumer, Consumer)}.
@@ -93,10 +156,22 @@ public interface NfcServiceAccess
 	 *            (Optional) The callback that is called if there was an error
 	 *            during removal.
 	 */
-	void stopTagDiscoveredListener(Consumer<String> successCallback,
+	public void stopTagDiscoveredListener(Consumer<String> successCallback,
 			Consumer<MobileServiceError> errorCallback);
-	
-	
+
+
+	/**
+	 * Erase a NDEF tag by writing an empty message. Will format unformatted
+	 * tags before writing.
+	 *
+	 * @param successCallback
+	 */
+	default public void eraseTag(final Consumer<String> successCallback)
+	{
+		eraseTag(successCallback,null);
+	}
+
+
 	/**
 	 * Erase a NDEF tag by writing an empty message. Will format unformatted
 	 * tags before writing.
@@ -104,9 +179,24 @@ public interface NfcServiceAccess
 	 * @param successCallback
 	 * @param errorCallback
 	 */
-	void eraseTag(Consumer<String> successCallback, Consumer<MobileServiceError> errorCallback);
-	
-	
+	public void eraseTag(Consumer<String> successCallback,
+			Consumer<MobileServiceError> errorCallback);
+
+
+	/**
+	 * Writes an NDEF Message to a NFC tag.
+	 * <p>
+	 * A NDEF Message is an array of one or more NDEF Records
+	 *
+	 * @param message
+	 * @param successCallback
+	 */
+	default public void write(final Consumer<String> successCallback, final Record... records)
+	{
+		write(successCallback,null,records);
+	}
+
+
 	/**
 	 * Writes an NDEF Message to a NFC tag.
 	 * <p>
@@ -116,10 +206,23 @@ public interface NfcServiceAccess
 	 * @param successCallback
 	 * @param errorCallback
 	 */
-	void write(Consumer<String> successCallback, Consumer<MobileServiceError> errorCallback,
+	public void write(Consumer<String> successCallback, Consumer<MobileServiceError> errorCallback,
 			Record... records);
-	
-	
+
+
+	/**
+	 * Makes a NFC tag read only.
+	 * <p>
+	 * <b> Warning this is permanent.</b>
+	 *
+	 * @param successCallback
+	 */
+	default public void makeReadOnly(final Consumer<String> successCallback)
+	{
+		makeReadOnly(successCallback,null);
+	}
+
+
 	/**
 	 * Makes a NFC tag read only.
 	 * <p>
@@ -128,18 +231,30 @@ public interface NfcServiceAccess
 	 * @param successCallback
 	 * @param errorCallback
 	 */
-	void makeReadOnly(Consumer<String> successCallback, Consumer<MobileServiceError> errorCallback);
-	
-	
+	public void makeReadOnly(Consumer<String> successCallback,
+			Consumer<MobileServiceError> errorCallback);
+
+
+	/**
+	 * Show the NFC settings on the device.
+	 *
+	 * @param successCallback
+	 */
+	default public void showSettings(final Consumer<String> successCallback)
+	{
+		showSettings(successCallback,null);
+	}
+
+
 	/**
 	 * Show the NFC settings on the device.
 	 *
 	 * @param successCallback
 	 * @param errorCallback
 	 */
-	void showSettings(Consumer<String> successCallback, Consumer<MobileServiceError> errorCallback);
-	
-	
-	void removeAllListener();
-	
+	public void showSettings(Consumer<String> successCallback,
+			Consumer<MobileServiceError> errorCallback);
+
+
+	public void removeAllListener();
 }

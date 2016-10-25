@@ -30,8 +30,12 @@ import java.util.function.Consumer;
  */
 public interface FileServiceAccess
 {
-	
-	void readFile(String path, Consumer<FileData> successCallback,
+	default public void readFile(final String path, final Consumer<FileData> successCallback)
+	{
+		readFile(path,successCallback,null);
+	}
+
+
+	public void readFile(String path, Consumer<FileData> successCallback,
 			Consumer<FileServiceError> errorCallback);
-	
 }

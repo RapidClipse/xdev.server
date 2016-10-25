@@ -27,7 +27,7 @@ package com.xdev.mobile.service.app;
  */
 public interface AppServiceAccess
 {
-	
+
 	/**
 	 * Closes the app.
 	 * <p>
@@ -38,9 +38,9 @@ public interface AppServiceAccess
 	 * </ul>
 	 *
 	 */
-	void closeApp();
-	
-	
+	public void closeApp();
+
+
 	/**
 	 * Adds an handler for the pause event.
 	 * <p>
@@ -58,18 +58,18 @@ public interface AppServiceAccess
 	 *
 	 * @param handler
 	 */
-	void addPauseHandler(AppEventHandler handler);
-	
-	
+	public void addPauseHandler(AppEventHandler handler);
+
+
 	/**
 	 * Removes the previously registered pause handler.
 	 *
 	 * @param handler
 	 * @see #addPauseHandler(AppEventHandler)
 	 */
-	void removePauseHandler(AppEventHandler handler);
-	
-	
+	public void removePauseHandler(AppEventHandler handler);
+
+
 	/**
 	 * Adds an handler for the resume event.
 	 * <p>
@@ -86,18 +86,18 @@ public interface AppServiceAccess
 	 *
 	 * @param handler
 	 */
-	void addResumeHandler(AppEventHandler handler);
-	
-	
+	public void addResumeHandler(AppEventHandler handler);
+
+
 	/**
 	 * Removes the previously registered resume handler.
 	 *
 	 * @param handler
 	 * @see #addResumeHandler(AppEventHandler)
 	 */
-	void removeResumeHandler(AppEventHandler handler);
-	
-	
+	public void removeResumeHandler(AppEventHandler handler);
+
+
 	/**
 	 * Adds an handler for the backbutton event.
 	 * <p>
@@ -113,18 +113,18 @@ public interface AppServiceAccess
 	 *
 	 * @param handler
 	 */
-	void addBackButtonHandler(AppEventHandler handler);
-	
-	
+	public void addBackButtonHandler(AppEventHandler handler);
+
+
 	/**
 	 * Removes the previously registered backbutton handler.
 	 *
 	 * @param handler
 	 * @see #addBackButtonHandler(AppEventHandler)
 	 */
-	void removeBackButtonHandler(AppEventHandler handler);
-	
-	
+	public void removeBackButtonHandler(AppEventHandler handler);
+
+
 	/**
 	 * Adds an handler for the menubutton event.
 	 * <p>
@@ -138,18 +138,18 @@ public interface AppServiceAccess
 	 *
 	 * @param handler
 	 */
-	void addMenuButtonHandler(AppEventHandler handler);
-	
-	
+	public void addMenuButtonHandler(AppEventHandler handler);
+
+
 	/**
 	 * Removes the previously registered menubutton handler.
 	 *
 	 * @param handler
 	 * @see #addMenuButtonHandler(AppEventHandler)
 	 */
-	void removeMenuButtonHandler(AppEventHandler handler);
-	
-	
+	public void removeMenuButtonHandler(AppEventHandler handler);
+
+
 	/**
 	 * Adds an handler for the searchbutton event.
 	 * <p>
@@ -164,18 +164,18 @@ public interface AppServiceAccess
 	 *
 	 * @param handler
 	 */
-	void addSearchButtonHandler(AppEventHandler handler);
-	
-	
+	public void addSearchButtonHandler(AppEventHandler handler);
+
+
 	/**
 	 * Removes the previously registered searchbutton handler.
 	 *
 	 * @param handler
 	 * @see #addSearchButtonHandler(AppEventHandler)
 	 */
-	void removeSearchButtonHandler(AppEventHandler handler);
-	
-	
+	public void removeSearchButtonHandler(AppEventHandler handler);
+
+
 	/**
 	 * Adds an handler for the volumedownbutton event.
 	 * <p>
@@ -190,18 +190,18 @@ public interface AppServiceAccess
 	 *
 	 * @param handler
 	 */
-	void addVolumeDownButtonHandler(AppEventHandler handler);
-	
-	
+	public void addVolumeDownButtonHandler(AppEventHandler handler);
+
+
 	/**
 	 * Removes the previously registered volumedownbutton handler.
 	 *
 	 * @param handler
 	 * @see #addVolumeDownButtonHandler(AppEventHandler)
 	 */
-	void removeVolumeDownButtonHandler(AppEventHandler handler);
-	
-	
+	public void removeVolumeDownButtonHandler(AppEventHandler handler);
+
+
 	/**
 	 * Adds an handler for the volumeupbutton event.
 	 * <p>
@@ -216,15 +216,14 @@ public interface AppServiceAccess
 	 *
 	 * @param handler
 	 */
-	void addVolumeUpButtonHandler(AppEventHandler handler);
-	
-	
+	public void addVolumeUpButtonHandler(AppEventHandler handler);
+
+
 	/**
 	 * Removes the previously registered volumeupbutton handler.
 	 *
 	 * @param handler
 	 * @see #addVolumeUpButtonHandler(AppEventHandler)
 	 */
-	void removeVolumeUpButtonHandler(AppEventHandler handler);
-	
+	public void removeVolumeUpButtonHandler(AppEventHandler handler);
 }

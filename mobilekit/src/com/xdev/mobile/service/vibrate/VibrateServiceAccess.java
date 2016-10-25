@@ -27,7 +27,6 @@ package com.xdev.mobile.service.vibrate;
  */
 public interface VibrateServiceAccess
 {
-	
 	/**
 	 * Vibrates with the specified pattern.
 	 * <p>
@@ -53,6 +52,5 @@ public interface VibrateServiceAccess
 	 * @param pattern
 	 *            time/pause pattern to vibrate in milliseconds
 	 */
-	void vibrate(int... pattern);
-	
+	public void vibrate(int... pattern);
 }

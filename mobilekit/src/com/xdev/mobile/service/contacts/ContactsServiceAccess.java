@@ -31,7 +31,6 @@ import java.util.function.Consumer;
  */
 public interface ContactsServiceAccess
 {
-	
 	/**
 	 * Finds contacts in the device contacts database.
 	 * <p>
@@ -43,10 +42,28 @@ public interface ContactsServiceAccess
 	 * <li>Windows</li>
 	 * </ul>
 	 */
-	void find(ContactFindOptions options, Consumer<List<Contact>> successCallback,
+	default public void find(final ContactFindOptions options,
+			final Consumer<List<Contact>> successCallback)
+	{
+		find(options,successCallback,null);
+	}
+
+
+	/**
+	 * Finds contacts in the device contacts database.
+	 * <p>
+	 * Supported platforms:
+	 * <ul>
+	 * <li>Android</li>
+	 * <li>iOS</li>
+	 * <li>Windows Phone 8</li>
+	 * <li>Windows</li>
+	 * </ul>
+	 */
+	public void find(ContactFindOptions options, Consumer<List<Contact>> successCallback,
 			Consumer<ContactsServiceError> errorCallback);
-	
-	
+
+
 	/**
 	 * Launches the Contact Picker to select a single contact.
 	 * <p>
@@ -58,10 +75,27 @@ public interface ContactsServiceAccess
 	 * <li>Windows</li>
 	 * </ul>
 	 */
-	void pickContact(Consumer<Contact> successCallback,
+	default public void pickContact(final Consumer<Contact> successCallback)
+	{
+		pickContact(successCallback,null);
+	}
+
+
+	/**
+	 * Launches the Contact Picker to select a single contact.
+	 * <p>
+	 * Supported platforms:
+	 * <ul>
+	 * <li>Android</li>
+	 * <li>iOS</li>
+	 * <li>Windows Phone 8</li>
+	 * <li>Windows</li>
+	 * </ul>
+	 */
+	public void pickContact(Consumer<Contact> successCallback,
 			Consumer<ContactsServiceError> errorCallback);
-	
-	
+
+
 	/**
 	 * Saves a new contact to the device contacts database, or updates an
 	 * existing contact if a contact with the same id already exists.
@@ -74,7 +108,24 @@ public interface ContactsServiceAccess
 	 * <li>Windows</li>
 	 * </ul>
 	 */
-	void save(Contact contact, Consumer<Contact> successCallback,
+	default public void save(final Contact contact, final Consumer<Contact> successCallback)
+	{
+		save(contact,successCallback,null);
+	}
+
+
+	/**
+	 * Saves a new contact to the device contacts database, or updates an
+	 * existing contact if a contact with the same id already exists.
+	 * <p>
+	 * Supported platforms:
+	 * <ul>
+	 * <li>Android</li>
+	 * <li>iOS</li>
+	 * <li>Windows Phone 8</li>
+	 * <li>Windows</li>
+	 * </ul>
+	 */
+	public void save(Contact contact, Consumer<Contact> successCallback,
 			Consumer<ContactsServiceError> errorCallback);
-	
 }

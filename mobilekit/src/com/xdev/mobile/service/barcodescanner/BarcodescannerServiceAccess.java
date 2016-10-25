@@ -45,7 +45,7 @@ public interface BarcodescannerServiceAccess
 	 * @see BarcodeFormat
 	 * @see BarcodeData
 	 */
-	default void scan(final Consumer<BarcodeData> successCallback)
+	default public void scan(final Consumer<BarcodeData> successCallback)
 	{
 		scan(BarcodescannerOptions.defaults(),successCallback,null);
 	}
@@ -65,7 +65,7 @@ public interface BarcodescannerServiceAccess
 	 * @see BarcodeFormat
 	 * @see BarcodeData
 	 */
-	default void scan(final Consumer<BarcodeData> successCallback,
+	default public void scan(final Consumer<BarcodeData> successCallback,
 			final Consumer<MobileServiceError> errorCallback)
 	{
 		scan(BarcodescannerOptions.defaults(),successCallback,errorCallback);
@@ -86,7 +86,7 @@ public interface BarcodescannerServiceAccess
 	 * @see BarcodeFormat
 	 * @see BarcodeData
 	 */
-	default void scan(final BarcodescannerOptions options,
+	default public void scan(final BarcodescannerOptions options,
 			final Consumer<BarcodeData> successCallback)
 	{
 		scan(options,successCallback,null);
@@ -108,7 +108,6 @@ public interface BarcodescannerServiceAccess
 	 * @see BarcodeFormat
 	 * @see BarcodeData
 	 */
-	void scan(BarcodescannerOptions options, Consumer<BarcodeData> successCallback,
+	public void scan(BarcodescannerOptions options, Consumer<BarcodeData> successCallback,
 			Consumer<MobileServiceError> errorCallback);
-
 }

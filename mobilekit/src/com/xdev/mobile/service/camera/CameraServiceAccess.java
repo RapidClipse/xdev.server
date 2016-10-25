@@ -32,7 +32,6 @@ import com.xdev.mobile.service.MobileServiceError;
  */
 public interface CameraServiceAccess
 {
-	
 	/**
 	 * Takes a photo using the camera, or retrieves a photo from the device's
 	 * image gallery. The image is passed to the success callback as a
@@ -53,9 +52,13 @@ public interface CameraServiceAccess
 	 * </ul>
 	 *
 	 */
-	void getPicture(CameraOptions options, Consumer<ImageData> successCallback);
-	
-	
+	default public void getPicture(final CameraOptions options,
+			final Consumer<ImageData> successCallback)
+	{
+		getPicture(options,successCallback,null);
+	}
+
+
 	/**
 	 * Takes a photo using the camera, or retrieves a photo from the device's
 	 * image gallery. The image is passed to the success callback as a
@@ -76,7 +79,6 @@ public interface CameraServiceAccess
 	 * </ul>
 	 *
 	 */
-	void getPicture(CameraOptions options, Consumer<ImageData> successCallback,
+	public void getPicture(CameraOptions options, Consumer<ImageData> successCallback,
 			Consumer<MobileServiceError> errorCallback);
-	
 }

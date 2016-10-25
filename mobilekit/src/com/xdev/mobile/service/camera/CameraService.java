@@ -70,28 +70,20 @@ public class CameraService extends AbstractMobileService implements CameraServic
 	{
 		return getMobileService(CameraService.class);
 	}
-	
+
 	private final Map<String, GetPictureServiceCall> getPictureCalls = new HashMap<>();
-	
-	
+
+
 	public CameraService(final AbstractClientConnector target,
 			final MobileServiceConfiguration configuration)
 	{
 		super(target,configuration);
-		
+
 		this.addFunction("camera_getPicture_success",this::camera_getPicture_success);
 		this.addFunction("camera_getPicture_error",this::camera_getPicture_error);
 	}
 	
 	
-	@Override
-	public synchronized void getPicture(final CameraOptions options,
-			final Consumer<ImageData> successCallback)
-	{
-		this.getPicture(options,successCallback,null);
-	}
-
-
 	@Override
 	public synchronized void getPicture(final CameraOptions options,
 			final Consumer<ImageData> successCallback,
@@ -101,16 +93,16 @@ public class CameraService extends AbstractMobileService implements CameraServic
 		final GetPictureServiceCall call = new GetPictureServiceCall(successCallback,errorCallback,
 				options);
 		this.getPictureCalls.put(id,call);
-		
+
 		final StringBuilder js = new StringBuilder();
 		js.append("camera_getPicture('").append(id).append("',");
 		appendOptions(js,options);
 		js.append(");");
-		
+
 		Page.getCurrent().getJavaScript().execute(js.toString());
 	}
-	
-	
+
+
 	private void appendOptions(final StringBuilder js, final CameraOptions options)
 	{
 		js.append("{\n");
@@ -135,8 +127,8 @@ public class CameraService extends AbstractMobileService implements CameraServic
 		js.append("cameraDirection: Camera.Direction.").append(options.getDirection())
 				.append("\n}");
 	}
-	
-	
+
+
 	private void camera_getPicture_success(final JsonArray arguments)
 	{
 		final String id = arguments.getString(0);
@@ -147,29 +139,29 @@ public class CameraService extends AbstractMobileService implements CameraServic
 			call.success(imageData);
 		}
 	}
-	
-	
+
+
 	private void camera_getPicture_error(final JsonArray arguments)
 	{
 		callError(arguments,this.getPictureCalls,true);
 	}
-
-
-
+	
+	
+	
 	protected static class GetPictureServiceCall
 			extends ServiceCall.Implementation<ImageData, MobileServiceError>
 	{
 		private final CameraOptions options;
-
-
+		
+		
 		public GetPictureServiceCall(final Consumer<ImageData> successCallback,
 				final Consumer<MobileServiceError> errorCallback, final CameraOptions options)
 		{
 			super(successCallback,errorCallback);
 			this.options = options;
 		}
-		
-		
+
+
 		public CameraOptions getOptions()
 		{
 			return this.options;

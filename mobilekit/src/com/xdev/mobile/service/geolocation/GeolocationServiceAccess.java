@@ -30,7 +30,21 @@ import java.util.function.Consumer;
  */
 public interface GeolocationServiceAccess
 {
-	
+	/**
+	 * Asynchronously acquires the current position.
+	 *
+	 * @param options
+	 *            optional options
+	 * @param successCallback
+	 *            The function to call when the position data is available
+	 */
+	default public void getCurrentPosition(final GeolocationOptions options,
+			final Consumer<Position> successCallback)
+	{
+		getCurrentPosition(options,successCallback,null);
+	}
+
+
 	/**
 	 * Asynchronously acquires the current position.
 	 *
@@ -42,7 +56,7 @@ public interface GeolocationServiceAccess
 	 *            The function to call when there is an error getting the
 	 *            heading position.
 	 */
-	void getCurrentPosition(GeolocationOptions options, Consumer<Position> successCallback,
+	public void getCurrentPosition(GeolocationOptions options, Consumer<Position> successCallback,
 			Consumer<GeolocationServiceError> errorCallback);
 	
 	
@@ -59,16 +73,34 @@ public interface GeolocationServiceAccess
 	 *            The function to call when there is an error getting the
 	 *            location data.
 	 */
-	
-	void watchPosition(GeolocationOptions options, Consumer<Geolocation> successCallback,
+	default public void watchPosition(final GeolocationOptions options,
+			final Consumer<Geolocation> successCallback)
+	{
+		watchPosition(options,successCallback,null);
+	}
+
+
+	/**
+	 *
+	 * Asynchronously watches the geolocation for changes to geolocation. When a
+	 * change occurs, the successCallback is called with the new location.
+	 *
+	 * @param options
+	 *            optional options
+	 * @param successCallback
+	 *            The function to call each time the location data is available
+	 * @param errorCallback
+	 *            The function to call when there is an error getting the
+	 *            location data.
+	 */
+	public void watchPosition(GeolocationOptions options, Consumer<Geolocation> successCallback,
 			Consumer<GeolocationServiceError> errorCallback);
-	
-	
+
+
 	/**
 	 * Clears the specified heading watch.
 	 *
 	 * @param watchID
 	 */
-	void clearWatchPosition(double watchID);
-	
+	public void clearWatchPosition(double watchID);
 }

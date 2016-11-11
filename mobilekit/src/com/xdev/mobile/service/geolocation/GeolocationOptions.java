@@ -34,16 +34,22 @@ public class GeolocationOptions
 		return new GeolocationOptions().enableHighAccuracy(true);
 	}
 
+
+	public static GeolocationOptions withLowAccuracy()
+	{
+		return new GeolocationOptions().enableHighAccuracy(false);
+	}
+	
 	private Boolean	enableHighAccuracy;
 	private Long	timeout;
 	private Long	maximumAge;
-	
-	
+
+
 	public GeolocationOptions()
 	{
 	}
-	
-	
+
+
 	/**
 	 * @return the enable high accuracy setting
 	 * @see #enableHighAccuracy(boolean)
@@ -52,8 +58,8 @@ public class GeolocationOptions
 	{
 		return this.enableHighAccuracy;
 	}
-	
-	
+
+
 	/**
 	 * Provides a hint that the application needs the best possible results. By
 	 * default, the device attempts to retrieve a {@link Position} using
@@ -66,8 +72,8 @@ public class GeolocationOptions
 		this.enableHighAccuracy = enableHighAccuracy;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * @return the timeout setting
 	 * @see #timeout(long)
@@ -76,8 +82,8 @@ public class GeolocationOptions
 	{
 		return this.timeout;
 	}
-	
-	
+
+
 	/**
 	 * The maximum length of time (milliseconds) that is allowed to pass from
 	 * the call to
@@ -97,8 +103,8 @@ public class GeolocationOptions
 		this.timeout = timeout;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * @return the maximum age setting
 	 * @see #maximumAge(long)
@@ -107,8 +113,8 @@ public class GeolocationOptions
 	{
 		return this.maximumAge;
 	}
-	
-	
+
+
 	/**
 	 * Accept a cached position whose age is no greater than the specified time
 	 * in milliseconds.

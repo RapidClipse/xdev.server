@@ -18,29 +18,14 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.ui.util.wizard;
-
-
-import com.vaadin.data.Container;
-import com.vaadin.ui.AbstractSelect;
-import com.xdev.lang.ExecutableCommandObject;
+package com.xdev.ui.masterdetail;
 
 
 /**
+ * @author XDEV Software
  *
- * @deprecated will be removed in a future release
  */
-@Deprecated
-public interface ComponentFilterBuilder extends ExecutableCommandObject
+public interface MasterDetailConnection
 {
-	public void setMasterComponent(AbstractSelect masterComponent);
-
-
-	public void setFilterableDetail(Container.Filterable filterable);
-
-
-	public void setMasterProperty(Object masterProperty);
-
-
-	public void setDetailProperty(Object detailProperty);
+	public void disconnect();
 }

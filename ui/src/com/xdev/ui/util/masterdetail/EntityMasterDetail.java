@@ -30,34 +30,40 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItem;
 import com.xdev.dal.DAOs;
 import com.xdev.ui.entitycomponent.BeanComponent;
+import com.xdev.ui.masterdetail.LazyMasterDetailConnection;
 import com.xdev.util.DTOUtils;
 import com.xdev.util.EntityReferenceResolver;
 import com.xdev.util.JPAEntityReferenceResolver;
 
 
+/**
+ *
+ * @deprecated replaced by {@link LazyMasterDetailConnection}
+ */
+@Deprecated
 @SuppressWarnings("rawtypes")
 public interface EntityMasterDetail extends JPAMasterDetail
 {
 	@Override
 	public void connectMasterDetail(BeanComponent master, BeanComponent detail, Class masterClass,
 			Class detailClass);
-	
-	
-	
+
+
+
 	public class Implementation extends MasterDetail.Implementation implements EntityMasterDetail
 	{
 		// private final EntityIDResolver idResolver;
 		private final EntityReferenceResolver referenceResolver;
-		
-		
+
+
 		public Implementation()
 		{
 			super();
 			// this.idResolver = new HibernateEntityIDResolver();
 			this.referenceResolver = JPAEntityReferenceResolver.getInstance();
 		}
-		
-		
+
+
 		@Override
 		public void connectMasterDetail(final BeanComponent master,
 				final BeanComponent detailContainer, final Class masterClass,
@@ -72,18 +78,18 @@ public interface EntityMasterDetail extends JPAMasterDetail
 							this.referenceResolver.getReferenceEntityAttributeName(masterClass,
 									detailClass)));
 		}
-		
-		
-		
+
+
+
 		private class MasterDetailValueChangeListener implements ValueChangeListener
 		{
 			private static final long	serialVersionUID	= 3306467309764402175L;
-			
+
 			private final BeanComponent	masterComponent;
 			private final BeanComponent	detailComponent;
 			private final String		masterProperty;
-			
-			
+
+
 			public MasterDetailValueChangeListener(final BeanComponent filter,
 					final BeanComponent detailContainer, final String masterProperty,
 					final Object detailProperty)
@@ -92,8 +98,8 @@ public interface EntityMasterDetail extends JPAMasterDetail
 				this.detailComponent = detailContainer;
 				this.masterProperty = masterProperty;
 			}
-			
-			
+
+
 			@SuppressWarnings("unchecked")
 			@Override
 			public void valueChange(final ValueChangeEvent event)
@@ -106,7 +112,7 @@ public interface EntityMasterDetail extends JPAMasterDetail
 				{
 					// reattach
 					DAOs.get(selectedBean).reattach(selectedBean);
-					
+
 					try
 					{
 						final Object value = DTOUtils.resolveAttributeValue(selectedBean,
@@ -129,7 +135,7 @@ public interface EntityMasterDetail extends JPAMasterDetail
 						Logger.getLogger(EntityMasterDetail.class).error(e);
 					}
 				}
-				
+
 				// if(this.filterComponent.getSelectedItem() != null)
 				// {
 				// clearFiltering(this.detailComponent.getContainerDataSource(),

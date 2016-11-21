@@ -22,39 +22,46 @@ package com.xdev.ui.util.wizard;
 
 
 import com.xdev.ui.entitycomponent.BeanComponent;
+import com.xdev.ui.masterdetail.MasterDetail;
 import com.xdev.ui.util.masterdetail.EntityMasterDetail;
 import com.xdev.ui.util.masterdetail.JPAMasterDetail;
 
 
+/**
+ *
+ * @deprecated will be removed in a future release
+ * @see MasterDetail
+ */
+@Deprecated
 public class XdevJPAComponentFilterBuilder implements JPAComponentFilterBuilder
 {
 	private BeanComponent<?>	masterComponent, detailComponent;
 	private Class<?>			masterEntity, detailEntity;
-
-	private JPAMasterDetail masterDetail;
-
-
+	
+	private JPAMasterDetail		masterDetail;
+	
+	
 	public XdevJPAComponentFilterBuilder()
 	{
 		this.masterDetail = new JPAMasterDetail.Implementation();
 	}
-
-
+	
+	
 	@Override
 	public void execute()
 	{
 		this.masterDetail.connectMasterDetail(this.masterComponent,this.detailComponent,
 				this.masterEntity,this.detailEntity);
 	}
-
-
+	
+	
 	@Override
 	public void setMasterComponent(final BeanComponent<?> masterComponent)
 	{
 		this.masterComponent = masterComponent;
 	}
-
-
+	
+	
 	@Override
 	public void setDetailComponent(final BeanComponent<?> detailComponent)
 	{
@@ -65,19 +72,19 @@ public class XdevJPAComponentFilterBuilder implements JPAComponentFilterBuilder
 			this.masterDetail = new EntityMasterDetail.Implementation();
 		}
 	}
-
-
+	
+	
 	@Override
 	public <T> void setMasterEntity(final Class<T> masterEntity)
 	{
 		this.masterEntity = masterEntity;
 	}
-
-
+	
+	
 	@Override
 	public <T> void setDetailEntity(final Class<T> detailEntity)
 	{
 		this.detailEntity = detailEntity;
 	}
-
+	
 }

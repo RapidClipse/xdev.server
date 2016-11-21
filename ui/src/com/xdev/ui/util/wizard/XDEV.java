@@ -26,19 +26,21 @@ import java.util.function.Consumer;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.ui.AbstractSelect;
 import com.xdev.ui.entitycomponent.BeanComponent;
+import com.xdev.ui.hierarchical.TreeDataProvider;
+import com.xdev.ui.masterdetail.MasterDetail;
 
 
 /**
- * Utility class to ease component connection for Master Detail and provides
- * support complex databinding.
  *
- * @author XDEV Software (JW)
- *		
+ * @deprecated will be removed in a future release, master detail is now done
+ *             with {@link MasterDetail}, for tree building see
+ *             {@link TreeDataProvider}
  */
+@Deprecated
 public final class XDEV
 {
 	// --------------- MASTER DETAIL -----------------------
-	
+
 	/**
 	 * Connect a master and a detail {@link BeanComponent} to achieve a Master
 	 * Detail relation.
@@ -53,8 +55,8 @@ public final class XDEV
 		consumer.accept(builder);
 		builder.execute();
 	}
-	
-	
+
+
 	/**
 	 * Connect a {@link BeanComponent} to display appropriate detail data in a
 	 * {@link BeanFieldGroup}.
@@ -73,8 +75,8 @@ public final class XDEV
 			formBinder.setMasterComponent(masterComponent);
 		});
 	}
-	
-	
+
+
 	/**
 	 * Connect a {@link BeanComponent} to display appropriate detail data in a
 	 * {@link BeanFieldGroup}.
@@ -90,8 +92,8 @@ public final class XDEV
 		consumer.accept(builder);
 		builder.execute();
 	}
-	
-	
+
+
 	/**
 	 * Fills a Tree Component from the given Entitystructure. Structure can be
 	 * defined through {@link XdevFillTree#addRootGroup(Class)} and
@@ -103,7 +105,7 @@ public final class XDEV
 	 *            {@link XdevFillTree#addGroup(Class, Class)}.
 	 * @param tree
 	 *            the tree component to be filled.
-	 * 			
+	 *
 	 * @deprecated see {@link com.xdev.ui.entitycomponent.hierarchical.FillTree
 	 *             FillTree} for more information
 	 */

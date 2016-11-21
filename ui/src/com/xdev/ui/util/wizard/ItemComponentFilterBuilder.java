@@ -26,6 +26,11 @@ import com.vaadin.ui.AbstractSelect;
 import com.xdev.ui.util.masterdetail.MasterDetail;
 
 
+/**
+ *
+ * @deprecated will be removed in a future release
+ */
+@Deprecated
 public class ItemComponentFilterBuilder implements ComponentFilterBuilder
 {
 	private AbstractSelect		masterComponent;
@@ -37,7 +42,6 @@ public class ItemComponentFilterBuilder implements ComponentFilterBuilder
 
 	public ItemComponentFilterBuilder()
 	{
-		// TODO customizable?
 		this.masterDetail = new MasterDetail.Implementation();
 	}
 

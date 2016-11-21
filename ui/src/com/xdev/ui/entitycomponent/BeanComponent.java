@@ -25,35 +25,34 @@ import java.util.Collection;
 import java.util.List;
 
 import com.vaadin.data.Container.Viewer;
-import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeNotifier;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Component;
 import com.xdev.ui.util.KeyValueType;
 
 
-public interface BeanComponent<BEANTYPE>
-		extends Viewer, /* BeanViewer<BEANTYPE>, */ Component
+public interface BeanComponent<BEANTYPE> extends Viewer, Component, ValueChangeNotifier
 {
-	
+
 	public void setContainerDataSource(Class<BEANTYPE> beanClass,
 			KeyValueType<?, ?>... nestedProperties);
-	
-	
+
+
 	public void setContainerDataSource(Class<BEANTYPE> beanClass, boolean autoQueryData,
 			KeyValueType<?, ?>... nestedProperties);
-	
-	
+
+
 	public void setContainerDataSource(Class<BEANTYPE> entityClass, Collection<BEANTYPE> data,
 			KeyValueType<?, ?>... nestedProperties);
-	
-	
+
+
 	/**
 	 *
 	 * @since 3.0
 	 */
 	public XdevBeanContainer<BEANTYPE> getBeanContainerDataSource();
-
-
+	
+	
 	/**
 	 * True means, a lazy query container is used as default table container
 	 * which queries data at starup. False means, the user is responsible for
@@ -64,30 +63,27 @@ public interface BeanComponent<BEANTYPE>
 	 * @param autoQuery
 	 */
 	public void setAutoQueryData(boolean autoQuery);
-
-
+	
+	
 	public boolean isAutoQueryData();
-	
-	
+
+
 	/**
 	 *
 	 * @since 3.0
 	 */
 	public BeanItem<BEANTYPE> getBeanItem(Object id);
-
-
+	
+	
 	public BeanItem<BEANTYPE> getSelectedItem();
-
-
+	
+	
 	/**
 	 *
 	 * @since 1.0.2
 	 */
 	public List<BeanItem<BEANTYPE>> getSelectedItems();
-	
-	
+
+
 	public void select(Object itemId);
-
-
-	public void addValueChangeListener(Property.ValueChangeListener listener);
 }

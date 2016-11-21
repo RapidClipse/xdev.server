@@ -18,30 +18,46 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.ui.util.wizard;
+package com.xdev.ui.masterdetail;
 
 
-import com.xdev.lang.ExecutableCommandObject;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.xdev.ui.entitycomponent.BeanComponent;
-import com.xdev.ui.masterdetail.MasterDetail;
 
 
 /**
+ * @author XDEV Software
  *
- * @deprecated will be removed in a future release
- * @see MasterDetail
  */
-@Deprecated
-public interface JPAComponentFilterBuilder extends ExecutableCommandObject
+public abstract class BeanComponentsMasterDetailConnection<M, D> implements MasterDetailConnection
 {
-	public void setMasterComponent(BeanComponent<?> masterComponent);
+	protected BeanComponent<M>		master;
+	protected BeanComponent<D>		detail;
+	protected ValueChangeListener	listener;
 	
 	
-	public void setDetailComponent(BeanComponent<?> detailComponent);
+	public BeanComponentsMasterDetailConnection(final BeanComponent<M> master,
+			final BeanComponent<D> detail)
+	{
+		super();
+		
+		this.master = master;
+		this.detail = detail;
+		this.listener = event -> masterValueChanged();
+		this.master.addValueChangeListener(this.listener);
+	}
 	
 	
-	public <T> void setMasterEntity(Class<T> masterEntity);
+	protected abstract void masterValueChanged();
 	
 	
-	public <T> void setDetailEntity(Class<T> detailEntity);
+	@Override
+	public void disconnect()
+	{
+		this.master.removeValueChangeListener(this.listener);
+		
+		this.master = null;
+		this.detail = null;
+		this.listener = null;
+	}
 }

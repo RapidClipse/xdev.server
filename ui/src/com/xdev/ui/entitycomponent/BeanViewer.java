@@ -26,10 +26,9 @@ import com.vaadin.data.Container.Viewer;
 
 /**
  *
- * @author XDEV Software (JW)
- *		
- * @param <BEANTYPE>
+ * @deprecated will be removed in a future release
  */
+@Deprecated
 public interface BeanViewer<BEANTYPE> extends Viewer
 {
 	

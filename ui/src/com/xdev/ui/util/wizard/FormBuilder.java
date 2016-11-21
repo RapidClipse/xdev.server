@@ -27,48 +27,52 @@ import com.xdev.ui.entitycomponent.BeanComponent;
 import com.xdev.ui.util.masterdetail.MasterDetail;
 
 
-//master detail for forms
+/**
+ *
+ * @deprecated will be removed in a future release
+ */
+@Deprecated
 public interface FormBuilder<T> extends ExecutableCommandObject
 {
 	public void setMasterComponent(BeanComponent<T> masterComponent);
-
-
+	
+	
 	public void setForm(BeanFieldGroup<T> form);
-
-
-
+	
+	
+	
 	public class XdevFormBuilder<T> implements FormBuilder<T>
 	{
 		private BeanComponent<T>	masterComponent;
 		private BeanFieldGroup<T>	form;
 		private final MasterDetail	masterDetail;
-
-
+		
+		
 		public XdevFormBuilder()
 		{
 			this.masterDetail = new MasterDetail.Implementation();
 		}
-
-
+		
+		
 		@Override
 		public void execute()
 		{
 			this.masterDetail.connectForm(this.masterComponent,this.form);
 		}
-
-
+		
+		
 		@Override
 		public void setMasterComponent(final BeanComponent<T> masterComponent)
 		{
 			this.masterComponent = masterComponent;
 		}
-
-
+		
+		
 		@Override
 		public void setForm(final BeanFieldGroup<T> form)
 		{
 			this.form = form;
 		}
 	}
-
+	
 }

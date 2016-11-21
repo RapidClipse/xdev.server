@@ -28,6 +28,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.xdev.util.DTOUtils;
 import com.xdev.util.JPAEntityIDResolver;
+import com.xdev.util.JPAMetaDataUtils;
 
 
 /**
@@ -184,8 +185,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		preload(item.getBean());
 		return super.internalAddItemAfter(previousItemId,newItemId,item,filter);
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -204,6 +205,11 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 
 	protected void preload(final BEANTYPE bean)
 	{
+		if(bean == null || !JPAMetaDataUtils.isManaged(bean.getClass()))
+		{
+			return;
+		}
+
 		if(this.requiredProperties == null || this.requiredProperties.length == 0)
 		{
 			return;

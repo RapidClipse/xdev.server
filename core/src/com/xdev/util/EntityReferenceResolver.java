@@ -24,8 +24,9 @@ package com.xdev.util;
 /**
  *
  * @author XDEV Software
- * 
+ * @deprecated will be removed in a future release
  */
+@Deprecated
 public interface EntityReferenceResolver
 {
 	public String getReferenceEntityAttributeName(Class<?> referenceEntity, Class<?> entity);

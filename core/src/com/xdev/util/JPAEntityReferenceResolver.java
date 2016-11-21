@@ -35,51 +35,53 @@ import org.apache.log4j.Logger;
 /**
  *
  * @author XDEV Software
+ * @deprecated will be removed in a future release
  */
+@Deprecated
 public class JPAEntityReferenceResolver implements EntityReferenceResolver
 {
 	private static JPAEntityReferenceResolver instance;
-
-
+	
+	
 	public static JPAEntityReferenceResolver getInstance()
 	{
 		if(instance == null)
 		{
 			instance = new JPAEntityReferenceResolver();
 		}
-
+		
 		return instance;
 	}
-
-
+	
+	
 	private JPAEntityReferenceResolver()
 	{
 	}
-
-
+	
+	
 	@Override
 	public String getReferenceEntityAttributeName(final Class<?> referenceEntity,
 			final Class<?> entity)
 	{
 		final ManagedType<?> managedType = JPAMetaDataUtils.getManagedType(entity);
-
+		
 		final List<String> matchingAttributeNames = managedType.getAttributes().stream()
 				.filter(SingularAttribute.class::isInstance).map(SingularAttribute.class::cast)
 				.filter(pa -> pa.getBindableJavaType().equals(referenceEntity)
 						&& (pa.getPersistentAttributeType() == PersistentAttributeType.MANY_TO_ONE
 								|| pa.getPersistentAttributeType() == PersistentAttributeType.ONE_TO_ONE))
 				.map(Attribute::getName).collect(Collectors.toList());
-
+		
 		if(matchingAttributeNames.isEmpty())
 		{
 			Logger.getLogger(JPAEntityReferenceResolver.class)
 					.info("No matching reference attribute for relation: "
 							+ entity.getCanonicalName() + " -> "
 							+ referenceEntity.getCanonicalName());
-
+			
 			return null;
 		}
-
+		
 		if(matchingAttributeNames.size() > 1)
 		{
 			Logger.getLogger(JPAEntityReferenceResolver.class)
@@ -89,7 +91,7 @@ public class JPAEntityReferenceResolver implements EntityReferenceResolver
 							+ matchingAttributeNames.stream().collect(Collectors.joining(", "))
 							+ "]");
 		}
-
+		
 		return matchingAttributeNames.get(0);
 	}
 }

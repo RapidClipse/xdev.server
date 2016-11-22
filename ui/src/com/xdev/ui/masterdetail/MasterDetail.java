@@ -21,11 +21,23 @@
 package com.xdev.ui.masterdetail;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.Attribute.PersistentAttributeType;
+import javax.persistence.metamodel.ManagedType;
+import javax.persistence.metamodel.PluralAttribute;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.xdev.ui.entitycomponent.BeanComponent;
+import com.xdev.util.DTOUtils;
+import com.xdev.util.JPAMetaDataUtils;
 
 
 /**
@@ -34,6 +46,47 @@ import com.xdev.ui.entitycomponent.BeanComponent;
  */
 public final class MasterDetail
 {
+	@SuppressWarnings("unchecked")
+	public static <M, D> MasterDetailConnection connect(final BeanComponent<M> master,
+			final BeanComponent<D> detail)
+	{
+		final Class<? super M> masterClass = master.getBeanContainerDataSource().getBeanType();
+		final Class<? super D> detailClass = detail.getBeanContainerDataSource().getBeanType();
+		try
+		{
+			if(detail.isAutoQueryData())
+			{
+				final String detailProperty = getDetailAttributeName(masterClass,detailClass);
+				return connect(master,detail,detailProperty);
+			}
+			else
+			{
+				final String masterProperty = getMasterAttributeName(masterClass,detailClass);
+				return connect(master,detail,masterValue -> {
+					final Object value = DTOUtils.resolveAttributeValue(masterValue,masterProperty);
+					if(value == null)
+					{
+						return Collections.emptyList();
+					}
+					if(value instanceof Collection)
+					{
+						return (Collection<D>)value;
+					}
+					final List<D> list = new ArrayList<>(1);
+					list.add((D)value);
+					return list;
+				});
+			}
+		}
+		catch(final IllegalStateException e)
+		{
+			throw new RuntimeException("Unable to auto-resolve master detail relation. "
+					+ "Please use another MasterDetail#connect method and "
+					+ "supply more detailed information for the relation.",e);
+		}
+	}
+	
+	
 	public static <M, D> MasterDetailConnection connect(final BeanComponent<M> master,
 			final BeanComponent<D> detail,
 			final Function<M, Collection<? extends D>> masterToDetail)
@@ -62,6 +115,65 @@ public final class MasterDetail
 			final BeanFieldGroup<T> detail)
 	{
 		return new FieldGroupMasterDetailConnection<>(master,detail);
+	}
+	
+	
+	private static String getDetailAttributeName(final Class<?> masterEntity,
+			final Class<?> detailEntity) throws IllegalStateException
+	{
+		final ManagedType<?> managedType = JPAMetaDataUtils.getManagedType(detailEntity);
+		
+		final List<String> matchingAttributeNames = managedType.getAttributes().stream()
+				.filter(SingularAttribute.class::isInstance).map(SingularAttribute.class::cast)
+				.filter(pa -> pa.getBindableJavaType().equals(masterEntity)
+						&& (pa.getPersistentAttributeType() == PersistentAttributeType.MANY_TO_ONE
+								|| pa.getPersistentAttributeType() == PersistentAttributeType.ONE_TO_ONE))
+				.map(Attribute::getName).collect(Collectors.toList());
+		
+		if(matchingAttributeNames.isEmpty())
+		{
+			throw new IllegalStateException("No matching reference attribute for relation: "
+					+ detailEntity.getCanonicalName() + " -> " + masterEntity.getCanonicalName());
+		}
+		
+		if(matchingAttributeNames.size() > 1)
+		{
+			throw new IllegalStateException("Multiple matching reference attributes for relation: "
+					+ detailEntity.getCanonicalName() + " -> " + masterEntity.getCanonicalName()
+					+ " [" + matchingAttributeNames.stream().collect(Collectors.joining(", "))
+					+ "]");
+		}
+		
+		return matchingAttributeNames.get(0);
+	}
+	
+	
+	private static String getMasterAttributeName(final Class<?> masterEntity,
+			final Class<?> detailEntity) throws IllegalStateException
+	{
+		final ManagedType<?> managedType = JPAMetaDataUtils.getManagedType(masterEntity);
+		
+		final List<String> matchingAttributeNames = managedType.getAttributes().stream()
+				.filter(PluralAttribute.class::isInstance).map(PluralAttribute.class::cast)
+				.filter(pa -> pa.getElementType().getJavaType().equals(detailEntity)
+						&& pa.getPersistentAttributeType() == PersistentAttributeType.ONE_TO_MANY)
+				.map(Attribute::getName).collect(Collectors.toList());
+		
+		if(matchingAttributeNames.isEmpty())
+		{
+			throw new IllegalStateException("No matching reference attribute for relation: "
+					+ masterEntity.getCanonicalName() + " -> " + detailEntity.getCanonicalName());
+		}
+		
+		if(matchingAttributeNames.size() > 1)
+		{
+			throw new IllegalStateException("Multiple matching reference attributes for relation: "
+					+ detailEntity.getCanonicalName() + " -> " + detailEntity.getCanonicalName()
+					+ " [" + matchingAttributeNames.stream().collect(Collectors.joining(", "))
+					+ "]");
+		}
+		
+		return matchingAttributeNames.get(0);
 	}
 	
 	

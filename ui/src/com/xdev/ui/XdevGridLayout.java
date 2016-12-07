@@ -21,10 +21,13 @@
 package com.xdev.ui;
 
 
+import org.jsoup.nodes.Element;
+
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.declarative.DesignContext;
 
 
 /**
@@ -49,7 +52,7 @@ import com.vaadin.ui.GridLayout;
  * </p>
  *
  * @author XDEV Software
- *		
+ *
  */
 public class XdevGridLayout extends GridLayout implements XdevComponent
 {
@@ -60,8 +63,8 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 	
 	private AutoFill			autoFill	= AutoFill.BOTH;
 	private final Extensions	extensions	= new Extensions();
-											
-											
+	
+	
 	/**
 	 * Constructs an empty (1x1) grid layout that is extended as needed.
 	 */
@@ -76,7 +79,7 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 	 * adds the given components in order to the grid.
 	 *
 	 * @see #addComponents(Component...)
-	 *		
+	 *
 	 * @param columns
 	 *            Number of columns in the grid.
 	 * @param rows
@@ -105,7 +108,6 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 	{
 		super(columns,rows);
 	}
-	
 	
 	// init defaults
 	{
@@ -218,7 +220,7 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 	 */
 	public void addComponent(final Component component, final int column1, final int row1,
 			final int column2, final int row2, final Alignment alignment)
-					throws OverlapsException, OutOfBoundsException
+			throws OverlapsException, OutOfBoundsException
 	{
 		addComponent(component,column1,row1,column2,row2);
 		setComponentAlignment(component,alignment);
@@ -324,6 +326,64 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 		public Spacer()
 		{
 			setSizeFull();
+		}
+	}
+	
+	/*
+	 * Workaround for bug in com.vaadin.ui.GridLayout#readDesign. It sets rows
+	 * and columns always, this causes problems if the layout already contains
+	 * children (subclass which adds children by default). See also: XWS-1170
+	 */
+	
+	private boolean readingDesign = false;
+	
+	
+	@Override
+	public void readDesign(final Element design, final DesignContext designContext)
+	{
+		try
+		{
+			this.readingDesign = true;
+			
+			super.readDesign(design,designContext);
+		}
+		finally
+		{
+			this.readingDesign = false;
+		}
+	}
+	
+	
+	@Override
+	public void setRows(final int rows)
+	{
+		try
+		{
+			super.setRows(rows);
+		}
+		catch(final RuntimeException e)
+		{
+			if(!this.readingDesign)
+			{
+				throw e;
+			}
+		}
+	}
+	
+	
+	@Override
+	public void setColumns(final int columns)
+	{
+		try
+		{
+			super.setColumns(columns);
+		}
+		catch(final RuntimeException e)
+		{
+			if(!this.readingDesign)
+			{
+				throw e;
+			}
 		}
 	}
 }

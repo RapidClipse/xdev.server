@@ -26,36 +26,47 @@ import com.xdev.ui.entitycomponent.BeanComponent;
 
 
 /**
- * @author XDEV Software
+ * Abstract base class for {@link MasterDetailConnection} with two
+ * {@link BeanComponent}s.
  *
+ * @param <M>
+ *            the master type
+ * @param <D>
+ *            the detail type
+ *
+ * @see FilterMasterDetailConnection
+ * @see LazyMasterDetailConnection
+ *
+ * @author XDEV Software
+ * @since 3.0
  */
 public abstract class BeanComponentsMasterDetailConnection<M, D> implements MasterDetailConnection
 {
 	protected BeanComponent<M>		master;
 	protected BeanComponent<D>		detail;
 	protected ValueChangeListener	listener;
-	
-	
+
+
 	public BeanComponentsMasterDetailConnection(final BeanComponent<M> master,
 			final BeanComponent<D> detail)
 	{
 		super();
-		
+
 		this.master = master;
 		this.detail = detail;
 		this.listener = event -> masterValueChanged();
 		this.master.addValueChangeListener(this.listener);
 	}
-	
-	
+
+
 	protected abstract void masterValueChanged();
-	
-	
+
+
 	@Override
 	public void disconnect()
 	{
 		this.master.removeValueChangeListener(this.listener);
-		
+
 		this.master = null;
 		this.detail = null;
 		this.listener = null;

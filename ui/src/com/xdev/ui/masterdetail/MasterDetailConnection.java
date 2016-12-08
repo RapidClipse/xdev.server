@@ -22,10 +22,22 @@ package com.xdev.ui.masterdetail;
 
 
 /**
- * @author XDEV Software
+ * Master detail connection handle, which can be used to disconnect the
+ * established connection.
  *
+ * @see #disconnect()
+ *
+ * @author XDEV Software
+ * @since 3.0
  */
 public interface MasterDetailConnection
 {
+	/**
+	 * Disconnects the master detail relation between the to components. Removes
+	 * all listeners and cleans up all used resources. After this method is
+	 * called this connection object cannot be used to reconnect again.
+	 *
+	 * @see MasterDetail
+	 */
 	public void disconnect();
 }

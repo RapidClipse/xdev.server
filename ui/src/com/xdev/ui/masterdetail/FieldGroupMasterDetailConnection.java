@@ -31,8 +31,17 @@ import com.xdev.util.DTOUtils;
 
 
 /**
- * @author XDEV Software
+ * Concrete implementation of a {@link MasterDetailConnection} between a
+ * {@link BeanComponent} (master) and a {@link BeanFieldGroup} (detail).
+ * <p>
+ * If an item is selected in the master component the detail fieldgroup is
+ * updated automatically.
  *
+ * @param <T>
+ *            common data type of the connected components
+ *
+ * @author XDEV Software
+ * @since 3.0
  */
 public class FieldGroupMasterDetailConnection<T> implements MasterDetailConnection
 {
@@ -80,7 +89,7 @@ public class FieldGroupMasterDetailConnection<T> implements MasterDetailConnecti
 		{
 			((XdevFieldGroup<T>)this.detail).setBeanItemCreator(null);
 		}
-		
+
 		this.master = null;
 		this.detail = null;
 		this.listener = null;

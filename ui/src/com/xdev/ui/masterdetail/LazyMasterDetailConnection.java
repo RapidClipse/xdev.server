@@ -36,8 +36,14 @@ import com.xdev.util.DTOUtils;
 
 
 /**
- * @author XDEV Software
+ * Concrete implementation of a {@link MasterDetailConnection} between two
+ * {@link BeanComponent}s.
+ * <p>
+ * If an item is selected in the master component the detail data is loaded
+ * lazily.
  *
+ * @author XDEV Software
+ * @since 3.0
  */
 public class LazyMasterDetailConnection<M, D> extends BeanComponentsMasterDetailConnection<M, D>
 {
@@ -76,8 +82,8 @@ public class LazyMasterDetailConnection<M, D> extends BeanComponentsMasterDetail
 	@Override
 	public void disconnect()
 	{
-		super.disconnect();
-		
 		this.masterToDetail = null;
+		
+		super.disconnect();
 	}
 }

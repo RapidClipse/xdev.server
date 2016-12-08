@@ -34,35 +34,42 @@ import com.xdev.ui.entitycomponent.BeanComponent;
 
 
 /**
- * @author XDEV Software
+ * Concrete implementation of a {@link MasterDetailConnection} between two
+ * {@link BeanComponent}s.
+ * <p>
+ * If an item is selected in the master component the filter of the detail
+ * component is updated automatically. Works with single selection and multi
+ * selection also.
  *
+ * @author XDEV Software
+ * @since 3.0
  */
 public class FilterMasterDetailConnection<M, D> extends BeanComponentsMasterDetailConnection<M, D>
 {
 	protected Function<M, Object>	masterToFilterValue;
 	protected Object				detailPropertyId;
 	protected Filter				currentFilter;
-
-
+	
+	
 	public FilterMasterDetailConnection(final BeanComponent<M> master,
 			final BeanComponent<D> detail, final Function<M, Object> masterToFilterValue,
 			final Object detailPropertyId)
 	{
 		super(master,detail);
-
+		
 		this.masterToFilterValue = masterToFilterValue;
 		this.detailPropertyId = detailPropertyId;
 	}
-
-
+	
+	
 	@Override
 	protected void masterValueChanged()
 	{
 		// reset selection
 		this.detail.select(null);
-
+		
 		clearFilter();
-
+		
 		final List<Filter> filters = this.master.getSelectedItems().stream().map(BeanItem::getBean)
 				.filter(Objects::nonNull).map(this.masterToFilterValue)
 				.map(value -> new CompareBIDirect.Equal(this.detailPropertyId,value))
@@ -75,8 +82,8 @@ public class FilterMasterDetailConnection<M, D> extends BeanComponentsMasterDeta
 			this.detail.getBeanContainerDataSource().addContainerFilter(this.currentFilter);
 		}
 	}
-
-
+	
+	
 	protected void clearFilter()
 	{
 		if(this.currentFilter != null)
@@ -85,16 +92,16 @@ public class FilterMasterDetailConnection<M, D> extends BeanComponentsMasterDeta
 			this.currentFilter = null;
 		}
 	}
-
-
+	
+	
 	@Override
 	public void disconnect()
 	{
-		super.disconnect();
-
 		clearFilter();
-
+		
 		this.masterToFilterValue = null;
 		this.detailPropertyId = null;
+		
+		super.disconnect();
 	}
 }

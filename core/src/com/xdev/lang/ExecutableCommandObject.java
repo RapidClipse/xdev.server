@@ -21,6 +21,11 @@
 package com.xdev.lang;
 
 
+/**
+ *
+ * @deprecated will be removed in a future release
+ */
+@Deprecated
 public interface ExecutableCommandObject
 {
 	public void execute();

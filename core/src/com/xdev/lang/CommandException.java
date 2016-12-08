@@ -21,32 +21,37 @@
 package com.xdev.lang;
 
 
+/**
+ *
+ * @deprecated will be removed in a future release
+ */
+@Deprecated
 public class CommandException extends RuntimeException
 {
 	public CommandException()
 	{
 		super();
 	}
-
-
+	
+	
 	public CommandException(final String message, final Throwable cause)
 	{
 		super(message,cause);
 	}
-
-
+	
+	
 	public CommandException(final String message)
 	{
 		super(message);
 	}
-
-
+	
+	
 	public CommandException(final Throwable cause)
 	{
 		super(cause);
 	}
-
-
+	
+	
 	public static void throwMissingParameter(final String name) throws CommandException
 	{
 		throw new CommandException("Missing parameter: " + name);

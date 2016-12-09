@@ -28,7 +28,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
@@ -43,6 +46,7 @@ import com.googlecode.genericdao.dao.jpa.JPABaseDAO;
 import com.googlecode.genericdao.search.ExampleOptions;
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.ISearch;
+import com.googlecode.genericdao.search.MetadataUtil;
 import com.googlecode.genericdao.search.Search;
 import com.googlecode.genericdao.search.SearchResult;
 import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
@@ -52,7 +56,28 @@ import com.xdev.persistence.PersistenceManager;
 import com.xdev.persistence.PersistenceUtils;
 
 
-@SuppressWarnings("unchecked")
+/**
+ * Implementation of a <b>D</b>ata <b>A</b>ccess <b>O</b>bject using JPA that
+ * can be used for a single specified type domain object.
+ *
+ * <p>
+ * <b>IMPORTANT:</b><br>
+ * This class currently extends {@link JPABaseDAO}. This is subject to change in
+ * a future release. The com.googlecode.genericdao dependency will be removed
+ * from the framework because it makes use of the deprecated Hibernate Criteria
+ * API. Appropriate replacements with the JPA Criteria API will be provided. All
+ * inherited methods which will be removed are marked as deprecated.
+ * </p>
+ *
+ * @author XDEV Software
+ *
+ * @param <T>
+ *            The type of the domain object for which this instance is to be
+ *            used.
+ * @param <ID>
+ *            The type of the id of the domain object for which this instance is
+ *            to be used.
+ */
 public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements GenericDAO<T, ID>
 {
 	private final Class<T> persistentClass;
@@ -62,6 +87,17 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		this.persistentClass = persistentClass;
 		this.setSearchProcessor(new JPASearchProcessor(new JPAAnnotationMetadataUtil()));
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	public void setEntityManager(final EntityManager entityManager)
+	{
+		super.setEntityManager(entityManager);
 	}
 	
 	
@@ -90,12 +126,6 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
-	protected Session getSession()
-	{
-		return em().unwrap(Session.class);
-	}
-	
-	
 	protected boolean isQueryCacheEnabled()
 	{
 		final PersistenceManager persistenceManager = Application.getPersistenceManager();
@@ -112,25 +142,9 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	
 	
 	/**
-	 *
-	 * @since 3.0
+	 * @deprecated will be removed in a future release
 	 */
-	public Criteria buildHibernateCriteriaQuery()
-	{
-		return buildHibernateCriteriaQuery(this.persistentClass);
-	}
-
-
-	/**
-	 *
-	 * @since 3.0
-	 */
-	public Criteria buildHibernateCriteriaQuery(final String alias)
-	{
-		return buildHibernateCriteriaQuery(this.persistentClass,alias);
-	}
-	
-	
+	@Deprecated
 	public Criteria buildHibernateCriteriaQuery(final Class<T> entityType)
 	{
 		final Criteria crit = getSession().createCriteria(entityType);
@@ -139,6 +153,10 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
 	public Criteria buildHibernateCriteriaQuery(final Class<T> entityType, final String alias)
 	{
 		final Criteria crit = getSession().createCriteria(entityType,alias);
@@ -147,6 +165,11 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings("unchecked")
+	@Deprecated
 	public List<T> findByExample(final Class<T> entityType, final Object example)
 	{
 		final Criteria crit = getSession().createCriteria(entityType);
@@ -155,12 +178,27 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings("unchecked")
+	@Deprecated
 	public List<T> findByExample(final Class<T> entityType, final String alias,
 			final Object example)
 	{
 		final Criteria crit = getSession().createCriteria(entityType,alias);
 		crit.setCacheable(isQueryCacheEnabled());
 		return crit.add(Example.create(example)).list();
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	protected Session getSession()
+	{
+		return em().unwrap(Session.class);
 	}
 	
 	
@@ -182,6 +220,7 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public T[] find(final ID... ids)
 	{
@@ -189,17 +228,16 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.googlecode.genericdao.dao.jpa.JPABaseDAO#_all(java.lang.Class)
+	/**
+	 * @deprecated will be removed in a future release
 	 */
+	@Deprecated
 	@SuppressWarnings("hiding")
 	@Override
 	protected <T> List<T> _all(final Class<T> type)
 	{
-		final Query query = em().createQuery(
-				"select _it_ from " + getMetadataUtil().get(type).getEntityName() + " _it_");
+		final TypedQuery<T> query = em().createQuery(
+				"select _it_ from " + getMetadataUtil().get(type).getEntityName() + " _it_",type);
 		if(isQueryCacheEnabled())
 		{
 			query.setHint("org.hibernate.cacheable",true);
@@ -208,11 +246,10 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.googlecode.genericdao.dao.jpa.JPABaseDAO#_count(java.lang.Class)
+	/**
+	 * @deprecated will be removed in a future release
 	 */
+	@Deprecated
 	@Override
 	protected int _count(final Class<?> type)
 	{
@@ -222,13 +259,10 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * com.googlecode.genericdao.dao.jpa.JPABaseDAO#_exists(java.lang.Class,
-	 * java.io.Serializable)
+	/**
+	 * @deprecated will be removed in a future release
 	 */
+	@Deprecated
 	@Override
 	protected boolean _exists(final Class<?> type, final Serializable id)
 	{
@@ -270,18 +304,16 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.googlecode.genericdao.dao.jpa.JPABaseDAO#_find(java.lang.Class,
-	 * java.io.Serializable[])
+	/**
+	 * @deprecated will be removed in a future release
 	 */
-	@SuppressWarnings("hiding")
+	@Deprecated
+	@SuppressWarnings({"unchecked","hiding"})
 	@Override
 	protected <T> T[] _find(final Class<T> type, final Serializable... ids)
 	{
-		final Object[] retList = (Object[])Array.newInstance(type,ids.length);
-		for(final Object entity : pullByIds("select _it_",type,ids))
+		final T[] retList = (T[])Array.newInstance(type,ids.length);
+		for(final T entity : pullByIds("select _it_",type,ids))
 		{
 			final Serializable id = getMetadataUtil().getId(entity);
 			
@@ -295,11 +327,13 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 			}
 		}
 		
-		return (T[])retList;
+		return retList;
 	}
 	
 	
-	private List<?> pullByIds(final String select, final Class<?> type, final Serializable[] ids)
+	@SuppressWarnings("hiding")
+	private <T> List<T> pullByIds(final String select, final Class<T> type,
+			final Serializable[] ids)
 	{
 		final List<Serializable> nonNulls = new LinkedList<Serializable>();
 		
@@ -324,10 +358,10 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		}
 		if(nonNulls.size() == 0)
 		{
-			return new ArrayList<Object>(0);
+			return new ArrayList<>(0);
 		}
 		
-		final Query query = em().createQuery(sb.toString());
+		final TypedQuery<T> query = em().createQuery(sb.toString(),type);
 		if(isQueryCacheEnabled())
 		{
 			query.setHint("org.hibernate.cacheable",true);
@@ -355,6 +389,18 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	public T reattach(final T object)
+	{
+		final Session session = em().unwrap(Session.class);
+		if(!session.contains(object))
+		{
+			session.lock(object,LockMode.NONE);
+			session.refresh(object,new LockOptions(LockMode.NONE));
+		}
+		return object;
+	}
+	
+	
 	@Override
 	public T getReference(final ID id)
 	{
@@ -362,6 +408,7 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public T[] getReferences(final ID... ids)
 	{
@@ -376,6 +423,7 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void refresh(final T... entities)
 	{
@@ -390,6 +438,7 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void remove(final T... entities)
 	{
@@ -404,6 +453,7 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void removeByIds(final ID... ids)
 	{
@@ -418,6 +468,7 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public T[] merge(final T... entities)
 	{
@@ -425,6 +476,7 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void persist(final T... entities)
 	{
@@ -439,6 +491,7 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public T[] save(final T... entities)
 	{
@@ -446,6 +499,11 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@SuppressWarnings("unchecked")
 	@Override
 	public <RT> List<RT> search(final ISearch search)
 	{
@@ -457,6 +515,11 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@SuppressWarnings("unchecked")
 	@Override
 	public <RT> SearchResult<RT> searchAndCount(final ISearch search)
 	{
@@ -471,6 +534,11 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@SuppressWarnings("unchecked")
 	@Override
 	public <RT> RT searchUnique(final ISearch search)
 	{
@@ -478,6 +546,10 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
 	@Override
 	public Filter getFilterFromExample(final T example)
 	{
@@ -485,6 +557,10 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
 	@Override
 	public Filter getFilterFromExample(final T example, final ExampleOptions options)
 	{
@@ -492,14 +568,345 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
-	public T reattach(final T object)
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	public void setSearchProcessor(final JPASearchProcessor searchProcessor)
 	{
-		final Session session = getSession();
-		if(!session.contains(object))
-		{
-			session.lock(object,LockMode.NONE);
-			session.refresh(object,new LockOptions(LockMode.NONE));
-		}
-		return object;
+		super.setSearchProcessor(searchProcessor);
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected JPASearchProcessor getSearchProcessor()
+	{
+		return super.getSearchProcessor();
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected MetadataUtil getMetadataUtil()
+	{
+		return super.getMetadataUtil();
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings("rawtypes")
+	@Deprecated
+	@Override
+	protected List _search(final ISearch search)
+	{
+		return super._search(search);
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings("rawtypes")
+	@Deprecated
+	@Override
+	protected List _search(final Class<?> searchClass, final ISearch search)
+	{
+		return super._search(searchClass,search);
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings("rawtypes")
+	@Deprecated
+	@Override
+	protected SearchResult _searchAndCount(final ISearch search)
+	{
+		return super._searchAndCount(search);
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings("rawtypes")
+	@Deprecated
+	@Override
+	protected SearchResult _searchAndCount(final Class<?> searchClass, final ISearch search)
+	{
+		return super._searchAndCount(searchClass,search);
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected Object _searchUnique(final ISearch search)
+			throws NonUniqueResultException, NoResultException
+	{
+		return super._searchUnique(search);
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected Object _searchUnique(final Class<?> searchClass, final ISearch search)
+			throws NonUniqueResultException, NoResultException
+	{
+		return super._searchUnique(searchClass,search);
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected Filter _getFilterFromExample(final Object example)
+	{
+		return super._getFilterFromExample(example);
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected Filter _getFilterFromExample(final Object example, final ExampleOptions options)
+	{
+		return super._getFilterFromExample(example,options);
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected int _count(final ISearch search)
+	{
+		return super._count(search);
+	}
+	
+	
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected int _count(final Class<?> searchClass, final ISearch search)
+	{
+		return super._count(searchClass,search);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected void _persist(final Object... entities)
+	{
+		super._persist(entities);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected boolean _removeById(final Class<?> type, final Serializable id)
+	{
+		return super._removeById(type,id);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected void _removeByIds(final Class<?> type, final Serializable... ids)
+	{
+		super._removeByIds(type,ids);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected boolean _removeEntity(final Object entity)
+	{
+		return super._removeEntity(entity);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected void _removeEntities(final Object... entities)
+	{
+		super._removeEntities(entities);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings("hiding")
+	@Deprecated
+	@Override
+	protected <T> T _find(final Class<T> type, final Serializable id)
+	{
+		return super._find(type,id);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings("hiding")
+	@Deprecated
+	@Override
+	protected <T> T _getReference(final Class<T> type, final Serializable id)
+	{
+		return super._getReference(type,id);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings("hiding")
+	@Deprecated
+	@Override
+	protected <T> T[] _getReferences(final Class<T> type, final Serializable... ids)
+	{
+		return super._getReferences(type,ids);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings("hiding")
+	@Deprecated
+	@Override
+	protected <T> T _merge(final T entity)
+	{
+		return super._merge(entity);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings({"hiding","unchecked"})
+	@Deprecated
+	@Override
+	protected <T> T[] _merge(final Class<T> arrayType, final T... entities)
+	{
+		return super._merge(arrayType,entities);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings("hiding")
+	@Deprecated
+	@Override
+	protected <T> T _persistOrMerge(final T entity)
+	{
+		return super._persistOrMerge(entity);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@SuppressWarnings({"hiding","unchecked"})
+	@Deprecated
+	@Override
+	protected <T> T[] _persistOrMerge(final Class<T> arrayType, final T... entities)
+	{
+		return super._persistOrMerge(arrayType,entities);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected boolean _contains(final Object o)
+	{
+		return super._contains(o);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected void _flush()
+	{
+		super._flush();
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected void _refresh(final Object... entities)
+	{
+		super._refresh(entities);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected boolean _exists(final Object entity)
+	{
+		return super._exists(entity);
+	}
+
+
+	/**
+	 * @deprecated will be removed in a future release
+	 */
+	@Deprecated
+	@Override
+	protected boolean[] _exists(final Class<?> type, final Serializable... ids)
+	{
+		return super._exists(type,ids);
 	}
 }

@@ -166,7 +166,9 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	
 	
 	/**
-	 * @deprecated will be removed in a future release
+	 * @deprecated replaced with
+	 *             {@link #findByExample(Object, SearchParameters)}, will be
+	 *             removed in a future release
 	 */
 	@SuppressWarnings("unchecked")
 	@Deprecated
@@ -179,7 +181,9 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	
 	
 	/**
-	 * @deprecated will be removed in a future release
+	 * @deprecated replaced with
+	 *             {@link #findByExample(Object, SearchParameters)}, will be
+	 *             removed in a future release
 	 */
 	@SuppressWarnings("unchecked")
 	@Deprecated
@@ -202,6 +206,12 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	/**
+	 * @deprecated replaced with
+	 *             {@link #countByExample(Object, SearchParameters)}, will be
+	 *             removed in a future release
+	 */
+	@Deprecated
 	@Override
 	public int count(ISearch search)
 	{
@@ -715,8 +725,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		return super._count(searchClass,search);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -726,8 +736,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		super._persist(entities);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -737,8 +747,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		return super._removeById(type,id);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -748,8 +758,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		super._removeByIds(type,ids);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -759,8 +769,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		return super._removeEntity(entity);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -770,8 +780,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		super._removeEntities(entities);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -782,8 +792,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		return super._find(type,id);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -794,8 +804,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		return super._getReference(type,id);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -806,8 +816,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		return super._getReferences(type,ids);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -818,8 +828,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		return super._merge(entity);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -830,8 +840,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		return super._merge(arrayType,entities);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -842,8 +852,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		return super._persistOrMerge(entity);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -854,8 +864,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		return super._persistOrMerge(arrayType,entities);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -865,8 +875,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		return super._contains(o);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -876,8 +886,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		super._flush();
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -887,8 +897,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		super._refresh(entities);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -898,8 +908,8 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	{
 		return super._exists(entity);
 	}
-
-
+	
+	
 	/**
 	 * @deprecated will be removed in a future release
 	 */
@@ -908,5 +918,71 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	protected boolean[] _exists(final Class<?> type, final Serializable... ids)
 	{
 		return super._exists(type,ids);
+	}
+	
+	
+	/**
+	 * Find and load a list of entities.
+	 *
+	 * @param entity
+	 *            a sample entity whose non-null properties may be used as
+	 *            search hints
+	 * @return the entities matching the search.
+	 * @since 3.0
+	 */
+	public List<T> findByExample(final T entity)
+	{
+		return findByExample(entity,new SearchParameters());
+	}
+	
+	
+	/**
+	 * Find and load a list of entities.
+	 *
+	 * @param entity
+	 *            a sample entity whose non-null properties may be used as
+	 *            search hints
+	 * @param searchParameters
+	 *            carries additional search information
+	 * @return the entities matching the search.
+	 * @since 3.0
+	 */
+	public List<T> findByExample(final T entity, final SearchParameters searchParameters)
+	{
+		return new FindByExampleHelper<T>(this.persistentClass,em(),searchParameters)
+				.findByExample(entity);
+	}
+	
+	
+	/**
+	 * Count the number of instances.
+	 *
+	 * @param entity
+	 *            a sample entity whose non-null properties may be used as
+	 *            search hint
+	 * @return the number of entities matching the search.
+	 * @since 3.0
+	 */
+	public int countByExample(final T entity)
+	{
+		return countByExample(entity,new SearchParameters());
+	}
+	
+	
+	/**
+	 * Count the number of instances.
+	 *
+	 * @param entity
+	 *            a sample entity whose non-null properties may be used as
+	 *            search hint
+	 * @param searchParameters
+	 *            carries additional search information
+	 * @return the number of entities matching the search.
+	 * @since 3.0
+	 */
+	public int countByExample(final T entity, final SearchParameters searchParameters)
+	{
+		return new FindByExampleHelper<T>(this.persistentClass,em(),searchParameters)
+				.countByExample(entity);
 	}
 }

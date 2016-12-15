@@ -21,8 +21,12 @@
 package com.xdev.ui.action;
 
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import com.vaadin.ui.Component;
-import com.xdev.ui.XdevUI;
+import com.xdev.ui.event.ContextSensitiveHandlerChangeEvent;
+import com.xdev.ui.event.ContextSensitiveHandlerChangeListener;
 
 
 /**
@@ -50,8 +54,8 @@ import com.xdev.ui.XdevUI;
  * 		super(ui,SaveHandler.class);
  * 		setCaption("Save");
  * 	}
- *
- *
+ *	
+ *	
  * 	&#64;Override
  * 	public void actionPerformed(ActionEvent e)
  * 	{
@@ -70,15 +74,15 @@ import com.xdev.ui.XdevUI;
  * 		super();
  * 		this.initUI();
  * 	}
- *
- *
+ *	
+ *	
  * 	&#64;Override
  * 	public void save()
  * 	{
  * 		// Implement save routine here
  * 	}
- *
- *
+ *	
+ *	
  * 	private void initUI()
  * 	{
  * 		// ...
@@ -112,12 +116,12 @@ import com.xdev.ui.XdevUI;
  * @see XdevActionManager
  *
  * @param <T>
- *            the context type
+ *            the handler type
  *
  * @author XDEV Software
  */
 public abstract class ContextSensitiveAction<T extends ContextSensitiveHandler>
-		extends AbstractAction
+		extends AbstractAction implements ContextSensitiveHandlerChangeListener
 {
 	private T handler;
 
@@ -126,15 +130,36 @@ public abstract class ContextSensitiveAction<T extends ContextSensitiveHandler>
 	 * Creates a action bound to the given UI and handler type.
 	 *
 	 * @param ui
-	 * @param type
 	 */
-	protected ContextSensitiveAction(final XdevUI ui, final Class<T> type)
+	protected ContextSensitiveAction()
 	{
-		super(ui);
+		super();
 
 		setEnabled(false);
 
-		ui.getXdevActionManager().registerContextSensitiveAction(this,type);
+		final XdevActionManager manager = XdevActionManager.getCurrent();
+		if(manager != null)
+		{
+			manager.registerContextSensitiveAction(this,determineHandlerType());
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	private Class<T> determineHandlerType()
+	{
+		final Type genericSuperclass = getClass().getGenericSuperclass();
+		if(genericSuperclass instanceof ParameterizedType)
+		{
+			final Type rootType = ((ParameterizedType)genericSuperclass)
+					.getActualTypeArguments()[0];
+			if(rootType instanceof Class)
+			{
+				return (Class<T>)rootType;
+			}
+		}
+
+		throw new IllegalStateException("no handler type parameter defined");
 	}
 
 
@@ -178,6 +203,19 @@ public abstract class ContextSensitiveAction<T extends ContextSensitiveHandler>
 	 */
 	protected void handlerChanged(final T oldHandler, final T newHandler)
 	{
-		setEnabled(newHandler != null);
+		update(newHandler);
+	}
+	
+	
+	@Override
+	public void contextSensitiveHandlerChanged(final ContextSensitiveHandlerChangeEvent event)
+	{
+		update(getHandler());
+	}
+	
+	
+	protected void update(final T handler)
+	{
+		setEnabled(handler != null);
 	}
 }

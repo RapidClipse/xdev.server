@@ -22,70 +22,69 @@ package com.xdev.ui.action;
 
 
 import com.vaadin.server.Resource;
-import com.xdev.ui.XdevUI;
 
 
 /**
  * @author XDEV Software
- * 		
+ * 
  */
 public abstract class AbstractToggleAction extends AbstractAction implements ToggleAction
 {
 	private boolean selected = false;
-
-
+	
+	
 	/**
 	 */
-	public AbstractToggleAction(final XdevUI ui)
+	public AbstractToggleAction()
 	{
-		super(ui);
+		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 */
-	public AbstractToggleAction(final XdevUI ui, final String caption)
+	public AbstractToggleAction(final String caption)
 	{
-		super(ui,caption);
+		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * @param icon
 	 */
-	public AbstractToggleAction(final XdevUI ui, final Resource icon)
+	public AbstractToggleAction(final Resource icon)
 	{
-		super(ui,icon);
+		super(icon);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 * @param icon
 	 */
-	public AbstractToggleAction(final XdevUI ui, final String caption, final Resource icon)
+	public AbstractToggleAction(final String caption, final Resource icon)
 	{
-		super(ui,caption,icon);
+		super(caption,icon);
 	}
-	
-	
+
+
 	@Override
 	public boolean isSelected()
 	{
 		return this.selected;
 	}
-	
-	
+
+
 	@Override
 	public void setSelected(final boolean selected)
 	{
 		if(this.selected != selected)
 		{
 			final Object oldValue = this.selected;
-			
+
 			this.selected = selected;
-			
+
 			firePropertyChange(SELECTED_PROPERTY,oldValue,selected);
 		}
 	}

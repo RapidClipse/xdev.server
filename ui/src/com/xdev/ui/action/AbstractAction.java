@@ -28,6 +28,7 @@ import java.util.Objects;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.Resource;
+import com.vaadin.ui.UI;
 import com.xdev.ui.XdevUI;
 import com.xdev.ui.event.ActionEvent;
 
@@ -78,7 +79,7 @@ public abstract class AbstractAction implements Action
 		}
 	}
 
-	private final XdevUI			ui;
+	private XdevUI					ui;
 	private String					caption			= "";
 	private Resource				icon			= null;
 	private String					description		= null;
@@ -90,24 +91,16 @@ public abstract class AbstractAction implements Action
 	/**
 	 * Creates an {@code Action}.
 	 */
-	public AbstractAction(final XdevUI ui)
+	public AbstractAction()
 	{
-		if(ui == null)
-		{
-			throw new IllegalArgumentException("UI cannot be null");
-		}
-
-		this.ui = ui;
 	}
 
 
 	/**
 	 * Creates an {@code Action} with the specified caption.
 	 */
-	public AbstractAction(final XdevUI ui, final String caption)
+	public AbstractAction(final String caption)
 	{
-		this(ui);
-
 		this.caption = caption;
 	}
 
@@ -115,10 +108,8 @@ public abstract class AbstractAction implements Action
 	/**
 	 * Creates an {@code Action} with the specified icon.
 	 */
-	public AbstractAction(final XdevUI ui, final Resource icon)
+	public AbstractAction(final Resource icon)
 	{
-		this(ui);
-
 		this.icon = icon;
 	}
 
@@ -126,10 +117,8 @@ public abstract class AbstractAction implements Action
 	/**
 	 * Creates an {@code Action} with the specified caption and icon.
 	 */
-	public AbstractAction(final XdevUI ui, final String caption, final Resource icon)
+	public AbstractAction(final String caption, final Resource icon)
 	{
-		this(ui);
-
 		this.caption = caption;
 		this.icon = icon;
 	}
@@ -179,6 +168,15 @@ public abstract class AbstractAction implements Action
 	@Override
 	public XdevUI getUI()
 	{
+		if(this.ui == null)
+		{
+			final UI ui = UI.getCurrent();
+			if(ui instanceof XdevUI)
+			{
+				this.ui = (XdevUI)ui;
+			}
+		}
+
 		return this.ui;
 	}
 
@@ -283,15 +281,23 @@ public abstract class AbstractAction implements Action
 		final Shortcut oldValue = getShortcut();
 		if(!Objects.equals(oldValue,shortcut))
 		{
+			final UI ui = UI.getCurrent();
+
 			if(this.actionShortcut != null)
 			{
-				this.ui.removeAction(this.actionShortcut);
+				if(ui != null)
+				{
+					ui.removeAction(this.actionShortcut);
+				}
 			}
 
 			if(shortcut != null)
 			{
 				this.actionShortcut = new ActionShortcut(shortcut);
-				this.ui.addAction(this.actionShortcut);
+				if(ui != null)
+				{
+					ui.addAction(this.actionShortcut);
+				}
 			}
 			else
 			{

@@ -52,10 +52,11 @@ import com.xdev.ui.navigation.XdevNavigator;
  */
 public class XdevAuthenticationNavigator extends XdevNavigator
 {
-	private String	loginViewName		= "";
-	private String	redirectViewName	= null;
-										
-										
+	private String									loginViewName							= "";
+	private String									redirectViewName						= null;
+	private UnauthenticatedNavigationRequestHandler	unauthenticatedNavigationRequestHandler	= UnauthenticatedNavigationRequestHandler.DEFAULT;
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments
 	 * of the {@link Page} containing the given UI and replacing the contents of
@@ -156,7 +157,6 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		super(ui,display);
 	}
 
-
 	{
 		this.initAuthenticationListener();
 	}
@@ -200,6 +200,28 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	}
 
 
+	/**
+	 * @return the unauthenticatedNavigationRequestHandler
+	 * @since 3.0
+	 */
+	public UnauthenticatedNavigationRequestHandler getUnauthenticatedNavigationRequestHandler()
+	{
+		return this.unauthenticatedNavigationRequestHandler;
+	}
+
+
+	/**
+	 * @param unauthenticatedNavigationRequestHandler
+	 *            the unauthenticatedNavigationRequestHandler to set
+	 * @since 3.0
+	 */
+	public void setUnauthenticatedNavigationRequestHandler(
+			final UnauthenticatedNavigationRequestHandler unauthenticatedNavigationRequestHandler)
+	{
+		this.unauthenticatedNavigationRequestHandler = unauthenticatedNavigationRequestHandler;
+	}
+
+
 	protected void initAuthenticationListener()
 	{
 		this.addViewChangeListener(new ViewChangeListener()
@@ -207,16 +229,16 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 			@Override
 			public boolean beforeViewChange(final ViewChangeEvent event)
 			{
-				if(event.getNewView() instanceof LoginView
-						|| event.getNewView() instanceof AccessibleView
-						|| Authentication.getUser() != null)
+				if(event.getNewView() instanceof AccessibleView || Authentication.getUser() != null)
 				{
 					return true;
 				}
 
-				showUnauthorizedAccessMessage();
-
-				navigateToLoginView();
+				final UnauthenticatedNavigationRequestHandler handler = getUnauthenticatedNavigationRequestHandler();
+				if(handler != null)
+				{
+					handler.handle(XdevAuthenticationNavigator.this,event);
+				}
 
 				return false;
 			}
@@ -230,12 +252,17 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	}
 
 
+	/**
+	 * @deprecated not used anymore, see
+	 *             {@link #setUnauthenticatedNavigationRequestHandler(UnauthenticatedNavigationRequestHandler)}
+	 */
+	@Deprecated
 	protected void showUnauthorizedAccessMessage()
 	{
 		Notification.show("Permission denied",Type.ERROR_MESSAGE);
 	}
-	
-	
+
+
 	/**
 	 * Navigates to the login view URL set with
 	 * {@link #setLoginViewName(String)}.

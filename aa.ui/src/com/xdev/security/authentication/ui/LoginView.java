@@ -21,7 +21,6 @@
 package com.xdev.security.authentication.ui;
 
 
-import com.vaadin.navigator.View;
 import com.xdev.ui.XdevView;
 
 
@@ -30,11 +29,11 @@ import com.xdev.ui.XdevView;
  *
  * @see XdevAuthenticationNavigator
  * @see XdevView
- *		
+ * 
  * @author XDEV Software
- *		
+ * 
  */
-public interface LoginView extends View
+public interface LoginView extends AccessibleView
 {
 	/**
 	 * Returns the username of the login form.
@@ -42,8 +41,8 @@ public interface LoginView extends View
 	 * @return the username
 	 */
 	public String getUsername();
-	
-	
+
+
 	/**
 	 * Returns the password of the login form.
 	 *

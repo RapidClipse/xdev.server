@@ -21,10 +21,16 @@
 package com.xdev.security.authentication.ui;
 
 
+import com.vaadin.navigator.View;
+
+
 /**
+ * Marker interface for {@link View}s that can be reached without any
+ * authentication, e.g. the {@link LoginView}.
+ *
  * @author XDEV Software
- *		
+ *
  */
-public interface AccessibleView
+public interface AccessibleView extends View
 {
 }

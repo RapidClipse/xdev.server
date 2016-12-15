@@ -27,7 +27,8 @@ import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItem;
 
 
-public interface XdevBeanContainer<T> extends Container.Filterable
+public interface XdevBeanContainer<T>
+		extends Container.Sortable, Container.Filterable, Container.Indexed
 {
 	public BeanItem<T> addBean(final T bean) throws UnsupportedOperationException;
 	

@@ -48,8 +48,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	private boolean				persistValue				= PERSIST_VALUE_DEFAULT;
 	private boolean				itemCaptionFromAnnotation	= true;
 	private String				itemCaptionValue			= null;
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -57,8 +57,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 */
@@ -66,13 +66,13 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		super(caption);
 	}
-
+	
 	// init defaults
 	{
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -81,8 +81,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -91,8 +91,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -101,8 +101,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -111,8 +111,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		this.persistValue = persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -124,7 +124,7 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-
+		
 		// Workaround for TwinColSelect internal size behavior.
 		if(container instanceof XdevEntityLazyQueryContainer)
 		{
@@ -143,20 +143,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 		}
 		this.setContainerDataSource(container);
 	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@SafeVarargs
-	@Override
-	public final void setContainerDataSource(final Class<T> beanClass,
-			final KeyValueType<?, ?>... nestedProperties)
-	{
-		this.setContainerDataSource(beanClass,true,nestedProperties);
-	}
-	
-	
+
+
 	@SafeVarargs
 	@Override
 	public final void setContainerDataSource(final Class<T> beanClass, final Collection<T> data,
@@ -166,11 +154,11 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-		
+
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * Sets if the item's caption should be derived from its {@link Caption}
 	 * annotation.
@@ -184,8 +172,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
 	 * @return if the item's caption should be derived from its {@link Caption}
 	 *         annotation
@@ -194,8 +182,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
 	 * Sets a user defined caption value for the items to display.
 	 *
@@ -208,8 +196,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		this.itemCaptionValue = itemCaptionValue;
 	}
-
-
+	
+	
 	/**
 	 * Returns the user defined caption value for the items to display
 	 *
@@ -219,8 +207,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.itemCaptionValue;
 	}
-
-
+	
+	
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
@@ -251,7 +239,7 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 				}
 			}
 		}
-
+		
 		return super.getItemCaption(itemId);
 	}
 }

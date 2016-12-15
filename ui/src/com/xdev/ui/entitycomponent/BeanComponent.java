@@ -24,6 +24,7 @@ package com.xdev.ui.entitycomponent;
 import java.util.Collection;
 import java.util.List;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Container.Viewer;
 import com.vaadin.data.Property.ValueChangeNotifier;
 import com.vaadin.data.util.BeanItem;
@@ -33,9 +34,11 @@ import com.xdev.ui.util.KeyValueType;
 
 public interface BeanComponent<BEANTYPE> extends Viewer, Component, ValueChangeNotifier
 {
-
-	public void setContainerDataSource(Class<BEANTYPE> beanClass,
-			KeyValueType<?, ?>... nestedProperties);
+	public default void setContainerDataSource(final Class<BEANTYPE> beanClass,
+			final KeyValueType<?, ?>... nestedProperties)
+	{
+		this.setContainerDataSource(beanClass,true,nestedProperties);
+	}
 
 
 	public void setContainerDataSource(Class<BEANTYPE> beanClass, boolean autoQueryData,
@@ -50,9 +53,29 @@ public interface BeanComponent<BEANTYPE> extends Viewer, Component, ValueChangeN
 	 *
 	 * @since 3.0
 	 */
-	public XdevBeanContainer<BEANTYPE> getBeanContainerDataSource();
-	
-	
+	@SuppressWarnings("unchecked")
+	public default XdevBeanContainer<BEANTYPE> getBeanContainerDataSource()
+	{
+		final Container container = getContainerDataSource();
+		if(container instanceof XdevBeanContainer)
+		{
+			return (XdevBeanContainer<BEANTYPE>)container;
+		}
+
+		return null;
+	}
+
+
+	/**
+	 *
+	 * @since 3.0
+	 */
+	public default BeanItem<BEANTYPE> getBeanItem(final Object id)
+	{
+		return this.getBeanContainerDataSource().getItem(id);
+	}
+
+
 	/**
 	 * True means, a lazy query container is used as default table container
 	 * which queries data at starup. False means, the user is responsible for
@@ -63,21 +86,14 @@ public interface BeanComponent<BEANTYPE> extends Viewer, Component, ValueChangeN
 	 * @param autoQuery
 	 */
 	public void setAutoQueryData(boolean autoQuery);
-	
-	
+
+
 	public boolean isAutoQueryData();
 
 
-	/**
-	 *
-	 * @since 3.0
-	 */
-	public BeanItem<BEANTYPE> getBeanItem(Object id);
-	
-	
 	public BeanItem<BEANTYPE> getSelectedItem();
-	
-	
+
+
 	/**
 	 *
 	 * @since 1.0.2
@@ -85,5 +101,12 @@ public interface BeanComponent<BEANTYPE> extends Viewer, Component, ValueChangeN
 	public List<BeanItem<BEANTYPE>> getSelectedItems();
 
 
+	/**
+	 * Selects an item.
+	 *
+	 * @param itemId
+	 *            the identifier of Item to be selected.
+	 *
+	 */
 	public void select(Object itemId);
 }

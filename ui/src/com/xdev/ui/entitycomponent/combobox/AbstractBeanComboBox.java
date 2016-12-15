@@ -71,24 +71,6 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	}
 
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public XdevBeanContainer<BEANTYPE> getBeanContainerDataSource()
-	{
-		if(super.getContainerDataSource() instanceof XdevBeanContainer)
-		{
-			return (XdevBeanContainer<BEANTYPE>)super.getContainerDataSource();
-		}
-		// else
-		// {
-		// throw new RuntimeException(
-		// "While using BeanComponents a fitting XdevBeanContainer must be
-		// set");
-		// }
-		return null;
-	}
-
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -113,16 +95,6 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	 * {@inheritDoc}
 	 */
 	@Override
-	public BeanItem<BEANTYPE> getBeanItem(final Object itemId)
-	{
-		return this.getBeanContainerDataSource().getItem(itemId);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public BeanItem<BEANTYPE> getSelectedItem()
 	{
 		return this.getBeanContainerDataSource().getItem(this.getValue());
@@ -139,8 +111,8 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 		list.add(getSelectedItem());
 		return list;
 	}
-
-
+	
+	
 	protected UIModelProvider<BEANTYPE> getModelProvider()
 	{
 		if(this.isAutoQueryData())

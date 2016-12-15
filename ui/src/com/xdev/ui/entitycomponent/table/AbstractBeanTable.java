@@ -41,6 +41,12 @@ import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.paging.LazyLoadingUIModelProvider;
 
 
+/**
+ *
+ * @author XDEV Software
+ *
+ * @param <BEANTYPE>
+ */
 public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanComponent<BEANTYPE>
 {
 	/**
@@ -74,24 +80,6 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	{
 		super(caption,dataSource);
 		this.setContainerDataSource(dataSource);
-	}
-	
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public XdevBeanContainer<BEANTYPE> getBeanContainerDataSource()
-	{
-		if(super.getContainerDataSource() instanceof XdevBeanContainer)
-		{
-			return (XdevBeanContainer<BEANTYPE>)super.getContainerDataSource();
-		}
-		// else
-		// {
-		// throw new RuntimeException(
-		// "While using BeanComponents a fitting XdevBeanContainer must be
-		// set");
-		// }
-		return null;
 	}
 	
 	
@@ -174,18 +162,8 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 			this.setConverter((Converter)null);
 		}
 	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public BeanItem<BEANTYPE> getBeanItem(final Object itemId)
-	{
-		return this.getBeanContainerDataSource().getItem(itemId);
-	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

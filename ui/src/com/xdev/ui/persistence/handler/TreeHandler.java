@@ -21,7 +21,6 @@
 package com.xdev.ui.persistence.handler;
 
 
-import java.util.Collection;
 import java.util.Map;
 
 import com.vaadin.ui.Tree;
@@ -30,65 +29,45 @@ import com.xdev.ui.persistence.GuiPersistenceEntry;
 
 public class TreeHandler extends AbstractFieldHandler<Tree>
 {
-	protected static final String KEY_EXPANDED = "expanded";
-	
-	
+	protected static final String KEY_EXPANDED = "expandedItems";
+
+
 	@Override
 	public Class<Tree> handledType()
 	{
 		return Tree.class;
 	}
-	
-	
+
+
 	@Override
 	protected void addEntryValues(final Map<String, Object> entryValues, final Tree component)
 	{
 		super.addEntryValues(entryValues,component);
-		
-		final Collection<?> collItem = component.getItemIds();
 
-		final boolean[] oaExpanded = new boolean[collItem.size()];
-		int i = 0;
-
-		for(final Object o : collItem)
+		final Object[] expandedIds = component.getItemIds().stream().filter(component::isExpanded)
+				.toArray();
+		if(expandedIds != null && expandedIds.length > 0)
 		{
-			final Boolean b = component.isExpanded(o);
-
-			if(b == true)
-			{
-				oaExpanded[i] = true;
-			}
-			else
-			{
-				oaExpanded[i] = false;
-			}
-			i++;
+			entryValues.put(KEY_EXPANDED,getFieldValueToStore(expandedIds));
 		}
-
-		entryValues.put(KEY_EXPANDED,oaExpanded);
 	}
-	
-	
+
+
 	@Override
 	public void restore(final Tree component, final GuiPersistenceEntry entry)
 	{
 		super.restore(component,entry);
 
-		final boolean[] oaExpanded = (boolean[])entry.value(KEY_EXPANDED);
-		final Collection<?> collItem = component.getItemIds();
-		int i = 0;
-		
-		for(final Object o : collItem)
+		final Object[] expandedIds = (Object[])getFieldValueToRestore(component,
+				entry.value(KEY_EXPANDED));
+		if(expandedIds != null && expandedIds.length > 0)
 		{
-			if(oaExpanded[i] == true)
+			component.getItemIds().stream().filter(component::isExpanded)
+					.forEach(component::collapseItem);
+			for(final Object id : expandedIds)
 			{
-				component.expandItem(o);
+				component.expandItem(id);
 			}
-			else
-			{
-				component.collapseItem(o);
-			}
-			i++;
 		}
 	}
 }

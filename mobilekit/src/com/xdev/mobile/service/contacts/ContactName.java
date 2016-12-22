@@ -21,6 +21,9 @@
 package com.xdev.mobile.service.contacts;
 
 
+import org.apache.commons.lang3.StringUtils;
+
+
 /**
  * Contains different kinds of information about a Contact object's name.
  *
@@ -52,8 +55,8 @@ public class ContactName
 		this.prefix = prefix;
 		this.suffix = suffix;
 	}
-
-
+	
+	
 	/**
 	 * The complete name of the contact.
 	 */
@@ -61,8 +64,8 @@ public class ContactName
 	{
 		return this.formatted;
 	}
-
-
+	
+	
 	/**
 	 * The complete name of the contact.
 	 */
@@ -71,8 +74,8 @@ public class ContactName
 		this.formatted = formatted;
 		return this;
 	}
-
-
+	
+	
 	/**
 	 * The contact's family name.
 	 */
@@ -80,8 +83,8 @@ public class ContactName
 	{
 		return this.familyName;
 	}
-
-
+	
+	
 	/**
 	 * The contact's family name.
 	 */
@@ -90,8 +93,8 @@ public class ContactName
 		this.familyName = familyName;
 		return this;
 	}
-
-
+	
+	
 	/**
 	 * The contact's given name.
 	 */
@@ -99,8 +102,8 @@ public class ContactName
 	{
 		return this.givenName;
 	}
-
-
+	
+	
 	/**
 	 * The contact's given name.
 	 */
@@ -109,8 +112,8 @@ public class ContactName
 		this.givenName = givenName;
 		return this;
 	}
-
-
+	
+	
 	/**
 	 * The contact's middle name.
 	 */
@@ -118,8 +121,8 @@ public class ContactName
 	{
 		return this.middle;
 	}
-
-
+	
+	
 	/**
 	 * The contact's middle name.
 	 */
@@ -128,8 +131,8 @@ public class ContactName
 		this.middle = middle;
 		return this;
 	}
-
-
+	
+	
 	/**
 	 * The contact's prefix (example Mr. or Dr.)
 	 */
@@ -137,8 +140,8 @@ public class ContactName
 	{
 		return this.prefix;
 	}
-
-
+	
+	
 	/**
 	 * The contact's prefix (example Mr. or Dr.)
 	 */
@@ -147,8 +150,8 @@ public class ContactName
 		this.prefix = prefix;
 		return this;
 	}
-
-
+	
+	
 	/**
 	 * The contact's suffix (example Esq.)
 	 */
@@ -156,8 +159,8 @@ public class ContactName
 	{
 		return this.suffix;
 	}
-
-
+	
+	
 	/**
 	 * The contact's suffix (example Esq.)
 	 */
@@ -166,16 +169,49 @@ public class ContactName
 		this.suffix = suffix;
 		return this;
 	}
-
-
+	
+	
 	@Override
 	public String toString()
 	{
-		if(this.formatted != null && this.formatted.length() > 0)
+		if(StringUtils.isNotBlank(this.formatted))
 		{
 			return this.formatted;
 		}
-
+		
+		if(StringUtils.isNotBlank(this.givenName) || StringUtils.isNotBlank(this.familyName))
+		{
+			final StringBuilder sb = new StringBuilder();
+			if(StringUtils.isNotBlank(this.prefix))
+			{
+				sb.append(this.prefix).append(' ');
+			}
+			if(StringUtils.isNotBlank(this.givenName))
+			{
+				sb.append(this.givenName).append(' ');
+			}
+			if(StringUtils.isNotBlank(this.middle))
+			{
+				sb.append(this.middle).append(' ');
+			}
+			if(StringUtils.isNotBlank(this.familyName))
+			{
+				sb.append(this.familyName).append(' ');
+			}
+			if(StringUtils.isNotBlank(this.suffix))
+			{
+				sb.append(this.suffix);
+			}
+			return sb.toString().trim();
+		}
+		
 		return super.toString();
+	}
+	
+	
+	boolean hasToStringContent()
+	{
+		return StringUtils.isNotBlank(this.formatted) || StringUtils.isNotBlank(this.givenName)
+				|| StringUtils.isNotBlank(this.familyName);
 	}
 }

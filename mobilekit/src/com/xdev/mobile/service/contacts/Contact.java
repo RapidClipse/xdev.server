@@ -23,6 +23,8 @@ package com.xdev.mobile.service.contacts;
 
 import java.util.Collection;
 
+import org.apache.commons.lang3.StringUtils;
+
 
 /**
  * The Contact object represents a user's contact. Contacts can be created,
@@ -50,13 +52,13 @@ public class Contact
 	private Collection<ContactField>		photos;
 	private Collection<ContactField>		categories;
 	private Collection<ContactField>		urls;
-	
-	
+
+
 	public Contact()
 	{
 	}
-	
-	
+
+
 	public Contact(final String id, final String displayName, final ContactName name,
 			final String nickname, final Collection<ContactField> phoneNumbers,
 			final Collection<ContactField> emails, final Collection<ContactAddress> addresses,
@@ -79,8 +81,8 @@ public class Contact
 		this.categories = categories;
 		this.urls = urls;
 	}
-	
-	
+
+
 	/**
 	 * A globally unique identifier.
 	 */
@@ -88,8 +90,8 @@ public class Contact
 	{
 		return this.id;
 	}
-	
-	
+
+
 	/**
 	 * A globally unique identifier.
 	 */
@@ -98,8 +100,8 @@ public class Contact
 		this.id = id;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * The name of this Contact, suitable for display to end users.
 	 */
@@ -107,8 +109,8 @@ public class Contact
 	{
 		return this.displayName;
 	}
-	
-	
+
+
 	/**
 	 * The name of this Contact, suitable for display to end users.
 	 */
@@ -117,8 +119,8 @@ public class Contact
 		this.displayName = displayName;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * An object containing all components of a persons name.
 	 */
@@ -126,8 +128,8 @@ public class Contact
 	{
 		return this.name;
 	}
-	
-	
+
+
 	/**
 	 * An object containing all components of a persons name.
 	 */
@@ -136,8 +138,8 @@ public class Contact
 		this.name = name;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * A casual name by which to address the contact.
 	 */
@@ -145,8 +147,8 @@ public class Contact
 	{
 		return this.nickname;
 	}
-	
-	
+
+
 	/**
 	 * A casual name by which to address the contact.
 	 */
@@ -155,8 +157,8 @@ public class Contact
 		this.nickname = nickname;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * A list of all the contact's phone numbers.
 	 */
@@ -164,8 +166,8 @@ public class Contact
 	{
 		return this.phoneNumbers;
 	}
-	
-	
+
+
 	/**
 	 * A list of all the contact's phone numbers.
 	 */
@@ -174,8 +176,8 @@ public class Contact
 		this.phoneNumbers = phoneNumbers;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * A list of all the contact's email addresses.
 	 */
@@ -183,8 +185,8 @@ public class Contact
 	{
 		return this.emails;
 	}
-	
-	
+
+
 	/**
 	 * A list of all the contact's email addresses.
 	 */
@@ -193,8 +195,8 @@ public class Contact
 		this.emails = emails;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * A list of all the contact's addresses.
 	 */
@@ -202,8 +204,8 @@ public class Contact
 	{
 		return this.addresses;
 	}
-	
-	
+
+
 	/**
 	 * A list of all the contact's addresses.
 	 */
@@ -212,8 +214,8 @@ public class Contact
 		this.addresses = addresses;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * A list of all the contact's IM addresses.
 	 */
@@ -221,8 +223,8 @@ public class Contact
 	{
 		return this.ims;
 	}
-	
-	
+
+
 	/**
 	 * A list of all the contact's IM addresses.
 	 */
@@ -231,8 +233,8 @@ public class Contact
 		this.ims = ims;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * A list of all the contact's organizations.
 	 */
@@ -240,8 +242,8 @@ public class Contact
 	{
 		return this.organizations;
 	}
-	
-	
+
+
 	/**
 	 * A list of all the contact's organizations.
 	 */
@@ -250,8 +252,8 @@ public class Contact
 		this.organizations = organizations;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * The birthday of the contact.
 	 */
@@ -259,8 +261,8 @@ public class Contact
 	{
 		return this.birthday;
 	}
-	
-	
+
+
 	/**
 	 * The birthday of the contact.
 	 */
@@ -269,8 +271,8 @@ public class Contact
 		this.birthday = birthday;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * A note about the contact.
 	 */
@@ -278,8 +280,8 @@ public class Contact
 	{
 		return this.note;
 	}
-	
-	
+
+
 	/**
 	 * A note about the contact.
 	 */
@@ -288,8 +290,8 @@ public class Contact
 		this.note = note;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * A list of the contact's photos.
 	 */
@@ -297,8 +299,8 @@ public class Contact
 	{
 		return this.photos;
 	}
-	
-	
+
+
 	/**
 	 * A list of the contact's photos.
 	 */
@@ -307,8 +309,8 @@ public class Contact
 		this.photos = photos;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * A list of all the user-defined categories associated with the contact.
 	 */
@@ -316,8 +318,8 @@ public class Contact
 	{
 		return this.categories;
 	}
-	
-	
+
+
 	/**
 	 * A list of all the user-defined categories associated with the contact.
 	 */
@@ -326,8 +328,8 @@ public class Contact
 		this.categories = categories;
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * A list of web pages associated with the contact.
 	 */
@@ -335,8 +337,8 @@ public class Contact
 	{
 		return this.urls;
 	}
-	
-	
+
+
 	/**
 	 * A list of web pages associated with the contact.
 	 */
@@ -345,16 +347,26 @@ public class Contact
 		this.urls = urls;
 		return this;
 	}
-	
-	
+
+
 	@Override
 	public String toString()
 	{
-		if(this.displayName != null && this.displayName.length() > 0)
+		if(StringUtils.isNotBlank(this.displayName))
 		{
 			return this.displayName;
 		}
-		
+
+		if(this.name != null && this.name.hasToStringContent())
+		{
+			return this.name.toString();
+		}
+
+		if(StringUtils.isNotBlank(this.nickname))
+		{
+			return this.nickname;
+		}
+
 		return super.toString();
 	}
 }

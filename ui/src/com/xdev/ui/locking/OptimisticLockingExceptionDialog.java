@@ -29,31 +29,36 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 
+/**
+ *
+ * @deprecated will be removed in a future release
+ */
+@Deprecated
 public class OptimisticLockingExceptionDialog extends Window
 {
 	/**
-	 * 
+	 *
 	 */
-	private static final long	serialVersionUID	= 1949157884343636557L;
-	
-	
-	public OptimisticLockingExceptionDialog(Object lockedObject)
+	private static final long serialVersionUID = 1949157884343636557L;
+
+
+	public OptimisticLockingExceptionDialog(final Object lockedObject)
 	{
-		VerticalLayout verticalLayout = new VerticalLayout();
+		final VerticalLayout verticalLayout = new VerticalLayout();
 		verticalLayout.setMargin(true);
 		setContent(verticalLayout);
-		
+
 		setCaption("Changes not submitted");
 		setModal(true);
 		setResizable(false);
-		
-		HorizontalLayout headerLayout = new HorizontalLayout();
-		Label text = new Label(
+
+		final HorizontalLayout headerLayout = new HorizontalLayout();
+		final Label text = new Label(
 				"This record has already been updated by another user - Changes made to the record will be rolled back");
 		text.setStyleName(ValoTheme.LABEL_FAILURE);
 		headerLayout.addComponent(text);
 		verticalLayout.addComponent(headerLayout);
-		
+
 		verticalLayout.setComponentAlignment(headerLayout,Alignment.MIDDLE_CENTER);
 	}
 }

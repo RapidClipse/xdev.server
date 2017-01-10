@@ -23,18 +23,24 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>xdev-server-aa-ui</artifactId>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.0.0</version>
 	<name>RapidClipse Framework Authorization and Authentication UI</name>
+	<description>${project.name}</description>
+	<url>http://www.rapidclipse.com</url>
+	<scm>
+		<url>https://github.com/RapidClipse/xdev.server.aa.ui</url>
+		<connection>https://github.com/RapidClipse/xdev.server.aa.ui.git</connection>
+		<developerConnection>https://github.com/RapidClipse/xdev.server.aa.ui.git</developerConnection>
+	</scm>
 
 	<parent>
 		<groupId>com.xdev-software</groupId>
 		<artifactId>xdev-server-pom</artifactId>
-		<version>1.0.2</version>
+		<version>1.0.3</version>
 		<relativePath>../xdev.server.pom/pom.xml</relativePath>
 	</parent>
 
 	<properties>
-		<repositoryName>xdev.server.aa.ui</repositoryName>
 		<pluginProject>xdev.eclipse.server.aa.ui</pluginProject>
 	</properties>
 
@@ -42,13 +48,13 @@
 		<dependency>
 			<groupId>com.xdev-software</groupId>
 			<artifactId>xdev-server-ui</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>3.0.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.xdev-software</groupId>
 			<artifactId>xdev-server-aa</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>3.0.0</version>
 		</dependency>
 	</dependencies>
 

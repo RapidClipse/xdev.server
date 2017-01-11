@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ - Copyright (C) 2013-2016 by XDEV Software, All Rights Reserved.
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU Affero General Public License as
+ - published by the Free Software Foundation, either version 3 of the
+ - License, or (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU Affero General Public License for more details.
+ -
+ - You should have received a copy of the GNU Affero General Public License
+ - along with this program. If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>xdev-server-aa</artifactId>
+	<version>3.0.0</version>
+	<name>RapidClipse Framework Authorization and Authentication</name>
+	<description>${project.name}</description>
+	<url>http://www.rapidclipse.com</url>
+	<scm>
+		<url>https://github.com/RapidClipse/xdev.server.aa</url>
+		<connection>https://github.com/RapidClipse/xdev.server.aa.git</connection>
+		<developerConnection>https://github.com/RapidClipse/xdev.server.aa.git</developerConnection>
+	</scm>
+
+	<parent>
+		<groupId>com.xdev-software</groupId>
+		<artifactId>xdev-server-pom</artifactId>
+		<version>1.0.3</version>
+		<relativePath>../xdev.server.pom/pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<pluginProject>xdev.eclipse.server.aa</pluginProject>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.xdev-software</groupId>
+			<artifactId>xdev-server-core</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>1.2.4</version>
+        </dependency>
+	</dependencies>
+
+</project>

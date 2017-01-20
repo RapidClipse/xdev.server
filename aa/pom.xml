@@ -22,33 +22,25 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>xdev-server-aa</artifactId>
-	<version>3.0.0</version>
-	<name>RapidClipse Framework Authorization and Authentication</name>
-	<description>${project.name}</description>
-	<url>http://www.rapidclipse.com</url>
-	<scm>
-		<url>https://github.com/RapidClipse/xdev.server.aa</url>
-		<connection>https://github.com/RapidClipse/xdev.server.aa.git</connection>
-		<developerConnection>https://github.com/RapidClipse/xdev.server.aa.git</developerConnection>
-	</scm>
-
 	<parent>
 		<groupId>com.xdev-software</groupId>
-		<artifactId>xdev-server-pom</artifactId>
-		<version>1.0.3</version>
-		<relativePath>../xdev.server.pom/pom.xml</relativePath>
+		<artifactId>xdev-server</artifactId>
+		<version>3.0.0</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
+	<artifactId>xdev-server-aa</artifactId>
+	<name>RapidClipse Framework Authorization and Authentication</name>
+	
 	<properties>
-		<pluginProject>xdev.eclipse.server.aa</pluginProject>
+		<shortName>aa</shortName>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.xdev-software</groupId>
 			<artifactId>xdev-server-core</artifactId>
-			<version>3.0.0</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.shiro</groupId>

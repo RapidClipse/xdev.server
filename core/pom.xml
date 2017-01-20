@@ -12,26 +12,18 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>xdev-server-core</artifactId>
-	<version>3.0.0</version>
-	<name>RapidClipse Framework Core</name>
-	<description>${project.name}</description>
-	<url>http://www.rapidclipse.com</url>
-	<scm>
-		<url>https://github.com/RapidClipse/xdev.server.core</url>
-		<connection>https://github.com/RapidClipse/xdev.server.core.git</connection>
-		<developerConnection>https://github.com/RapidClipse/xdev.server.core.git</developerConnection>
-	</scm>
-
 	<parent>
 		<groupId>com.xdev-software</groupId>
-		<artifactId>xdev-server-pom</artifactId>
-		<version>1.0.3</version>
-		<relativePath>../xdev.server.pom/pom.xml</relativePath>
+		<artifactId>xdev-server</artifactId>
+		<version>3.0.0</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
+	<artifactId>xdev-server-core</artifactId>
+	<name>RapidClipse Framework Core</name>
+
 	<properties>
-		<pluginProject>xdev.eclipse.server.core</pluginProject>
+		<shortName>core</shortName>
 		<vaadinVersion>7.7.5</vaadinVersion>
 		<hibernateVersion>5.2.5.Final</hibernateVersion>
 	</properties>

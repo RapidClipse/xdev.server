@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="prepend license header"  >
+<target name="prepend license header">
+  <taskdef classname="anttasks.LicenseTextPrepender" classpath="../../xdev.server.dev/license/license-prepender.jar" name="licenseprepender"/>
+  <licenseprepender inputfile="../../xdev.server.dev/license/header.txt" srcdir="src"/>
+</target>
+</project>

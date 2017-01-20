@@ -1,0 +1,47 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>xdev-server-mobilekit</artifactId>
+	<version>1.0.0</version>
+	<name>XDEV MobileKit</name>
+	<description>${project.name}</description>
+	<url>http://www.rapidclipse.com</url>
+	<scm>
+		<url>https://github.com/RapidClipse/xdev.server.mobilekit</url>
+		<connection>https://github.com/RapidClipse/xdev.server.mobilekit.git</connection>
+		<developerConnection>https://github.com/RapidClipse/xdev.server.mobilekit.git</developerConnection>
+	</scm>
+
+	<parent>
+		<groupId>com.xdev-software</groupId>
+		<artifactId>xdev-server-pom</artifactId>
+		<version>1.0.3</version>
+		<relativePath>../xdev.server.pom/pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<pluginProject>xdev.eclipse.server.mobilekit</pluginProject>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.xdev-software</groupId>
+			<artifactId>xdev-server-ui</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
+	</dependencies>
+
+</project>

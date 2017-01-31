@@ -1,3 +1,5 @@
+![](https://img.shields.io/github/license/RapidClipse/xdev.server.svg)
+![](https://img.shields.io/maven-central/v/com.xdev-software/xdev-server-core.svg)
 
 # RapidClipse Framework
 *	Base Architecture and Infrastructure for professional Business Apps.

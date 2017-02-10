@@ -38,6 +38,7 @@ import com.vaadin.server.ServiceException;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletService;
+import com.vaadin.server.VaadinSession;
 import com.xdev.Application;
 import com.xdev.util.ExtensionUtils;
 
@@ -113,8 +114,10 @@ public class XdevServlet extends VaadinServlet
 
 	protected void initSession(final SessionInitEvent event)
 	{
-		event.getSession().setAttribute(URLParameterRegistry.class,new URLParameterRegistry());
-
+		final VaadinSession session = event.getSession();
+		session.setAttribute(URLParameterRegistry.class,new URLParameterRegistry());
+		session.setAttribute(Cookies.class,new Cookies(session));
+		
 		initSession(event,ClientInfo.get(event.getRequest()));
 	}
 

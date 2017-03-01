@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- - Copyright (C) 2013-2015 by XDEV Software, All Rights Reserved. - - This program is free software: you can redistribute 
-	it and/or modify - it under the terms of the GNU Affero General Public License as - published by the Free Software Foundation, 
-	either version 3 of the - License, or (at your option) any later version. - - This program is distributed in the hope that 
-	it will be useful, - but WITHOUT ANY WARRANTY; without even the implied warranty of - MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-	PURPOSE. See the - GNU Affero General Public License for more details. - - You should have received a copy of the GNU Affero 
-	General Public License - along with this program. If not, see <http://www.gnu.org/licenses/>. -->
+<!--
+ - Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU Affero General Public License as
+ - published by the Free Software Foundation, either version 3 of the
+ - License, or (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU Affero General Public License for more details.
+ -
+ - You should have received a copy of the GNU Affero General Public License
+ - along with this program. If not, see <http://www.gnu.org/licenses/>.
+ -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -14,7 +24,7 @@
 
 	<groupId>com.xdev-software</groupId>
 	<artifactId>xdev-server</artifactId>
-	<version>3.0.0</version>
+	<version>3.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>RapidClipse Framework</name>
@@ -54,38 +64,22 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<nexusServerId>ossrh</nexusServerId>
-		<nexusServer>https://oss.sonatype.org</nexusServer>
 	</properties>
-
-	<!-- <repositories> -->
-	<!-- <repository> -->
-	<!-- <id>${nexusServerId}</id> -->
-	<!-- <url>${nexusServer}/content/repositories/snapshots/</url> -->
-	<!-- <releases> -->
-	<!-- <enabled>false</enabled> -->
-	<!-- </releases> -->
-	<!-- <snapshots> -->
-	<!-- <enabled>true</enabled> -->
-	<!-- <updatePolicy>always</updatePolicy> -->
-	<!-- </snapshots> -->
-	<!-- </repository> -->
-	<!-- </repositories> -->
 
 	<distributionManagement>
 		<snapshotRepository>
-			<id>${nexusServerId}</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<id>${repositoryServerId}</id>
+			<url>${snapshotRepository}</url>
 		</snapshotRepository>
 		<repository>
-			<id>${nexusServerId}</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<id>${repositoryServerId}</id>
+			<url>${releaseRepository}</url>
 		</repository>
 	</distributionManagement>
 
 	<profiles>
 		<profile>
-			<id>release</id>
+			<id>ossrh</id>
 			<build>
 				<plugins>
 					<plugin>
@@ -129,6 +123,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-release-plugin</artifactId>
+						<version>2.5.3</version>
 						<configuration>
 							<autoVersionSubmodules>true</autoVersionSubmodules>
 							<useReleaseProfile>false</useReleaseProfile>
@@ -139,12 +134,66 @@
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.5</version>
+						<version>1.6.7</version>
 						<extensions>true</extensions>
 						<configuration>
-							<serverId>${nexusServerId}</serverId>
-							<nexusUrl>${nexusServer}</nexusUrl>
+							<serverId>${repositoryServerId}</serverId>
+							<nexusUrl>${repositoryServer}</nexusUrl>
 							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>xdevmaven</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>flatten-maven-plugin</artifactId>
+						<version>1.0.0</version>
+						<executions>
+							<execution>
+								<id>flatten</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>flatten</goal>
+								</goals>
+								<configuration>
+									<flattenMode>ossrh</flattenMode>
+								</configuration>
+							</execution>
+							<execution>
+								<id>flatten.clean</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>clean</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>2.5.3</version>
+						<configuration>
+							<autoVersionSubmodules>true</autoVersionSubmodules>
+							<goals>deploy</goals>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -157,7 +206,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.7</version>
+						<version>1.8</version>
 						<executions>
 							<execution>
 								<id>copy-jar-files</id>
@@ -168,7 +217,7 @@
 								<configuration>
 									<target name="copy jar files to eclipse plugin project">
 										<copy failonerror="false" file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
-											tofile="../../xdev.eclipse.server.${shortName}/lib/${project.artifactId}.jar" />
+											tofile="../../com.rapidclipse/frameworktools/${shortName}/lib/${project.artifactId}.jar" />
 									</target>
 								</configuration>
 							</execution>
@@ -193,7 +242,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
+				<version>1.8</version>
 				<executions>
 					<execution>
 						<id>prepend-license-header</id>
@@ -211,7 +260,9 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -226,7 +277,9 @@
 				</dependencies>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
 				<configuration>
 					<archive>
 						<manifestEntries>
@@ -238,7 +291,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -334,7 +387,7 @@
 											maven-antrun-plugin
 										</artifactId>
 										<versionRange>
-											[1.7,)
+											[1.8,)
 										</versionRange>
 										<goals>
 											<goal>run</goal>
@@ -364,5 +417,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
+	
 </project>

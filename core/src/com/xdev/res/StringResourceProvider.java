@@ -31,6 +31,8 @@ import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
+import com.vaadin.ui.Component;
+
 
 /**
  * Provides {@link String} resources which can be used for internationalization.
@@ -63,25 +65,25 @@ public interface StringResourceProvider
 	 * @throws NullPointerException
 	 *             if <code>key</code> is <code>null</code>
 	 */
-
+	
 	public String lookupResourceString(String key, Locale locale, Object requestor)
 			throws MissingResourceException, NullPointerException;
-
-
-
+	
+	
+	
 	public static class Implementation implements StringResourceProvider
 	{
 		protected final Map<Locale, ResourceBundle>	localizedProjectBundles;
 		protected final ResourceBundle				defaultProjectBundle;
-
-
+		
+		
 		public Implementation()
 		{
 			this.localizedProjectBundles = new HashMap<>();
 			this.defaultProjectBundle = loadProjectResourceBundle(null,this);
 		}
-
-
+		
+		
 		/**
 		 * {@inheritDoc}
 		 */
@@ -91,9 +93,17 @@ public interface StringResourceProvider
 		{
 			if(locale == null)
 			{
-				locale = Locale.getDefault();
+				// XDEVSERVER-141
+				if(requestor instanceof Component)
+				{
+					locale = ((Component)requestor).getLocale();
+				}
+				else
+				{
+					locale = Locale.getDefault();
+				}
 			}
-
+			
 			Class<?> clazz = null;
 			if(requestor != null)
 			{
@@ -110,12 +120,12 @@ public interface StringResourceProvider
 					clazz = requestor.getClass();
 				}
 			}
-
+			
 			if(clazz != null)
 			{
 				String name = clazz.getName();
 				boolean first = true;
-
+				
 				while(true)
 				{
 					try
@@ -130,7 +140,7 @@ public interface StringResourceProvider
 						{
 							baseName = name.concat(".package");
 						}
-
+						
 						return ResourceBundle.getBundle(baseName,locale,clazz.getClassLoader())
 								.getString(key);
 					}
@@ -140,7 +150,7 @@ public interface StringResourceProvider
 					catch(final NullPointerException npe)
 					{
 					}
-
+					
 					final int lastDot = name.lastIndexOf('.');
 					if(lastDot > 0)
 					{
@@ -152,7 +162,7 @@ public interface StringResourceProvider
 					}
 				}
 			}
-
+			
 			ResourceBundle localizedProjectBundle = null;
 			if(this.localizedProjectBundles.containsKey(locale))
 			{
@@ -163,7 +173,7 @@ public interface StringResourceProvider
 				localizedProjectBundle = loadProjectResourceBundle(locale,requestor);
 				this.localizedProjectBundles.put(locale,localizedProjectBundle);
 			}
-
+			
 			if(localizedProjectBundle != null)
 			{
 				try
@@ -174,7 +184,7 @@ public interface StringResourceProvider
 				{
 				}
 			}
-
+			
 			if(this.defaultProjectBundle != null)
 			{
 				try
@@ -185,14 +195,14 @@ public interface StringResourceProvider
 				{
 				}
 			}
-
+			
 			final String className = clazz != null ? clazz.getName() : getClass().getName();
 			throw new MissingResourceException("No resource found for key '" + key
 					+ "', requestor = " + className + ", locale = " + locale.getLanguage(),
 					className,key);
 		}
-
-
+		
+		
 		protected ResourceBundle loadProjectResourceBundle(final Locale locale,
 				final Object requestor)
 		{
@@ -203,7 +213,7 @@ public interface StringResourceProvider
 			catch(final MissingResourceException mre)
 			{
 				final String localeSuffix = locale != null ? "_" + locale.getLanguage() : "";
-
+				
 				try (InputStream in = getResource(
 						getProjectBundlePath() + localeSuffix + ".properties",requestor))
 				{
@@ -215,18 +225,18 @@ public interface StringResourceProvider
 				catch(final IOException e)
 				{
 				}
-
+				
 				return null;
 			}
 		}
-
-
+		
+		
 		protected String getProjectBundlePath()
 		{
 			return "WebContent/WEB-INF/resources/project";
 		}
-
-
+		
+		
 		protected InputStream getResource(final String path, final Object requestor)
 				throws IOException
 		{

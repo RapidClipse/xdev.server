@@ -23,31 +23,32 @@ package com.xdev.ui.entitycomponent.combobox;
 
 import java.util.Collection;
 
-import com.vaadin.data.util.BeanItem;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.xdev.data.util.filter.CaptionStringFilter;
-import com.xdev.ui.XdevField;
+import com.xdev.ui.ItemCaptionProvider;
+import com.xdev.ui.ItemIconProvider;
+import com.xdev.ui.XdevSelect;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
-import com.xdev.util.Caption;
-import com.xdev.util.CaptionResolver;
-import com.xdev.util.CaptionUtils;
 
 
-public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevField
+public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSelect<T>
 {
-	private final Extensions	extensions					= new Extensions();
-	private boolean				persistValue				= PERSIST_VALUE_DEFAULT;
-	private boolean				itemCaptionFromAnnotation	= true;
-	private String				itemCaptionValue			= null;
+	private final Extensions		extensions					= new Extensions();
+	private boolean					persistValue				= PERSIST_VALUE_DEFAULT;
+	private boolean					itemCaptionFromAnnotation	= true;
+	private String					itemCaptionValue;
+	private ItemCaptionProvider<T>	itemCaptionProvider;
+	private ItemIconProvider<T>		itemIconProvider;
 	
 	
 	public XdevComboBox()
 	{
 		super();
 	}
-
-
+	
+	
 	public XdevComboBox(final int pageLength)
 	{
 		super();
@@ -58,8 +59,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 	{
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -68,8 +69,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -78,8 +79,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -88,8 +89,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -98,58 +99,48 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 	{
 		this.persistValue = persistValue;
 	}
-
-
+	
+	
 	/**
-	 * Sets if the item's caption should be derived from its {@link Caption}
-	 * annotation.
-	 *
-	 * @see CaptionResolver
-	 *
-	 * @param itemCaptionFromAnnotation
-	 *            the itemCaptionFromAnnotation to set
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void setItemCaptionFromAnnotation(final boolean itemCaptionFromAnnotation)
 	{
 		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
-	 * @return if the item's caption should be derived from its {@link Caption}
-	 *         annotation
+	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean isItemCaptionFromAnnotation()
 	{
 		return this.itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
-	 * Sets a user defined caption value for the items to display.
-	 *
-	 * @see Caption
-	 * @see #setItemCaptionFromAnnotation(boolean)
-	 * @param itemCaptionValue
-	 *            the itemCaptionValue to set
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void setItemCaptionValue(final String itemCaptionValue)
 	{
 		this.itemCaptionValue = itemCaptionValue;
 	}
-
-
+	
+	
 	/**
-	 * Returns the user defined caption value for the items to display
-	 *
-	 * @return the itemCaptionValue
+	 * {@inheritDoc}
 	 */
+	@Override
 	public String getItemCaptionValue()
 	{
 		return this.itemCaptionValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -164,8 +155,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 		
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	@SafeVarargs
 	@Override
 	public final void setContainerDataSource(final Class<T> beanClass, final Collection<T> data,
@@ -175,54 +166,85 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-
+		
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	@Override
 	public void setPageLength(final int pageLength)
 	{
 		// FIXME property change to create new model!
 		super.setPageLength(pageLength);
 	}
-
-
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setItemCaptionProvider(final ItemCaptionProvider<T> itemCaptionProvider)
+	{
+		this.itemCaptionProvider = itemCaptionProvider;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ItemCaptionProvider<T> getItemCaptionProvider()
+	{
+		return this.itemCaptionProvider;
+	}
+	
+	
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
-		if(itemId != null && this.getBeanContainerDataSource() != null)
+		String caption;
+		if((caption = SelectUtils.getItemCaption(this,itemId)) != null)
 		{
-			if(isItemCaptionFromAnnotation())
-			{
-				final BeanItem<T> item = getBeanItem(itemId);
-				if(item != null)
-				{
-					final T bean = item.getBean();
-					if(bean != null && CaptionUtils.hasCaptionAnnotationValue(bean.getClass()))
-					{
-						return CaptionUtils.resolveCaption(bean,getLocale());
-					}
-				}
-			}
-			else if(this.itemCaptionValue != null)
-			{
-				final BeanItem<T> item = getBeanItem(itemId);
-				if(item != null)
-				{
-					final T bean = item.getBean();
-					if(bean != null)
-					{
-						return CaptionUtils.resolveCaption(bean,this.itemCaptionValue,getLocale());
-					}
-				}
-			}
+			return caption;
 		}
-
+		
 		return super.getItemCaption(itemId);
 	}
-
-
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setItemIconProvider(final ItemIconProvider<T> itemIconProvider)
+	{
+		this.itemIconProvider = itemIconProvider;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ItemIconProvider<T> getItemIconProvider()
+	{
+		return this.itemIconProvider;
+	}
+	
+	
+	@Override
+	public Resource getItemIcon(final Object itemId)
+	{
+		Resource icon;
+		if((icon = SelectUtils.getItemIcon(this,itemId)) != null)
+		{
+			return icon;
+		}
+		
+		return super.getItemIcon(itemId);
+	}
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -240,16 +262,16 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 		{
 			return buildCaptionFilter(filterString,filteringMode,this.itemCaptionValue);
 		}
-
+		
 		return super.buildFilter(filterString,filteringMode);
 	}
-
-
+	
+	
 	protected Filter buildCaptionFilter(final String filterString,
 			final FilteringMode filteringMode, final String itemCaptionValue)
 	{
 		Filter filter = null;
-
+		
 		if(null != filterString && !"".equals(filterString))
 		{
 			switch(filteringMode)
@@ -268,7 +290,7 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevFiel
 				break;
 			}
 		}
-
+		
 		return filter;
 	}
 }

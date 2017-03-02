@@ -25,14 +25,13 @@ import java.util.Collection;
 import java.util.List;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.util.BeanItem;
-import com.xdev.ui.XdevField;
+import com.vaadin.server.Resource;
+import com.xdev.ui.ItemCaptionProvider;
+import com.xdev.ui.ItemIconProvider;
+import com.xdev.ui.XdevSelect;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.paging.XdevEntityLazyQueryContainer;
 import com.xdev.ui.util.KeyValueType;
-import com.xdev.util.Caption;
-import com.xdev.util.CaptionResolver;
-import com.xdev.util.CaptionUtils;
 
 
 /**
@@ -42,14 +41,16 @@ import com.xdev.util.CaptionUtils;
  * @author XDEV Software
  *
  */
-public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implements XdevField
+public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implements XdevSelect<T>
 {
-	private final Extensions	extensions					= new Extensions();
-	private boolean				persistValue				= PERSIST_VALUE_DEFAULT;
-	private boolean				itemCaptionFromAnnotation	= true;
-	private String				itemCaptionValue			= null;
-	
-	
+	private final Extensions		extensions					= new Extensions();
+	private boolean					persistValue				= PERSIST_VALUE_DEFAULT;
+	private boolean					itemCaptionFromAnnotation	= true;
+	private String					itemCaptionValue;
+	private ItemCaptionProvider<T>	itemCaptionProvider;
+	private ItemIconProvider<T>		itemIconProvider;
+
+
 	/**
 	 *
 	 */
@@ -57,8 +58,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 */
@@ -66,13 +67,13 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		super(caption);
 	}
-	
+
 	// init defaults
 	{
 		setImmediate(true);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -81,8 +82,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -91,8 +92,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -101,8 +102,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -111,8 +112,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		this.persistValue = persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -124,7 +125,7 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-		
+
 		// Workaround for TwinColSelect internal size behavior.
 		if(container instanceof XdevEntityLazyQueryContainer)
 		{
@@ -143,8 +144,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 		}
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	@SafeVarargs
 	@Override
 	public final void setContainerDataSource(final Class<T> beanClass, final Collection<T> data,
@@ -154,92 +155,113 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-
+		
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	/**
-	 * Sets if the item's caption should be derived from its {@link Caption}
-	 * annotation.
-	 *
-	 * @see CaptionResolver
-	 *
-	 * @param itemCaptionFromAnnotation
-	 *            the itemCaptionFromAnnotation to set
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void setItemCaptionFromAnnotation(final boolean itemCaptionFromAnnotation)
 	{
 		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
 	}
-	
-	
+
+
 	/**
-	 * @return if the item's caption should be derived from its {@link Caption}
-	 *         annotation
+	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean isItemCaptionFromAnnotation()
 	{
 		return this.itemCaptionFromAnnotation;
 	}
-	
-	
+
+
 	/**
-	 * Sets a user defined caption value for the items to display.
-	 *
-	 * @see Caption
-	 * @see #setItemCaptionFromAnnotation(boolean)
-	 * @param itemCaptionValue
-	 *            the itemCaptionValue to set
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void setItemCaptionValue(final String itemCaptionValue)
 	{
 		this.itemCaptionValue = itemCaptionValue;
 	}
-	
-	
+
+
 	/**
-	 * Returns the user defined caption value for the items to display
-	 *
-	 * @return the itemCaptionValue
+	 * {@inheritDoc}
 	 */
+	@Override
 	public String getItemCaptionValue()
 	{
 		return this.itemCaptionValue;
 	}
-	
-	
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setItemCaptionProvider(final ItemCaptionProvider<T> itemCaptionProvider)
+	{
+		this.itemCaptionProvider = itemCaptionProvider;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ItemCaptionProvider<T> getItemCaptionProvider()
+	{
+		return this.itemCaptionProvider;
+	}
+
+
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
-		if(itemId != null && this.getBeanContainerDataSource() != null)
+		String caption;
+		if((caption = SelectUtils.getItemCaption(this,itemId)) != null)
 		{
-			if(isItemCaptionFromAnnotation())
-			{
-				final BeanItem<T> item = getBeanItem(itemId);
-				if(item != null)
-				{
-					final T bean = item.getBean();
-					if(bean != null && CaptionUtils.hasCaptionAnnotationValue(bean.getClass()))
-					{
-						return CaptionUtils.resolveCaption(bean,getLocale());
-					}
-				}
-			}
-			else if(this.itemCaptionValue != null)
-			{
-				final BeanItem<T> item = getBeanItem(itemId);
-				if(item != null)
-				{
-					final T bean = item.getBean();
-					if(bean != null)
-					{
-						return CaptionUtils.resolveCaption(bean,this.itemCaptionValue,getLocale());
-					}
-				}
-			}
+			return caption;
 		}
-		
+
 		return super.getItemCaption(itemId);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setItemIconProvider(final ItemIconProvider<T> itemIconProvider)
+	{
+		this.itemIconProvider = itemIconProvider;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ItemIconProvider<T> getItemIconProvider()
+	{
+		return this.itemIconProvider;
+	}
+
+
+	@Override
+	public Resource getItemIcon(final Object itemId)
+	{
+		Resource icon;
+		if((icon = SelectUtils.getItemIcon(this,itemId)) != null)
+		{
+			return icon;
+		}
+
+		return super.getItemIcon(itemId);
 	}
 }

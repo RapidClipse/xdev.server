@@ -32,6 +32,7 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.UI;
 
 
 /**
@@ -97,6 +98,14 @@ public interface StringResourceProvider
 				if(requestor instanceof Component)
 				{
 					locale = ((Component)requestor).getLocale();
+				}
+				if(locale == null)
+				{
+					final UI ui = UI.getCurrent();
+					if(ui != null)
+					{
+						locale = ui.getLocale();
+					}
 				}
 				if(locale == null)
 				{

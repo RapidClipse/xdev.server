@@ -53,36 +53,36 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	 *
 	 */
 	private static final long	serialVersionUID	= 897703398940222936L;
-	
+
 	private boolean				autoQueryData		= true;
-	
-	
+
+
 	public AbstractBeanTable()
 	{
 		super();
 	}
-	
-	
+
+
 	public AbstractBeanTable(final String caption)
 	{
 		super(caption);
 	}
-	
-	
+
+
 	public AbstractBeanTable(final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
 		this.setContainerDataSource(dataSource);
 	}
-	
-	
+
+
 	public AbstractBeanTable(final String caption, final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
 		this.setContainerDataSource(dataSource);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -90,21 +90,26 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	@Override
 	public void setContainerDataSource(final Container newDataSource)
 	{
+		// XDEVSERVER-142
+		if(newDataSource instanceof ItemSetChangeNotifier)
+		{
+			((ItemSetChangeNotifier)newDataSource).addItemSetChangeListener(event -> {
+				select(null);
+			});
+		}
+
+		super.setContainerDataSource(newDataSource);
+
 		if(newDataSource instanceof XdevBeanContainer)
 		{
-			super.setContainerDataSource(newDataSource);
 			this.getModelProvider().setRelatedModelConverter(this,
 					(XdevBeanContainer<BEANTYPE>)newDataSource);
-		}
-		else
-		{
-			super.setContainerDataSource(newDataSource);
 		}
 
 		updateConverter();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -114,11 +119,11 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	public void setMultiSelect(final boolean multiSelect)
 	{
 		super.setMultiSelect(multiSelect);
-		
+
 		updateConverter();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -129,8 +134,8 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	{
 		return this.autoQueryData;
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -176,8 +181,8 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -197,8 +202,8 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 			return list;
 		}
 	}
-	
-	
+
+
 	protected UIModelProvider<BEANTYPE> getModelProvider()
 	{
 		if(this.isAutoQueryData())
@@ -211,13 +216,13 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 			return new UIModelProvider.Implementation<BEANTYPE>();
 		}
 	}
-	
-	
+
+
 	@Override
 	public void readDesign(final Element design, final DesignContext context)
 	{
 		setContainerDataSource(new IndexedContainer());
-		
+
 		super.readDesign(design,context);
 	}
 }

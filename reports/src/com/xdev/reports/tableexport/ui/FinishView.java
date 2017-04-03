@@ -24,7 +24,6 @@ package com.xdev.reports.tableexport.ui;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import com.vaadin.data.Property;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
@@ -50,7 +49,7 @@ public class FinishView extends XdevView
 {
 	private Resource					resource;
 	private final JasperReportBuilder	builder;
-
+	
 	private final FileDownloader		fileDownloader;
 
 
@@ -60,21 +59,21 @@ public class FinishView extends XdevView
 		this.initUI();
 
 		this.builder = builder;
-		
+
 		this.resource = createEmptyResource();
 
 		this.fileDownloader = new FileDownloader(this.resource);
 		this.fileDownloader.setOverrideContentType(false);
 		this.fileDownloader.extend(this.btnSave);
 		this.fileDownloader.extend(this.btnViewAndSave);
-		
+
 		for(final ExportType exportType : exportTypes)
 		{
 			this.optionGroup.addItem(exportType);
 		}
 	}
-	
-	
+
+
 	private Resource createEmptyResource()
 	{
 		final StreamResource resource = new StreamResource(new StreamSource()
@@ -101,8 +100,8 @@ public class FinishView extends XdevView
 	{
 		view();
 	}
-
-
+	
+	
 	/**
 	 * Event handler delegate method for the {@link XdevButton}
 	 * {@link #btnViewAndSave}.
@@ -114,8 +113,8 @@ public class FinishView extends XdevView
 	{
 		view();
 	}
-	
-	
+
+
 	private void view()
 	{
 		try
@@ -123,7 +122,7 @@ public class FinishView extends XdevView
 			this.resource = ((ExportType)this.optionGroup.getValue())
 					.exportToResource(this.builder);
 			this.fileDownloader.setFileDownloadResource(this.resource);
-			
+
 			PopupWindow.For(new ReportViewer(this.resource)).closable(true).draggable(true)
 					.resizable(true).modal(true).show();
 		}
@@ -132,8 +131,8 @@ public class FinishView extends XdevView
 			e.printStackTrace();
 		}
 	}
-
-
+	
+	
 	/**
 	 * Event handler delegate method for the {@link XdevButton}
 	 * {@link #cmdClose} .
@@ -144,18 +143,6 @@ public class FinishView extends XdevView
 	private void cmdClose_buttonClick(final Button.ClickEvent event)
 	{
 		UIUtils.getNextParent(this,Window.class).close();
-	}
-
-
-	/**
-	 * Event handler delegate method for the {@link XdevOptionGroup}
-	 * {@link #optionGroup}.
-	 *
-	 * @see Property.ValueChangeListener#valueChange(Property.ValueChangeEvent)
-	 * @eventHandlerDelegate Do NOT delete, used by UI designer!
-	 */
-	private void optionGroup_valueChange(final Property.ValueChangeEvent event)
-	{
 	}
 
 
@@ -209,19 +196,11 @@ public class FinishView extends XdevView
 		this.setWidth(350,Unit.PIXELS);
 		this.setHeight(500,Unit.PIXELS);
 
-		this.optionGroup.addValueChangeListener(new Property.ValueChangeListener()
-		{
-			@Override
-			public void valueChange(final Property.ValueChangeEvent event)
-			{
-				FinishView.this.optionGroup_valueChange(event);
-			}
-		});
 		this.btnView.addClickListener(event -> this.btnView_buttonClick(event));
 		this.btnViewAndSave.addClickListener(event -> this.btnViewAndSave_buttonClick(event));
 		this.cmdClose.addClickListener(event -> this.cmdClose_buttonClick(event));
 	} // </generated-code>
-
+	
 	// <generated-code name="variables">
 	private XdevButton							btnView, btnSave, btnViewAndSave, cmdClose;
 	private XdevOptionGroup<CustomComponent>	optionGroup;

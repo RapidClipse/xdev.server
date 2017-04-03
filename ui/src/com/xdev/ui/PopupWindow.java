@@ -22,8 +22,14 @@ package com.xdev.ui;
 
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutAction.ModifierKey;
+import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.Component;
@@ -55,49 +61,65 @@ public interface PopupWindow
 	{
 		return new Implementation(content);
 	}
-	
-	
+
+
+	/**
+	 * @param caption
+	 *            the caption to set
+	 * @since 3.0.2
+	 */
+	public PopupWindow caption(String caption);
+
+
+	/**
+	 * @param icon
+	 *            the icon to set
+	 * @since 3.0.2
+	 */
+	public PopupWindow icon(Resource icon);
+
+
 	/**
 	 * @param modal
 	 *            the modal to set
 	 */
 	public PopupWindow modal(final boolean modal);
-	
-	
+
+
 	/**
 	 * @param resizable
 	 *            the resizable to set
 	 */
 	public PopupWindow resizable(final boolean resizable);
-	
-	
+
+
 	/**
 	 * @param closable
 	 *            the closable to set
 	 */
 	public PopupWindow closable(final boolean closable);
-	
-	
+
+
 	/**
 	 * @param draggable
 	 *            the draggable to set
 	 */
 	public PopupWindow draggable(final boolean draggable);
-	
-	
+
+
 	/**
 	 * @param maximized
 	 *            the maximized to set
 	 */
 	public PopupWindow maximized(final boolean maximized);
-	
-	
+
+
 	/**
 	 * Sets the predefined location for the popup window, default is centered.
 	 */
 	public PopupWindow location(final int x, final int y);
-	
-	
+
+
 	/**
 	 * Sets the width of the popup window. Negative number implies unspecified
 	 * size (terminal is free to set the size).
@@ -134,93 +156,129 @@ public interface PopupWindow
 	 * @since 1.2
 	 */
 	public PopupWindow size(final float width, final float height, final Unit unit);
-	
-	
+
+
+	/**
+	 * Adds a close shortcut that reacts to the given {@link KeyCode} and
+	 * (optionally) {@link ModifierKey}s.
+	 *
+	 * @param keyCode
+	 *            the keycode for invoking the shortcut.
+	 * @param modifiers
+	 *            the (optional) modifiers for invoking the shortcut. Can be set
+	 *            to <code>null</code> to be explicit about not having
+	 *            modifiers.
+	 * @see KeyCode
+	 * @see ModifierKey
+	 * @since 3.0.2
+	 */
+	public PopupWindow closeShortcut(int keyCode, int... modifiers);
+
+
 	/**
 	 * Sets the close handler
 	 */
 	public PopupWindow onClose(Consumer<Window.CloseEvent> closeHandler);
-	
-	
+
+
 	/**
 	 * Opens and returns the window
 	 *
 	 * @return the opened window
 	 */
 	public Window show();
-	
-	
-	
+
+
+
 	public static class Implementation implements PopupWindow
 	{
 		private final Component				content;
-		private boolean						modal		= false;
-		private boolean						resizable	= true;
-		private boolean						closable	= true;
-		private boolean						draggable	= true;
-		private boolean						maximized	= false;
-		private Point						location	= null;
-		private float						width		= -1;
-		private Unit						widthUnit	= Unit.PIXELS;
-		private float						height		= -1;
-		private Unit						heightUnit	= Unit.PIXELS;
+		private String						caption;
+		private Resource					icon;
+		private boolean						modal			= false;
+		private boolean						resizable		= false;
+		private boolean						closable		= true;
+		private boolean						draggable		= true;
+		private boolean						maximized		= false;
+		private Point						location		= null;
+		private Float						width;
+		private Unit						widthUnit;
+		private Float						height;
+		private Unit						heightUnit;
+		private final List<ShortcutAction>	closeShortcuts	= new ArrayList<>();
 		private Consumer<Window.CloseEvent>	closeHandler;
-											
-											
+
+
 		public Implementation(final Component content)
 		{
 			this.content = content;
 		}
-		
-		
+
+
+		@Override
+		public PopupWindow caption(final String caption)
+		{
+			this.caption = caption;
+			return this;
+		}
+
+
+		@Override
+		public PopupWindow icon(final Resource icon)
+		{
+			this.icon = icon;
+			return this;
+		}
+
+
 		@Override
 		public PopupWindow modal(final boolean modal)
 		{
 			this.modal = modal;
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public PopupWindow resizable(final boolean resizable)
 		{
 			this.resizable = resizable;
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public PopupWindow closable(final boolean closable)
 		{
 			this.closable = closable;
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public PopupWindow draggable(final boolean draggable)
 		{
 			this.draggable = draggable;
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public PopupWindow maximized(final boolean maximized)
 		{
 			this.maximized = maximized;
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public PopupWindow location(final int x, final int y)
 		{
 			this.location = new Point(x,y);
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public PopupWindow width(final float width, final Unit unit)
 		{
@@ -228,8 +286,8 @@ public interface PopupWindow
 			this.widthUnit = unit;
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public PopupWindow height(final float height, final Unit unit)
 		{
@@ -237,8 +295,8 @@ public interface PopupWindow
 			this.heightUnit = unit;
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public PopupWindow size(final float width, final float height, final Unit unit)
 		{
@@ -248,45 +306,88 @@ public interface PopupWindow
 			this.heightUnit = unit;
 			return this;
 		}
-		
-		
+
+
+		@Override
+		public PopupWindow closeShortcut(final int keyCode, final int... modifiers)
+		{
+			this.closeShortcuts.add(new ShortcutAction("",keyCode,modifiers));
+			return this;
+		}
+
+
 		@Override
 		public PopupWindow onClose(final Consumer<CloseEvent> closeHandler)
 		{
 			this.closeHandler = closeHandler;
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public Window show()
 		{
 			final Window window = new Window();
-			
-			float width = this.width;
-			Unit widthUnit = this.widthUnit;
-			if(width < 0)
+
+			float width;
+			Unit widthUnit;
+			if(this.width != null && this.widthUnit != null)
 			{
-				width = this.content.getWidth() + 20;
-				widthUnit = this.content.getWidthUnits();
+				width = this.width;
+				widthUnit = this.widthUnit;
+				content.setWidth(100,Unit.PERCENTAGE);
 			}
-			
-			float height = this.height;
-			Unit heightUnit = this.heightUnit;
-			if(height < 0)
+			else if(this.content.getWidth() > 0f && this.content.getWidthUnits() == Unit.PIXELS)
 			{
-				height = this.content.getHeight() + 70;
-				heightUnit = this.content.getHeightUnits();
+				width = -1;
+				widthUnit = Unit.PIXELS;
 			}
-			
+			else
+			{
+				width = -1;
+				widthUnit = Unit.PIXELS;
+				content.setWidthUndefined();
+			}
+
+			float height;
+			Unit heightUnit;
+			if(this.height != null && this.heightUnit != null)
+			{
+				height = this.height;
+				heightUnit = this.heightUnit;
+				content.setHeight(100,Unit.PERCENTAGE);
+			}
+			else if(this.content.getHeight() > 0f && this.content.getHeightUnits() == Unit.PIXELS)
+			{
+				height = -1;
+				heightUnit = Unit.PIXELS;
+			}
+			else
+			{
+				height = -1;
+				heightUnit = Unit.PIXELS;
+				content.setHeightUndefined();
+			}
+
 			window.setWidth(width,widthUnit);
 			window.setHeight(height,heightUnit);
-			
-			this.content.setSizeFull();
+
 			window.setContent(this.content);
-			
-			window.setCaption(this.content.getCaption());
-			window.setIcon(this.content.getIcon());
+
+			String caption = this.caption;
+			if(caption == null)
+			{
+				caption = this.content.getCaption();
+			}
+			window.setCaption(caption);
+
+			Resource icon = this.icon;
+			if(icon != null)
+			{
+				icon = this.content.getIcon();
+			}
+			window.setIcon(icon);
+
 			window.setModal(this.modal);
 			window.setResizable(this.resizable);
 			window.setClosable(this.closable);
@@ -304,12 +405,16 @@ public interface PopupWindow
 			{
 				window.center();
 			}
+			for(final ShortcutAction shortcut : this.closeShortcuts)
+			{
+				window.addCloseShortcut(shortcut.getKeyCode(),shortcut.getModifiers());
+			}
 			if(this.closeHandler != null)
 			{
 				window.addCloseListener(event -> closeHandler.accept(event));
 			}
 			UI.getCurrent().addWindow(window);
-			
+
 			return window;
 		}
 	}

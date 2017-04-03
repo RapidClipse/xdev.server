@@ -90,17 +90,22 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	@Override
 	public void setContainerDataSource(final Container newDataSource)
 	{
+		// XDEVSERVER-142
+		if(newDataSource instanceof ItemSetChangeNotifier)
+		{
+			((ItemSetChangeNotifier)newDataSource).addItemSetChangeListener(event -> {
+				setValue(null);
+			});
+		}
+		
+		super.setContainerDataSource(newDataSource);
+		
 		if(newDataSource instanceof XdevBeanContainer)
 		{
-			super.setContainerDataSource(newDataSource);
 			this.getModelProvider().setRelatedModelConverter(this,
 					(XdevBeanContainer<BEANTYPE>)newDataSource);
 		}
-		else
-		{
-			super.setContainerDataSource(newDataSource);
-		}
-
+		
 		updateConverter();
 	}
 	
@@ -140,11 +145,11 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 	public void setAutoQueryData(final boolean autoQuery)
 	{
 		this.autoQueryData = autoQuery;
-
+		
 		updateConverter();
 	}
-
-
+	
+	
 	/**
 	 * @since 3.0
 	 */
@@ -162,8 +167,8 @@ public abstract class AbstractBeanTable<BEANTYPE> extends Table implements BeanC
 			this.setConverter((Converter)null);
 		}
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

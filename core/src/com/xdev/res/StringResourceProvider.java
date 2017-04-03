@@ -31,6 +31,9 @@ import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
+import com.vaadin.ui.Component;
+import com.vaadin.ui.UI;
+
 
 /**
  * Provides {@link String} resources which can be used for internationalization.
@@ -91,7 +94,23 @@ public interface StringResourceProvider
 		{
 			if(locale == null)
 			{
-				locale = Locale.getDefault();
+				// XDEVSERVER-141
+				if(requestor instanceof Component)
+				{
+					locale = ((Component)requestor).getLocale();
+				}
+				if(locale == null)
+				{
+					final UI ui = UI.getCurrent();
+					if(ui != null)
+					{
+						locale = ui.getLocale();
+					}
+				}
+				if(locale == null)
+				{
+					locale = Locale.getDefault();
+				}
 			}
 
 			Class<?> clazz = null;

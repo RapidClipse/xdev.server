@@ -31,30 +31,22 @@ import com.xdev.ui.XdevView;
 
 public class ReportViewer extends XdevView
 {
-	/**
-	 *
-	 */
 	public ReportViewer(final Resource resource)
 	{
 		super();
 		this.initUI();
-		
+
 		this.browserFrame.setSource(resource);
 	}
-	
-	
-	/*
-	 * WARNING: Do NOT edit!<br>The content of this method is always regenerated
-	 * by the UI designer.
-	 */
-	// <generated-code name="initUI">
+
+
 	private void initUI()
 	{
 		this.verticalLayout = new XdevVerticalLayout();
 		this.browserFrame = new XdevBrowserFrame();
-		
+
 		this.verticalLayout.setMargin(new MarginInfo(false));
-		
+
 		this.browserFrame.setSizeFull();
 		this.verticalLayout.addComponent(this.browserFrame);
 		this.verticalLayout.setComponentAlignment(this.browserFrame,Alignment.MIDDLE_CENTER);
@@ -63,10 +55,8 @@ public class ReportViewer extends XdevView
 		this.setContent(this.verticalLayout);
 		this.setWidth(1200,Unit.PIXELS);
 		this.setHeight(800,Unit.PIXELS);
-	} // </generated-code>
-	
-	// <generated-code name="variables">
+	}
+
 	private XdevBrowserFrame	browserFrame;
-	private XdevVerticalLayout	verticalLayout;	// </generated-code>
-	
+	private XdevVerticalLayout	verticalLayout;
 }

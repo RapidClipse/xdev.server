@@ -73,42 +73,42 @@ public class SettingsView extends XdevView
 	private static final String			PROPERTY_COLUMNWIDTH	= "Columnwidth";
 	private static final String			PROPERTY_STRETCH		= "Stretch";
 	private static final String			PROPERTY_COLUMNID		= "ColumnId";
-	
+
 	private TableReportBuilder			reportBuilder			= TableReportBuilder.DEFAULT;
 	private final TableExportSettings	exportSettings			= new TableExportSettings();
 	private final XdevTable<?>			table;
 	private final ExportType[]			availableExportTypes;
-	
-	
+
+
 	public SettingsView(final XdevTable<?> table, final ExportType... availableExportTypes)
 	{
 		super();
-		
+
 		this.table = table;
 		this.availableExportTypes = availableExportTypes;
-		
+
 		this.initUI();
-		
+
 		this.cbPageType.addItems((Object[])PageType.values());
 		this.cbPageType.setValue(this.exportSettings.getPageType());
-		
+
 		this.cbPageOrientation.addItems((Object[])PageOrientation.values());
 		this.cbPageOrientation.setValue(this.exportSettings.getPageOrientation());
-		
+
 		this.tblColumnChooser.addContainerProperty(PROPERTY_SELECTED,CheckBox.class,null);
 		this.tblColumnChooser.addContainerProperty(PROPERTY_COLUMNNAME,String.class,null);
 		this.tblColumnChooser.addContainerProperty(PROPERTY_COLUMNWIDTH,TextField.class,null);
 		this.tblColumnChooser.addContainerProperty(PROPERTY_STRETCH,CheckBox.class,null);
 		this.tblColumnChooser.addContainerProperty(PROPERTY_COLUMNID,Object.class,null);
-		
+
 		this.tblColumnChooser.setColumnExpandRatio(PROPERTY_COLUMNNAME,1.0F);
-		
+
 		this.tblColumnChooser.setColumnAlignment(PROPERTY_SELECTED,Table.Align.CENTER);
 		this.tblColumnChooser.setColumnAlignment(PROPERTY_STRETCH,Table.Align.CENTER);
 		this.tblColumnChooser.setColumnAlignment(PROPERTY_COLUMNWIDTH,Table.Align.CENTER);
-		
+
 		Integer id = 0;
-		
+
 		for(final Object columnId : this.table.getVisibleColumns())
 		{
 			final TextField txtWidth = new TextField();
@@ -117,16 +117,16 @@ public class SettingsView extends XdevView
 			txtWidth.setConvertedValue(0);
 			txtWidth.addValidator(new IntegerRangeValidator("",0,null));
 			txtWidth.setColumns(5);
-			
+
 			txtWidth.addValueChangeListener(event -> check());
-			
+
 			final CheckBox selectBox = new CheckBox();
 			selectBox.addValueChangeListener(event -> check());
-			
+
 			selectBox.setValue(true);
-			
+
 			final CheckBox stretchBox = new CheckBox();
-			
+
 			final int columnWidth = this.table.getColumnWidth(columnId);
 			if(columnWidth <= 0)
 			{
@@ -137,47 +137,47 @@ public class SettingsView extends XdevView
 			{
 				txtWidth.setConvertedValue(columnWidth);
 			}
-			
+
 			if(this.table.getColumnExpandRatio(columnId) != -1.0)
 			{
 				stretchBox.setValue(true);
 				txtWidth.setConvertedValue(0);
 			}
-			
+
 			this.tblColumnChooser.addItem(new Object[]{selectBox,
 					this.table.getColumnHeader(columnId),txtWidth,stretchBox,columnId},++id);
 		}
 	}
-	
-	
+
+
 	public void setReportBuilder(final TableReportBuilder reportBuilder)
 	{
 		this.reportBuilder = reportBuilder;
 	}
-	
-	
+
+
 	private void cbPageType_valueChange(final Property.ValueChangeEvent event)
 	{
 		this.exportSettings.setPageType((PageType)this.cbPageType.getValue());
-		
+
 		check();
 	}
-	
-	
+
+
 	private void cbPageOrientation_valueChange(final Property.ValueChangeEvent event)
 	{
 		this.exportSettings.setPageOrientation((PageOrientation)this.cbPageOrientation.getValue());
-		
+
 		check();
 	}
-	
-	
+
+
 	private void chkShowPageNumber_valueChange(final Property.ValueChangeEvent event)
 	{
 		this.exportSettings.setShowPageNumber(this.chkShowPageNumber.getValue());
 	}
-	
-	
+
+
 	private void check()
 	{
 		if(!checkColumnWidth())
@@ -191,12 +191,12 @@ public class SettingsView extends XdevView
 			this.cmdExport.setEnabled(true);
 		}
 	}
-	
-	
+
+
 	private boolean checkColumnWidth()
 	{
 		final Integer calculateFixedWidth = calculateFixedWidth();
-		
+
 		if(this.cbPageType.getValue() != null && this.cbPageOrientation.getValue() != null)
 		{
 			if(this.cbPageOrientation.getValue().equals(PageOrientation.PORTRAIT))
@@ -214,32 +214,32 @@ public class SettingsView extends XdevView
 				}
 			}
 		}
-		
+
 		return true;
 	}
-	
-	
+
+
 	private int calculateFixedWidth()
 	{
 		int width = 0;
-		
+
 		for(final Object object : getSelectedColumns())
 		{
 			final Item item = this.tblColumnChooser.getItem(object);
 			final int convertedValue = (Integer)((TextField)item
 					.getItemProperty(PROPERTY_COLUMNWIDTH).getValue()).getConvertedValue();
-			
+
 			width = width + convertedValue;
 		}
-		
+
 		return width;
 	}
-	
-	
+
+
 	private List<Object> getSelectedColumns()
 	{
 		final List<Object> columnsToExport = new ArrayList<>();
-		
+
 		for(final Object object : this.tblColumnChooser.getItemIds())
 		{
 			final Item item = this.tblColumnChooser.getItem(object);
@@ -248,18 +248,11 @@ public class SettingsView extends XdevView
 				columnsToExport.add(object);
 			}
 		}
-		
+
 		return columnsToExport;
 	}
-	
-	
-	/**
-	 * Event handler delegate method for the {@link XdevButton}
-	 * {@link #cmdExport}.
-	 *
-	 * @see Button.ClickListener#buttonClick(Button.ClickEvent)
-	 * @eventHandlerDelegate Do NOT delete, used by UI designer!
-	 */
+
+
 	private void cmdExport_buttonClick(final Button.ClickEvent event)
 	{
 		if(this.txtReportName.isValid())
@@ -267,10 +260,10 @@ public class SettingsView extends XdevView
 			if(checkColumnWidth())
 			{
 				this.exportSettings.setTitle(this.txtReportName.getValue());
-				
+
 				final JasperReportBuilder builder = this.reportBuilder.buildReport(this.table,
 						createColumns(),this.exportSettings);
-				
+
 				this.panel.setVisible(false);
 				this.verticalLayout3.setVisible(false);
 				final FinishView finishView = new FinishView(builder,this.availableExportTypes);
@@ -282,7 +275,7 @@ public class SettingsView extends XdevView
 			{
 				Notification.show(StringResourceUtils.localizeString("{$notification.columnwidth}",
 						Locale.getDefault(),this),Type.ERROR_MESSAGE);
-				
+
 			}
 		}
 		else
@@ -291,21 +284,21 @@ public class SettingsView extends XdevView
 					Locale.getDefault(),this),Type.ERROR_MESSAGE);
 		}
 	}
-	
-	
+
+
 	private List<Column> createColumns()
 	{
 		final List<Column> columns = new ArrayList<Column>();
-		
+
 		for(final Object id : this.tblColumnChooser.getItemIds())
 		{
 			final Item item = this.tblColumnChooser.getItem(id);
-			
+
 			if(!((CheckBox)item.getItemProperty(PROPERTY_SELECTED).getValue()).getValue())
 			{
 				continue;
 			}
-			
+
 			final int columnWidth = Integer.valueOf(
 					((TextField)item.getItemProperty(PROPERTY_COLUMNWIDTH).getValue()).getValue());
 			final String columnHeader = (String)item.getItemProperty(PROPERTY_COLUMNNAME)
@@ -315,40 +308,40 @@ public class SettingsView extends XdevView
 			{
 				columnExpandRatio = 1F;
 			}
-			
+
 			final Converter<String, Object> converter = this.table.getConverter(id);
 			final Align columnAlignment = this.table.getColumnAlignment(id);
 			final Class<?> type = this.table.getBeanContainerDataSource().getType(id);
-			
+
 			final Object propertyId = item.getItemProperty(PROPERTY_COLUMNID).getValue();
 			final Column col = new Column(columnWidth,columnHeader,columnExpandRatio,converter,
 					columnAlignment,type,propertyId);
-			
+
 			columns.add(col);
 		}
-		
+
 		return columns;
 	}
-	
-	
+
+
 	private void cmdClose_buttonClick(final Button.ClickEvent event)
 	{
 		UIUtils.getNextParent(this,Window.class).close();
 	}
-	
-	
+
+
 	private void cmdSelectAll_buttonClick(final Button.ClickEvent event)
 	{
 		selectAll(true);
 	}
-	
-	
+
+
 	private void cmdSelectNone_buttonClick(final Button.ClickEvent event)
 	{
 		selectAll(false);
 	}
-	
-	
+
+
 	private void selectAll(final boolean status)
 	{
 		for(final Object object : this.tblColumnChooser.getItemIds())
@@ -357,8 +350,8 @@ public class SettingsView extends XdevView
 			((CheckBox)item.getItemProperty(PROPERTY_SELECTED).getValue()).setValue(status);
 		}
 	}
-	
-	
+
+
 	private void initUI()
 	{
 		this.verticalLayout = new XdevVerticalLayout();
@@ -378,7 +371,7 @@ public class SettingsView extends XdevView
 		this.verticalLayout3 = new XdevVerticalLayout();
 		this.cmdExport = new XdevButton();
 		this.cmdClose = new XdevButton();
-		
+
 		this.verticalLayout.setSpacing(false);
 		this.verticalLayout.setMargin(new MarginInfo(false));
 		this.panel.setTabIndex(0);
@@ -418,7 +411,7 @@ public class SettingsView extends XdevView
 		this.cmdExport.setStyleName("primary, small");
 		this.cmdClose.setCaption(StringResourceUtils.optLocalizeString("{$cancel}",this));
 		this.cmdClose.setStyleName("small");
-		
+
 		this.cmdSelectAll.setSizeUndefined();
 		this.verticalLayout4.addComponent(this.cmdSelectAll);
 		this.verticalLayout4.setComponentAlignment(this.cmdSelectAll,Alignment.MIDDLE_LEFT);
@@ -487,7 +480,7 @@ public class SettingsView extends XdevView
 		this.setContent(this.verticalLayout);
 		this.setWidth(650,Unit.PIXELS);
 		this.setHeight(600,Unit.PIXELS);
-		
+
 		this.cmdSelectAll.addClickListener(event -> this.cmdSelectAll_buttonClick(event));
 		this.cmdSelectNone.addClickListener(event -> this.cmdSelectNone_buttonClick(event));
 		this.cbPageType.addValueChangeListener(new Property.ValueChangeListener()

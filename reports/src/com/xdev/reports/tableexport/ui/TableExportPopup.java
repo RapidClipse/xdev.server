@@ -26,14 +26,19 @@ import com.xdev.ui.PopupWindow;
 import com.xdev.ui.entitycomponent.table.XdevTable;
 
 
-public class TableExportPopup
+public final class TableExportPopup
 {
+	private TableExportPopup()
+	{
+	}
+
+
 	public static void show(final XdevTable<?> table)
 	{
 		show(table,ExportType.values());
 	}
-	
-	
+
+
 	public static void show(final XdevTable<?> table, final ExportType... availableExportTypes)
 	{
 		PopupWindow.For(new SettingsView(table,availableExportTypes)).closable(true).draggable(true)

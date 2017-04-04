@@ -51,29 +51,29 @@ public class FinishView extends XdevView
 	private final JasperReportBuilder	builder;
 	
 	private final FileDownloader		fileDownloader;
-
-
+	
+	
 	public FinishView(final JasperReportBuilder builder, final ExportType... exportTypes)
 	{
 		super();
 		this.initUI();
-
+		
 		this.builder = builder;
-
+		
 		this.resource = createEmptyResource();
-
+		
 		this.fileDownloader = new FileDownloader(this.resource);
 		this.fileDownloader.setOverrideContentType(false);
 		this.fileDownloader.extend(this.btnSave);
 		this.fileDownloader.extend(this.btnViewAndSave);
-
+		
 		for(final ExportType exportType : exportTypes)
 		{
 			this.optionGroup.addItem(exportType);
 		}
 	}
-
-
+	
+	
 	private Resource createEmptyResource()
 	{
 		final StreamResource resource = new StreamResource(new StreamSource()
@@ -87,42 +87,34 @@ public class FinishView extends XdevView
 		resource.setMIMEType("text/plain");
 		return resource;
 	}
-
-
-	/**
-	 * Event handler delegate method for the {@link XdevButton} {@link #btnView}
-	 * .
-	 *
-	 * @see Button.ClickListener#buttonClick(Button.ClickEvent)
-	 * @eventHandlerDelegate Do NOT delete, used by UI designer!
-	 */
+	
+	
 	private void btnView_buttonClick(final Button.ClickEvent event)
 	{
-		view();
+		finish();
 	}
 	
 	
-	/**
-	 * Event handler delegate method for the {@link XdevButton}
-	 * {@link #btnViewAndSave}.
-	 *
-	 * @see Button.ClickListener#buttonClick(Button.ClickEvent)
-	 * @eventHandlerDelegate Do NOT delete, used by UI designer!
-	 */
+	private void btnSave_buttonClick(final Button.ClickEvent event)
+	{
+		finish();
+	}
+
+
 	private void btnViewAndSave_buttonClick(final Button.ClickEvent event)
 	{
-		view();
+		finish();
 	}
-
-
-	private void view()
+	
+	
+	private void finish()
 	{
 		try
 		{
 			this.resource = ((ExportType)this.optionGroup.getValue())
 					.exportToResource(this.builder);
 			this.fileDownloader.setFileDownloadResource(this.resource);
-
+			
 			PopupWindow.For(new ReportViewer(this.resource)).closable(true).draggable(true)
 					.resizable(true).modal(true).show();
 		}
@@ -133,24 +125,12 @@ public class FinishView extends XdevView
 	}
 	
 	
-	/**
-	 * Event handler delegate method for the {@link XdevButton}
-	 * {@link #cmdClose} .
-	 *
-	 * @see Button.ClickListener#buttonClick(Button.ClickEvent)
-	 * @eventHandlerDelegate Do NOT delete, used by UI designer!
-	 */
 	private void cmdClose_buttonClick(final Button.ClickEvent event)
 	{
 		UIUtils.getNextParent(this,Window.class).close();
 	}
-
-
-	/*
-	 * WARNING: Do NOT edit!<br>The content of this method is always regenerated
-	 * by the UI designer.
-	 */
-	// <generated-code name="initUI">
+	
+	
 	private void initUI()
 	{
 		this.verticalLayout = new XdevVerticalLayout();
@@ -159,7 +139,7 @@ public class FinishView extends XdevView
 		this.btnSave = new XdevButton();
 		this.btnViewAndSave = new XdevButton();
 		this.cmdClose = new XdevButton();
-
+		
 		this.optionGroup
 				.setCaption(StringResourceUtils.optLocalizeString("{$outputtype.title}",this));
 		this.btnView
@@ -169,7 +149,7 @@ public class FinishView extends XdevView
 		this.btnViewAndSave
 				.setCaption(StringResourceUtils.optLocalizeString("{$saveandshow.caption}",this));
 		this.cmdClose.setCaption(StringResourceUtils.optLocalizeString("{$close}",this));
-
+		
 		this.optionGroup.setWidth(100,Unit.PERCENTAGE);
 		this.optionGroup.setHeight(-1,Unit.PIXELS);
 		this.verticalLayout.addComponent(this.optionGroup);
@@ -195,15 +175,15 @@ public class FinishView extends XdevView
 		this.setContent(this.verticalLayout);
 		this.setWidth(350,Unit.PIXELS);
 		this.setHeight(500,Unit.PIXELS);
-
+		
 		this.btnView.addClickListener(event -> this.btnView_buttonClick(event));
+		this.btnSave.addClickListener(event -> this.btnSave_buttonClick(event));
 		this.btnViewAndSave.addClickListener(event -> this.btnViewAndSave_buttonClick(event));
 		this.cmdClose.addClickListener(event -> this.cmdClose_buttonClick(event));
-	} // </generated-code>
+	}
 	
-	// <generated-code name="variables">
 	private XdevButton							btnView, btnSave, btnViewAndSave, cmdClose;
 	private XdevOptionGroup<CustomComponent>	optionGroup;
-	private XdevVerticalLayout					verticalLayout;								// </generated-code>
-
+	private XdevVerticalLayout					verticalLayout;
+	
 }

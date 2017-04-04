@@ -34,8 +34,8 @@
 
 	<properties>
 		<shortName>core</shortName>
-		<vaadinVersion>7.7.5</vaadinVersion>
-		<hibernateVersion>5.2.5.Final</hibernateVersion>
+		<vaadinVersion>7.7.7</vaadinVersion>
+		<hibernateVersion>5.2.9.Final</hibernateVersion>
 	</properties>
 
 	<repositories>

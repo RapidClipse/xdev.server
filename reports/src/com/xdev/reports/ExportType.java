@@ -29,21 +29,29 @@ import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.jasper.constant.ImageType;
 import net.sf.dynamicreports.report.exception.DRException;
 
 
 public enum ExportType
 {
-	XML("xml", "application/xml", (builder, stream) -> builder.toXml(stream)),
-	HTML("html", "application/html", (builder, stream) -> builder.toHtml(stream)),
-	CSV("csv", "text/comma-separated-values", (builder, stream) -> builder.toCsv(stream)),
 	PDF("pdf", "application/pdf", (builder, stream) -> builder.toPdf(stream)),
-	RTF("rtf", "application/rtf", (builder, stream) -> builder.toRtf(stream)),
+	XML("xml", "text/xml", (builder, stream) -> builder.toXml(stream)),
+	HTML("html", "text/html", (builder, stream) -> builder.toHtml(stream)),
+	TEXT("txt", "text/plain", (builder, stream) -> builder.toText(stream)),
+	RTF("rtf", "text/rtf", (builder, stream) -> builder.toRtf(stream)),
+	CSV("csv", "text/comma-separated-values", (builder, stream) -> builder.toCsv(stream)),
+	XLS("xls", "application/msexcel", (builder, stream) -> builder.toXls(stream)),
+	XLSX("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+			(builder, stream) -> builder.toXlsx(stream)),
 	DOCX("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 			(builder, stream) -> builder.toDocx(stream)),
-	EXCEL("xlsx", "application/x-xls", (builder, stream) -> builder.toXlsx(stream)),
+	PPTX("pptx", "application/mspowerpoint", (builder, stream) -> builder.toPptx(stream)),
 	ODT("odt", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-			(builder, stream) -> builder.toOdt(stream));
+			(builder, stream) -> builder.toOdt(stream)),
+	PNG("png", "image/png", (builder, stream) -> builder.toImage(stream,ImageType.PNG)),
+	JPEG("jpeg", "image/jpeg", (builder, stream) -> builder.toImage(stream,ImageType.JPG)),
+	GIF("gif", "image/gif", (builder, stream) -> builder.toImage(stream,ImageType.GIF));
 
 	@FunctionalInterface
 	private static interface Exporter

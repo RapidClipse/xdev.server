@@ -97,6 +97,11 @@ public interface TableReportBuilder
 				report.pageFooter(DynamicReports.cmp.pageXofY().setStyle(BOLDCENTERSTYLE));
 			}
 
+			if(settings.isHighlightRows())
+			{
+				report.highlightDetailOddRows();
+			}
+
 			report.setShowColumnTitle(true);
 			report.setDataSource(DataSourceFactory.createDataSource(table,columns));
 			report.setPageFormat(settings.getPageType(),settings.getPageOrientation());
@@ -110,20 +115,21 @@ public interface TableReportBuilder
 		{
 			final List<TextColumnBuilder<?>> reportColums = new ArrayList<TextColumnBuilder<?>>();
 
-			for(final Column col : columns)
+			for(final Column column : columns)
 			{
-				final TextColumnBuilder<String> column = Columns.column(col.getColumnHeader(),
-						col.getColumnHeader(),String.class);
+				final TextColumnBuilder<String> reportColumn = Columns
+						.column(column.getColumnHeader(),column.getColumnHeader(),String.class);
 
-				if(col.getColumnWidth() > 0)
+				final Integer width = column.getColumnWidth();
+				if(width != null && width > 0)
 				{
-					column.setFixedWidth(col.getColumnWidth());
+					reportColumn.setFixedWidth(width);
 				}
 
-				column.setHorizontalTextAlignment(
-						convertVaadinJasperTextAlignment(col.getColumnAlignment()));
+				reportColumn.setHorizontalTextAlignment(
+						convertVaadinJasperTextAlignment(column.getColumnAlignment()));
 
-				reportColums.add(column);
+				reportColums.add(reportColumn);
 			}
 
 			return reportColums;

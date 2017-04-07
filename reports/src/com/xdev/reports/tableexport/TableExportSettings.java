@@ -31,57 +31,70 @@ public class TableExportSettings
 	private PageType		pageType		= PageType.A4;
 	private PageOrientation	pageOrientation	= PageOrientation.PORTRAIT;
 	private boolean			showPageNumber	= false;
-	
-	
+	private boolean			highlightRows	= false;
+
+
 	public TableExportSettings()
 	{
 	}
-
-
+	
+	
 	public String getTitle()
 	{
 		return this.title;
 	}
-
-
+	
+	
 	public void setTitle(final String title)
 	{
 		this.title = title;
 	}
-
-
+	
+	
 	public PageType getPageType()
 	{
 		return this.pageType;
 	}
-
-
+	
+	
 	public void setPageType(final PageType pageType)
 	{
 		this.pageType = pageType;
 	}
-
-
+	
+	
 	public PageOrientation getPageOrientation()
 	{
 		return this.pageOrientation;
 	}
-
-
+	
+	
 	public void setPageOrientation(final PageOrientation pageOrientation)
 	{
 		this.pageOrientation = pageOrientation;
 	}
-
-
+	
+	
 	public boolean isShowPageNumber()
 	{
 		return this.showPageNumber;
 	}
-
-
+	
+	
 	public void setShowPageNumber(final boolean showPageNumber)
 	{
 		this.showPageNumber = showPageNumber;
+	}
+
+
+	public boolean isHighlightRows()
+	{
+		return this.highlightRows;
+	}
+
+
+	public void setHighlightRows(final boolean highlightRows)
+	{
+		this.highlightRows = highlightRows;
 	}
 }

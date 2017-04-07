@@ -31,17 +31,17 @@ public final class TableExportPopup
 	private TableExportPopup()
 	{
 	}
-
-
+	
+	
 	public static void show(final XdevTable<?> table)
 	{
 		show(table,ExportType.values());
 	}
-
-
+	
+	
 	public static void show(final XdevTable<?> table, final ExportType... availableExportTypes)
 	{
-		PopupWindow.For(new SettingsView(table,availableExportTypes)).closable(true).draggable(true)
+		PopupWindow.For(new TableExportWizard(table,availableExportTypes)).closable(true).draggable(true)
 				.resizable(false).modal(true).show();
 	}
 }

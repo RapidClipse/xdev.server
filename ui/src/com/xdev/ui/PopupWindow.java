@@ -382,7 +382,7 @@ public interface PopupWindow
 			window.setCaption(caption);
 
 			Resource icon = this.icon;
-			if(icon != null)
+			if(icon == null)
 			{
 				icon = this.content.getIcon();
 			}
@@ -414,6 +414,11 @@ public interface PopupWindow
 				window.addCloseListener(event -> closeHandler.accept(event));
 			}
 			UI.getCurrent().addWindow(window);
+
+			if(this.resizable)
+			{
+				content.setSizeFull();
+			}
 
 			return window;
 		}

@@ -29,13 +29,12 @@ public class Column
 {
 	private String						columnHeader;
 	private Integer						columnWidth;
-	private Boolean						stretch;
 	private Converter<String, Object>	converter;
 	private Align						columnAlignment;
 	private Class<?>					valueType;
 	private Object						propertyID;
-	
-	
+
+
 	public Column(final String columnHeader, final Integer columnWidth,
 			final Converter<String, Object> converter, final Align columnAlignment,
 			final Class<?> valueType, final Object propertyID)
@@ -47,74 +46,74 @@ public class Column
 		this.valueType = valueType;
 		this.propertyID = propertyID;
 	}
-	
-	
+
+
 	public String getColumnHeader()
 	{
 		return this.columnHeader;
 	}
-	
-	
+
+
 	public void setColumnHeader(final String columnHeader)
 	{
 		this.columnHeader = columnHeader;
 	}
-	
-	
+
+
 	public Integer getColumnWidth()
 	{
 		return this.columnWidth;
 	}
-	
-	
+
+
 	public void setColumnWidth(final Integer columnWidth)
 	{
 		this.columnWidth = columnWidth;
 	}
-	
-	
+
+
 	public Converter<String, Object> getConverter()
 	{
 		return this.converter;
 	}
-	
-	
+
+
 	public void setConverter(final Converter<String, Object> converter)
 	{
 		this.converter = converter;
 	}
-	
-	
+
+
 	public Align getColumnAlignment()
 	{
 		return this.columnAlignment;
 	}
-	
-	
+
+
 	public void setColumnAlignment(final Align columnAlignment)
 	{
 		this.columnAlignment = columnAlignment;
 	}
-	
-	
+
+
 	public Class<?> getValueType()
 	{
 		return this.valueType;
 	}
-	
-	
+
+
 	public void setValueType(final Class<?> valueType)
 	{
 		this.valueType = valueType;
 	}
-	
-	
+
+
 	public Object getPropertyID()
 	{
 		return this.propertyID;
 	}
-	
-	
+
+
 	public void setPropertyID(final Object propertyID)
 	{
 		this.propertyID = propertyID;

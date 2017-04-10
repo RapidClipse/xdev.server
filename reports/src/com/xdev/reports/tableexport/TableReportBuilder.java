@@ -21,7 +21,6 @@
 package com.xdev.reports.tableexport;
 
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +32,6 @@ import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.column.Columns;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.Components;
-import net.sf.dynamicreports.report.builder.style.StyleBuilder;
-import net.sf.dynamicreports.report.builder.style.Styles;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 
 
@@ -45,97 +42,104 @@ import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 public interface TableReportBuilder
 {
 	public final static TableReportBuilder DEFAULT = new Default();
-
-
+	
+	
 	public JasperReportBuilder buildReport(Table table, List<Column> columns,
 			TableExportSettings settings);
-
-
-
+	
+	
+	
 	public static class Default implements TableReportBuilder
 	{
-		protected final StyleBuilder	BOLDSTYLE			= Styles.style().bold().setPadding(2);
-
-		protected final StyleBuilder	BOLDCENTERSTYLE		= Styles.style(BOLDSTYLE)
-				.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER);
-
-		protected final StyleBuilder	COLUMNTITLESTYLE	= Styles.style(BOLDCENTERSTYLE)
-				.setBorder(Styles.pen1Point()).setBackgroundColor(Color.LIGHT_GRAY);
-
-		protected final StyleBuilder	COLUMNSTYLE			= Styles.style(BOLDSTYLE)
-				.setBorder(Styles.pen1Point());
-
-
+		protected final TableDataSourceFactory	dataSourceFactory;
+		protected final TableExportStyles		styles;
+		
+		
+		public Default()
+		{
+			this(TableDataSourceFactory.DEFAULT,TableExportStyles.DEFAULT);
+		}
+		
+		
+		public Default(final TableDataSourceFactory dataSourceFactory,
+				final TableExportStyles styles)
+		{
+			this.dataSourceFactory = dataSourceFactory;
+			this.styles = styles;
+		}
+		
+		
 		@Override
 		public JasperReportBuilder buildReport(final Table table, final List<Column> columns,
 				final TableExportSettings settings)
 		{
 			final JasperReportBuilder report = DynamicReports.report();
 			final List<TextColumnBuilder<?>> jasperCols = createTextColumns(columns);
-
+			
 			for(final TextColumnBuilder<?> textColumnBuilder : jasperCols)
 			{
 				report.columns(textColumnBuilder);
 			}
-
-			report.setColumnTitleStyle(COLUMNTITLESTYLE);
-			report.setColumnStyle(COLUMNSTYLE);
-
+			
+			report.setColumnTitleStyle(this.styles.columnTitleStyle());
+			report.setColumnStyle(this.styles.columnStyle());
+			
 			final String title = settings.getTitle();
 			if(title != null)
 			{
-				report.title(Components.text(title).setStyle(BOLDCENTERSTYLE));
+				report.title(Components.text(title).setStyle(this.styles.titleStyle()));
 				report.setReportName(title);
 			}
 			else
 			{
 				report.setReportName("TableExport_" + System.currentTimeMillis());
 			}
-
+			
 			if(settings.isShowPageNumber())
 			{
-				report.pageFooter(DynamicReports.cmp.pageXofY().setStyle(BOLDCENTERSTYLE));
+				report.pageFooter(
+						DynamicReports.cmp.pageXofY().setStyle(this.styles.footerStyle()));
 			}
-
+			
 			if(settings.isHighlightRows())
 			{
 				report.highlightDetailOddRows();
 			}
-
+			
 			report.setShowColumnTitle(true);
-			report.setDataSource(DataSourceFactory.createDataSource(table,columns));
+			report.setDataSource(this.dataSourceFactory.createDataSource(table,columns));
 			report.setPageFormat(settings.getPageType(),settings.getPageOrientation());
 			report.setPageMargin(DynamicReports.margin(20));
-
+			
 			return report;
 		}
-
-
+		
+		
 		protected List<TextColumnBuilder<?>> createTextColumns(final List<Column> columns)
 		{
 			final List<TextColumnBuilder<?>> reportColums = new ArrayList<TextColumnBuilder<?>>();
-
+			
 			for(final Column column : columns)
 			{
 				final TextColumnBuilder<String> reportColumn = Columns
 						.column(column.getColumnHeader(),column.getColumnHeader(),String.class);
-
+				
 				final Integer width = column.getColumnWidth();
 				if(width != null && width > 0)
 				{
 					reportColumn.setFixedWidth(width);
 				}
-
+				
 				reportColumn.setHorizontalTextAlignment(
 						convertVaadinJasperTextAlignment(column.getColumnAlignment()));
-
+				
 				reportColums.add(reportColumn);
 			}
-
+			
 			return reportColums;
 		}
-
-
+		
+		
 		protected HorizontalTextAlignment convertVaadinJasperTextAlignment(final Align alignment)
 		{
 			if(alignment.equals(Align.RIGHT))

@@ -13,23 +13,23 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	
+
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
 		<groupId>com.xdev-software</groupId>
 		<artifactId>xdev-server</artifactId>
 		<version>3.1.0</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	
+
 	<artifactId>xdev-server-reports</artifactId>
 	<name>RapidClipse Framework Reports</name>
-	
+
 	<properties>
 		<shortName>reports</shortName>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>com.xdev-software</groupId>
@@ -46,8 +46,13 @@
 			<artifactId>jasperreports-fonts</artifactId>
 			<version>6.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.14</version>
+		</dependency>
 	</dependencies>
-	
+
 </project>
 
 

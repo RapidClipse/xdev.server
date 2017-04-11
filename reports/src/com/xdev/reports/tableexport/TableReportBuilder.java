@@ -24,6 +24,8 @@ package com.xdev.reports.tableexport;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.Align;
 
@@ -85,14 +87,14 @@ public interface TableReportBuilder
 			report.setColumnStyle(this.styles.columnStyle());
 			
 			final String title = settings.getTitle();
-			if(title != null)
+			if(!StringUtils.isEmpty(title))
 			{
 				report.title(Components.text(title).setStyle(this.styles.titleStyle()));
 				report.setReportName(title);
 			}
 			else
 			{
-				report.setReportName("TableExport_" + System.currentTimeMillis());
+				report.setReportName("TableExport");
 			}
 			
 			if(settings.isShowPageNumber())

@@ -21,24 +21,14 @@
 package com.xdev.reports.tableexport.ui;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter;
-import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
-import com.vaadin.server.StreamResource;
-import com.vaadin.server.StreamResource.StreamSource;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinResponse;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.BrowserFrame;
@@ -49,10 +39,12 @@ import com.vaadin.ui.Table.Align;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 import com.xdev.reports.ExportType;
+import com.xdev.reports.ReportException;
 import com.xdev.reports.tableexport.Column;
 import com.xdev.reports.tableexport.TableExportSettings;
 import com.xdev.reports.tableexport.TableReportBuilder;
 import com.xdev.res.StringResourceUtils;
+import com.xdev.ui.DynamicFileDownloader;
 import com.xdev.ui.PopupWindow;
 import com.xdev.ui.XdevButton;
 import com.xdev.ui.XdevCheckBox;
@@ -67,7 +59,6 @@ import com.xdev.ui.util.UIUtils;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.PageType;
-import net.sf.dynamicreports.report.exception.DRException;
 
 
 public class TableExportWizard extends XdevGridLayout
@@ -83,7 +74,6 @@ public class TableExportWizard extends XdevGridLayout
 	protected TableReportBuilder		tableReportBuilder		= TableReportBuilder.DEFAULT;
 	protected final TableExportSettings	exportSettings			= new TableExportSettings();
 	protected final XdevTable<?>		table;
-	protected final FileDownloader		fileDownloader;
 	
 	
 	public TableExportWizard(final XdevTable<?> table, final ExportType... availableExportTypes)
@@ -142,19 +132,7 @@ public class TableExportWizard extends XdevGridLayout
 			txtWidth.addValueChangeListener(event -> check());
 		}
 		
-		this.fileDownloader = new FileDownloader(createEmptyResource())
-		{
-			@Override
-			public boolean handleConnectorRequest(final VaadinRequest request,
-					final VaadinResponse response, final String path) throws IOException
-			{
-				setFileDownloadResource(createReportResource());
-				
-				return super.handleConnectorRequest(request,response,path);
-			}
-		};
-		this.fileDownloader.setOverrideContentType(false);
-		this.fileDownloader.extend(this.cmdSave);
+		DynamicFileDownloader.install(this.cmdSave,this::createReportResource);
 		
 		check();
 	}
@@ -301,24 +279,16 @@ public class TableExportWizard extends XdevGridLayout
 	}
 	
 	
-	private Resource createReportResource()
+	private Resource createReportResource() throws ReportException
 	{
-		try
-		{
-			this.exportSettings.setTitle(this.txtReportName.getValue());
-			this.exportSettings.setShowPageNumber(this.chkShowPageNumber.getValue());
-			this.exportSettings.setHighlightRows(this.chkHighlightRows.getValue());
-			
-			final JasperReportBuilder builder = this.tableReportBuilder.buildReport(this.table,
-					createColumns(),this.exportSettings);
-			return ((ExportType)this.cmbFormat.getValue()).exportToResource(builder);
-		}
-		catch(final DRException e)
-		{
-			Logger.getLogger(getClass()).error("Error while creating report",e);
-			
-			return createEmptyResource();
-		}
+		this.exportSettings.setTitle(this.txtReportName.getValue());
+		this.exportSettings.setShowPageNumber(this.chkShowPageNumber.getValue());
+		this.exportSettings.setHighlightRows(this.chkHighlightRows.getValue());
+		
+		final JasperReportBuilder builder = this.tableReportBuilder.buildReport(this.table,
+				createColumns(),this.exportSettings);
+		return ((ExportType)this.cmbFormat.getValue()).exportToResource(builder,
+				this.exportSettings.getTitle());
 	}
 	
 	
@@ -363,21 +333,6 @@ public class TableExportWizard extends XdevGridLayout
 	}
 	
 	
-	private Resource createEmptyResource()
-	{
-		final StreamResource resource = new StreamResource(new StreamSource()
-		{
-			@Override
-			public InputStream getStream()
-			{
-				return new ByteArrayInputStream(new byte[0]);
-			}
-		},"empty");
-		resource.setMIMEType("text/plain");
-		return resource;
-	}
-	
-	
 	private void initUI()
 	{
 		this.txtReportName = new XdevTextField();
@@ -404,6 +359,7 @@ public class TableExportWizard extends XdevGridLayout
 		this.txtReportName.setColumns(25);
 		this.txtReportName.setValue("Report");
 		this.txtReportName.setImmediate(true);
+		this.txtReportName.setRequired(true);
 		this.tblColumnChooser.setCaption(StringResourceUtils.localizeString("{$columns}",this));
 		this.tblColumnChooser.setStyleName("compact");
 		this.layoutTableButtons.setMargin(new MarginInfo(true,false,false,false));

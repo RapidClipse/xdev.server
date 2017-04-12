@@ -43,8 +43,8 @@ public class URLParameterRegistry implements Serializable
 {
 	private final Map<URLKeyDescriptor, URLParameterRegistryValue> internal;
 	// private Set<EntityType<?>> entities;
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -53,8 +53,8 @@ public class URLParameterRegistry implements Serializable
 		super();
 		this.internal = new HashMap<>();
 	}
-	
-	
+
+
 	public URLParameterDescriptor put(final Object value, final String viewName,
 			final String propertyName)
 	{
@@ -63,7 +63,7 @@ public class URLParameterRegistry implements Serializable
 		 * properties can't overwrite each other.
 		 */
 		final URLKeyDescriptor parameterKey = new URLKeyDescriptor(viewName,propertyName);
-		
+
 		if(value != null && JPAMetaDataUtils.isManaged(value.getClass()))
 		{
 			// See XWS-545
@@ -75,29 +75,29 @@ public class URLParameterRegistry implements Serializable
 				return new URLParameterDescriptor(value.getClass(),parameterKey.getPropertyName());
 			}
 		}
-		
+
 		this.internal.put(parameterKey,new URLParameterRegistryValue(value.getClass(),value,null,
 				parameterKey.getPropertyName()));
 		return new URLParameterDescriptor(value.getClass(),parameterKey.getPropertyName());
 	}
-	
-	
+
+
 	public URLParameterRegistryValue get(final URLKeyDescriptor key)
 	{
 		return this.internal.get(key);
 	}
-	
-	
+
+
 	public URLParameterRegistryValue get(final String viewName, final String parameterName)
 	{
 		return this.internal.get(new URLKeyDescriptor(viewName,parameterName));
 	}
-	
-	
+
+
 	public Collection<URLParameterRegistryValue> getValues(final String viewName)
 	{
 		final Collection<URLParameterRegistryValue> valuesForView = new ArrayList<>();
-		
+
 		for(final URLKeyDescriptor key : this.internal.keySet())
 		{
 			if(key.getViewName().equals(viewName))
@@ -105,11 +105,11 @@ public class URLParameterRegistry implements Serializable
 				valuesForView.add(this.internal.get(key));
 			}
 		}
-		
+
 		return valuesForView;
 	}
-	
-	
+
+
 	/**
 	 * @deprecated not used anymore, will be removed in a future release
 	 * @return <code>null</code>
@@ -130,10 +130,19 @@ public class URLParameterRegistry implements Serializable
 		// return this.entities;
 		return null;
 	}
-	
-	
+
+
 	public EntityIDResolver getIdResolver()
 	{
 		return JPAEntityIDResolver.getInstance();
+	}
+	
+	
+	/**
+	 * @since 3.1
+	 */
+	public void removeAll(final String viewName)
+	{
+		this.internal.keySet().removeIf(d -> d.getViewName().equals(viewName));
 	}
 }

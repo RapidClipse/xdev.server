@@ -24,7 +24,13 @@ package com.xdev.security.authentication.ui;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
+import com.xdev.security.authentication.AuthenticationFailedException;
+import com.xdev.security.authentication.AuthenticatorProvider;
+import com.xdev.security.authentication.CredentialsUsernamePassword;
+import com.xdev.security.authorization.AuthorizationConfigurationProvider;
+import com.xdev.security.authorization.AuthorizationManager;
 import com.xdev.security.authorization.Subject;
+import com.xdev.security.authorization.ui.Authorization;
 
 
 /**
@@ -40,6 +46,65 @@ public final class Authentication
 	}
 
 	private final static String AUTHENTICATION_RESULT = "AUTHENTICATION_RESULT";
+
+
+	/**
+	 * A login with the given credentials is attempted. If successful the user
+	 * is registered in the current session and then the redirect view will be
+	 * shown.
+	 *
+	 * @return <code>true</code> if the login was successful
+	 *
+	 * @see #login(Subject, Object)
+	 *
+	 * @since 3.1
+	 */
+	public static boolean tryLogin(final CredentialsUsernamePassword credentials,
+			final AuthenticatorProvider<CredentialsUsernamePassword, ?> authenticatorProvider)
+	{
+		return tryLogin(credentials,authenticatorProvider,null);
+	}
+
+
+	/**
+	 * A login with the given credentials is attempted. If successful the user
+	 * is registered in the current session and then the redirect view will be
+	 * shown.
+	 *
+	 * @return <code>true</code> if the login was successful
+	 *
+	 * @see #login(Subject, Object)
+	 *
+	 * @since 3.1
+	 */
+	public static boolean tryLogin(final CredentialsUsernamePassword credentials,
+			final AuthenticatorProvider<CredentialsUsernamePassword, ?> authenticatorProvider,
+			final AuthorizationConfigurationProvider authorizationConfigurationProvider)
+	{
+		try
+		{
+			final Object authenticationResult = authenticatorProvider.provideAuthenticator()
+					.authenticate(credentials);
+			Subject subject;
+			if(authorizationConfigurationProvider != null)
+			{
+				final AuthorizationManager authorizationManager = AuthorizationManager
+						.New(authorizationConfigurationProvider);
+				Authorization.setAuthorizationManager(authorizationManager);
+				subject = authorizationManager.subject(credentials.username());
+			}
+			else
+			{
+				subject = new Subject.Implementation(credentials.username());
+			}
+			login(subject,authenticationResult);
+			return true;
+		}
+		catch(final AuthenticationFailedException e)
+		{
+			return false;
+		}
+	}
 
 
 	/**

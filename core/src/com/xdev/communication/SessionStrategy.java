@@ -41,12 +41,12 @@ import com.xdev.Application;
 public interface SessionStrategy
 {
 	public void requestStart(Conversationables conversationables, String persistenceUnit);
-	
-	
+
+
 	public void requestEnd(Conversationables conversationables, String persistenceUnit);
-	
-	
-	
+
+
+
 	/**
 	 * Request / Response propagation to avoid session per operation anti
 	 * pattern.
@@ -86,7 +86,7 @@ public interface SessionStrategy
 				if(em != null)
 				{
 					final Conversation conversation = conversationable.getConversation();
-					if(conversation != null)
+					if(conversation != null && conversation.isActive())
 					{
 						/*
 						 * Keep the session and with it the persistence context
@@ -95,20 +95,18 @@ public interface SessionStrategy
 						 * handled by an appropriate conversation managing
 						 * strategy.
 						 */
-						if(conversation.isActive())
+
+						final EntityTransaction transaction = em.getTransaction();
+						if(transaction != null && transaction.isActive())
 						{
-							final EntityTransaction transaction = em.getTransaction();
-							if(transaction.isActive())
+							try
 							{
-								try
-								{
-									// end unit of work
-									transaction.commit();
-								}
-								catch(final RollbackException e)
-								{
-									transaction.rollback();
-								}
+								// end unit of work
+								transaction.commit();
+							}
+							catch(final RollbackException e)
+							{
+								transaction.rollback();
 							}
 						}
 					}

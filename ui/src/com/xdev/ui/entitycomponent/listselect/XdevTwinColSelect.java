@@ -223,10 +223,16 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
-		String caption;
-		if((caption = SelectUtils.getItemCaption(this,itemId)) != null)
+		try
 		{
-			return caption;
+			String caption;
+			if((caption = SelectUtils.getItemCaption(this,itemId)) != null)
+			{
+				return caption;
+			}
+		}
+		catch(final NoClassDefFoundError ncdfe)
+		{
 		}
 
 		return super.getItemCaption(itemId);
@@ -256,10 +262,16 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	@Override
 	public Resource getItemIcon(final Object itemId)
 	{
-		Resource icon;
-		if((icon = SelectUtils.getItemIcon(this,itemId)) != null)
+		try
 		{
-			return icon;
+			Resource icon;
+			if((icon = SelectUtils.getItemIcon(this,itemId)) != null)
+			{
+				return icon;
+			}
+		}
+		catch(final NoClassDefFoundError ncdfe)
+		{
 		}
 
 		return super.getItemIcon(itemId);

@@ -46,8 +46,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	private String					itemCaptionValue;
 	private ItemCaptionProvider<T>	itemCaptionProvider;
 	private ItemIconProvider<T>		itemIconProvider;
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -55,8 +55,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 */
@@ -64,13 +64,13 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		super(caption);
 	}
-
+	
 	// init defaults
 	{
 		setImmediate(true);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -79,8 +79,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -89,8 +89,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -99,8 +99,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -109,8 +109,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.persistValue = persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -119,8 +119,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -129,8 +129,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.itemCaptionFromAnnotation;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -139,8 +139,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.itemCaptionValue = itemCaptionValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -149,8 +149,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.itemCaptionValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -162,11 +162,11 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-
+		
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -179,11 +179,11 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-		
+
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -192,8 +192,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.itemCaptionProvider = itemCaptionProvider;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -202,21 +202,27 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.itemCaptionProvider;
 	}
-	
-	
+
+
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
-		String caption;
-		if((caption = SelectUtils.getItemCaption(this,itemId)) != null)
+		try
 		{
-			return caption;
+			String caption;
+			if((caption = SelectUtils.getItemCaption(this,itemId)) != null)
+			{
+				return caption;
+			}
 		}
-
+		catch(final NoClassDefFoundError ncdfe)
+		{
+		}
+		
 		return super.getItemCaption(itemId);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -225,8 +231,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.itemIconProvider = itemIconProvider;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -235,17 +241,23 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.itemIconProvider;
 	}
-
-
+	
+	
 	@Override
 	public Resource getItemIcon(final Object itemId)
 	{
-		Resource icon;
-		if((icon = SelectUtils.getItemIcon(this,itemId)) != null)
+		try
 		{
-			return icon;
+			Resource icon;
+			if((icon = SelectUtils.getItemIcon(this,itemId)) != null)
+			{
+				return icon;
+			}
 		}
-
+		catch(final NoClassDefFoundError ncdfe)
+		{
+		}
+		
 		return super.getItemIcon(itemId);
 	}
 }

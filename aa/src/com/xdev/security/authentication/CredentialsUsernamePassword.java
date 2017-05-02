@@ -23,7 +23,7 @@ package com.xdev.security.authentication;
 
 import static com.xdev.security.Utils.notNull;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 
 /**
@@ -119,14 +119,7 @@ public interface CredentialsUsernamePassword
 		@Override
 		public byte[] password()
 		{
-			try
-			{
-				return this.password.getBytes("ISO-8859-1");
-			}
-			catch(final UnsupportedEncodingException e)
-			{
-				throw new RuntimeException(e);
-			}
+			return this.password.getBytes(StandardCharsets.UTF_8);
 		}
 
 

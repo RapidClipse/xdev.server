@@ -49,8 +49,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	private String					itemCaptionValue;
 	private ItemCaptionProvider<T>	itemCaptionProvider;
 	private ItemIconProvider<T>		itemIconProvider;
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -58,8 +58,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 */
@@ -67,13 +67,13 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		super(caption);
 	}
-
+	
 	// init defaults
 	{
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -82,8 +82,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -92,8 +92,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -102,8 +102,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -112,20 +112,19 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		this.persistValue = persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@SafeVarargs
 	@Override
-	public final void setContainerDataSource(final Class<T> beanClass, final boolean autoQueryData,
+	public void setContainerDataSource(final Class<T> beanClass, final boolean autoQueryData,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-
+		
 		// Workaround for TwinColSelect internal size behavior.
 		if(container instanceof XdevEntityLazyQueryContainer)
 		{
@@ -144,22 +143,21 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 		}
 		this.setContainerDataSource(container);
 	}
-	
-	
-	@SafeVarargs
+
+
 	@Override
-	public final void setContainerDataSource(final Class<T> beanClass, final Collection<T> data,
+	public void setContainerDataSource(final Class<T> beanClass, final Collection<T> data,
 			final KeyValueType<?, ?>... nestedProperties)
 	{
 		this.setAutoQueryData(false);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-		
+
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -168,8 +166,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -178,8 +176,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -188,8 +186,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		this.itemCaptionValue = itemCaptionValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -198,8 +196,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.itemCaptionValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -208,8 +206,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		this.itemCaptionProvider = itemCaptionProvider;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -218,8 +216,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.itemCaptionProvider;
 	}
-
-
+	
+	
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
@@ -234,11 +232,11 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 		catch(final NoClassDefFoundError ncdfe)
 		{
 		}
-
+		
 		return super.getItemCaption(itemId);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -247,8 +245,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		this.itemIconProvider = itemIconProvider;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -257,8 +255,8 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 	{
 		return this.itemIconProvider;
 	}
-
-
+	
+	
 	@Override
 	public Resource getItemIcon(final Object itemId)
 	{
@@ -273,7 +271,7 @@ public class XdevTwinColSelect<T> extends AbstractBeanTwinColSelect<T> implement
 		catch(final NoClassDefFoundError ncdfe)
 		{
 		}
-
+		
 		return super.getItemIcon(itemId);
 	}
 }

@@ -339,7 +339,7 @@ public interface PopupWindow
 			}
 			else if(this.content.getWidth() > 0f && this.content.getWidthUnits() == Unit.PIXELS)
 			{
-				width = -1;
+				width = this.resizable ? this.content.getWidth() : -1;
 				widthUnit = Unit.PIXELS;
 			}
 			else
@@ -359,7 +359,7 @@ public interface PopupWindow
 			}
 			else if(this.content.getHeight() > 0f && this.content.getHeightUnits() == Unit.PIXELS)
 			{
-				height = -1;
+				height = this.resizable ? this.content.getHeight() : -1;
 				heightUnit = Unit.PIXELS;
 			}
 			else

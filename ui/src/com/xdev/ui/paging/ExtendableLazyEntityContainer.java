@@ -23,6 +23,8 @@ package com.xdev.ui.paging;
 
 import java.util.Collection;
 
+import org.vaadin.addons.lazyquerycontainer.QueryFactory;
+
 import com.vaadin.data.util.BeanItem;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 
@@ -62,11 +64,32 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 			final Object idPropertyId, final boolean applicationManagedTransactions,
 			final boolean detachedEntities)
 	{
-		super(new IntrospectionEntityQueryDefinition<T>(applicationManagedTransactions,
-				detachedEntities,false,entityClass,batchSize,idPropertyId),
+		this(entityClass,batchSize,idPropertyId,applicationManagedTransactions,detachedEntities,
 				new RequisitioningEntityQueryFactory<T>());
-		this.entityType = entityClass;
+	}
 
+
+	/**
+	 * Constructor which configures query definition for accessing JPA entities.
+	 *
+	 * @param entityClass
+	 *            The entity class.
+	 * @param idPropertyId
+	 *            The ID of the ID property or null if item index is used as ID.
+	 * @param batchSize
+	 *            The batch size.
+	 * @param applicationManagedTransactions
+	 *            True if application manages transactions instead of container.
+	 * @param detachedEntities
+	 *            True if entities are detached from PersistenceContext.
+	 */
+	public ExtendableLazyEntityContainer(final Class<T> entityClass, final int batchSize,
+			final Object idPropertyId, final boolean applicationManagedTransactions,
+			final boolean detachedEntities, final QueryFactory queryFactory)
+	{
+		super(new IntrospectionEntityQueryDefinition<T>(applicationManagedTransactions,
+				detachedEntities,false,entityClass,batchSize,idPropertyId),queryFactory);
+		this.entityType = entityClass;
 	}
 
 
@@ -94,9 +117,39 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 			final Object[] defaultSortPropertyIds,
 			final boolean[] defaultSortPropertyAscendingStates, final Object idPropertyId)
 	{
-		super(new IntrospectionEntityQueryDefinition<T>(applicationManagedTransactions,
-				detachedEntities,false,entityClass,batchSize,idPropertyId),
+		this(applicationManagedTransactions,detachedEntities,entityClass,batchSize,
+				defaultSortPropertyIds,defaultSortPropertyAscendingStates,idPropertyId,
 				new RequisitioningEntityQueryFactory<T>());
+	}
+
+
+	/**
+	 * Constructor which configures query definition for accessing JPA entities.
+	 *
+	 * @param applicationManagedTransactions
+	 *            True if application manages transactions instead of container.
+	 * @param detachedEntities
+	 *            True if entities are detached from PersistenceContext. items
+	 *            until commit.
+	 * @param entityClass
+	 *            The entity class.
+	 * @param batchSize
+	 *            The batch size.
+	 * @param defaultSortPropertyIds
+	 *            Properties participating in the native sort.
+	 * @param defaultSortPropertyAscendingStates
+	 *            List of property sort directions for the native sort.
+	 * @param idPropertyId
+	 *            Property containing the property ID.
+	 */
+	public ExtendableLazyEntityContainer(final boolean applicationManagedTransactions,
+			final boolean detachedEntities, final Class<T> entityClass, final int batchSize,
+			final Object[] defaultSortPropertyIds,
+			final boolean[] defaultSortPropertyAscendingStates, final Object idPropertyId,
+			final QueryFactory queryFactory)
+	{
+		super(new IntrospectionEntityQueryDefinition<T>(applicationManagedTransactions,
+				detachedEntities,false,entityClass,batchSize,idPropertyId),queryFactory);
 
 		getQueryView().getQueryDefinition().setDefaultSortState(defaultSortPropertyIds,
 				defaultSortPropertyAscendingStates);
@@ -193,8 +246,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	{
 		return (BeanItem<T>)super.getItem(itemId);
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -206,12 +259,12 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	public BeanItem<T> replaceItem(final BeanItem<T> oldItem, final T newBean)
 	{
 		final BeanItem<T> replaced = getQueryView().replaceItem(oldItem,newBean);
-		
+
 		if(replaced != null)
 		{
 			fireItemSetChange(() -> this);
 		}
-		
+
 		return replaced;
 	}
 

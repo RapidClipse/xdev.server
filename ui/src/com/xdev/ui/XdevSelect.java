@@ -106,35 +106,39 @@ public interface XdevSelect<T> extends XdevField, BeanComponent<T>
 
 	public final static class SelectUtils
 	{
+		private static <T> T getBean(final XdevSelect<T> select, final Object itemId)
+		{
+			final BeanItem<T> item = select.getBeanItem(itemId);
+			return item != null ? item.getBean() : null;
+		}
+
+
 		public static <T> String getItemCaption(final XdevSelect<T> select, final Object itemId)
 		{
 			if(itemId != null && select.getBeanContainerDataSource() != null)
 			{
-				final BeanItem<T> item;
 				T bean;
-				if((item = select.getBeanItem(itemId)) != null && (bean = item.getBean()) != null)
+				ItemCaptionProvider<T> itemCaptionProvider;
+				String caption;
+				if((itemCaptionProvider = select.getItemCaptionProvider()) != null
+						&& (bean = getBean(select,itemId)) != null
+						&& (caption = itemCaptionProvider.getCaption(bean)) != null)
 				{
-					ItemCaptionProvider<T> itemCaptionProvider;
-					String caption;
-					if((itemCaptionProvider = select.getItemCaptionProvider()) != null
-							&& (caption = itemCaptionProvider.getCaption(bean)) != null)
-					{
-						return caption;
-					}
+					return caption;
+				}
 
-					String itemCaptionValue;
-					if(select.isItemCaptionFromAnnotation())
+				String itemCaptionValue;
+				if(select.isItemCaptionFromAnnotation() && (bean = getBean(select,itemId)) != null)
+				{
+					if(CaptionUtils.hasCaptionAnnotationValue(bean.getClass()))
 					{
-						if(CaptionUtils.hasCaptionAnnotationValue(bean.getClass()))
-						{
-							return CaptionUtils.resolveCaption(bean,select.getLocale());
-						}
+						return CaptionUtils.resolveCaption(bean,select.getLocale());
 					}
-					else if((itemCaptionValue = select.getItemCaptionValue()) != null)
-					{
-						return CaptionUtils.resolveCaption(bean,itemCaptionValue,
-								select.getLocale());
-					}
+				}
+				else if((itemCaptionValue = select.getItemCaptionValue()) != null
+						&& (bean = getBean(select,itemId)) != null)
+				{
+					return CaptionUtils.resolveCaption(bean,itemCaptionValue,select.getLocale());
 				}
 			}
 
@@ -144,22 +148,14 @@ public interface XdevSelect<T> extends XdevField, BeanComponent<T>
 
 		public static <T> Resource getItemIcon(final XdevSelect<T> select, final Object itemId)
 		{
-			ItemIconProvider<T> itemIconProvider;
-			if((itemIconProvider = select.getItemIconProvider()) != null)
+			if(itemId != null && select.getBeanContainerDataSource() != null)
 			{
-				if(itemId != null && select.getBeanContainerDataSource() != null)
+				ItemIconProvider<T> itemIconProvider;
+				T bean;
+				if((itemIconProvider = select.getItemIconProvider()) != null
+						&& (bean = getBean(select,itemId)) != null)
 				{
-					final BeanItem<T> item;
-					T bean;
-					if((item = select.getBeanItem(itemId)) != null
-							&& (bean = item.getBean()) != null)
-					{
-						Resource icon;
-						if((icon = itemIconProvider.getIcon(bean)) != null)
-						{
-							return icon;
-						}
-					}
+					return itemIconProvider.getIcon(bean);
 				}
 			}
 

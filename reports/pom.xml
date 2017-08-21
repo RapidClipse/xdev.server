@@ -40,6 +40,18 @@
 			<groupId>net.sourceforge.dynamicreports</groupId>
 			<artifactId>dynamicreports-core</artifactId>
 			<version>5.0.0</version>
+			<!-- see XWS-1431 -->
+			<exclusions>
+				<exclusion>
+					<groupId>net.sf.jasperreports</groupId>
+					<artifactId>jasperreports</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.4.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>

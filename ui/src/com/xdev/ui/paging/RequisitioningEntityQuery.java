@@ -140,8 +140,19 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 				{
 					if(pd.getName().equals(propertyId))
 					{
-						pd.getWriteMethod().invoke(entity,
-								this.queryDefinition.getPropertyDefaultValue(propertyId));
+						try
+						{
+							pd.getWriteMethod().invoke(entity,
+									this.queryDefinition.getPropertyDefaultValue(propertyId));
+						}
+						catch(final Exception e)
+						{
+							/*
+							 * Swallow, incompatible default type for primitive
+							 * values because of auto-boxing in vaadin property
+							 * descriptor.
+							 */
+						}
 					}
 				}
 			}

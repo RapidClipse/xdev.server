@@ -27,12 +27,16 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.From;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -186,12 +190,13 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			final CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			final CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 			final Root<E> root = cq.from(this.entityClass);
+			final QueryContext context = new QueryContext(root);
 			
 			cq.select(cb.count(root));
 			
-			setWhereCriteria(cb,cq,root);
+			setWhereCriteria(cb,cq,context);
 			
-			// setOrderClause(cb, cq, root);
+			// setOrderClause(cb, cq, context);
 			
 			final javax.persistence.Query query = entityManager.createQuery(cq);
 			if(isQueryCacheEnabled())
@@ -223,12 +228,13 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		final CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		final CriteriaQuery<E> cq = cb.createQuery(this.entityClass);
 		final Root<E> root = cq.from(this.entityClass);
+		final QueryContext context = new QueryContext(root);
 		
 		cq.select(root);
 		
-		setWhereCriteria(cb,cq,root);
+		setWhereCriteria(cb,cq,context);
 		
-		setOrderClause(cb,cq,root);
+		setOrderClause(cb,cq,context);
 		
 		final javax.persistence.TypedQuery<E> query = entityManager.createQuery(cq);
 		query.setFirstResult(startIndex);
@@ -296,7 +302,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	 *            the selected entity
 	 */
 	private <SE> void setWhereCriteria(final CriteriaBuilder cb, final CriteriaQuery<SE> cq,
-			final Root<E> root)
+			final QueryContext context)
 	{
 		final List<Container.Filter> filters = new ArrayList<Container.Filter>();
 		filters.addAll(this.queryDefinition.getDefaultFilters());
@@ -322,7 +328,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		
 		if(rootFilter != null)
 		{
-			cq.where(setFilter(rootFilter,cb,cq,root));
+			cq.where(setFilter(rootFilter,cb,cq,context));
 		}
 	}
 	
@@ -341,7 +347,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	 *            the selected entity
 	 */
 	private <SE> void setOrderClause(final CriteriaBuilder cb, final CriteriaQuery<SE> cq,
-			final Root<E> root)
+			final QueryContext context)
 	{
 		Object[] sortPropertyIds;
 		boolean[] sortPropertyAscendingStates;
@@ -363,7 +369,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			final List<Order> orders = new ArrayList<Order>();
 			for(int i = 0; i < sortPropertyIds.length; i++)
 			{
-				final Expression<?> property = getPropertyPath(root,sortPropertyIds[i]);
+				final Expression<?> property = context.getPropertyPath(sortPropertyIds[i]);
 				if(sortPropertyAscendingStates[i])
 				{
 					orders.add(cb.asc(property));
@@ -398,7 +404,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	 */
 	@SuppressWarnings("rawtypes")
 	private Predicate setFilter(final Container.Filter filter, final CriteriaBuilder cb,
-			final CriteriaQuery<?> cq, final Root<?> root)
+			final CriteriaQuery<?> cq, final QueryContext context)
 	{
 		if(filter instanceof And)
 		{
@@ -406,12 +412,12 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			final List<Container.Filter> filters = new ArrayList<Container.Filter>(
 					and.getFilters());
 			
-			Predicate predicate = cb.and(setFilter(filters.remove(0),cb,cq,root),
-					setFilter(filters.remove(0),cb,cq,root));
+			Predicate predicate = cb.and(setFilter(filters.remove(0),cb,cq,context),
+					setFilter(filters.remove(0),cb,cq,context));
 			
 			while(filters.size() > 0)
 			{
-				predicate = cb.and(predicate,setFilter(filters.remove(0),cb,cq,root));
+				predicate = cb.and(predicate,setFilter(filters.remove(0),cb,cq,context));
 			}
 			
 			return predicate;
@@ -422,12 +428,12 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			final Or or = (Or)filter;
 			final List<Container.Filter> filters = new ArrayList<Container.Filter>(or.getFilters());
 			
-			Predicate predicate = cb.or(setFilter(filters.remove(0),cb,cq,root),
-					setFilter(filters.remove(0),cb,cq,root));
+			Predicate predicate = cb.or(setFilter(filters.remove(0),cb,cq,context),
+					setFilter(filters.remove(0),cb,cq,context));
 			
 			while(filters.size() > 0)
 			{
-				predicate = cb.or(predicate,setFilter(filters.remove(0),cb,cq,root));
+				predicate = cb.or(predicate,setFilter(filters.remove(0),cb,cq,context));
 			}
 			
 			return predicate;
@@ -436,13 +442,13 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		if(filter instanceof Not)
 		{
 			final Not not = (Not)filter;
-			return cb.not(setFilter(not.getFilter(),cb,cq,root));
+			return cb.not(setFilter(not.getFilter(),cb,cq,context));
 		}
 		
 		if(filter instanceof Between)
 		{
 			final Between between = (Between)filter;
-			final Expression property = getPropertyPath(root,between.getPropertyId());
+			final Expression property = context.getPropertyPath(between.getPropertyId());
 			return cb.between(property,(Comparable)between.getStartValue(),
 					(Comparable)between.getEndValue());
 		}
@@ -451,7 +457,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		if(filter instanceof CompareBIDirect)
 		{
 			final CompareBIDirect compare = (CompareBIDirect)filter;
-			final Path<Object> propertyPath = getPropertyPath(root,compare.getPropertyId());
+			final Path<?> propertyPath = context.getPropertyPath(compare.getPropertyId());
 			final Expression property = propertyPath;
 			
 			if(Collection.class.isAssignableFrom(property.getJavaType()))
@@ -470,7 +476,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		if(filter instanceof com.vaadin.data.util.filter.Compare)
 		{
 			final com.vaadin.data.util.filter.Compare compare = (com.vaadin.data.util.filter.Compare)filter;
-			final Path<Object> propertyPath = getPropertyPath(root,compare.getPropertyId());
+			final Path<?> propertyPath = context.getPropertyPath(compare.getPropertyId());
 			final Expression property = propertyPath;
 			
 			switch(compare.getOperation())
@@ -504,7 +510,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		if(filter instanceof com.xdev.data.util.filter.Compare)
 		{
 			final com.xdev.data.util.filter.Compare compare = (com.xdev.data.util.filter.Compare)filter;
-			final Path<Object> propertyPath = getPropertyPath(root,compare.getPropertyId());
+			final Path<?> propertyPath = context.getPropertyPath(compare.getPropertyId());
 			final Expression property = propertyPath;
 			
 			switch(compare.getOperation())
@@ -538,7 +544,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		if(filter instanceof IsNull)
 		{
 			final IsNull isNull = (IsNull)filter;
-			return cb.isNull(getPropertyPath(root,isNull.getPropertyId()));
+			return cb.isNull(context.getPropertyPath(isNull.getPropertyId()));
 		}
 		
 		if(filter instanceof Like)
@@ -546,12 +552,12 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			final Like like = (Like)filter;
 			if(like.isCaseSensitive())
 			{
-				return cb.like((Expression)getPropertyPath(root,like.getPropertyId()),
+				return cb.like((Expression)context.getPropertyPath(like.getPropertyId()),
 						like.getValue());
 			}
 			else
 			{
-				return cb.like(cb.lower((Expression)getPropertyPath(root,like.getPropertyId())),
+				return cb.like(cb.lower((Expression)context.getPropertyPath(like.getPropertyId())),
 						like.getValue().toLowerCase());
 			}
 		}
@@ -559,14 +565,14 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		if(filter instanceof SimpleStringFilter)
 		{
 			final SimpleStringFilter stringFilter = (SimpleStringFilter)filter;
-			return createLike(cb,root,stringFilter.getPropertyId(),stringFilter.isIgnoreCase(),
+			return createLike(cb,context,stringFilter.getPropertyId(),stringFilter.isIgnoreCase(),
 					stringFilter.isOnlyMatchPrefix(),stringFilter.getFilterString());
 		}
 		
 		if(filter instanceof CaptionStringFilter)
 		{
 			final CaptionStringFilter stringFilter = (CaptionStringFilter)filter;
-			return createLike(cb,root,stringFilter.getPropertyId(),stringFilter.isIgnoreCase(),
+			return createLike(cb,context,stringFilter.getPropertyId(),stringFilter.isIgnoreCase(),
 					stringFilter.isOnlyMatchPrefix(),stringFilter.getFilterString());
 		}
 		
@@ -575,12 +581,12 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	}
 	
 	
-	private Predicate createLike(final CriteriaBuilder cb, final Root<?> root,
+	private Predicate createLike(final CriteriaBuilder cb, final QueryContext context,
 			final Object propertyId, final boolean ignoreCase, final boolean onlyMatchPrefix,
 			final String filterString)
 	{
 		@SuppressWarnings("rawtypes")
-		final Expression<String> property = (Expression)getPropertyPath(root,propertyId);
+		final Expression<String> property = (Expression)context.getPropertyPath(propertyId);
 		if(ignoreCase)
 		{
 			final StringBuilder pattern = new StringBuilder();
@@ -603,35 +609,6 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			pattern.append("%");
 			return cb.like(property,pattern.toString());
 		}
-	}
-	
-	
-	/**
-	 * Gets property path.
-	 *
-	 * @param root
-	 *            the root where path starts form
-	 * @param propertyId
-	 *            the property ID
-	 * @return the path to property
-	 */
-	private Path<Object> getPropertyPath(final Root<?> root, final Object propertyId)
-	{
-		final String[] propertyIdParts = ((String)propertyId).split("\\.");
-		
-		Path<Object> path = null;
-		for(final String part : propertyIdParts)
-		{
-			if(path == null)
-			{
-				path = root.get(part);
-			}
-			else
-			{
-				path = path.get(part);
-			}
-		}
-		return path;
 	}
 	
 	
@@ -727,12 +704,13 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			final CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			final CriteriaQuery<E> cq = cb.createQuery(this.entityClass);
 			final Root<E> root = cq.from(this.entityClass);
+			final QueryContext context = new QueryContext(root);
 			
 			cq.select(root);
 			
-			setWhereCriteria(cb,cq,root);
+			setWhereCriteria(cb,cq,context);
 			
-			setOrderClause(cb,cq,root);
+			setOrderClause(cb,cq,context);
 			
 			final javax.persistence.TypedQuery<E> query = entityManager.createQuery(cq);
 			if(isQueryCacheEnabled())
@@ -851,5 +829,63 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	{
 		return Application.getPersistenceManager()
 				.isQueryCacheEnabled(em().getEntityManagerFactory());
+	}
+	
+	
+	
+	private static class QueryContext
+	{
+		final PathElement root;
+		
+		
+		QueryContext(final Root<?> root)
+		{
+			this.root = new PathElement(root);
+		}
+		
+		
+		Path<?> getPropertyPath(final Object propertyId)
+		{
+			final String[] propertyIdParts = ((String)propertyId).split("\\.");
+			PathElement pathElement = this.root;
+			final int last = propertyIdParts.length - 1;
+			for(int i = 0; i < last; i++)
+			{
+				pathElement = pathElement.child(propertyIdParts[i]);
+			}
+			return pathElement.attribute(propertyIdParts[last]);
+		}
+		
+		
+		
+		private static class PathElement
+		{
+			final From<?, ?>				from;
+			final Map<String, PathElement>	children	= new HashMap<>();
+			
+			
+			PathElement(final From<?, ?> from)
+			{
+				this.from = from;
+			}
+			
+			
+			PathElement child(final String attribute)
+			{
+				PathElement child = this.children.get(attribute);
+				if(child == null)
+				{
+					child = new PathElement(this.from.join(attribute,JoinType.LEFT));
+					this.children.put(attribute,child);
+				}
+				return child;
+			}
+			
+			
+			Path<?> attribute(final String attribute)
+			{
+				return this.from.get(attribute);
+			}
+		}
 	}
 }

@@ -59,9 +59,17 @@ public final class PersistenceUtils
 
 	public static EntityManager getEntityManager(final String persistenceUnit)
 	{
-		final Conversationable conversationable = Conversationables.getCurrent()
-				.get(persistenceUnit);
-		return conversationable != null ? conversationable.getEntityManager() : null;
+		final Conversationables conversationables = Conversationables.getCurrent();
+		if(conversationables != null)
+		{
+			final Conversationable conversationable = conversationables.get(persistenceUnit);
+			if(conversationable != null)
+			{
+				return conversationable.getEntityManager();
+			}
+		}
+
+		return null;
 	}
 
 

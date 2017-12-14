@@ -70,8 +70,9 @@ public class FilterMasterDetailConnection<M, D> extends BeanComponentsMasterDeta
 		
 		clearFilter();
 		
-		final List<Filter> filters = this.master.getSelectedItems().stream().map(BeanItem::getBean)
-				.filter(Objects::nonNull).map(this.masterToFilterValue)
+		final List<Filter> filters = this.master.getSelectedItems().stream()
+				.filter(Objects::nonNull).map(BeanItem::getBean).filter(Objects::nonNull)
+				.map(this.masterToFilterValue).filter(Objects::nonNull)
 				.map(value -> new CompareBIDirect.Equal(this.detailPropertyId,value))
 				.collect(Collectors.toList());
 		if(!filters.isEmpty())

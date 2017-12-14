@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- - Copyright (C) 2013-2016 by XDEV Software, All Rights Reserved. - - 
+<!-- - Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved. - - 
 	This program is free software: you can redistribute it and/or modify - it 
 	under the terms of the GNU Affero General Public License as - published by 
 	the Free Software Foundation, either version 3 of the - License, or (at your 
@@ -40,6 +40,18 @@
 			<groupId>net.sourceforge.dynamicreports</groupId>
 			<artifactId>dynamicreports-core</artifactId>
 			<version>5.0.0</version>
+			<!-- see XWS-1431 -->
+			<exclusions>
+				<exclusion>
+					<groupId>net.sf.jasperreports</groupId>
+					<artifactId>jasperreports</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.4.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>

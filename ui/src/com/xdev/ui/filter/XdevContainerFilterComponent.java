@@ -129,9 +129,7 @@ public class XdevContainerFilterComponent extends CustomComponent
 	public XdevContainerFilterComponent()
 	{
 		this.searchTextField = createSearchTextField();
-		this.searchTextField.addFilterFieldChangeListener(event -> {
-			updateContainerFilter();
-		});
+		this.searchTextField.addFilterFieldChangeListener(event -> updateContainerFilter());
 
 		this.addFilterButton = createAddFilterButton();
 		this.addFilterButton.addClickListener(event -> addFilterEditor(0));
@@ -409,6 +407,7 @@ public class XdevContainerFilterComponent extends CustomComponent
 	public void setSearchText(final String searchText)
 	{
 		this.searchTextField.setFilterValue(searchText != null ? searchText : "");
+		updateContainerFilter();
 	}
 
 

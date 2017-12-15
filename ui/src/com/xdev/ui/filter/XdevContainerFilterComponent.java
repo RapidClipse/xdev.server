@@ -114,6 +114,7 @@ public class XdevContainerFilterComponent extends CustomComponent
 
 	private SearchFilterGenerator		searchFilterGenerator	= new SearchFilterGenerator.Default();
 
+	private boolean						prefixMatchOnly			= true;
 	private boolean						caseSensitive			= false;
 	private char						wildcard				= '*';
 
@@ -270,6 +271,22 @@ public class XdevContainerFilterComponent extends CustomComponent
 	public boolean isFilterEnabled()
 	{
 		return this.addFilterButton.isVisible();
+	}
+
+
+	public void setPrefixMatchOnly(final boolean prefixMatchOnly)
+	{
+		this.prefixMatchOnly = prefixMatchOnly;
+	}
+	
+	
+	/**
+	 * @since 3.2
+	 */
+	@Override
+	public boolean isPrefixMatchOnly()
+	{
+		return this.prefixMatchOnly;
 	}
 
 

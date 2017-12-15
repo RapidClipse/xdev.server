@@ -23,18 +23,24 @@ package com.xdev.ui.filter;
 
 /**
  * @author XDEV Software
- *		
+ * 
  */
 public interface FilterSettings
 {
+	/**
+	 * @since 3.2
+	 */
+	public boolean isPrefixMatchOnly();
+
+
 	public boolean isCaseSensitive();
-	
-	
+
+
 	public char getWildcard();
-
-
+	
+	
 	public Object[] getSearchableProperties();
-	
-	
+
+
 	public Object[] getFilterableProperties();
 }

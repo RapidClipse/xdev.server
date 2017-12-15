@@ -39,11 +39,11 @@ public final class FilterOperatorRegistry
 	
 	private static Map<String, FilterOperator> registry = new LinkedHashMap<>();
 
-
 	static
 	{
 		addFilterOperator(new FilterOperator.Equals());
 		addFilterOperator(new FilterOperator.StartsWith());
+		addFilterOperator(new FilterOperator.Contains());
 		addFilterOperator(new FilterOperator.Is());
 		addFilterOperator(new FilterOperator.IsNot());
 		addFilterOperator(new FilterOperator.Greater());
@@ -51,6 +51,8 @@ public final class FilterOperatorRegistry
 		addFilterOperator(new FilterOperator.GreaterEqual());
 		addFilterOperator(new FilterOperator.LessEqual());
 		addFilterOperator(new FilterOperator.Between());
+		addFilterOperator(new FilterOperator.IsEmpty());
+		addFilterOperator(new FilterOperator.IsNotEmpty());
 	}
 
 

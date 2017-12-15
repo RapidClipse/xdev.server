@@ -26,6 +26,7 @@ import java.util.Date;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.util.filter.Like;
 import com.vaadin.data.util.filter.Not;
+import com.vaadin.data.util.filter.Or;
 import com.xdev.data.util.filter.Compare;
 import com.xdev.res.StringResourceUtils;
 
@@ -48,7 +49,8 @@ public interface FilterOperator
 	public FilterField<?>[] createValueEditors(FilterContext context, Class<?> propertyType);
 
 
-	public Filter createFilter(FilterContext context, FilterField<?>[] editors);
+	public Filter createFilter(FilterContext context, Class<?> propertyType,
+			FilterField<?>[] editors);
 
 
 
@@ -176,7 +178,8 @@ public interface FilterOperator
 
 
 		@Override
-		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
+		public Filter createFilter(final FilterContext context, final Class<?> propertyType,
+				final FilterField<?>[] editors)
 		{
 			String value = (String)editors[0].getFilterValue();
 			if(value == null)
@@ -256,6 +259,40 @@ public interface FilterOperator
 
 
 
+	public static class Contains extends AbstractString
+	{
+		public final static String KEY = "CONTAINS";
+
+
+		public Contains()
+		{
+			super(KEY);
+		}
+
+
+		@Override
+		protected Filter createStringFilter(String pattern, final FilterContext context,
+				final FilterField<?>[] editors)
+		{
+			if(pattern.length() > 0)
+			{
+				if(pattern.charAt(0) != SearchFilterGenerator.SQL_WILDCARD)
+				{
+					pattern = SearchFilterGenerator.SQL_WILDCARD + pattern;
+				}
+				if(pattern.charAt(pattern.length() - 1) != SearchFilterGenerator.SQL_WILDCARD)
+				{
+					pattern += SearchFilterGenerator.SQL_WILDCARD;
+				}
+			}
+
+			return new Like(context.getPropertyId(),pattern,
+					context.getSettings().isCaseSensitive());
+		}
+	}
+
+
+
 	public static class Is extends Abstract
 	{
 		public final static String KEY = "IS";
@@ -307,7 +344,8 @@ public interface FilterOperator
 
 
 		@Override
-		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
+		public Filter createFilter(final FilterContext context, final Class<?> propertyType,
+				final FilterField<?>[] editors)
 		{
 			final Object value = editors[0].getFilterValue();
 			if(value == null)
@@ -333,9 +371,10 @@ public interface FilterOperator
 
 
 		@Override
-		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
+		public Filter createFilter(final FilterContext context, final Class<?> propertyType,
+				final FilterField<?>[] editors)
 		{
-			final Filter filter = super.createFilter(context,editors);
+			final Filter filter = super.createFilter(context,propertyType,editors);
 			return filter != null ? new Not(filter) : null;
 		}
 	}
@@ -371,7 +410,8 @@ public interface FilterOperator
 
 
 		@Override
-		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
+		public Filter createFilter(final FilterContext context, final Class<?> propertyType,
+				final FilterField<?>[] editors)
 		{
 			final Object value = editors[0].getFilterValue();
 			if(value == null)
@@ -414,7 +454,8 @@ public interface FilterOperator
 
 
 		@Override
-		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
+		public Filter createFilter(final FilterContext context, final Class<?> propertyType,
+				final FilterField<?>[] editors)
 		{
 			final Object value = editors[0].getFilterValue();
 			if(value == null)
@@ -457,7 +498,8 @@ public interface FilterOperator
 
 
 		@Override
-		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
+		public Filter createFilter(final FilterContext context, final Class<?> propertyType,
+				final FilterField<?>[] editors)
 		{
 			final Object value = editors[0].getFilterValue();
 			if(value == null)
@@ -500,7 +542,8 @@ public interface FilterOperator
 
 
 		@Override
-		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
+		public Filter createFilter(final FilterContext context, final Class<?> propertyType,
+				final FilterField<?>[] editors)
 		{
 			final Object value = editors[0].getFilterValue();
 			if(value == null)
@@ -550,7 +593,8 @@ public interface FilterOperator
 
 
 		@Override
-		public Filter createFilter(final FilterContext context, final FilterField<?>[] editors)
+		public Filter createFilter(final FilterContext context, final Class<?> propertyType,
+				final FilterField<?>[] editors)
 		{
 			final Comparable<?> startValue = (Comparable<?>)editors[0].getFilterValue();
 			if(startValue == null)
@@ -566,6 +610,77 @@ public interface FilterOperator
 
 			return new com.vaadin.data.util.filter.Between(context.getPropertyId(),startValue,
 					endValue);
+		}
+	}
+
+
+
+	public static class IsEmpty extends Abstract
+	{
+		public final static String KEY = "IS_EMPTY";
+
+
+		public IsEmpty()
+		{
+			this(KEY);
+		}
+
+
+		protected IsEmpty(final String key)
+		{
+			super(key);
+		}
+
+
+		@Override
+		public boolean isPropertyTypeSupported(final Class<?> type)
+		{
+			return true;
+		}
+
+
+		@Override
+		public FilterField<?>[] createValueEditors(final FilterContext context,
+				final Class<?> propertyType)
+		{
+			return new FilterField<?>[]{};
+		}
+
+
+		@Override
+		public Filter createFilter(final FilterContext context, final Class<?> propertyType,
+				final FilterField<?>[] editors)
+		{
+			Filter filter = new Compare.Equal(context.getPropertyId(),null);
+
+			if(propertyType == String.class)
+			{
+				filter = new Or(filter,new Compare.Equal(context.getPropertyId(),""));
+			}
+
+			return filter;
+		}
+	}
+
+
+
+	public static class IsNotEmpty extends IsEmpty
+	{
+		public final static String KEY = "IS_NOT_EMPTY";
+
+
+		public IsNotEmpty()
+		{
+			super(KEY);
+		}
+
+
+		@Override
+		public Filter createFilter(final FilterContext context, final Class<?> propertyType,
+				final FilterField<?>[] editors)
+		{
+			final Filter filter = super.createFilter(context,propertyType,editors);
+			return filter != null ? new Not(filter) : null;
 		}
 	}
 }

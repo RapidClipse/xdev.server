@@ -383,6 +383,7 @@ public class FilterEditor
 		final FilterContext context = new FilterContext.Implementation(
 				this.containerFilterComponent,this.containerFilterComponent.getContainer(),
 				this.selectedPropertyEntry.getPropertyId());
-		return this.selectedOperator.createFilter(context,this.valueEditors);
+		return this.selectedOperator.createFilter(context,
+				this.selectedPropertyEntry.getPropertyType(),this.valueEditors);
 	}
 }

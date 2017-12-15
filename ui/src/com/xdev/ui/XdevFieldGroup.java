@@ -21,13 +21,13 @@
 package com.xdev.ui;
 
 
-import org.hibernate.StaleObjectStateException;
-
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItem;
-import com.xdev.dal.DAOs;
 import com.xdev.ui.fieldgroup.BeanItemCreator;
+import com.xdev.ui.fieldgroup.JPASaveHandler;
 import com.xdev.ui.fieldgroup.ObjectLockedException;
+import com.xdev.ui.fieldgroup.SaveHandler;
+import com.xdev.util.JPAMetaDataUtils;
 
 
 /**
@@ -50,27 +50,38 @@ import com.xdev.ui.fieldgroup.ObjectLockedException;
 public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 {
 	private final Class<T>		beanType;
-	
+
 	private BeanItemCreator<T>	beanItemCreator;
-	
-	
+	private SaveHandler<T>		saveHandler;
+
+
 	public XdevFieldGroup()
 	{
 		this(null);
 	}
-	
-	
+
+
 	/**
 	 * @param beanType
 	 */
 	public XdevFieldGroup(final Class<T> beanType)
 	{
 		super(beanType);
-		
+
 		this.beanType = beanType;
 	}
-	
-	
+
+
+	/**
+	 * @return the beanType
+	 * @since 3.2
+	 */
+	public Class<T> getBeanType()
+	{
+		return this.beanType;
+	}
+
+
 	/**
 	 * @param beanItemCreator
 	 *            the beanItemCreator to set
@@ -88,8 +99,29 @@ public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 	{
 		return this.beanItemCreator;
 	}
-	
-	
+
+
+	/**
+	 * @param saveHandler
+	 *            the saveHandler to set
+	 * @since 3.2
+	 */
+	public void setSaveHandler(final SaveHandler<T> saveHandler)
+	{
+		this.saveHandler = saveHandler;
+	}
+
+
+	/**
+	 * @return the saveHandler
+	 * @since 3.2
+	 */
+	public SaveHandler<T> getSaveHandler()
+	{
+		return this.saveHandler;
+	}
+
+
 	public T save() throws com.xdev.ui.fieldgroup.CommitException, ObjectLockedException
 	{
 		try
@@ -100,32 +132,32 @@ public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 		{
 			throw new com.xdev.ui.fieldgroup.CommitException(e);
 		}
-		
+
 		final BeanItem<T> beanItem = getItemDataSource();
 		final T bean = beanItem.getBean();
-		try
+
+		final SaveHandler<T> saveHandler = lookupSaveHandler(bean);
+		if(saveHandler != null)
 		{
-			final T persistentBean = DAOs.get(bean).save(bean);
-			
-			if(persistentBean != bean)
-			{
-				BeanItem<T> newItem = null;
-				if(this.beanItemCreator != null)
-				{
-					newItem = this.beanItemCreator.createBeanItem(beanItem,persistentBean);
-				}
-				if(newItem == null)
-				{
-					newItem = new BeanItem<T>(persistentBean,this.beanType);
-				}
-				this.setItemDataSource(newItem);
-			}
-			
-			return persistentBean;
+			return saveHandler.save(this);
 		}
-		catch(final StaleObjectStateException e)
+
+		return bean;
+	}
+
+
+	protected SaveHandler<T> lookupSaveHandler(final T bean)
+	{
+		if(this.saveHandler != null)
 		{
-			throw new ObjectLockedException(e,this,bean);
+			return this.saveHandler;
 		}
+
+		if(JPAMetaDataUtils.isManaged(bean.getClass()))
+		{
+			return new JPASaveHandler<>();
+		}
+
+		return null;
 	}
 }

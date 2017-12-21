@@ -23,51 +23,30 @@ package com.xdev.dal;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.Attribute;
 
-import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
-import org.hibernate.criterion.Example;
 
-import com.googlecode.genericdao.dao.jpa.GenericDAO;
-import com.googlecode.genericdao.dao.jpa.JPABaseDAO;
-import com.googlecode.genericdao.search.ExampleOptions;
-import com.googlecode.genericdao.search.Filter;
-import com.googlecode.genericdao.search.ISearch;
-import com.googlecode.genericdao.search.MetadataUtil;
-import com.googlecode.genericdao.search.Search;
-import com.googlecode.genericdao.search.SearchResult;
-import com.googlecode.genericdao.search.jpa.JPAAnnotationMetadataUtil;
-import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
 import com.xdev.Application;
 import com.xdev.persistence.PersistenceManager;
 import com.xdev.persistence.PersistenceUtils;
+import com.xdev.util.JPAMetaDataUtils;
+import com.xdev.util.ReflectionUtils;
 
 
 /**
  * Implementation of a <b>D</b>ata <b>A</b>ccess <b>O</b>bject using JPA that
  * can be used for a single specified type domain object.
- *
- * <p>
- * <b>IMPORTANT:</b><br>
- * This class currently extends {@link JPABaseDAO}. This is subject to change in
- * a future release. The com.googlecode.genericdao dependency will be removed
- * from the framework because it makes use of the deprecated Hibernate Criteria
- * API. Appropriate replacements with the JPA Criteria API will be provided. All
- * inherited methods which will be removed are marked as deprecated.
- * </p>
  *
  * @author XDEV Software
  *
@@ -78,51 +57,44 @@ import com.xdev.persistence.PersistenceUtils;
  *            The type of the id of the domain object for which this instance is
  *            to be used.
  */
-public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements GenericDAO<T, ID>
+public class JPADAO<T, ID extends Serializable> implements DataAccessObject<T, ID>
 {
 	private final Class<T> persistentClass;
 	
 	
 	public JPADAO(final Class<T> persistentClass)
 	{
-		this.persistentClass = persistentClass;
-		this.setSearchProcessor(new JPASearchProcessor(new JPAAnnotationMetadataUtil()));
+		this.persistentClass = Objects.requireNonNull(persistentClass);
 	}
 	
 	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	public void setEntityManager(final EntityManager entityManager)
+	protected Class<T> persistentClass()
 	{
-		super.setEntityManager(entityManager);
+		return this.persistentClass;
 	}
 	
 	
-	@Override
 	protected EntityManager em()
 	{
 		return PersistenceUtils.getEntityManager(this.persistentClass);
 	}
 	
 	
-	public void beginTransaction()
+	protected Attribute<?, ?> idAttribute()
 	{
-		em().getTransaction().begin();
+		Attribute<?, ?> idAttribute = JPAMetaDataUtils.getIdAttribute(this.persistentClass);
+		if(idAttribute == null)
+		{
+			idAttribute = JPAMetaDataUtils.getEmbeddedIdAttribute(this.persistentClass);
+		}
+		return idAttribute;
 	}
 	
 	
-	public void rollback()
+	@SuppressWarnings("unchecked")
+	protected ID id(final T entity)
 	{
-		em().getTransaction().rollback();
-	}
-	
-	
-	public void commit()
-	{
-		em().getTransaction().commit();
+		return (ID)ReflectionUtils.getMemberValue(entity,idAttribute().getJavaMember());
 	}
 	
 	
@@ -134,6 +106,37 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
+	protected void applyCacheHints(final TypedQuery<?> typedQuery)
+	{
+		if(isQueryCacheEnabled())
+		{
+			typedQuery.setHint("org.hibernate.cacheable",true);
+		}
+	}
+
+
+	@Override
+	public void beginTransaction()
+	{
+		em().getTransaction().begin();
+	}
+	
+	
+	@Override
+	public void rollback()
+	{
+		em().getTransaction().rollback();
+	}
+	
+	
+	@Override
+	public void commit()
+	{
+		em().getTransaction().commit();
+	}
+	
+	
+	@Override
 	public CriteriaQuery<T> buildCriteriaQuery(final Class<T> exampleType)
 	{
 		final CriteriaBuilder cb = em().getCriteriaBuilder();
@@ -141,158 +144,230 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 	}
 	
 	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	public Criteria buildHibernateCriteriaQuery(final Class<T> entityType)
-	{
-		final Criteria crit = getSession().createCriteria(entityType);
-		crit.setCacheable(isQueryCacheEnabled());
-		return crit;
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	public Criteria buildHibernateCriteriaQuery(final Class<T> entityType, final String alias)
-	{
-		final Criteria crit = getSession().createCriteria(entityType,alias);
-		crit.setCacheable(isQueryCacheEnabled());
-		return crit;
-	}
-	
-	
-	/**
-	 * @deprecated replaced with
-	 *             {@link #findByExample(Object, SearchParameters)}, will be
-	 *             removed in a future release
-	 */
-	@SuppressWarnings("unchecked")
-	@Deprecated
-	public List<T> findByExample(final Class<T> entityType, final Object example)
-	{
-		final Criteria crit = getSession().createCriteria(entityType);
-		crit.setCacheable(isQueryCacheEnabled());
-		return crit.add(Example.create(example)).list();
-	}
-	
-	
-	/**
-	 * @deprecated replaced with
-	 *             {@link #findByExample(Object, SearchParameters)}, will be
-	 *             removed in a future release
-	 */
-	@SuppressWarnings("unchecked")
-	@Deprecated
-	public List<T> findByExample(final Class<T> entityType, final String alias,
-			final Object example)
-	{
-		final Criteria crit = getSession().createCriteria(entityType,alias);
-		crit.setCacheable(isQueryCacheEnabled());
-		return crit.add(Example.create(example)).list();
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	protected Session getSession()
-	{
-		return em().unwrap(Session.class);
-	}
-	
-	
-	/**
-	 * @deprecated replaced with
-	 *             {@link #countByExample(Object, SearchParameters)}, will be
-	 *             removed in a future release
-	 */
-	@Deprecated
-	@Override
-	public int count(ISearch search)
-	{
-		if(search == null)
-		{
-			search = new Search();
-		}
-		return _count(this.persistentClass,search);
-	}
-	
-	
 	@Override
 	public T find(final ID id)
 	{
-		return _find(this.persistentClass,id);
+		return em().find(this.persistentClass,id);
 	}
-	
-	
-	@SuppressWarnings("unchecked")
+
+
 	@Override
+	@SuppressWarnings("unchecked")
 	public T[] find(final ID... ids)
 	{
-		return _find(this.persistentClass,ids);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@SuppressWarnings("hiding")
-	@Override
-	protected <T> List<T> _all(final Class<T> type)
-	{
-		final TypedQuery<T> query = em().createQuery(
-				"select _it_ from " + getMetadataUtil().get(type).getEntityName() + " _it_",type);
-		if(isQueryCacheEnabled())
+		final T[] array = (T[])Array.newInstance(this.persistentClass,ids.length);
+		for(int i = 0; i < ids.length; i++)
 		{
-			query.setHint("org.hibernate.cacheable",true);
+			array[i] = find(ids[i]);
 		}
-		return query.getResultList();
+		return array;
 	}
 	
 	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
 	@Override
-	protected int _count(final Class<?> type)
+	public List<T> findAll()
 	{
-		final Query query = em().createQuery(
-				"select count(_it_) from " + getMetadataUtil().get(type).getEntityName() + " _it_");
-		return ((Number)query.getSingleResult()).intValue();
+		final EntityManager entityManager = em();
+		final CriteriaQuery<T> criteriaQuery = entityManager.getCriteriaBuilder()
+				.createQuery(this.persistentClass);
+		criteriaQuery.from(this.persistentClass);
+		final TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+		applyCacheHints(typedQuery);
+		return typedQuery.getResultList();
 	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
+
+
 	@Override
-	protected boolean _exists(final Class<?> type, final Serializable id)
+	public void flush()
 	{
-		if(type == null)
+		em().flush();
+	}
+
+
+	@Override
+	public T reattach(final T object)
+	{
+		final Session session = em().unwrap(Session.class);
+		if(!session.contains(object))
 		{
-			throw new NullPointerException("Type is null.");
+			session.lock(object,LockMode.NONE);
+			session.refresh(object,new LockOptions(LockMode.NONE));
 		}
+		return object;
+	}
+
+
+	@Override
+	public T getReference(final ID id)
+	{
+		return em().getReference(this.persistentClass,id);
+	}
+	
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public T[] getReferences(final ID... ids)
+	{
+		final T[] array = (T[])Array.newInstance(this.persistentClass,ids.length);
+		for(int i = 0; i < ids.length; i++)
+		{
+			array[i] = getReference(ids[i]);
+		}
+		return array;
+	}
+	
+	
+	@Override
+	public boolean isAttached(final T entity)
+	{
+		return em().contains(entity);
+	}
+	
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public void refresh(final T... entities)
+	{
+		final EntityManager entityManager = em();
+		for(final T entity : entities)
+		{
+			entityManager.refresh(entity);
+		}
+	}
+
+
+	@Override
+	public boolean remove(final T entity)
+	{
+		final EntityManager entityManager = em();
+		if(entity != null)
+		{
+			if(entityManager.contains(entity))
+			{
+				entityManager.remove(entity);
+				return true;
+			}
+			else
+			{
+				return removeById(id(entity));
+			}
+		}
+		return false;
+	}
+	
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public void remove(final T... entities)
+	{
+		for(final T entity : entities)
+		{
+			remove(entity);
+		}
+	}
+
+
+	@Override
+	public boolean removeById(final ID id)
+	{
+		if(id != null)
+		{
+			final EntityManager entityManager = em();
+			final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			final CriteriaQuery<T> criteriaQuery = criteriaBuilder
+					.createQuery(this.persistentClass);
+			final Root<T> root = criteriaQuery.from(this.persistentClass);
+			criteriaQuery.where(criteriaBuilder.equal(root.get(idAttribute().getName()),id));
+			final TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+			applyCacheHints(typedQuery);
+			final List<T> result = typedQuery.getResultList();
+			if(result.size() == 1)
+			{
+				entityManager
+						.remove(entityManager.getReference(this.persistentClass,result.get(0)));
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void removeByIds(final ID... ids)
+	{
+		for(final ID id : ids)
+		{
+			removeById(id);
+		}
+	}
+
+
+	@Override
+	public T merge(final T entity)
+	{
+		return em().merge(entity);
+	}
+
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public T[] merge(final T... entities)
+	{
+		final T[] array = (T[])Array.newInstance(this.persistentClass,entities.length);
+		for(int i = 0; i < entities.length; i++)
+		{
+			array[i] = merge(entities[i]);
+		}
+		return array;
+	}
+
+
+	@Override
+	public final void persist(final T entity)
+	{
+		em().persist(entity);
+	}
+
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public final void persist(final T... entities)
+	{
+		for(final T entity : entities)
+		{
+			persist(entity);
+		}
+	}
+
+
+	@Override
+	public T save(final T entity)
+	{
+		if(entity == null)
+		{
+			return null;
+		}
+		if(em().contains(entity))
+		{
+			return entity;
+		}
+		final ID id = id(entity);
 		if(!validId(id))
 		{
-			return false;
+			persist(entity);
+			return entity;
 		}
-		
-		final Query query = em().createQuery("select _it_.id from "
-				+ getMetadataUtil().get(type).getEntityName() + " _it_ where _it_.id = :id");
-		if(isQueryCacheEnabled())
+		final T prev = em().find(this.persistentClass,id);
+		if(prev == null)
 		{
-			query.setHint("org.hibernate.cacheable",true);
+			persist(entity);
+			return entity;
 		}
-		query.setParameter("id",id);
-		return query.getResultList().size() == 1;
+		else
+		{
+			return merge(entity);
+		}
 	}
 	
 	
@@ -312,677 +387,54 @@ public class JPADAO<T, ID extends Serializable> extends JPABaseDAO implements Ge
 		}
 		return true;
 	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@SuppressWarnings({"unchecked","hiding"})
+
+
 	@Override
-	protected <T> T[] _find(final Class<T> type, final Serializable... ids)
-	{
-		final T[] retList = (T[])Array.newInstance(type,ids.length);
-		for(final T entity : pullByIds("select _it_",type,ids))
-		{
-			final Serializable id = getMetadataUtil().getId(entity);
-			
-			for(int i = 0; i < ids.length; i++)
-			{
-				if(id.equals(ids[i]))
-				{
-					retList[i] = entity;
-					// don't break. the same id could be in the list twice.
-				}
-			}
-		}
-		
-		return retList;
-	}
-	
-	
-	@SuppressWarnings("hiding")
-	private <T> List<T> pullByIds(final String select, final Class<T> type,
-			final Serializable[] ids)
-	{
-		final List<Serializable> nonNulls = new LinkedList<Serializable>();
-		
-		final StringBuilder sb = new StringBuilder(select);
-		sb.append(" from ");
-		sb.append(getMetadataUtil().get(type).getEntityName());
-		sb.append(" _it_ where ");
-		for(final Serializable id : ids)
-		{
-			if(id != null)
-			{
-				if(nonNulls.size() == 0)
-				{
-					sb.append("_it_.id = ?1");
-				}
-				else
-				{
-					sb.append(" or _it_.id = ?").append(nonNulls.size() + 1);
-				}
-				nonNulls.add(id);
-			}
-		}
-		if(nonNulls.size() == 0)
-		{
-			return new ArrayList<>(0);
-		}
-		
-		final TypedQuery<T> query = em().createQuery(sb.toString(),type);
-		if(isQueryCacheEnabled())
-		{
-			query.setHint("org.hibernate.cacheable",true);
-		}
-		int idx = 1;
-		for(final Serializable id : nonNulls)
-		{
-			query.setParameter(idx++,id);
-		}
-		return query.getResultList();
-	}
-	
-	
-	@Override
-	public List<T> findAll()
-	{
-		return _all(this.persistentClass);
-	}
-	
-	
-	@Override
-	public void flush()
-	{
-		_flush();
-	}
-	
-	
-	public T reattach(final T object)
-	{
-		final Session session = em().unwrap(Session.class);
-		if(!session.contains(object))
-		{
-			session.lock(object,LockMode.NONE);
-			session.refresh(object,new LockOptions(LockMode.NONE));
-		}
-		return object;
-	}
-	
-	
-	@Override
-	public T getReference(final ID id)
-	{
-		return _getReference(this.persistentClass,id);
-	}
-	
-	
 	@SuppressWarnings("unchecked")
-	@Override
-	public T[] getReferences(final ID... ids)
-	{
-		return _getReferences(this.persistentClass,ids);
-	}
-	
-	
-	@Override
-	public boolean isAttached(final T entity)
-	{
-		return _contains(entity);
-	}
-	
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void refresh(final T... entities)
-	{
-		_refresh(entities);
-	}
-	
-	
-	@Override
-	public boolean remove(final T entity)
-	{
-		return _removeEntity(entity);
-	}
-	
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void remove(final T... entities)
-	{
-		_removeEntities((Object[])entities);
-	}
-	
-	
-	@Override
-	public boolean removeById(final ID id)
-	{
-		return _removeById(this.persistentClass,id);
-	}
-	
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void removeByIds(final ID... ids)
-	{
-		_removeByIds(this.persistentClass,ids);
-	}
-	
-	
-	@Override
-	public T merge(final T entity)
-	{
-		return _merge(entity);
-	}
-	
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public T[] merge(final T... entities)
-	{
-		return _merge(this.persistentClass,entities);
-	}
-	
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void persist(final T... entities)
-	{
-		_persist(entities);
-	}
-	
-	
-	@Override
-	public T save(final T entity)
-	{
-		return _persistOrMerge(entity);
-	}
-	
-	
-	@SuppressWarnings("unchecked")
-	@Override
 	public T[] save(final T... entities)
 	{
-		return _persistOrMerge(this.persistentClass,entities);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	@Override
-	public <RT> List<RT> search(final ISearch search)
-	{
-		if(search == null)
+		final T[] array = (T[])Array.newInstance(this.persistentClass,entities.length);
+		for(int i = 0; i < entities.length; i++)
 		{
-			return (List<RT>)findAll();
+			array[i] = save(entities[i]);
 		}
-		return _search(this.persistentClass,search);
+		return array;
 	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
+
+
 	@Override
-	public <RT> SearchResult<RT> searchAndCount(final ISearch search)
+	public boolean contains(final Object entity)
 	{
-		if(search == null)
-		{
-			final SearchResult<RT> result = new SearchResult<RT>();
-			result.setResult((List<RT>)findAll());
-			result.setTotalCount(result.getResult().size());
-			return result;
-		}
-		return _searchAndCount(this.persistentClass,search);
+		return em().contains(entity);
 	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
+
+
 	@Override
-	public <RT> RT searchUnique(final ISearch search)
-	{
-		return (RT)_searchUnique(this.persistentClass,search);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	public Filter getFilterFromExample(final T example)
-	{
-		return _getFilterFromExample(example);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	public Filter getFilterFromExample(final T example, final ExampleOptions options)
-	{
-		return _getFilterFromExample(example,options);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	public void setSearchProcessor(final JPASearchProcessor searchProcessor)
-	{
-		super.setSearchProcessor(searchProcessor);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected JPASearchProcessor getSearchProcessor()
-	{
-		return super.getSearchProcessor();
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected MetadataUtil getMetadataUtil()
-	{
-		return super.getMetadataUtil();
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@SuppressWarnings("rawtypes")
-	@Deprecated
-	@Override
-	protected List _search(final ISearch search)
-	{
-		return super._search(search);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@SuppressWarnings("rawtypes")
-	@Deprecated
-	@Override
-	protected List _search(final Class<?> searchClass, final ISearch search)
-	{
-		return super._search(searchClass,search);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@SuppressWarnings("rawtypes")
-	@Deprecated
-	@Override
-	protected SearchResult _searchAndCount(final ISearch search)
-	{
-		return super._searchAndCount(search);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@SuppressWarnings("rawtypes")
-	@Deprecated
-	@Override
-	protected SearchResult _searchAndCount(final Class<?> searchClass, final ISearch search)
-	{
-		return super._searchAndCount(searchClass,search);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected Object _searchUnique(final ISearch search)
-			throws NonUniqueResultException, NoResultException
-	{
-		return super._searchUnique(search);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected Object _searchUnique(final Class<?> searchClass, final ISearch search)
-			throws NonUniqueResultException, NoResultException
-	{
-		return super._searchUnique(searchClass,search);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected Filter _getFilterFromExample(final Object example)
-	{
-		return super._getFilterFromExample(example);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected Filter _getFilterFromExample(final Object example, final ExampleOptions options)
-	{
-		return super._getFilterFromExample(example,options);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected int _count(final ISearch search)
-	{
-		return super._count(search);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected int _count(final Class<?> searchClass, final ISearch search)
-	{
-		return super._count(searchClass,search);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected void _persist(final Object... entities)
-	{
-		super._persist(entities);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected boolean _removeById(final Class<?> type, final Serializable id)
-	{
-		return super._removeById(type,id);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected void _removeByIds(final Class<?> type, final Serializable... ids)
-	{
-		super._removeByIds(type,ids);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected boolean _removeEntity(final Object entity)
-	{
-		return super._removeEntity(entity);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected void _removeEntities(final Object... entities)
-	{
-		super._removeEntities(entities);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@SuppressWarnings("hiding")
-	@Deprecated
-	@Override
-	protected <T> T _find(final Class<T> type, final Serializable id)
-	{
-		return super._find(type,id);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@SuppressWarnings("hiding")
-	@Deprecated
-	@Override
-	protected <T> T _getReference(final Class<T> type, final Serializable id)
-	{
-		return super._getReference(type,id);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@SuppressWarnings("hiding")
-	@Deprecated
-	@Override
-	protected <T> T[] _getReferences(final Class<T> type, final Serializable... ids)
-	{
-		return super._getReferences(type,ids);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@SuppressWarnings("hiding")
-	@Deprecated
-	@Override
-	protected <T> T _merge(final T entity)
-	{
-		return super._merge(entity);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@SuppressWarnings({"hiding","unchecked"})
-	@Deprecated
-	@Override
-	protected <T> T[] _merge(final Class<T> arrayType, final T... entities)
-	{
-		return super._merge(arrayType,entities);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@SuppressWarnings("hiding")
-	@Deprecated
-	@Override
-	protected <T> T _persistOrMerge(final T entity)
-	{
-		return super._persistOrMerge(entity);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@SuppressWarnings({"hiding","unchecked"})
-	@Deprecated
-	@Override
-	protected <T> T[] _persistOrMerge(final Class<T> arrayType, final T... entities)
-	{
-		return super._persistOrMerge(arrayType,entities);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected boolean _contains(final Object o)
-	{
-		return super._contains(o);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected void _flush()
-	{
-		super._flush();
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected void _refresh(final Object... entities)
-	{
-		super._refresh(entities);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected boolean _exists(final Object entity)
-	{
-		return super._exists(entity);
-	}
-	
-	
-	/**
-	 * @deprecated will be removed in a future release
-	 */
-	@Deprecated
-	@Override
-	protected boolean[] _exists(final Class<?> type, final Serializable... ids)
-	{
-		return super._exists(type,ids);
-	}
-	
-	
-	/**
-	 * Find and load a list of entities.
-	 *
-	 * @param entity
-	 *            a sample entity whose non-null properties may be used as
-	 *            search hints
-	 * @return the entities matching the search.
-	 * @since 3.0
-	 */
 	public List<T> findByExample(final T entity)
 	{
 		return findByExample(entity,new SearchParameters());
 	}
-	
-	
-	/**
-	 * Find and load a list of entities.
-	 *
-	 * @param entity
-	 *            a sample entity whose non-null properties may be used as
-	 *            search hints
-	 * @param searchParameters
-	 *            carries additional search information
-	 * @return the entities matching the search.
-	 * @since 3.0
-	 */
+
+
+	@Override
 	public List<T> findByExample(final T entity, final SearchParameters searchParameters)
 	{
-		return new FindByExampleHelper<T>(this.persistentClass,em(),searchParameters)
+		return new FindByExample<T>(this.persistentClass,em(),searchParameters)
 				.findByExample(entity);
 	}
-	
-	
-	/**
-	 * Count the number of instances.
-	 *
-	 * @param entity
-	 *            a sample entity whose non-null properties may be used as
-	 *            search hint
-	 * @return the number of entities matching the search.
-	 * @since 3.0
-	 */
+
+
+	@Override
 	public int countByExample(final T entity)
 	{
 		return countByExample(entity,new SearchParameters());
 	}
 	
 	
-	/**
-	 * Count the number of instances.
-	 *
-	 * @param entity
-	 *            a sample entity whose non-null properties may be used as
-	 *            search hint
-	 * @param searchParameters
-	 *            carries additional search information
-	 * @return the number of entities matching the search.
-	 * @since 3.0
-	 */
+	@Override
 	public int countByExample(final T entity, final SearchParameters searchParameters)
 	{
-		return new FindByExampleHelper<T>(this.persistentClass,em(),searchParameters)
+		return new FindByExample<T>(this.persistentClass,em(),searchParameters)
 				.countByExample(entity);
 	}
 }

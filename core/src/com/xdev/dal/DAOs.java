@@ -29,20 +29,21 @@ import com.xdev.util.SoftCache;
 /**
  *
  * @author XDEV Software
- *		
+ * 
  */
 public class DAOs
 {
-	private static final SoftCache<Class<?>, JPADAO<?, ?>> cache = new SoftCache<>();
-	
-	
-	public static <D extends JPADAO<?, ?>> D get(final Class<D> daoType) throws RuntimeException
+	private static final SoftCache<Class<?>, DataAccessObject<?, ?>> cache = new SoftCache<>();
+
+
+	public static <D extends DataAccessObject<?, ?>> D get(final Class<D> daoType)
+			throws RuntimeException
 	{
 		synchronized(cache)
 		{
 			@SuppressWarnings("unchecked")
 			D dao = (D)cache.get(daoType);
-			
+
 			if(dao == null)
 			{
 				try
@@ -55,30 +56,30 @@ public class DAOs
 					throw new RuntimeException(e);
 				}
 			}
-			
+
 			return dao;
 		}
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
-	public static <T, I extends Serializable> JPADAO<T, I> get(final T entity)
+	public static <T, I extends Serializable> DataAccessObject<T, I> get(final T entity)
 			throws RuntimeException
 	{
-		return (JPADAO<T, I>)getByEntityType(entity.getClass());
+		return (DataAccessObject<T, I>)getByEntityType(entity.getClass());
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
-	public static <T, I extends Serializable> JPADAO<T, I> getByEntityType(final Class<T> entity)
-			throws RuntimeException
+	public static <T, I extends Serializable> DataAccessObject<T, I> getByEntityType(
+			final Class<T> entity) throws RuntimeException
 	{
 		final DAO dao = entity.getAnnotation(DAO.class);
 		if(dao == null)
 		{
 			throw new RuntimeException("Not an entity");
 		}
-		
-		return (JPADAO<T, I>)get(dao.daoClass());
+
+		return (DataAccessObject<T, I>)get(dao.daoClass());
 	}
 }

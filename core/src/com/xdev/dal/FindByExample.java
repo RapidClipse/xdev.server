@@ -77,16 +77,16 @@ import com.xdev.util.ReflectionUtils;
  * @author XDEV Software
  * @since 3.0
  */
-class FindByExampleHelper<E>
+class FindByExample<E>
 {
-	private final static Logger		logger	= Logger.getLogger(FindByExampleHelper.class.getName());
+	private final static Logger		logger	= Logger.getLogger(FindByExample.class.getName());
 	
 	private final Class<E>			persistentClass;
 	private final EntityManager		entityManager;
 	private final SearchParameters	searchParameters;
 
 
-	public FindByExampleHelper(final Class<E> persistentClass, final EntityManager entityManager,
+	public FindByExample(final Class<E> persistentClass, final EntityManager entityManager,
 			final SearchParameters searchParameters)
 	{
 		this.persistentClass = persistentClass;

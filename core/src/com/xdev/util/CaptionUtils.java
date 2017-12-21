@@ -38,63 +38,52 @@ public final class CaptionUtils
 	private CaptionUtils()
 	{
 	}
-	
+
 	private static CaptionResolver captionResolver;
-	
-	
+
+
 	public static CaptionResolver getCaptionResolver()
 	{
 		if(captionResolver == null)
 		{
 			captionResolver = new CaptionResolver.Implementation();
 		}
-		
+
 		return captionResolver;
 	}
-	
-	
+
+
 	public static void setCaptionResolver(final CaptionResolver captionResolver)
 	{
 		CaptionUtils.captionResolver = captionResolver;
 	}
-	
-	
+
+
 	public static String resolveCaption(final Object element)
 	{
 		return resolveCaption(element,(Locale)null);
 	}
-	
-	
+
+
 	public static String resolveCaption(final Object element, final Locale locale)
 	{
 		return getCaptionResolver().resolveCaption(element,locale);
 	}
-	
-	
+
+
 	public static String resolveCaption(final Object element, final String captionValue)
 	{
 		return resolveCaption(element,captionValue,null);
 	}
-	
-	
+
+
 	public static String resolveCaption(final Object element, final String captionValue,
 			final Locale locale)
 	{
 		return getCaptionResolver().resolveCaption(element,captionValue,locale);
 	}
-
-
-	/**
-	 * @deprecated replaced by {@link #resolveCaption(Class, String)}
-	 */
-	@Deprecated
-	public static String resolveEntityMemberCaption(final Class<?> entityClass,
-			final String propertyName)
-	{
-		return resolveCaption(entityClass,propertyName);
-	}
-
-
+	
+	
 	/**
 	 * @since 3.0
 	 */
@@ -107,14 +96,14 @@ public final class CaptionUtils
 			{
 				return propertyName;
 			}
-			
+
 			final Member javaMember = attribute.getJavaMember();
 			if(javaMember instanceof AnnotatedElement
 					&& hasCaptionAnnotationValue((AnnotatedElement)javaMember))
 			{
 				return resolveCaption(javaMember);
 			}
-			
+
 			return attribute.getName();
 		}
 		else
@@ -125,19 +114,19 @@ public final class CaptionUtils
 			{
 				return propertyName;
 			}
-
+			
 			final Member javaMember = propertyDescriptor.getReadMethod();
 			if(javaMember instanceof AnnotatedElement
 					&& hasCaptionAnnotationValue((AnnotatedElement)javaMember))
 			{
 				return resolveCaption(javaMember);
 			}
-			
+
 			return propertyDescriptor.getDisplayName();
 		}
 	}
-	
-	
+
+
 	public static boolean hasCaptionAnnotationValue(final AnnotatedElement element)
 	{
 		final Caption annotation = element.getAnnotation(Caption.class);

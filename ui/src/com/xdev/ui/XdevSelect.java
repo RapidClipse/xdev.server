@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as

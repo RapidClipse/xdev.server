@@ -38,45 +38,45 @@ public final class CaptionUtils
 	private CaptionUtils()
 	{
 	}
-	
+
 	private static CaptionResolver captionResolver;
-	
-	
+
+
 	public static CaptionResolver getCaptionResolver()
 	{
 		if(captionResolver == null)
 		{
 			captionResolver = new CaptionResolver.Implementation();
 		}
-		
+
 		return captionResolver;
 	}
-	
-	
+
+
 	public static void setCaptionResolver(final CaptionResolver captionResolver)
 	{
 		CaptionUtils.captionResolver = captionResolver;
 	}
-	
-	
+
+
 	public static String resolveCaption(final Object element)
 	{
 		return resolveCaption(element,(Locale)null);
 	}
-	
-	
+
+
 	public static String resolveCaption(final Object element, final Locale locale)
 	{
 		return getCaptionResolver().resolveCaption(element,locale);
 	}
-	
-	
+
+
 	public static String resolveCaption(final Object element, final String captionValue)
 	{
 		return resolveCaption(element,captionValue,null);
 	}
-	
-	
+
+
 	public static String resolveCaption(final Object element, final String captionValue,
 			final Locale locale)
 	{
@@ -103,41 +103,37 @@ public final class CaptionUtils
 		if(JPAMetaDataUtils.isManaged(clazz))
 		{
 			final Attribute<?, ?> attribute = JPAMetaDataUtils.resolveAttribute(clazz,propertyName);
-			if(attribute == null)
+			if(attribute != null)
 			{
-				return propertyName;
-			}
-			
-			final Member javaMember = attribute.getJavaMember();
-			if(javaMember instanceof AnnotatedElement
-					&& hasCaptionAnnotationValue((AnnotatedElement)javaMember))
-			{
-				return resolveCaption(javaMember);
-			}
-			
-			return attribute.getName();
-		}
-		else
-		{
-			final PropertyDescriptor propertyDescriptor = BeanInfoUtils.getPropertyDescriptor(clazz,
-					propertyName);
-			if(propertyDescriptor == null)
-			{
-				return propertyName;
-			}
+				final Member javaMember = attribute.getJavaMember();
+				if(javaMember instanceof AnnotatedElement
+						&& hasCaptionAnnotationValue((AnnotatedElement)javaMember))
+				{
+					return resolveCaption(javaMember);
+				}
 
-			final Member javaMember = propertyDescriptor.getReadMethod();
-			if(javaMember instanceof AnnotatedElement
-					&& hasCaptionAnnotationValue((AnnotatedElement)javaMember))
-			{
-				return resolveCaption(javaMember);
+				return attribute.getName();
 			}
-			
-			return propertyDescriptor.getDisplayName();
 		}
+
+		final PropertyDescriptor propertyDescriptor = BeanInfoUtils.getPropertyDescriptor(clazz,
+				propertyName);
+		if(propertyDescriptor == null)
+		{
+			return propertyName;
+		}
+
+		final Member javaMember = propertyDescriptor.getReadMethod();
+		if(javaMember instanceof AnnotatedElement
+				&& hasCaptionAnnotationValue((AnnotatedElement)javaMember))
+		{
+			return resolveCaption(javaMember);
+		}
+
+		return propertyDescriptor.getDisplayName();
 	}
-	
-	
+
+
 	public static boolean hasCaptionAnnotationValue(final AnnotatedElement element)
 	{
 		final Caption annotation = element.getAnnotation(Caption.class);

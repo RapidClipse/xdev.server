@@ -35,67 +35,67 @@ import com.xdev.dal.DAOs;
 /**
  *
  * @author XDEV Software (JW)
- * 
+ *
  */
 public class XdevNavigation implements NavigationDefinition
 {
 	private String						viewName;
 	private final Map<String, Object>	parameters	= new HashMap<>();
-
-
+	
+	
 	public String getViewName()
 	{
 		if(this.viewName != null)
 		{
 			return this.viewName;
 		}
-
+		
 		throw new RuntimeException("No View set");
 	}
-
-
+	
+	
 	@Override
 	public NavigationDefinition to(final String viewName)
 	{
 		this.viewName = viewName;
-
+		
 		return this;
 	}
-
-
+	
+	
 	@Override
 	public NavigationDefinition parameter(final String parameterName, final Object parameterValue)
 	{
 		this.parameters.put(parameterName,parameterValue);
-
+		
 		return this;
 	}
-
-
+	
+	
 	@Override
 	public void navigate()
 	{
 		final URLParameterRegistry registry = UI.getCurrent().getSession()
 				.getAttribute(URLParameterRegistry.class);
-
+		
 		registry.removeAll(this.viewName);
-
+		
 		this.parameters.entrySet().forEach(entry -> {
 			registry.put(entry.getValue(),this.viewName,entry.getKey());
 		});
-
-		final Collection<URLParameterRegistryValue> values = registry.getValues(this.getViewName());
 		
+		final Collection<URLParameterRegistryValue> values = registry.getValues(this.getViewName());
+
 		String navigationURL = this.getViewName();
 		for(final URLParameterRegistryValue urlParameterRegistryValue : values)
 		{
 			navigationURL += "/" + urlParameterRegistryValue.getPropertyName();
 		}
-
+		
 		UI.getCurrent().getNavigator().navigateTo(navigationURL);
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getParameter(final ViewChangeEvent navigationEvent, final String parameterName,
@@ -103,9 +103,9 @@ public class XdevNavigation implements NavigationDefinition
 	{
 		final URLParameterRegistry registry = UI.getCurrent().getSession()
 				.getAttribute(URLParameterRegistry.class);
-
+		
 		final String[] parameters = navigationEvent.getParameters().split("/");
-
+		
 		for(int i = 0; i < parameters.length; i++)
 		{
 			if(parameters[i].equals(parameterName))
@@ -114,7 +114,7 @@ public class XdevNavigation implements NavigationDefinition
 						parameterName);
 				if(value != null)
 				{
-					if(value.getType().isAssignableFrom(type))
+					if(type.isAssignableFrom(value.getType()))
 					{
 						if(value.getPersistentID() != null)
 						{
@@ -130,5 +130,5 @@ public class XdevNavigation implements NavigationDefinition
 		}
 		return null;
 	}
-
+	
 }

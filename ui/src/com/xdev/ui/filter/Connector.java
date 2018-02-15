@@ -21,50 +21,35 @@
 package com.xdev.ui.filter;
 
 
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.util.filter.And;
+import com.vaadin.data.util.filter.Or;
+
+
 /**
  * @author XDEV Software
  *
+ * @since 3.2.1
  */
-public interface FilterSettings
+public enum Connector
 {
-	/**
-	 * @since 3.2
-	 */
-	public boolean isPrefixMatchOnly();
-	
-	
-	public boolean isCaseSensitive();
-	
-	
-	public char getWildcard();
-	
-	
-	public Object[] getSearchableProperties();
-	
-	
-	public Object[] getFilterableProperties();
-	
-	
-	/**
-	 * @since 3.2.1
-	 */
-	public Connector getSearchPropertiesConnector();
-	
-	
-	/**
-	 * @since 3.2.1
-	 */
-	public Connector getSearchMultiWordConnector();
-	
-	
-	/**
-	 * @since 3.2.1
-	 */
-	public Connector getFilterPropertiesConnector();
-	
-	
-	/**
-	 * @since 3.2.1
-	 */
-	public Connector getSearchAndFilterConnector();
+	AND
+	{
+		@Override
+		Filter connect(final Filter... filters)
+		{
+			return new And(filters);
+		}
+	},
+
+	OR
+	{
+		@Override
+		Filter connect(final Filter... filters)
+		{
+			return new Or(filters);
+		}
+	};
+
+	abstract Filter connect(Filter... filters);
 }

@@ -38,7 +38,6 @@ import javax.persistence.metamodel.Attribute;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Filter;
-import com.vaadin.data.util.filter.And;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -101,7 +100,7 @@ public class XdevContainerFilterComponent extends CustomComponent
 		public void filterChanged(FilterChangeEvent event);
 	}
 
-	private final Extensions			extensions				= new Extensions();
+	private final Extensions			extensions					= new Extensions();
 
 	private final VerticalLayout		rootLayout;
 	private final TextFilterField		searchTextField;
@@ -109,17 +108,22 @@ public class XdevContainerFilterComponent extends CustomComponent
 	private final XdevGridLayout		filterLayout;
 
 	private Container.Filterable		container;
-	private Collection<?>				filterableProperties	= Collections.emptyList();
-	private Collection<?>				searchableProperties	= Collections.emptyList();
+	private Collection<?>				filterableProperties		= Collections.emptyList();
+	private Collection<?>				searchableProperties		= Collections.emptyList();
 
-	private SearchFilterGenerator		searchFilterGenerator	= new SearchFilterGenerator.Default();
+	private SearchFilterGenerator		searchFilterGenerator		= new SearchFilterGenerator.Default();
 
-	private boolean						prefixMatchOnly			= true;
-	private boolean						caseSensitive			= false;
-	private char						wildcard				= '*';
+	private boolean						prefixMatchOnly				= true;
+	private boolean						caseSensitive				= false;
+	private char						wildcard					= '*';
 
-	private final List<FilterEditor>	filterEditors			= new ArrayList<>();
-	private boolean						layoutFilters			= true;
+	private Connector					searchPropertiesConnector	= Connector.AND;
+	private Connector					searchMultiWordConnector	= Connector.OR;
+	private Connector					filterPropertiesConnector	= Connector.AND;
+	private Connector					searchAndFilterConnector	= Connector.AND;
+
+	private final List<FilterEditor>	filterEditors				= new ArrayList<>();
+	private boolean						layoutFilters				= true;
 
 	private Filter						currentFilter;
 
@@ -278,8 +282,8 @@ public class XdevContainerFilterComponent extends CustomComponent
 	{
 		this.prefixMatchOnly = prefixMatchOnly;
 	}
-	
-	
+
+
 	/**
 	 * @since 3.2
 	 */
@@ -313,6 +317,58 @@ public class XdevContainerFilterComponent extends CustomComponent
 	public char getWildcard()
 	{
 		return this.wildcard;
+	}
+
+
+	@Override
+	public Connector getSearchPropertiesConnector()
+	{
+		return this.searchPropertiesConnector;
+	}
+
+
+	public void setSearchPropertiesConnector(final Connector searchPropertiesConnector)
+	{
+		this.searchPropertiesConnector = searchPropertiesConnector;
+	}
+
+
+	@Override
+	public Connector getSearchMultiWordConnector()
+	{
+		return this.searchMultiWordConnector;
+	}
+
+
+	public void setSearchMultiWordConnector(final Connector searchMultiWordConnector)
+	{
+		this.searchMultiWordConnector = searchMultiWordConnector;
+	}
+
+
+	@Override
+	public Connector getFilterPropertiesConnector()
+	{
+		return this.filterPropertiesConnector;
+	}
+
+
+	public void setFilterPropertiesConnector(final Connector filterPropertiesConnector)
+	{
+		this.filterPropertiesConnector = filterPropertiesConnector;
+	}
+
+
+	@Override
+	public Connector getSearchAndFilterConnector()
+	{
+		return this.searchAndFilterConnector;
+	}
+
+
+	public void setSearchAndFilterConnector(final Connector searchAndFilterConnector)
+	{
+		this.searchAndFilterConnector = searchAndFilterConnector;
 	}
 
 
@@ -359,7 +415,7 @@ public class XdevContainerFilterComponent extends CustomComponent
 		final Filter valueFilter = createValueFilter();
 		if(searchFilter != null && valueFilter != null)
 		{
-			return new And(searchFilter,valueFilter);
+			return getSearchAndFilterConnector().connect(searchFilter,valueFilter);
 		}
 		if(searchFilter != null)
 		{
@@ -405,7 +461,7 @@ public class XdevContainerFilterComponent extends CustomComponent
 			return valueFilters.get(0);
 		}
 
-		return new And(valueFilters.toArray(new Filter[count]));
+		return getFilterPropertiesConnector().connect(valueFilters.toArray(new Filter[count]));
 	}
 
 

@@ -117,7 +117,7 @@ public class XdevContainerFilterComponent extends CustomComponent
 	private boolean						caseSensitive				= false;
 	private char						wildcard					= '*';
 
-	private Connector					searchPropertiesConnector	= Connector.AND;
+	private Connector					searchPropertiesConnector	= Connector.OR;
 	private Connector					searchMultiWordConnector	= Connector.OR;
 	private Connector					filterPropertiesConnector	= Connector.AND;
 	private Connector					searchAndFilterConnector	= Connector.AND;
@@ -278,6 +278,12 @@ public class XdevContainerFilterComponent extends CustomComponent
 	}
 
 
+	/**
+	 * @param prefixMatchOnly
+	 *            <code>true</code> if the filter only applies to the beginning
+	 *            of the value string, <code>false</code> for any location in
+	 *            the value
+	 */
 	public void setPrefixMatchOnly(final boolean prefixMatchOnly)
 	{
 		this.prefixMatchOnly = prefixMatchOnly;
@@ -285,7 +291,7 @@ public class XdevContainerFilterComponent extends CustomComponent
 
 
 	/**
-	 * @since 3.2
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean isPrefixMatchOnly()
@@ -294,12 +300,20 @@ public class XdevContainerFilterComponent extends CustomComponent
 	}
 
 
+	/**
+	 *
+	 * @param caseSensitive
+	 *            if the search should be case sensitive
+	 */
 	public void setCaseSensitive(final boolean caseSensitive)
 	{
 		this.caseSensitive = caseSensitive;
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isCaseSensitive()
 	{
@@ -307,12 +321,20 @@ public class XdevContainerFilterComponent extends CustomComponent
 	}
 
 
+	/**
+	 *
+	 * @param wildcard
+	 *            the character which is used as wildcard in search terms
+	 */
 	public void setWildcard(final char wildcard)
 	{
 		this.wildcard = wildcard;
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public char getWildcard()
 	{
@@ -320,6 +342,9 @@ public class XdevContainerFilterComponent extends CustomComponent
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Connector getSearchPropertiesConnector()
 	{
@@ -327,12 +352,20 @@ public class XdevContainerFilterComponent extends CustomComponent
 	}
 
 
+	/**
+	 *
+	 * @param searchPropertiesConnector
+	 *            the connector for the searched properties of the container
+	 */
 	public void setSearchPropertiesConnector(final Connector searchPropertiesConnector)
 	{
 		this.searchPropertiesConnector = searchPropertiesConnector;
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Connector getSearchMultiWordConnector()
 	{
@@ -340,19 +373,33 @@ public class XdevContainerFilterComponent extends CustomComponent
 	}
 
 
+	/**
+	 *
+	 * @param searchMultiWordConnector
+	 *            the connector for each word in a multi word search of the
+	 *            search term
+	 */
 	public void setSearchMultiWordConnector(final Connector searchMultiWordConnector)
 	{
 		this.searchMultiWordConnector = searchMultiWordConnector;
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Connector getFilterPropertiesConnector()
 	{
 		return this.filterPropertiesConnector;
 	}
-
-
+	
+	
+	/**
+	 *
+	 * @param filterPropertiesConnector
+	 *            the connector for the properties of filter condition
+	 */
 	public void setFilterPropertiesConnector(final Connector filterPropertiesConnector)
 	{
 		this.filterPropertiesConnector = filterPropertiesConnector;
@@ -364,8 +411,13 @@ public class XdevContainerFilterComponent extends CustomComponent
 	{
 		return this.searchAndFilterConnector;
 	}
-
-
+	
+	
+	/**
+	 *
+	 * @param searchAndFilterConnector
+	 *            the connector for the search term and the filter condition
+	 */
 	public void setSearchAndFilterConnector(final Connector searchAndFilterConnector)
 	{
 		this.searchAndFilterConnector = searchAndFilterConnector;

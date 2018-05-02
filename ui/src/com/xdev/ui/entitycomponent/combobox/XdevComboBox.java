@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ package com.xdev.ui.entitycomponent.combobox;
 import java.util.Collection;
 
 import com.vaadin.server.Resource;
-import com.vaadin.shared.ui.combobox.FilteringMode;
+import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.xdev.data.util.filter.CaptionStringFilter;
 import com.xdev.ui.ItemCaptionProvider;
 import com.xdev.ui.ItemIconProvider;
@@ -33,6 +33,7 @@ import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
 
 
+@SuppressWarnings("deprecation")
 public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSelect<T>
 {
 	private final Extensions		extensions					= new Extensions();
@@ -41,26 +42,26 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	private String					itemCaptionValue;
 	private ItemCaptionProvider<T>	itemCaptionProvider;
 	private ItemIconProvider<T>		itemIconProvider;
-	
-	
+
+
 	public XdevComboBox()
 	{
 		super();
 	}
-	
-	
+
+
 	public XdevComboBox(final int pageLength)
 	{
 		super();
 		super.setPageLength(pageLength);
 	}
-	
+
 	// init defaults
 	{
 		setImmediate(true);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -69,8 +70,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -79,8 +80,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -89,8 +90,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	{
 		return this.persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -99,8 +100,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	{
 		this.persistValue = persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -109,8 +110,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	{
 		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -119,8 +120,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	{
 		return this.itemCaptionFromAnnotation;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -129,8 +130,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	{
 		this.itemCaptionValue = itemCaptionValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -139,8 +140,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	{
 		return this.itemCaptionValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -151,11 +152,11 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-		
+
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	@Override
 	public void setContainerDataSource(final Class<T> beanClass, final Collection<T> data,
 			final KeyValueType<?, ?>... nestedProperties)
@@ -164,19 +165,19 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-		
+
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	@Override
 	public void setPageLength(final int pageLength)
 	{
 		// FIXME property change to create new model!
 		super.setPageLength(pageLength);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -185,8 +186,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	{
 		this.itemCaptionProvider = itemCaptionProvider;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -195,8 +196,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	{
 		return this.itemCaptionProvider;
 	}
-	
-	
+
+
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
@@ -211,11 +212,11 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 		catch(final NoClassDefFoundError ncdfe)
 		{
 		}
-		
+
 		return super.getItemCaption(itemId);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -224,8 +225,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	{
 		this.itemIconProvider = itemIconProvider;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -234,8 +235,8 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 	{
 		return this.itemIconProvider;
 	}
-	
-	
+
+
 	@Override
 	public Resource getItemIcon(final Object itemId)
 	{
@@ -250,15 +251,15 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 		catch(final NoClassDefFoundError ncdfe)
 		{
 		}
-		
+
 		return super.getItemIcon(itemId);
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see com.vaadin.ui.ComboBox#buildFilter(java.lang.String,
+	 * @see com.vaadin.v7.ui.ComboBox#buildFilter(java.lang.String,
 	 * com.vaadin.shared.ui.combobox.FilteringMode)
 	 */
 	@Override
@@ -272,35 +273,35 @@ public class XdevComboBox<T> extends AbstractBeanComboBox<T> implements XdevSele
 		{
 			return buildCaptionFilter(filterString,filteringMode,this.itemCaptionValue);
 		}
-		
+
 		return super.buildFilter(filterString,filteringMode);
 	}
-	
-	
+
+
 	protected Filter buildCaptionFilter(final String filterString,
 			final FilteringMode filteringMode, final String itemCaptionValue)
 	{
 		Filter filter = null;
-		
+
 		if(null != filterString && !"".equals(filterString))
 		{
 			switch(filteringMode)
 			{
 				case OFF:
 				break;
-			
+
 				case STARTSWITH:
 					filter = new CaptionStringFilter(getItemCaptionPropertyId(),filterString,true,
 							true,itemCaptionValue);
 				break;
-			
+
 				case CONTAINS:
 					filter = new CaptionStringFilter(getItemCaptionPropertyId(),filterString,true,
 							false,itemCaptionValue);
 				break;
 			}
 		}
-		
+
 		return filter;
 	}
 }

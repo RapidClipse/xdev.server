@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,10 +23,11 @@ package com.xdev.ui.paging;
 
 import org.hibernate.ScrollableResults;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.util.BeanItem;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.util.BeanItem;
 
 
+@SuppressWarnings("deprecation")
 public interface PageableContainer<ET> extends Container.Filterable
 {
 	// Request next page from ScrollableResultSet
@@ -35,38 +36,38 @@ public interface PageableContainer<ET> extends Container.Filterable
 	 * @return the starting index before moving to the next page
 	 */
 	public int nextPage();
-
-
+	
+	
 	// Request previous page from ScrollableResultSet
 	public int previousPage();
-
-
+	
+	
 	public int lastPage();
-
-
+	
+	
 	public int firstPage();
-
-
+	
+	
 	// Request last page from ScrollableResultSet
 	public int getTotalAmountOfPages();
-
-
+	
+	
 	// ...
 	public void setCurrentPage(int currentPage);
-
-
+	
+	
 	public int getCurrentPage();
-
-
+	
+	
 	public void setPageLength(int pageLength);
-
-
+	
+	
 	public int getPageLength();
-
-
+	
+	
 	public BeanItem<ET> scrollBean(ET bean);
-
-
+	
+	
 	public ScrollableResults getResults();
-
+	
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,8 +23,8 @@ package com.xdev.ui;
 
 import java.util.Collection;
 
-import com.vaadin.data.Container;
-import com.vaadin.ui.NativeSelect;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.ui.NativeSelect;
 
 
 /**
@@ -36,12 +36,13 @@ import com.vaadin.ui.NativeSelect;
  * @author XDEV Software
  *
  */
+@SuppressWarnings("deprecation")
 public class XdevNativeSelect extends NativeSelect implements XdevField
 {
 	private final Extensions	extensions		= new Extensions();
 	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -49,8 +50,8 @@ public class XdevNativeSelect extends NativeSelect implements XdevField
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 * @param options
@@ -59,8 +60,8 @@ public class XdevNativeSelect extends NativeSelect implements XdevField
 	{
 		super(caption,options);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 * @param dataSource
@@ -69,8 +70,8 @@ public class XdevNativeSelect extends NativeSelect implements XdevField
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 */
@@ -78,8 +79,8 @@ public class XdevNativeSelect extends NativeSelect implements XdevField
 	{
 		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -88,8 +89,8 @@ public class XdevNativeSelect extends NativeSelect implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -98,8 +99,8 @@ public class XdevNativeSelect extends NativeSelect implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -108,8 +109,8 @@ public class XdevNativeSelect extends NativeSelect implements XdevField
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

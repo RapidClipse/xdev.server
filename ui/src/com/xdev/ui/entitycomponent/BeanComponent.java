@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,14 +24,15 @@ package com.xdev.ui.entitycomponent;
 import java.util.Collection;
 import java.util.List;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Container.Viewer;
-import com.vaadin.data.Property.ValueChangeNotifier;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Component;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Container.Viewer;
+import com.vaadin.v7.data.Property.ValueChangeNotifier;
+import com.vaadin.v7.data.util.BeanItem;
 import com.xdev.ui.util.KeyValueType;
 
 
+@SuppressWarnings("deprecation")
 public interface BeanComponent<BEANTYPE> extends Viewer, Component, ValueChangeNotifier
 {
 	public default void setContainerDataSource(final Class<BEANTYPE> beanClass,
@@ -39,16 +40,16 @@ public interface BeanComponent<BEANTYPE> extends Viewer, Component, ValueChangeN
 	{
 		this.setContainerDataSource(beanClass,true,nestedProperties);
 	}
-
-
+	
+	
 	public void setContainerDataSource(Class<BEANTYPE> beanClass, boolean autoQueryData,
 			KeyValueType<?, ?>... nestedProperties);
-
-
+	
+	
 	public void setContainerDataSource(Class<BEANTYPE> entityClass, Collection<BEANTYPE> data,
 			KeyValueType<?, ?>... nestedProperties);
-
-
+	
+	
 	/**
 	 *
 	 * @since 3.0
@@ -61,11 +62,11 @@ public interface BeanComponent<BEANTYPE> extends Viewer, Component, ValueChangeN
 		{
 			return (XdevBeanContainer<BEANTYPE>)container;
 		}
-
+		
 		return null;
 	}
-
-
+	
+	
 	/**
 	 *
 	 * @since 3.0
@@ -74,33 +75,33 @@ public interface BeanComponent<BEANTYPE> extends Viewer, Component, ValueChangeN
 	{
 		return this.getBeanContainerDataSource().getItem(id);
 	}
-
-
+	
+	
 	/**
-	 * True means, a lazy query container is used as default table container
-	 * which queries data at starup. False means, the user is responsible for
-	 * using its own implementation or while invoking
-	 * {@link #setContainerDataSource(Class, KeyValueType...)} a
-	 * BeanItemContainer which must be explicitly filled with data is used.
+	 * True means, a lazy query container is used as default table container which
+	 * queries data at starup. False means, the user is responsible for using its
+	 * own implementation or while invoking
+	 * {@link #setContainerDataSource(Class, KeyValueType...)} a BeanItemContainer
+	 * which must be explicitly filled with data is used.
 	 *
 	 * @param autoQuery
 	 */
 	public void setAutoQueryData(boolean autoQuery);
-
-
+	
+	
 	public boolean isAutoQueryData();
-
-
+	
+	
 	public BeanItem<BEANTYPE> getSelectedItem();
-
-
+	
+	
 	/**
 	 *
 	 * @since 1.0.2
 	 */
 	public List<BeanItem<BEANTYPE>> getSelectedItems();
-
-
+	
+	
 	/**
 	 * Selects an item.
 	 *

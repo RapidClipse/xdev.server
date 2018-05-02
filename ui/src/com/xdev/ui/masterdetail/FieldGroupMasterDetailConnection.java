@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,9 +21,9 @@
 package com.xdev.ui.masterdetail;
 
 
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.BeanItem;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.v7.data.util.BeanItem;
 import com.xdev.ui.XdevFieldGroup;
 import com.xdev.ui.entitycomponent.BeanComponent;
 import com.xdev.ui.fieldgroup.BeanItemCreator;
@@ -43,24 +43,25 @@ import com.xdev.util.DTOUtils;
  * @author XDEV Software
  * @since 3.0
  */
+@SuppressWarnings("deprecation")
 public class FieldGroupMasterDetailConnection<T> implements MasterDetailConnection
 {
 	protected BeanComponent<T>		master;
 	protected BeanFieldGroup<T>		detail;
 	protected ValueChangeListener	listener;
 	protected BeanItemCreator<T>	beanItemCreator;
-
-
+	
+	
 	public FieldGroupMasterDetailConnection(final BeanComponent<T> master,
 			final BeanFieldGroup<T> detail)
 	{
 		super();
-
+		
 		this.master = master;
 		this.detail = detail;
-
+		
 		this.listener = event -> {
-
+			
 			final BeanItem<T> item = this.master.getSelectedItem();
 			T bean;
 			if(item != null && (bean = item.getBean()) != null)
@@ -69,27 +70,27 @@ public class FieldGroupMasterDetailConnection<T> implements MasterDetailConnecti
 				this.detail.setItemDataSource(item);
 			}
 		};
-
+		
 		this.master.addValueChangeListener(this.listener);
-
+		
 		if(detail instanceof XdevFieldGroup)
 		{
 			this.beanItemCreator = master.getBeanContainerDataSource()::replaceItem;
 			((XdevFieldGroup<T>)detail).setBeanItemCreator(this.beanItemCreator);
 		}
 	}
-
-
+	
+	
 	@Override
 	public void disconnect()
 	{
 		this.master.removeValueChangeListener(this.listener);
-
+		
 		if(this.beanItemCreator != null)
 		{
 			((XdevFieldGroup<T>)this.detail).setBeanItemCreator(null);
 		}
-
+		
 		this.master = null;
 		this.detail = null;
 		this.listener = null;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,32 +21,33 @@
 package com.xdev.ui;
 
 
-import com.vaadin.ui.Slider;
+import com.vaadin.v7.ui.Slider;
 
 
 /**
  * A component for selecting a numerical value within a range.
  *
  * @author XDEV Software
- * 		
+ * 
  */
+@SuppressWarnings("deprecation")
 public class XdevSlider extends Slider implements XdevField
 {
 	private final Extensions	extensions		= new Extensions();
 	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-												
-												
+	
+	
 	/**
-	 * Default slider constructor. Sets all values to defaults and the slide
-	 * handle at minimum value.
+	 * Default slider constructor. Sets all values to defaults and the slide handle
+	 * at minimum value.
 	 *
 	 */
 	public XdevSlider()
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Create a new slider with the given range and resolution.
 	 *
@@ -61,8 +62,8 @@ public class XdevSlider extends Slider implements XdevField
 	{
 		super(min,max,resolution);
 	}
-	
-	
+
+
 	/**
 	 * Create a new slider with the given range that only allows integer values.
 	 *
@@ -75,11 +76,11 @@ public class XdevSlider extends Slider implements XdevField
 	{
 		super(min,max);
 	}
-	
-	
+
+
 	/**
-	 * Create a new slider with the given caption and range that only allows
-	 * integer values.
+	 * Create a new slider with the given caption and range that only allows integer
+	 * values.
 	 *
 	 * @param caption
 	 *            The caption for the slider
@@ -92,13 +93,12 @@ public class XdevSlider extends Slider implements XdevField
 	{
 		super(caption,min,max);
 	}
-	
-	
+
+
 	/**
 	 * Create a new slider with the caption given as parameter.
 	 *
-	 * The range of the slider is set to 0-100 and only integer values are
-	 * allowed.
+	 * The range of the slider is set to 0-100 and only integer values are allowed.
 	 *
 	 * @param caption
 	 *            The caption for this slider (e.g. "Volume").
@@ -107,8 +107,8 @@ public class XdevSlider extends Slider implements XdevField
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -117,8 +117,8 @@ public class XdevSlider extends Slider implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -127,8 +127,8 @@ public class XdevSlider extends Slider implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -137,8 +137,8 @@ public class XdevSlider extends Slider implements XdevField
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

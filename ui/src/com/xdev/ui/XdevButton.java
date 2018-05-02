@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,7 +39,7 @@ import com.xdev.ui.event.ActionEvent;
  *
  * @see #setAction(Action)
  * @see Action
- * 		
+ *
  * @author XDEV Software
  */
 
@@ -49,8 +49,8 @@ public class XdevButton extends Button implements XdevComponent, ActionComponent
 	private Action					action;
 	private PropertyChangeListener	actionPropertyChangeListener;
 	private ClickListener			actionClickListener;
-									
-									
+
+
 	/**
 	 * Creates a button with no set text or icon.
 	 */
@@ -141,6 +141,7 @@ public class XdevButton extends Button implements XdevComponent, ActionComponent
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public void setAction(final Action action)
 	{

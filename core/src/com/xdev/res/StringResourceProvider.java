@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,8 +46,8 @@ public interface StringResourceProvider
 {
 	/**
 	 * Searches for a resource entry according to <code>key</code>.<br>
-	 * The <code>requestor</code> may be crucial how the strategy is looking for
-	 * the ressource.<br>
+	 * The <code>requestor</code> may be crucial how the strategy is looking for the
+	 * ressource.<br>
 	 * <br>
 	 * If <code>requestor</code> is <code>null</code> only the default resource
 	 * bundle is searched through.
@@ -61,30 +61,30 @@ public interface StringResourceProvider
 	 * @return the value mapped to <code>key</code>
 	 * @throws MissingResourceException
 	 *             if no resource bundle can be found - depending on this search
-	 *             strategy - or if the key can not be found in one of the
-	 *             resource files
+	 *             strategy - or if the key can not be found in one of the resource
+	 *             files
 	 * @throws NullPointerException
 	 *             if <code>key</code> is <code>null</code>
 	 */
-
+	
 	public String lookupResourceString(String key, Locale locale, Object requestor)
 			throws MissingResourceException, NullPointerException;
-
-
-
+	
+	
+	
 	public static class Implementation implements StringResourceProvider
 	{
 		protected final Map<Locale, ResourceBundle>	localizedProjectBundles;
 		protected final ResourceBundle				defaultProjectBundle;
-
-
+		
+		
 		public Implementation()
 		{
 			this.localizedProjectBundles = new HashMap<>();
 			this.defaultProjectBundle = loadProjectResourceBundle(null,this);
 		}
-
-
+		
+		
 		/**
 		 * {@inheritDoc}
 		 */
@@ -112,7 +112,7 @@ public interface StringResourceProvider
 					locale = Locale.getDefault();
 				}
 			}
-
+			
 			Class<?> clazz = null;
 			if(requestor != null)
 			{
@@ -129,12 +129,12 @@ public interface StringResourceProvider
 					clazz = requestor.getClass();
 				}
 			}
-
+			
 			if(clazz != null)
 			{
 				String name = clazz.getName();
 				boolean first = true;
-
+				
 				while(true)
 				{
 					try
@@ -149,7 +149,7 @@ public interface StringResourceProvider
 						{
 							baseName = name.concat(".package");
 						}
-
+						
 						return ResourceBundle.getBundle(baseName,locale,clazz.getClassLoader())
 								.getString(key);
 					}
@@ -159,7 +159,7 @@ public interface StringResourceProvider
 					catch(final NullPointerException npe)
 					{
 					}
-
+					
 					final int lastDot = name.lastIndexOf('.');
 					if(lastDot > 0)
 					{
@@ -171,7 +171,7 @@ public interface StringResourceProvider
 					}
 				}
 			}
-
+			
 			ResourceBundle localizedProjectBundle = null;
 			if(this.localizedProjectBundles.containsKey(locale))
 			{
@@ -182,7 +182,7 @@ public interface StringResourceProvider
 				localizedProjectBundle = loadProjectResourceBundle(locale,requestor);
 				this.localizedProjectBundles.put(locale,localizedProjectBundle);
 			}
-
+			
 			if(localizedProjectBundle != null)
 			{
 				try
@@ -193,7 +193,7 @@ public interface StringResourceProvider
 				{
 				}
 			}
-
+			
 			if(this.defaultProjectBundle != null)
 			{
 				try
@@ -204,14 +204,14 @@ public interface StringResourceProvider
 				{
 				}
 			}
-
+			
 			final String className = clazz != null ? clazz.getName() : getClass().getName();
 			throw new MissingResourceException("No resource found for key '" + key
 					+ "', requestor = " + className + ", locale = " + locale.getLanguage(),
 					className,key);
 		}
-
-
+		
+		
 		protected ResourceBundle loadProjectResourceBundle(final Locale locale,
 				final Object requestor)
 		{
@@ -222,7 +222,7 @@ public interface StringResourceProvider
 			catch(final MissingResourceException mre)
 			{
 				final String localeSuffix = locale != null ? "_" + locale.getLanguage() : "";
-
+				
 				try (InputStream in = getResource(
 						getProjectBundlePath() + localeSuffix + ".properties",requestor))
 				{
@@ -234,18 +234,18 @@ public interface StringResourceProvider
 				catch(final IOException e)
 				{
 				}
-
+				
 				return null;
 			}
 		}
-
-
+		
+		
 		protected String getProjectBundlePath()
 		{
 			return "WebContent/WEB-INF/resources/project";
 		}
-
-
+		
+		
 		protected InputStream getResource(final String path, final Object requestor)
 				throws IOException
 		{

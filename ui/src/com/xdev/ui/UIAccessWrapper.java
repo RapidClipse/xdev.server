@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,31 +39,31 @@ import com.xdev.communication.XdevServletService;
  *
  * @see EntityManager
  * @see Conversation
- * 		
+ * 
  * @author XDEV Software
- * 		
+ * 
  */
 public class UIAccessWrapper implements Runnable
 {
 	private final Runnable runnable;
-	
-	
+
+
 	public UIAccessWrapper(final Runnable runnable)
 	{
 		this.runnable = runnable;
 	}
-	
-	
+
+
 	@Override
 	public void run()
 	{
 		final XdevServletService service = XdevServlet.getServlet().getService();
 		final VaadinSession session = UI.getCurrent().getSession();
-
+		
 		try
 		{
 			service.handleRequestStart(session);
-			
+
 			this.runnable.run();
 		}
 		finally

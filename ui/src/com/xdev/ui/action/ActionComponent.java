@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,47 +47,45 @@ public interface ActionComponent
 	 * @return this component's action
 	 */
 	public Action getAction();
-	
-	
+
+
 	/**
-	 * Connects this component with an action. Properties like text, icon and
-	 * the enabled state will be used from the action.
+	 * Connects this component with an action. Properties like text, icon and the
+	 * enabled state will be used from the action.
 	 * <p>
-	 * The main action of this component, like click of a button, will trigger
-	 * the actions {@link Action#actionPerformed(com.xdev.ui.event.ActionEvent)}
-	 * method.
+	 * The main action of this component, like click of a button, will trigger the
+	 * actions {@link Action#actionPerformed(com.xdev.ui.event.ActionEvent)} method.
 	 *
 	 * @param action
 	 *            the connected action
 	 */
 	public void setAction(Action action);
-	
-	
+
+
 	/**
 	 * Sets the caption of the component.
 	 *
 	 * @param caption
-	 *            the new caption for the component. If the caption is
-	 *            {@code null}, no caption is shown and it does not normally
-	 *            take any space
+	 *            the new caption for the component. If the caption is {@code null},
+	 *            no caption is shown and it does not normally take any space
 	 *
 	 * @see Component#setCaption(String)
 	 */
 	public void setCaption(String caption);
-	
-	
+
+
 	/**
 	 * Sets the icon of the component.
 	 *
 	 * @param icon
-	 *            the icon of the component. If null, no icon is shown and it
-	 *            does not normally take any space
+	 *            the icon of the component. If null, no icon is shown and it does
+	 *            not normally take any space
 	 *
 	 * @see Component#setIcon(Resource)
 	 */
 	public void setIcon(Resource icon);
-	
-	
+
+
 	/**
 	 * Sets the component's description.
 	 *
@@ -97,23 +95,23 @@ public interface ActionComponent
 	 * @see AbstractComponent#setDescription(String)
 	 */
 	public void setDescription(String description);
-	
-	
+
+
 	/**
 	 * Enables or disables the component. The user can not interact disabled
-	 * components, which are shown with a style that indicates the status,
-	 * usually shaded in light gray color. Components are enabled by default.
+	 * components, which are shown with a style that indicates the status, usually
+	 * shaded in light gray color. Components are enabled by default.
 	 *
 	 * @param enabled
-	 *            a boolean value specifying if the component should be enabled
-	 *            or not
+	 *            a boolean value specifying if the component should be enabled or
+	 *            not
 	 *
 	 * @see Component#setEnabled(boolean)
 	 */
 	public void setEnabled(boolean enabled);
-	
-	
-	
+
+
+
 	public static class Utils
 	{
 		public static void setComponentPropertiesFromAction(final ActionComponent component,
@@ -125,22 +123,22 @@ public interface ActionComponent
 			component.setEnabled(action.isEnabled());
 		}
 	}
-	
-	
-	
+
+
+
 	public static class ActionPropertyChangeListener implements PropertyChangeListener
 	{
 		private final ActionComponent	component;
 		private final Action			action;
-										
-										
+		
+		
 		public ActionPropertyChangeListener(final ActionComponent component, final Action action)
 		{
 			this.component = component;
 			this.action = action;
 		}
-		
-		
+
+
 		@Override
 		public void propertyChange(final PropertyChangeEvent event)
 		{
@@ -149,15 +147,15 @@ public interface ActionComponent
 				case Action.CAPTION_PROPERTY:
 					component.setCaption(action.getCaption());
 				break;
-				
+			
 				case Action.ICON_PROPERTY:
 					component.setIcon(action.getIcon());
 				break;
-				
+			
 				case Action.DESCRIPTION_PROPERTY:
 					component.setDescription(action.getDescription());
 				break;
-				
+			
 				case Action.ENABLED_PROPERTY:
 					component.setEnabled(action.isEnabled());
 				break;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,9 +42,9 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.declarative.DesignAttributeHandler;
 import com.vaadin.ui.declarative.DesignContext;
+import com.vaadin.v7.ui.Label;
 
 
 /**
@@ -71,6 +71,7 @@ import com.vaadin.ui.declarative.DesignContext;
  * @author XDEV Software
  *
  */
+@SuppressWarnings("deprecation")
 public class XdevGridLayout extends GridLayout implements XdevComponent
 {
 	public static enum AutoFill
@@ -92,8 +93,8 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 
 
 	/**
-	 * Constructs a GridLayout of given size (number of columns and rows) and
-	 * adds the given components in order to the grid.
+	 * Constructs a GridLayout of given size (number of columns and rows) and adds
+	 * the given components in order to the grid.
 	 *
 	 * @see #addComponents(Component...)
 	 *
@@ -131,8 +132,8 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 		setMargin(true);
 		setSpacing(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -173,10 +174,10 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 
 
 	/**
-	 * Adds the component to the grid in cells column1,row1 (NortWest corner of
-	 * the area.) End coordinates (SouthEast corner of the area) are the same as
-	 * column1,row1. The coordinates are zero-based. Component width and height
-	 * is 1.
+	 * Adds the component to the grid in cells column1,row1 (NortWest corner of the
+	 * area.) End coordinates (SouthEast corner of the area) are the same as
+	 * column1,row1. The coordinates are zero-based. Component width and height is
+	 * 1.
 	 *
 	 * @param component
 	 *            the component to be added, not <code>null</code>.
@@ -187,8 +188,8 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 	 * @param alignment
 	 *            the Alignment value to be set
 	 * @throws OverlapsException
-	 *             if the new component overlaps with any of the components
-	 *             already in the grid.
+	 *             if the new component overlaps with any of the components already
+	 *             in the grid.
 	 * @throws OutOfBoundsException
 	 *             if the cell is outside the grid area.
 	 */
@@ -202,36 +203,35 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 
 	/**
 	 * <p>
-	 * Adds a component to the grid in the specified area. The area is defined
-	 * by specifying the upper left corner (column1, row1) and the lower right
-	 * corner (column2, row2) of the area. The coordinates are zero-based.
+	 * Adds a component to the grid in the specified area. The area is defined by
+	 * specifying the upper left corner (column1, row1) and the lower right corner
+	 * (column2, row2) of the area. The coordinates are zero-based.
 	 * </p>
 	 *
 	 * <p>
-	 * If the area overlaps with any of the existing components already present
-	 * in the grid, the operation will fail and an {@link OverlapsException} is
-	 * thrown.
+	 * If the area overlaps with any of the existing components already present in
+	 * the grid, the operation will fail and an {@link OverlapsException} is thrown.
 	 * </p>
 	 *
 	 * @param component
 	 *            the component to be added, not <code>null</code>.
 	 * @param column1
-	 *            the column of the upper left corner of the area <code>c</code>
-	 *            is supposed to occupy. The leftmost column has index 0.
+	 *            the column of the upper left corner of the area <code>c</code> is
+	 *            supposed to occupy. The leftmost column has index 0.
 	 * @param row1
 	 *            the row of the upper left corner of the area <code>c</code> is
 	 *            supposed to occupy. The topmost row has index 0.
 	 * @param column2
-	 *            the column of the lower right corner of the area
-	 *            <code>c</code> is supposed to occupy.
+	 *            the column of the lower right corner of the area <code>c</code> is
+	 *            supposed to occupy.
 	 * @param row2
-	 *            the row of the lower right corner of the area <code>c</code>
-	 *            is supposed to occupy.
+	 *            the row of the lower right corner of the area <code>c</code> is
+	 *            supposed to occupy.
 	 * @param alignment
 	 *            the Alignment value to be set
 	 * @throws OverlapsException
-	 *             if the new component overlaps with any of the components
-	 *             already in the grid.
+	 *             if the new component overlaps with any of the components already
+	 *             in the grid.
 	 * @throws OutOfBoundsException
 	 *             if the cells are outside the grid area.
 	 */
@@ -348,7 +348,7 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 
 	/*
 	 ***************************************************************************
-	 * Workaround for a bug in com.vaadin.ui.GridLayout#readDesign. It sets rows
+	 * Workaround for a bug in com.vaadin.v7.ui.GridLayout#readDesign. It sets rows
 	 * and columns always, this causes problems if the layout already contains
 	 * children (subclass which adds children by default). See XWS-1170
 	 *************************************************************************/
@@ -408,7 +408,7 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 
 	/*
 	 ***************************************************************************
-	 * Workaround for a bug in com.vaadin.ui.GridLayout#writeDesign. Spans cause
+	 * Workaround for a bug in com.vaadin.v7.ui.GridLayout#writeDesign. Spans cause
 	 * problems resulting in an ArrayIndexOutOfBoundsException. XWS-1177
 	 *************************************************************************/
 
@@ -474,7 +474,7 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 
 			// Row Expand
 			DesignAttributeHandler.writeAttribute("expand",row.attributes(),
-					(int)getRowExpandRatio(i),0,int.class);
+					(int)getRowExpandRatio(i),0,int.class,designContext);
 
 			int colspan = 1;
 			Element col;
@@ -661,15 +661,15 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 		// handle default attributes
 		for(final String attribute : getDefaultAttributes())
 		{
-			DesignAttributeHandler.writeAttribute(this,attribute,attr,def);
+			DesignAttributeHandler.writeAttribute(this,attribute,attr,def,designContext);
 		}
 		// handle immediate
-		final Boolean explicitImmediateValue = getExplicitImmediateValue();
-		if(explicitImmediateValue != null)
-		{
-			DesignAttributeHandler.writeAttribute("immediate",attr,explicitImmediateValue,
-					def.isImmediate(),Boolean.class);
-		}
+		// final Boolean explicitImmediateValue = getExplicitImmediateValue();
+		// if(explicitImmediateValue != null)
+		// {
+		// DesignAttributeHandler.writeAttribute("immediate",attr,explicitImmediateValue,
+		// def.isImmediate(),Boolean.class,designContext);
+		// }
 		// handle locale
 		if(getLocale() != null
 				&& (getParent() == null || !getLocale().equals(getParent().getLocale())))
@@ -680,9 +680,11 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 		writeSize(attr,def);
 		// handle component error
 		final String errorMsg = getComponentError() != null
-				? getComponentError().getFormattedHtmlMessage() : null;
+				? getComponentError().getFormattedHtmlMessage()
+				: null;
 		final String defErrorMsg = def.getComponentError() != null
-				? def.getComponentError().getFormattedHtmlMessage() : null;
+				? def.getComponentError().getFormattedHtmlMessage()
+				: null;
 		if(!SharedUtil.equals(errorMsg,defErrorMsg))
 		{
 			attr.put("error",errorMsg);
@@ -691,7 +693,7 @@ public class XdevGridLayout extends GridLayout implements XdevComponent
 		if(this instanceof Focusable)
 		{
 			DesignAttributeHandler.writeAttribute("tabindex",attr,((Focusable)this).getTabIndex(),
-					((Focusable)def).getTabIndex(),Integer.class);
+					((Focusable)def).getTabIndex(),Integer.class,designContext);
 		}
 		// handle custom attributes
 		final Map<String, String> customAttributes = designContext.getCustomAttributes(this);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,8 +24,8 @@ package com.xdev.ui;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.themes.Reindeer;
-import com.vaadin.ui.themes.Runo;
+import com.vaadin.v7.ui.themes.Reindeer;
+import com.vaadin.v7.ui.themes.Runo;
 
 
 /**
@@ -53,13 +53,14 @@ import com.vaadin.ui.themes.Runo;
  * time they are shown, but this may change in future releases.
  *
  * @author XDEV Software
- *		
+ *
  */
+@SuppressWarnings("deprecation")
 public class XdevTabSheet extends TabSheet implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-	
-	
+
+
 	/**
 	 * Constructs a new TabSheet. A TabSheet is immediate by default, and the
 	 * default close handler removes the tab being closed.
@@ -68,8 +69,8 @@ public class XdevTabSheet extends TabSheet implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a new TabSheet containing the given components.
 	 *
@@ -81,8 +82,8 @@ public class XdevTabSheet extends TabSheet implements XdevComponent
 	{
 		super(components);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -91,8 +92,8 @@ public class XdevTabSheet extends TabSheet implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

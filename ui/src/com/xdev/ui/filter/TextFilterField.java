@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,23 +24,24 @@ package com.xdev.ui.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vaadin.data.util.converter.Converter.ConversionException;
-import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.data.util.converter.Converter.ConversionException;
+import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
+import com.vaadin.v7.ui.TextField;
 
 
 /**
  * @author XDEV Software
  *
  */
+@SuppressWarnings("deprecation")
 public class TextFilterField extends TextField implements FilterField<String>
 {
 	protected final List<FilterFieldChangeListener>	listeners	= new ArrayList<>();
 	protected Object								filterValue;
 	protected Class<?>								converterType;
-
-
+	
+	
 	public TextFilterField()
 	{
 		setImmediate(true);
@@ -48,20 +49,20 @@ public class TextFilterField extends TextField implements FilterField<String>
 		addStyleName(ValoTheme.TEXTFIELD_SMALL);
 		addStyleName(XdevContainerFilterComponent.FILTER_EDITOR_CLASS);
 	}
-
-
+	
+	
 	public TextFilterField(final Class<?> converterType)
 	{
 		this();
-
+		
 		this.converterType = _converterType(converterType);
-
+		
 		setConverter(this.converterType);
 		setNullRepresentation("");
 		addValueChangeListener(event -> fireFilterFieldChanged(getConvertedValue()));
 	}
-	
-	
+
+
 	private Class<?> _converterType(final Class<?> t)
 	{
 		if(t.isPrimitive())
@@ -99,11 +100,11 @@ public class TextFilterField extends TextField implements FilterField<String>
 				return Byte.class;
 			}
 		}
-		
+
 		return t;
 	}
-
-
+	
+	
 	protected void textChanged(final TextChangeEvent event)
 	{
 		final String text = event.getText();
@@ -124,41 +125,41 @@ public class TextFilterField extends TextField implements FilterField<String>
 			}
 		}
 	}
-
-
+	
+	
 	@Override
 	public void addFilterFieldChangeListener(final FilterFieldChangeListener l)
 	{
 		this.listeners.add(l);
 	}
-
-
+	
+	
 	@Override
 	public void removeFilterFieldChangeListener(final FilterFieldChangeListener l)
 	{
 		this.listeners.remove(l);
 	}
-
-
+	
+	
 	protected void fireFilterFieldChanged(final Object filterValue)
 	{
 		this.filterValue = filterValue;
-
+		
 		final FilterFieldChangeEvent event = new FilterFieldChangeEvent(this,filterValue);
 		for(final FilterFieldChangeListener l : this.listeners)
 		{
 			l.filterFieldChanged(event);
 		}
 	}
-
-
+	
+	
 	@Override
 	public Object getFilterValue()
 	{
 		return this.filterValue;
 	}
-
-
+	
+	
 	@Override
 	public void setFilterValue(final Object filterValue)
 	{

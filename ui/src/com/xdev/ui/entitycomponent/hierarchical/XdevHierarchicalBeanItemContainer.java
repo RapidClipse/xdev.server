@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@
 package com.xdev.ui.entitycomponent.hierarchical;
 
 
-import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.v7.data.util.HierarchicalContainer;
 import com.xdev.dal.DAOs;
 import com.xdev.ui.hierarchical.DynamicHierarchicalContainer;
 import com.xdev.ui.hierarchical.TreeDataProvider;
@@ -30,23 +30,24 @@ import com.xdev.util.JPAMetaDataUtils;
 
 /**
  * @author XDEV Software
- *		
+ * 
  * @since 1.1.0
  */
+@SuppressWarnings("deprecation")
 public class XdevHierarchicalBeanItemContainer extends HierarchicalContainer
 		implements DynamicHierarchicalContainer
 {
 	protected final TreeDataProvider treeDataProvider;
-
-
+	
+	
 	public XdevHierarchicalBeanItemContainer(final TreeDataProvider treeDataProvider)
 	{
 		this.treeDataProvider = treeDataProvider;
-
+		
 		treeDataProvider.roots().forEach(this::addItem);
 	}
-
-
+	
+	
 	@Override
 	public void preloadAll()
 	{
@@ -56,27 +57,27 @@ public class XdevHierarchicalBeanItemContainer extends HierarchicalContainer
 			expand(id,true,false);
 		}
 	}
-
-
+	
+	
 	@Override
 	public boolean expand(final Object parent)
 	{
 		return expand(parent,false,true);
 	}
-
-
+	
+	
 	protected boolean expand(final Object parent, final boolean deep, final boolean reattach)
 	{
 		if(!areChildrenAllowed(parent) || hasChildren(parent))
 		{
 			return false;
 		}
-
+		
 		if(reattach && JPAMetaDataUtils.isManaged(parent.getClass()))
 		{
 			DAOs.get(parent).reattach(parent);
 		}
-
+		
 		final Iterable<? extends Object> children = this.treeDataProvider.children(parent,this);
 		if(children != null)
 		{
@@ -101,7 +102,7 @@ public class XdevHierarchicalBeanItemContainer extends HierarchicalContainer
 				expand(child,true,false);
 			}
 		}
-
+		
 		return true;
 	}
 }

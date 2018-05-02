@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,9 +26,9 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.filter.Or;
+import com.vaadin.v7.data.Container.Filter;
+import com.vaadin.v7.data.util.BeanItem;
+import com.vaadin.v7.data.util.filter.Or;
 import com.xdev.data.util.filter.CompareBIDirect;
 import com.xdev.ui.entitycomponent.BeanComponent;
 
@@ -44,32 +44,33 @@ import com.xdev.ui.entitycomponent.BeanComponent;
  * @author XDEV Software
  * @since 3.0
  */
+@SuppressWarnings("deprecation")
 public class FilterMasterDetailConnection<M, D> extends BeanComponentsMasterDetailConnection<M, D>
 {
 	protected Function<M, Object>	masterToFilterValue;
 	protected Object				detailPropertyId;
 	protected Filter				currentFilter;
-	
-	
+
+
 	public FilterMasterDetailConnection(final BeanComponent<M> master,
 			final BeanComponent<D> detail, final Function<M, Object> masterToFilterValue,
 			final Object detailPropertyId)
 	{
 		super(master,detail);
-		
+
 		this.masterToFilterValue = masterToFilterValue;
 		this.detailPropertyId = detailPropertyId;
 	}
-	
-	
+
+
 	@Override
 	protected void masterValueChanged()
 	{
 		// reset selection
 		this.detail.select(null);
-		
+
 		clearFilter();
-		
+
 		final List<Filter> filters = this.master.getSelectedItems().stream()
 				.filter(Objects::nonNull).map(BeanItem::getBean).filter(Objects::nonNull)
 				.map(this.masterToFilterValue).filter(Objects::nonNull)
@@ -83,8 +84,8 @@ public class FilterMasterDetailConnection<M, D> extends BeanComponentsMasterDeta
 			this.detail.getBeanContainerDataSource().addContainerFilter(this.currentFilter);
 		}
 	}
-	
-	
+
+
 	protected void clearFilter()
 	{
 		if(this.currentFilter != null)
@@ -93,16 +94,16 @@ public class FilterMasterDetailConnection<M, D> extends BeanComponentsMasterDeta
 			this.currentFilter = null;
 		}
 	}
-	
-	
+
+
 	@Override
 	public void disconnect()
 	{
 		clearFilter();
-		
+
 		this.masterToFilterValue = null;
 		this.detailPropertyId = null;
-		
+
 		super.disconnect();
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,16 +30,16 @@ import com.vaadin.ui.Link;
  * Link is used to create external or internal URL links.
  *
  * @author XDEV Software
- *		
+ *
  */
 public class XdevLink extends Link implements XdevComponent
 {
 	public final static String	TOP			= "_top";
 	public final static String	BLANK		= "_blank";
-											
+	
 	private final Extensions	extensions	= new Extensions();
-											
-											
+	
+	
 	/**
 	 * Creates a new link.
 	 */
@@ -47,8 +47,8 @@ public class XdevLink extends Link implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new instance of Link that opens a new window.
 	 *
@@ -56,24 +56,24 @@ public class XdevLink extends Link implements XdevComponent
 	 * @param caption
 	 *            the Link text.
 	 * @param targetName
-	 *            the name of the target window where the link opens to. Empty
-	 *            name of null implies that the target is opened to the window
-	 *            containing the link.
+	 *            the name of the target window where the link opens to. Empty name
+	 *            of null implies that the target is opened to the window containing
+	 *            the link.
 	 * @param width
 	 *            the Width of the target window.
 	 * @param height
 	 *            the Height of the target window.
 	 * @param border
 	 *            the Border style of the target window.
-	 *			
+	 *
 	 */
 	public XdevLink(final String caption, final Resource resource, final String targetName,
 			final int width, final int height, final BorderStyle border)
 	{
 		super(caption,resource,targetName,width,height,border);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new instance of Link.
 	 *
@@ -84,8 +84,8 @@ public class XdevLink extends Link implements XdevComponent
 	{
 		super(caption,resource);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 *
@@ -106,8 +106,8 @@ public class XdevLink extends Link implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

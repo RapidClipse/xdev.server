@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,17 +28,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.v7.data.util.converter.Converter;
 import com.xdev.util.JPAEntityIDResolver;
 
 
+@SuppressWarnings("deprecation")
 public class BeanToBeanCollectionConverter<T> implements Converter<Set<T>, Collection<? extends T>>
 {
 	private final XdevBeanContainer<T>	container;
 	private Collection<T>				modelCollection			= new ArrayList<T>();
 	private Collection<Object>			presentationCollection	= new HashSet<>();
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -46,24 +47,24 @@ public class BeanToBeanCollectionConverter<T> implements Converter<Set<T>, Colle
 	{
 		this.container = container;
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Collection<? extends T>> getModelType()
 	{
 		return (Class<Collection<? extends T>>)this.presentationCollection.getClass();
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Set<T>> getPresentationType()
 	{
 		return (Class<Set<T>>)this.modelCollection.getClass();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -74,7 +75,7 @@ public class BeanToBeanCollectionConverter<T> implements Converter<Set<T>, Colle
 	@Override
 	public Collection<? extends T> convertToModel(final Set<T> itemIds,
 			final Class<? extends Collection<? extends T>> targetType, final Locale locale)
-					throws Converter.ConversionException
+			throws Converter.ConversionException
 	{
 		// TODO create suitable type provider
 		if(targetType.isAssignableFrom(List.class))
@@ -85,31 +86,30 @@ public class BeanToBeanCollectionConverter<T> implements Converter<Set<T>, Colle
 		{
 			this.modelCollection = new HashSet<>();
 		}
-
+		
 		if(itemIds != null)
 		{
 			this.modelCollection.addAll(itemIds);
 		}
-
+		
 		return this.modelCollection;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang
+	 * @see com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang
 	 * .Object, java.lang.Class, java.util.Locale)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Set<T> convertToPresentation(final Collection<? extends T> values,
 			final Class<? extends Set<T>> targetType, final Locale locale)
-					throws Converter.ConversionException
+			throws Converter.ConversionException
 	{
 		this.presentationCollection = new HashSet<>();
-
+		
 		if(values != null)
 		{
 			for(final T bean : values)
@@ -117,18 +117,18 @@ public class BeanToBeanCollectionConverter<T> implements Converter<Set<T>, Colle
 				this.presentationCollection.add(convertToPresentation(bean));
 			}
 		}
-
+		
 		return (Set<T>)this.presentationCollection;
 	}
-
-
+	
+	
 	protected T convertToPresentation(final T value)
 	{
 		if(value == null)
 		{
 			return null;
 		}
-
+		
 		final JPAEntityIDResolver idResolver = JPAEntityIDResolver.getInstance();
 		final Object id = idResolver.getEntityIDAttributeValue(value);
 		final T containerValue = this.container.getItemIds().stream()

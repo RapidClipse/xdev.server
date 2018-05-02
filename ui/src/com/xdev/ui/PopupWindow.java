@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -61,83 +61,83 @@ public interface PopupWindow
 	{
 		return new Implementation(content);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 *            the caption to set
 	 * @since 3.0.2
 	 */
 	public PopupWindow caption(String caption);
-
-
+	
+	
 	/**
 	 * @param icon
 	 *            the icon to set
 	 * @since 3.0.2
 	 */
 	public PopupWindow icon(Resource icon);
-
-
+	
+	
 	/**
 	 * @param modal
 	 *            the modal to set
 	 */
 	public PopupWindow modal(final boolean modal);
-
-
+	
+	
 	/**
 	 * @param resizable
 	 *            the resizable to set
 	 */
 	public PopupWindow resizable(final boolean resizable);
-
-
+	
+	
 	/**
 	 * @param closable
 	 *            the closable to set
 	 */
 	public PopupWindow closable(final boolean closable);
-
-
+	
+	
 	/**
 	 * @param draggable
 	 *            the draggable to set
 	 */
 	public PopupWindow draggable(final boolean draggable);
-
-
+	
+	
 	/**
 	 * @param maximized
 	 *            the maximized to set
 	 */
 	public PopupWindow maximized(final boolean maximized);
-
-
+	
+	
 	/**
 	 * Sets the predefined location for the popup window, default is centered.
 	 */
 	public PopupWindow location(final int x, final int y);
-
-
+	
+	
 	/**
-	 * Sets the width of the popup window. Negative number implies unspecified
-	 * size (terminal is free to set the size).
+	 * Sets the width of the popup window. Negative number implies unspecified size
+	 * (terminal is free to set the size).
 	 *
 	 * @since 1.2
 	 */
 	public PopupWindow width(final float width, final Unit unit);
-
-
+	
+	
 	/**
-	 * Sets the height of the popup window. Negative number implies unspecified
-	 * size (terminal is free to set the size).
+	 * Sets the height of the popup window. Negative number implies unspecified size
+	 * (terminal is free to set the size).
 	 *
 	 * @since 1.2
 	 */
 	public PopupWindow height(final float height, final Unit unit);
-
-
+	
+	
 	/**
 	 * Sets the size of the popup window in pixels.
 	 *
@@ -147,17 +147,17 @@ public interface PopupWindow
 	{
 		return size(width,height,Unit.PIXELS);
 	}
-
-
+	
+	
 	/**
-	 * Sets the size of the popup window. Negative number implies unspecified
-	 * size (terminal is free to set the size).
+	 * Sets the size of the popup window. Negative number implies unspecified size
+	 * (terminal is free to set the size).
 	 *
 	 * @since 1.2
 	 */
 	public PopupWindow size(final float width, final float height, final Unit unit);
-
-
+	
+	
 	/**
 	 * Adds a close shortcut that reacts to the given {@link KeyCode} and
 	 * (optionally) {@link ModifierKey}s.
@@ -165,31 +165,30 @@ public interface PopupWindow
 	 * @param keyCode
 	 *            the keycode for invoking the shortcut.
 	 * @param modifiers
-	 *            the (optional) modifiers for invoking the shortcut. Can be set
-	 *            to <code>null</code> to be explicit about not having
-	 *            modifiers.
+	 *            the (optional) modifiers for invoking the shortcut. Can be set to
+	 *            <code>null</code> to be explicit about not having modifiers.
 	 * @see KeyCode
 	 * @see ModifierKey
 	 * @since 3.0.2
 	 */
 	public PopupWindow closeShortcut(int keyCode, int... modifiers);
-
-
+	
+	
 	/**
 	 * Sets the close handler
 	 */
 	public PopupWindow onClose(Consumer<Window.CloseEvent> closeHandler);
-
-
+	
+	
 	/**
 	 * Opens and returns the window
 	 *
 	 * @return the opened window
 	 */
 	public Window show();
-
-
-
+	
+	
+	
 	public static class Implementation implements PopupWindow
 	{
 		private final Component				content;
@@ -207,78 +206,78 @@ public interface PopupWindow
 		private Unit						heightUnit;
 		private final List<ShortcutAction>	closeShortcuts	= new ArrayList<>();
 		private Consumer<Window.CloseEvent>	closeHandler;
-
-
+		
+		
 		public Implementation(final Component content)
 		{
 			this.content = content;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow caption(final String caption)
 		{
 			this.caption = caption;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow icon(final Resource icon)
 		{
 			this.icon = icon;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow modal(final boolean modal)
 		{
 			this.modal = modal;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow resizable(final boolean resizable)
 		{
 			this.resizable = resizable;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow closable(final boolean closable)
 		{
 			this.closable = closable;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow draggable(final boolean draggable)
 		{
 			this.draggable = draggable;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow maximized(final boolean maximized)
 		{
 			this.maximized = maximized;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow location(final int x, final int y)
 		{
 			this.location = new Point(x,y);
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow width(final float width, final Unit unit)
 		{
@@ -286,8 +285,8 @@ public interface PopupWindow
 			this.widthUnit = unit;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow height(final float height, final Unit unit)
 		{
@@ -295,8 +294,8 @@ public interface PopupWindow
 			this.heightUnit = unit;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow size(final float width, final float height, final Unit unit)
 		{
@@ -306,29 +305,29 @@ public interface PopupWindow
 			this.heightUnit = unit;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow closeShortcut(final int keyCode, final int... modifiers)
 		{
 			this.closeShortcuts.add(new ShortcutAction("",keyCode,modifiers));
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public PopupWindow onClose(final Consumer<CloseEvent> closeHandler)
 		{
 			this.closeHandler = closeHandler;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public Window show()
 		{
 			final Window window = new Window();
-
+			
 			float width;
 			Unit widthUnit;
 			if(this.width != null && this.widthUnit != null)
@@ -348,7 +347,7 @@ public interface PopupWindow
 				widthUnit = Unit.PIXELS;
 				content.setWidthUndefined();
 			}
-
+			
 			float height;
 			Unit heightUnit;
 			if(this.height != null && this.heightUnit != null)
@@ -368,26 +367,26 @@ public interface PopupWindow
 				heightUnit = Unit.PIXELS;
 				content.setHeightUndefined();
 			}
-
+			
 			window.setWidth(width,widthUnit);
 			window.setHeight(height,heightUnit);
-
+			
 			window.setContent(this.content);
-
+			
 			String caption = this.caption;
 			if(caption == null)
 			{
 				caption = this.content.getCaption();
 			}
 			window.setCaption(caption);
-
+			
 			Resource icon = this.icon;
 			if(icon == null)
 			{
 				icon = this.content.getIcon();
 			}
 			window.setIcon(icon);
-
+			
 			window.setModal(this.modal);
 			window.setResizable(this.resizable);
 			window.setClosable(this.closable);
@@ -414,12 +413,12 @@ public interface PopupWindow
 				window.addCloseListener(event -> closeHandler.accept(event));
 			}
 			UI.getCurrent().addWindow(window);
-
+			
 			if(this.resizable)
 			{
 				content.setSizeFull();
 			}
-
+			
 			return window;
 		}
 	}

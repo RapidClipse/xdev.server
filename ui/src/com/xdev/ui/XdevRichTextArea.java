@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,9 +21,9 @@
 package com.xdev.ui;
 
 
-import com.vaadin.data.Property;
-import com.vaadin.ui.RichTextArea;
-import com.vaadin.ui.TextField;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.ui.RichTextArea;
+import com.vaadin.v7.ui.TextField;
 
 
 /**
@@ -34,14 +34,15 @@ import com.vaadin.ui.TextField;
  * into length of field.
  *
  * @author XDEV Software
- * 		
+ * 
  */
+@SuppressWarnings("deprecation")
 public class XdevRichTextArea extends RichTextArea implements XdevField
 {
 	private final Extensions	extensions		= new Extensions();
 	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-												
-												
+	
+	
 	/**
 	 * Constructs an empty <code>RichTextArea</code> with no caption.
 	 */
@@ -49,8 +50,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevField
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a new <code>RichTextArea</code> that's bound to the specified
 	 * <code>Property</code> and has no caption.
@@ -62,8 +63,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevField
 	{
 		super(dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a new <code>RichTextArea</code> that's bound to the specified
 	 * <code>Property</code> and has the given caption.
@@ -77,11 +78,11 @@ public class XdevRichTextArea extends RichTextArea implements XdevField
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
-	 * Constructs a new <code>RichTextArea</code> with the given caption and
-	 * initial text contents.
+	 * Constructs a new <code>RichTextArea</code> with the given caption and initial
+	 * text contents.
 	 *
 	 * @param caption
 	 *            the caption for the editor.
@@ -92,8 +93,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevField
 	{
 		super(caption,value);
 	}
-	
-	
+
+
 	/**
 	 *
 	 * Constructs an empty <code>RichTextArea</code> with the given caption.
@@ -105,8 +106,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevField
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -115,8 +116,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -125,8 +126,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -135,8 +136,8 @@ public class XdevRichTextArea extends RichTextArea implements XdevField
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

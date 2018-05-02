@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,8 +27,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.Resource;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.xdev.res.ApplicationResource;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 
@@ -43,63 +43,64 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
  * @author XDEV Software
  *
  */
+@SuppressWarnings("deprecation")
 public interface Report
 {
 	public static Report New()
 	{
 		return new Implementation();
 	}
-	
-	
+
+
 	public Report jrxml(final InputStream jrxmlInputStream);
-	
-	
+
+
 	public Report jrxml(final String jrxmlPath);
-	
-	
+
+
 	public Report dataSource(final JRDataSource dataSource);
-	
-	
+
+
 	public Report dataSource(Collection<?> beans);
-	
-	
+
+
 	public Report dataSource(BeanItemContainer<?> container);
-	
-	
+
+
 	public Report dataSource(XdevBeanContainer<?> container);
-	
-	
+
+
 	public Report parameters(final Map<String, Object> parameters);
-	
-	
+
+
 	public Report parameter(final String name, final Object value);
-	
-	
+
+
 	public Report subreport(final String name, final InputStream jrxmlInputStream);
-	
-	
+
+
 	public Report subreport(final String name, final String jrxmlPath);
-	
-	
+
+
 	public Report mapFields(Map<String, String> fieldNameMapping);
-	
-	
+
+
 	public Report mapField(String from, String to);
-	
-	
+
+
 	public void export(final ExportType type, final OutputStream stream);
-	
-	
+
+
 	public byte[] exportToBytes(final ExportType type);
-	
-	
+
+
 	public Resource exportToResource(final ExportType type);
-	
-	
+
+
 	public Resource exportToResource(final ExportType type, final String fileNamePrefix);
-	
-	
-	
+
+
+
 	public static class Implementation implements Report
 	{
 		private InputStream					jrxmlInputStream;
@@ -107,72 +108,72 @@ public interface Report
 		private JRDataSource				dataSource;
 		private final Map<String, Object>	parameters			= new HashMap<>();
 		private final Map<String, String>	fieldNameMapping	= new HashMap<>();
-		
-		
+
+
 		@Override
 		public Report jrxml(final InputStream jrxmlInputStream)
 		{
 			this.jrxmlInputStream = jrxmlInputStream;
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public Report jrxml(final String jrxmlPath)
 		{
 			this.jrxmlPath = jrxmlPath;
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public Report dataSource(final JRDataSource dataSource)
 		{
 			this.dataSource = dataSource;
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public Report dataSource(final Collection<?> beans)
 		{
 			this.dataSource = new JRBeanCollectionDataSource(beans);
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public Report dataSource(final BeanItemContainer<?> container)
 		{
 			this.dataSource = new BeanItemContainerDataSource(container);
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public Report dataSource(final XdevBeanContainer<?> container)
 		{
 			this.dataSource = new BeanItemContainerDataSource(container);
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public Report parameters(final Map<String, Object> parameters)
 		{
 			this.parameters.putAll(parameters);
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public Report parameter(final String name, final Object value)
 		{
 			this.parameters.put(name,value);
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public Report subreport(final String name, final InputStream jrxmlInputStream)
 		{
@@ -188,8 +189,8 @@ public interface Report
 				throw new ReportException(e);
 			}
 		}
-		
-		
+
+
 		@Override
 		public Report subreport(final String name, final String jrxmlPath)
 		{
@@ -205,58 +206,58 @@ public interface Report
 				throw new ReportException(e);
 			}
 		}
-		
-		
+
+
 		@Override
 		public Report mapFields(final Map<String, String> fieldNameMapping)
 		{
 			this.fieldNameMapping.putAll(fieldNameMapping);
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public Report mapField(final String from, final String to)
 		{
 			this.fieldNameMapping.put(from,to);
 			return this;
 		}
-		
-		
+
+
 		@Override
 		public void export(final ExportType type, final OutputStream stream)
 		{
 			type.export(getJrxml(),getDataSource(),parameters,stream);
 		}
-		
-		
+
+
 		@Override
 		public byte[] exportToBytes(final ExportType type)
 		{
 			return type.exportToBytes(getJrxml(),getDataSource(),parameters);
 		}
-		
-		
+
+
 		@Override
 		public Resource exportToResource(final ExportType type)
 		{
 			return type.exportToResource(getJrxml(),getDataSource(),parameters);
 		}
-		
-		
+
+
 		@Override
 		public Resource exportToResource(final ExportType type, final String fileNamePrefix)
 		{
 			return type.exportToResource(getJrxml(),getDataSource(),parameters,fileNamePrefix);
 		}
-		
-		
+
+
 		protected InputStream getJrxml()
 		{
 			return getJrxml(this.jrxmlInputStream,this.jrxmlPath);
 		}
-		
-		
+
+
 		protected InputStream getJrxml(final InputStream jrxmlInputStream, final String jrxmlPath)
 		{
 			InputStream jrxml = jrxmlInputStream;
@@ -267,15 +268,15 @@ public interface Report
 					throw new IllegalStateException(
 							"No input specified, provide either a jrxml inputstream or path");
 				}
-				
+
 				jrxml = new ApplicationResource(getCallerClass(),jrxmlPath).getStreamSource()
 						.getStream();
 			}
-			
+
 			return jrxml;
 		}
-		
-		
+
+
 		protected Class<?> getCallerClass()
 		{
 			for(final StackTraceElement element : Thread.currentThread().getStackTrace())
@@ -293,11 +294,11 @@ public interface Report
 					}
 				}
 			}
-			
+
 			return null;
 		}
-		
-		
+
+
 		protected JRDataSource getDataSource()
 		{
 			JRDataSource dataSource = this.dataSource;

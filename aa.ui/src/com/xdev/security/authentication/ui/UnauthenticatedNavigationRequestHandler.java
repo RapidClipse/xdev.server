@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,8 +39,8 @@ import com.vaadin.ui.Notification.Type;
 public interface UnauthenticatedNavigationRequestHandler
 {
 	public final static UnauthenticatedNavigationRequestHandler DEFAULT = new Default();
-
-
+	
+	
 	/**
 	 * Handles the unauthenticated request, e.g. shows an error message and
 	 * redirects to the login view.
@@ -49,9 +49,9 @@ public interface UnauthenticatedNavigationRequestHandler
 	 * @param event
 	 */
 	public void handle(XdevAuthenticationNavigator navigator, ViewChangeEvent event);
-
-
-
+	
+	
+	
 	public static class Default implements UnauthenticatedNavigationRequestHandler
 	{
 		@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,18 +23,19 @@ package com.xdev.ui.persistence.handler;
 
 import java.util.Map;
 
-import com.vaadin.shared.ui.colorpicker.Color;
-import com.vaadin.ui.AbstractColorPicker;
+import com.vaadin.v7.shared.ui.colorpicker.Color;
+import com.vaadin.v7.ui.AbstractColorPicker;
 import com.xdev.ui.persistence.GuiPersistenceEntry;
 
 
+@SuppressWarnings("deprecation")
 public class AbstractColorPickerHandler extends AbstractComponentHandler<AbstractColorPicker>
 {
 	protected static final String	KEY_RED		= "red";
 	protected static final String	KEY_GREEN	= "green";
 	protected static final String	KEY_BLUE	= "blue";
-												
-												
+
+
 	@Override
 	public Class<AbstractColorPicker> handledType()
 	{

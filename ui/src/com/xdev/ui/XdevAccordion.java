@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,13 +35,13 @@ import com.vaadin.ui.Component;
  * .v-accordion-item-first and .v-accordion-item-caption styles.
  *
  * @author XDEV Software
- *		
+ *
  */
 public class XdevAccordion extends Accordion implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-	
-	
+
+
 	/**
 	 * Creates an empty accordion.
 	 */
@@ -49,8 +49,8 @@ public class XdevAccordion extends Accordion implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a new accordion containing the given components.
 	 *
@@ -62,8 +62,8 @@ public class XdevAccordion extends Accordion implements XdevComponent
 	{
 		super(components);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -72,8 +72,8 @@ public class XdevAccordion extends Accordion implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,15 +36,15 @@ import com.xdev.ui.XdevComponent;
  * Utility class for authorization purposes.
  *
  * @author XDEV Software
- * 		
+ * 
  */
 public final class Authorization
 {
 	private Authorization()
 	{
 	}
-	
-	
+
+
 	/**
 	 * Registers an {@link AuthorizationManager} in the current user session.
 	 *
@@ -56,8 +56,8 @@ public final class Authorization
 	{
 		UI.getCurrent().getSession().setAttribute(AuthorizationManager.class,authorizationManager);
 	}
-	
-	
+
+
 	/**
 	 * Returns the {@link AuthorizationManager} of the current user session.
 	 *
@@ -68,12 +68,11 @@ public final class Authorization
 	{
 		return UI.getCurrent().getSession().getAttribute(AuthorizationManager.class);
 	}
-	
-	
+
+
 	/**
-	 * Searches for a specific resource in the current
-	 * {@link AuthorizationManager}. If no resource is found an
-	 * {@link IllegalArgumentException} is thrown.
+	 * Searches for a specific resource in the current {@link AuthorizationManager}.
+	 * If no resource is found an {@link IllegalArgumentException} is thrown.
 	 *
 	 * @param name
 	 *            the resource's name to search for
@@ -99,8 +98,8 @@ public final class Authorization
 		}
 		return resource;
 	}
-	
-	
+
+
 	/**
 	 * Searches for a specific resource with {@link #getResource(String)}. If no
 	 * resource with the specific name is present a new one will be created and
@@ -122,8 +121,8 @@ public final class Authorization
 			return Resource.New(name);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Registers a {@link SubjectEvaluatingComponentExtension} with
 	 * <code>component</code>.
@@ -139,11 +138,11 @@ public final class Authorization
 	{
 		component.addExtension(SubjectEvaluatingComponentExtension.class,extension);
 	}
-	
-	
+
+
 	/**
-	 * Evaluates all {@link SubjectEvaluatingComponentExtension}s in the
-	 * component hierarchy of <code>root</code> against the current user.
+	 * Evaluates all {@link SubjectEvaluatingComponentExtension}s in the component
+	 * hierarchy of <code>root</code> against the current user.
 	 *
 	 * @param root
 	 *            the root component
@@ -161,12 +160,11 @@ public final class Authorization
 			evaluateComponents(root,Authentication.getUser());
 		}
 	}
-	
-	
+
+
 	/**
-	 * Evaluates all {@link SubjectEvaluatingComponentExtension}s in the
-	 * component hierarchy of <code>root</code> against the given
-	 * <code>subject</code>.
+	 * Evaluates all {@link SubjectEvaluatingComponentExtension}s in the component
+	 * hierarchy of <code>root</code> against the given <code>subject</code>.
 	 *
 	 * @param root
 	 *            the root component
@@ -179,7 +177,7 @@ public final class Authorization
 	public static void evaluateComponents(final XdevComponent root, final Subject subject)
 	{
 		evaluateComponent(root,subject);
-		
+
 		Iterable<?> children = null;
 		if(root instanceof HasComponents)
 		{
@@ -204,14 +202,14 @@ public final class Authorization
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Evaluates the {@link SubjectEvaluatingComponentExtension} of the
 	 * <code>component</code> against the given <code>subject</code>.
 	 * <p>
-	 * If no {@link SubjectEvaluatingComponentExtension} has been registered
-	 * with the <code>component</code> this method has no effect.
+	 * If no {@link SubjectEvaluatingComponentExtension} has been registered with
+	 * the <code>component</code> this method has no effect.
 	 *
 	 * @param component
 	 *            the component to check

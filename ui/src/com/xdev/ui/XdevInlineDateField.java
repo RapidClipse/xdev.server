@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,22 +23,23 @@ package com.xdev.ui;
 
 import java.util.Date;
 
-import com.vaadin.data.Property;
-import com.vaadin.ui.InlineDateField;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.ui.InlineDateField;
 
 
 /**
  * A date entry component, which displays the actual date selector inline.
  *
  * @author XDEV Software
- * 		
+ * 
  */
+@SuppressWarnings("deprecation")
 public class XdevInlineDateField extends InlineDateField implements XdevField
 {
 	private final Extensions	extensions		= new Extensions();
 	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-												
-												
+	
+	
 	/**
 	 *
 	 */
@@ -46,8 +47,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevField
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param dataSource
 	 * @throws IllegalArgumentException
@@ -56,8 +57,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevField
 	{
 		super(dataSource);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 * @param value
@@ -66,8 +67,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevField
 	{
 		super(caption,value);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 * @param dataSource
@@ -76,8 +77,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevField
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 */
@@ -85,8 +86,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevField
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -95,8 +96,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -105,8 +106,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -115,8 +116,8 @@ public class XdevInlineDateField extends InlineDateField implements XdevField
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

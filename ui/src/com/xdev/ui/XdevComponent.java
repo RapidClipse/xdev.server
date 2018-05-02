@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,34 +35,22 @@ public interface XdevComponent extends ExtendableObject
 	 * @see Component#isVisible()
 	 */
 	public boolean isVisible();
-
-
+	
+	
 	/**
 	 * @see Component#setVisible(boolean)
 	 */
 	public void setVisible(boolean visible);
-
-
+	
+	
 	/**
 	 * @see Component#isEnabled()
 	 */
 	public boolean isEnabled();
-
-
+	
+	
 	/**
 	 * @see Component#setEnabled(boolean)
 	 */
 	public void setEnabled(boolean enabled);
-
-
-	/**
-	 * @see Component#isReadOnly()
-	 */
-	public boolean isReadOnly();
-
-
-	/**
-	 * @see Component#setReadOnly(boolean)
-	 */
-	public void setReadOnly(boolean readOnly);
 }

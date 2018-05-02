@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,7 +27,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout.OutOfBoundsException;
 import com.vaadin.ui.GridLayout.OverlapsException;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.v7.ui.VerticalLayout;
 
 
 /**
@@ -38,13 +38,14 @@ import com.vaadin.ui.VerticalLayout;
  * is by default 100% wide.
  *
  * @author XDEV Software
- *		
+ *
  */
+@SuppressWarnings("deprecation")
 public class XdevVerticalLayout extends VerticalLayout implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-	
-	
+
+
 	/**
 	 * Constructs an empty VerticalLayout.
 	 */
@@ -52,14 +53,14 @@ public class XdevVerticalLayout extends VerticalLayout implements XdevComponent
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Constructs a VerticalLayout with the given components. The components are
 	 * added in the given order.
 	 *
 	 * @see AbstractOrderedLayout#addComponents(Component...)
-	 * 		
+	 *
 	 * @param children
 	 *            The components to add.
 	 */
@@ -68,14 +69,13 @@ public class XdevVerticalLayout extends VerticalLayout implements XdevComponent
 		super(children);
 	}
 	
-	
 	// init defaults
 	{
 		setMargin(true);
 		setSpacing(true);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -84,8 +84,8 @@ public class XdevVerticalLayout extends VerticalLayout implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -94,11 +94,11 @@ public class XdevVerticalLayout extends VerticalLayout implements XdevComponent
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
-	 * Add a component into this container. The component is added to the right
-	 * or under the previous component.
+	 * Add a component into this container. The component is added to the right or
+	 * under the previous component.
 	 *
 	 * @param component
 	 *            the component to be added.
@@ -111,8 +111,8 @@ public class XdevVerticalLayout extends VerticalLayout implements XdevComponent
 		addComponent(component);
 		setComponentAlignment(component,alignment);
 	}
-
-
+	
+	
 	public void setExpandRatios(final float... ratios)
 	{
 		for(int i = 0; i < ratios.length; i++)
@@ -120,8 +120,8 @@ public class XdevVerticalLayout extends VerticalLayout implements XdevComponent
 			setExpandRatio(getComponent(i),ratios[i]);
 		}
 	}
-
-
+	
+	
 	public void addSpacer()
 	{
 		if(!hasExpandingComponent())
@@ -131,8 +131,8 @@ public class XdevVerticalLayout extends VerticalLayout implements XdevComponent
 			setExpandRatio(spacer,1f);
 		}
 	}
-
-
+	
+	
 	public boolean hasExpandingComponent()
 	{
 		for(int column = 0, columnCount = getComponentCount(); column < columnCount; column++)
@@ -142,12 +142,12 @@ public class XdevVerticalLayout extends VerticalLayout implements XdevComponent
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
-
-
-
+	
+	
+	
 	protected static class Spacer extends CustomComponent
 	{
 		public Spacer()

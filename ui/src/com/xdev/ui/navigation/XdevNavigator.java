@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -52,49 +52,47 @@ import com.vaadin.ui.UI;
 public class XdevNavigator extends Navigator
 {
 	/**
-	 * Creates a navigator that is tracking the active view using URI fragments
-	 * of the {@link Page} containing the given UI and replacing the contents of
-	 * a {@link ComponentContainer} with the active view.
+	 * Creates a navigator that is tracking the active view using URI fragments of
+	 * the {@link Page} containing the given UI and replacing the contents of a
+	 * {@link ComponentContainer} with the active view.
 	 * <p>
 	 * All components of the container are removed each time before adding the
-	 * active {@link View}. Views must implement {@link Component} when using
-	 * this constructor.
+	 * active {@link View}. Views must implement {@link Component} when using this
+	 * constructor.
 	 * <p>
-	 * Navigation is automatically initiated after {@code UI.init()}Â if a
-	 * navigator was created. If at a later point changes are made to the
-	 * navigator, {@code navigator.navigateTo(navigator.getState())} may need to
-	 * be explicitly called to ensure the current view matches the navigation
-	 * state.
+	 * Navigation is automatically initiated after {@code UI.init()}Â if a navigator
+	 * was created. If at a later point changes are made to the navigator,
+	 * {@code navigator.navigateTo(navigator.getState())} may need to be explicitly
+	 * called to ensure the current view matches the navigation state.
 	 *
 	 * @param ui
 	 *            The UI to which this Navigator is attached.
 	 * @param container
-	 *            The ComponentContainer whose contents should be replaced with
-	 *            the active view on view change
+	 *            The ComponentContainer whose contents should be replaced with the
+	 *            active view on view change
 	 */
 	public XdevNavigator(final UI ui, final ComponentContainer container)
 	{
 		super(ui,container);
 	}
-
-
+	
+	
 	/**
 	 * Creates a navigator.
 	 * <p>
-	 * When a custom navigation state manager is not needed, use one of the
-	 * other constructors which use a URI fragment based state manager.
+	 * When a custom navigation state manager is not needed, use one of the other
+	 * constructors which use a URI fragment based state manager.
 	 * <p>
-	 * Navigation is automatically initiated after {@code UI.init()}Â if a
-	 * navigator was created. If at a later point changes are made to the
-	 * navigator, {@code navigator.navigateTo(navigator.getState())} may need to
-	 * be explicitly called to ensure the current view matches the navigation
-	 * state.
+	 * Navigation is automatically initiated after {@code UI.init()}Â if a navigator
+	 * was created. If at a later point changes are made to the navigator,
+	 * {@code navigator.navigateTo(navigator.getState())} may need to be explicitly
+	 * called to ensure the current view matches the navigation state.
 	 *
 	 * @param ui
 	 *            The UI to which this Navigator is attached.
 	 * @param stateManager
-	 *            The NavigationStateManager keeping track of the active view
-	 *            and enabling bookmarking and direct navigation
+	 *            The NavigationStateManager keeping track of the active view and
+	 *            enabling bookmarking and direct navigation
 	 * @param display
 	 *            The ViewDisplay used to display the views handled by this
 	 *            navigator
@@ -104,20 +102,19 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,stateManager,display);
 	}
-
-
+	
+	
 	/**
-	 * Creates a navigator that is tracking the active view using URI fragments
-	 * of the {@link Page} containing the given UI and replacing the contents of
-	 * a {@link SingleComponentContainer} with the active view.
+	 * Creates a navigator that is tracking the active view using URI fragments of
+	 * the {@link Page} containing the given UI and replacing the contents of a
+	 * {@link SingleComponentContainer} with the active view.
 	 * <p>
 	 * Views must implement {@link Component} when using this constructor.
 	 * <p>
-	 * Navigation is automatically initiated after {@code UI.init()}Â if a
-	 * navigator was created. If at a later point changes are made to the
-	 * navigator, {@code navigator.navigateTo(navigator.getState())} may need to
-	 * be explicitly called to ensure the current view matches the navigation
-	 * state.
+	 * Navigation is automatically initiated after {@code UI.init()}Â if a navigator
+	 * was created. If at a later point changes are made to the navigator,
+	 * {@code navigator.navigateTo(navigator.getState())} may need to be explicitly
+	 * called to ensure the current view matches the navigation state.
 	 *
 	 * @param ui
 	 *            The UI to which this Navigator is attached.
@@ -129,17 +126,16 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,container);
 	}
-
-
+	
+	
 	/**
-	 * Creates a navigator that is tracking the active view using URI fragments
-	 * of the {@link Page} containing the given UI.
+	 * Creates a navigator that is tracking the active view using URI fragments of
+	 * the {@link Page} containing the given UI.
 	 * <p>
-	 * Navigation is automatically initiated after {@code UI.init()}Â if a
-	 * navigator was created. If at a later point changes are made to the
-	 * navigator, {@code navigator.navigateTo(navigator.getState())} may need to
-	 * be explicitly called to ensure the current view matches the navigation
-	 * state.
+	 * Navigation is automatically initiated after {@code UI.init()}Â if a navigator
+	 * was created. If at a later point changes are made to the navigator,
+	 * {@code navigator.navigateTo(navigator.getState())} may need to be explicitly
+	 * called to ensure the current view matches the navigation state.
 	 *
 	 * @param ui
 	 *            The UI to which this Navigator is attached.
@@ -150,8 +146,8 @@ public class XdevNavigator extends Navigator
 	{
 		super(ui,display);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -159,17 +155,16 @@ public class XdevNavigator extends Navigator
 	public void navigateTo(final String navigationState)
 	{
 		/*
-		 * UI#doInit initialized the navigator with its default state. If no
-		 * view is set the state is null and an IllegalArgumentException is
-		 * thrown.
+		 * UI#doInit initialized the navigator with its default state. If no view is set
+		 * the state is null and an IllegalArgumentException is thrown.
 		 */
 		if(navigationState != null)
 		{
 			super.navigateTo(navigationState);
 		}
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -179,20 +174,20 @@ public class XdevNavigator extends Navigator
 	{
 		super.init(ui,new XdevNavigationStateManager(stateManager),display);
 	}
-
-
-
+	
+	
+	
 	private static class XdevNavigationStateManager implements NavigationStateManager
 	{
 		private final NavigationStateManager delegate;
-
-
+		
+		
 		public XdevNavigationStateManager(final NavigationStateManager delegate)
 		{
 			this.delegate = delegate;
 		}
-
-
+		
+		
 		@Override
 		public String getState()
 		{
@@ -208,15 +203,15 @@ public class XdevNavigator extends Navigator
 				return "";
 			}
 		}
-
-
+		
+		
 		@Override
 		public void setState(final String state)
 		{
 			this.delegate.setState(state);
 		}
-
-
+		
+		
 		@Override
 		public void setNavigator(final Navigator navigator)
 		{

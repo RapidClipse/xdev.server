@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
-import com.vaadin.event.FieldEvents.FocusNotifier;
 import com.vaadin.server.DefaultErrorHandler;
 import com.vaadin.server.ErrorHandler;
 import com.vaadin.server.ErrorHandlingRunnable;
@@ -40,6 +39,7 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.UIDetachedException;
+import com.vaadin.v7.event.FieldEvents.FocusNotifier;
 import com.xdev.communication.Conversationables;
 import com.xdev.ui.event.FocusChangeEvent;
 import com.xdev.ui.event.FocusChangeListener;
@@ -79,6 +79,7 @@ import com.xdev.util.concurrent.XdevExecutorService;
  */
 // https://www.xdevissues.com/browse/XWS-666
 // @PreserveOnRefresh
+@SuppressWarnings("deprecation")
 public abstract class XdevUI extends UI implements XdevComponent
 {
 	/**

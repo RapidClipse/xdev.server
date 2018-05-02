@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.v7.data.util.converter.Converter;
 import com.xdev.ui.XdevField;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
@@ -54,25 +54,26 @@ import com.xdev.util.CaptionUtils;
  *
  * @author XDEV Software
  */
+@SuppressWarnings("deprecation")
 public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 {
 	/**
 	 *
 	 */
 	private static final long	serialVersionUID				= -836170197198239894L;
-
+	
 	private final Extensions	extensions						= new Extensions();
 	private boolean				persistValue					= PERSIST_VALUE_DEFAULT;
-
+	
 	private boolean				autoUpdateRequiredProperties	= true;
-
-
+	
+	
 	public XdevTable()
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Creates a new empty table with caption.
 	 *
@@ -82,21 +83,21 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public XdevTable(final int pageLength)
 	{
 		super();
 		super.setPageLength(pageLength);
 	}
-
+	
 	// init defaults
 	{
 		setSelectable(true);
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -105,8 +106,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -115,8 +116,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -125,8 +126,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -135,8 +136,8 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 	{
 		this.persistValue = persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -147,11 +148,11 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-
+		
 		this.setContainerDataSource(container);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -164,11 +165,11 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 				nestedProperties);
 		container.setRequiredProperties(getVisibleColumns());
 		container.addAll(data);
-
+		
 		try
 		{
 			this.autoUpdateRequiredProperties = false;
-
+			
 			this.setContainerDataSource(container);
 		}
 		finally
@@ -176,18 +177,18 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 			this.autoUpdateRequiredProperties = true;
 		}
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see com.vaadin.ui.Table#setVisibleColumns(java.lang.Object[])
+	 * @see com.vaadin.v7.ui.Table#setVisibleColumns(java.lang.Object[])
 	 */
 	@Override
 	public void setVisibleColumns(final Object... visibleColumns)
 	{
 		super.setVisibleColumns(visibleColumns);
-
+		
 		if(this.autoUpdateRequiredProperties)
 		{
 			final XdevBeanContainer<T> beanContainer = getBeanContainerDataSource();
@@ -197,16 +198,16 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 			}
 		}
 	}
-
-
+	
+	
 	@Override
 	public void setPageLength(final int pageLength)
 	{
 		// FIXME property change to create new model!
 		super.setPageLength(pageLength);
 	}
-
-
+	
+	
 	@Override
 	public String getColumnHeader(final Object propertyId)
 	{
@@ -222,23 +223,23 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 		}
 		return header;
 	}
-
-
+	
+	
 	@Override
 	protected boolean hasConverter(final Object propertyId)
 	{
 		return super.hasConverter(propertyId) || getDefaultConverter(propertyId) != null;
 	}
-
-
+	
+	
 	@Override
 	public Converter<String, Object> getConverter(final Object propertyId)
 	{
 		final Converter<String, Object> converter = super.getConverter(propertyId);
 		return converter != null ? converter : getDefaultConverter(propertyId);
 	}
-
-
+	
+	
 	/**
 	 * since 3.0
 	 */
@@ -252,7 +253,7 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 		{
 			return null;
 		}
-
+		
 		switch(type.getName())
 		{
 			case "java.lang.Boolean":
@@ -260,10 +261,10 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 			case "java.lang.Void":
 				return null;
 		}
-
+		
 		return TO_CAPTION_CONVERTER;
 	}
-
+	
 	/**
 	 * since 3.0
 	 */
@@ -276,23 +277,23 @@ public class XdevTable<T> extends AbstractBeanTable<T> implements XdevField
 		{
 			return value == null ? "" : CaptionUtils.resolveCaption(value);
 		}
-
-
+		
+		
 		@Override
 		public Object convertToModel(final String value, final Class<? extends Object> targetType,
 				final Locale locale) throws Converter.ConversionException
 		{
 			return null;
 		}
-
-
+		
+		
 		@Override
 		public Class<Object> getModelType()
 		{
 			return Object.class;
 		}
-
-
+		
+		
 		@Override
 		public Class<String> getPresentationType()
 		{

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,8 +21,8 @@
 package com.xdev.ui;
 
 
-import com.vaadin.shared.ui.colorpicker.Color;
-import com.vaadin.ui.ColorPicker;
+import com.vaadin.v7.shared.ui.colorpicker.Color;
+import com.vaadin.v7.ui.ColorPicker;
 
 
 /**
@@ -30,14 +30,15 @@ import com.vaadin.ui.ColorPicker;
  * component.
  *
  * @author XDEV Software
- * 		
+ * 
  */
+@SuppressWarnings("deprecation")
 public class XdevColorPicker extends ColorPicker implements XdevField
 {
 	private final Extensions	extensions		= new Extensions();
 	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-												
-												
+	
+	
 	/**
 	 * Instantiates a new color picker.
 	 */
@@ -45,8 +46,8 @@ public class XdevColorPicker extends ColorPicker implements XdevField
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Instantiates a new color picker.
 	 *
@@ -57,8 +58,8 @@ public class XdevColorPicker extends ColorPicker implements XdevField
 	{
 		super(popupCaption);
 	}
-
-
+	
+	
 	/**
 	 * Instantiates a new color picker.
 	 *
@@ -71,8 +72,8 @@ public class XdevColorPicker extends ColorPicker implements XdevField
 	{
 		super(popupCaption,initialColor);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -81,8 +82,8 @@ public class XdevColorPicker extends ColorPicker implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -91,8 +92,8 @@ public class XdevColorPicker extends ColorPicker implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -101,8 +102,8 @@ public class XdevColorPicker extends ColorPicker implements XdevField
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

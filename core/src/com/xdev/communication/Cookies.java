@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,39 +43,39 @@ public final class Cookies
 	{
 		return VaadinSession.getCurrent().getAttribute(Cookies.class);
 	}
-
+	
 	private Cookie[] cookies;
-
-
+	
+	
 	Cookies(final VaadinSession vs)
 	{
 		vs.addRequestHandler((session, request, response) -> {
-
+			
 			this.cookies = request.getCookies();
-
+			
 			return false;
 		});
 	}
-
-
+	
+	
 	public void setCookie(final String key, final String value)
 	{
 		setCookie(key,value,"/",null);
 	}
-
-
+	
+	
 	public void setCookie(final String key, final String value, final Duration lifespan)
 	{
 		setCookie(key,value,"/",lifespan);
 	}
-
-
+	
+	
 	public void setCookie(final String key, final String value, final String path)
 	{
 		setCookie(key,value,path,null);
 	}
-
-
+	
+	
 	public void setCookie(final String key, final String value, final String path,
 			final Duration lifespan)
 	{
@@ -86,14 +86,14 @@ public final class Cookies
 				+ "document.cookie=\"%s=%s;path=%s\"+expires;",millis,key,value,path);
 		JavaScript.getCurrent().execute(js);
 	}
-
-
+	
+	
 	public void deleteCookie(final String key)
 	{
 		setCookie(key,"");
 	}
-
-
+	
+	
 	public String getCookie(final String key)
 	{
 		final Cookie[] cookies = this.cookies;
@@ -107,7 +107,7 @@ public final class Cookies
 				}
 			}
 		}
-
+		
 		return null;
 	}
 }

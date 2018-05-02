@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,13 +24,14 @@ package com.xdev.security.converter;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.v7.data.util.converter.Converter;
 
 
 /**
  * @author XDEV Software
  * @since 3.1
  */
+@SuppressWarnings("deprecation")
 public class StringToByteArrayConverter implements Converter<String, byte[]>
 {
 	@Override
@@ -41,11 +42,11 @@ public class StringToByteArrayConverter implements Converter<String, byte[]>
 		{
 			return value.getBytes(StandardCharsets.UTF_8);
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public String convertToPresentation(final byte[] value,
 			final Class<? extends String> targetType, final Locale locale)
@@ -55,18 +56,18 @@ public class StringToByteArrayConverter implements Converter<String, byte[]>
 		{
 			return new String(value,StandardCharsets.UTF_8);
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public Class<byte[]> getModelType()
 	{
 		return byte[].class;
 	}
-	
-	
+
+
 	@Override
 	public Class<String> getPresentationType()
 	{

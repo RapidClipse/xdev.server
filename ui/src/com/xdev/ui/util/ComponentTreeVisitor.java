@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,7 +27,7 @@ import com.vaadin.ui.Component;
 /**
  *
  * @author XDEV Software Corp.
- *		
+ * 
  * @param <T>
  *            The return type
  * @param <C>
@@ -37,16 +37,16 @@ import com.vaadin.ui.Component;
 public interface ComponentTreeVisitor<T, C extends Component>
 {
 	/**
-	 * This method is invoked for every visitable component in the component
-	 * tree hierarchy which fits the type C.
+	 * This method is invoked for every visitable component in the component tree
+	 * hierarchy which fits the type C.
 	 *
 	 *
 	 * @param cpn
 	 *            The current visited component
-	 *			
-	 * @return a value != <code>null</code> means the visitation should be
-	 *         ended, <code>null</code> means the visitation continues
+	 * 
+	 * @return a value != <code>null</code> means the visitation should be ended,
+	 *         <code>null</code> means the visitation continues
 	 */
-	
+
 	public T visit(C cpn);
 }

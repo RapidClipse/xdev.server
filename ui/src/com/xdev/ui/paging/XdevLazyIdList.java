@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,10 +29,11 @@ import java.util.Map;
 
 import org.vaadin.addons.lazyquerycontainer.QueryView;
 
-import com.vaadin.data.Item;
+import com.vaadin.v7.data.Item;
 
 
-public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
+@SuppressWarnings("deprecation")
+public class XdevLazyIdList<T> extends AbstractList<T> implements Serializable
 {
 	/**
 	 * Java serialization version UID.
@@ -47,12 +48,12 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 	 */
 	private final Object				idPropertyId;
 	/**
-	 * Map containing index to item ID mapping for IDs already loaded through
-	 * this list.
+	 * Map containing index to item ID mapping for IDs already loaded through this
+	 * list.
 	 */
 	private final Map<Object, Integer>	idIndexMap			= new HashMap<Object, Integer>();
-
-
+	
+	
 	/**
 	 * Constructor which sets composite LazyQueryView and ID of the item ID
 	 * property.
@@ -67,8 +68,8 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 		this.lazyQueryView = lazyQueryView;
 		this.idPropertyId = idPropertyId;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -77,8 +78,8 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 	{
 		return this.lazyQueryView.size();
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -92,11 +93,11 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 			itemIDArray[i] = this.lazyQueryView.getItem(i).getItemProperty(this.idPropertyId)
 					.getValue();
 		}
-
+		
 		return (T[])itemIDArray;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -105,8 +106,8 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 	{
 		throw new UnsupportedOperationException();
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -118,7 +119,7 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 		{
 			throw new IndexOutOfBoundsException();
 		}
-
+		
 		final Item item = this.lazyQueryView.getItem(index);
 		if(item != null)
 		{
@@ -136,8 +137,8 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 		}
 		return null;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -145,8 +146,8 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 	{
 		throw new UnsupportedOperationException();
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -183,8 +184,8 @@ public class XdevLazyIdList<T> extends AbstractList<T>implements Serializable
 		// Not found.
 		return -1;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

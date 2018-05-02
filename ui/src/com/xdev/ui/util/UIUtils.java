@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,15 +29,15 @@ import com.vaadin.ui.HasComponents;
 
 /**
  * @author XDEV Software
- *		
+ * 
  */
 public final class UIUtils
 {
 	private UIUtils()
 	{
 	}
-	
-	
+
+
 	public static <T> T getNextParent(final Component c, final Class<T> type)
 	{
 		Component parent = c;
@@ -47,14 +47,14 @@ public final class UIUtils
 			{
 				return type.cast(parent);
 			}
-			
+
 			parent = parent.getParent();
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Shortcut for <code>lookupComponentTree(parent,visitor,null)</code>.
 	 *
@@ -67,14 +67,14 @@ public final class UIUtils
 	 * @return
 	 * @see {@link ComponentTreeVisitor}
 	 */
-	
+
 	public static <T> T lookupComponentTree(final Component parent,
 			final ComponentTreeVisitor<T, Component> visitor)
 	{
 		return lookupComponentTree(parent,visitor,null);
 	}
-	
-	
+
+
 	/**
 	 * Walks through the <code>parent</code>'s component tree hierarchy.
 	 * <p>
@@ -82,8 +82,8 @@ public final class UIUtils
 	 * parameter (or type is <code>null</code>), the <code>visitor</code>'s
 	 * {@link ComponentTreeVisitor#visit(Component)} is invoked.
 	 * <p>
-	 * If the <code>visit</code> method returns a value != <code>null</code>,
-	 * the visitation ends and that value is returned.
+	 * If the <code>visit</code> method returns a value != <code>null</code>, the
+	 * visitation ends and that value is returned.
 	 *
 	 *
 	 * @param <T>
@@ -99,18 +99,18 @@ public final class UIUtils
 	 * @return
 	 * @see {@link ComponentTreeVisitor}
 	 */
-	
+
 	@SuppressWarnings("unchecked")
 	public static <T, C extends Component> T lookupComponentTree(final Component parent,
 			final ComponentTreeVisitor<T, C> visitor, final Class<C> type)
 	{
 		T value = null;
-		
+
 		if(type == null || type.isInstance(parent))
 		{
 			value = visitor.visit((C)parent);
 		}
-		
+
 		if(value == null && parent instanceof HasComponents)
 		{
 			final HasComponents hasComponents = (HasComponents)parent;
@@ -128,7 +128,7 @@ public final class UIUtils
 				}
 			}
 		}
-		
+
 		return value;
 	}
 }

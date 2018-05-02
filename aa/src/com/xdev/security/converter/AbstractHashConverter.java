@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 
 import org.apache.shiro.codec.Hex;
 
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.v7.data.util.converter.Converter;
 import com.xdev.security.authentication.jpa.HashStrategy;
 
 
@@ -34,20 +34,21 @@ import com.xdev.security.authentication.jpa.HashStrategy;
  * @author XDEV Software
  * @since 3.1
  */
+@SuppressWarnings("deprecation")
 public class AbstractHashConverter implements Converter<String, String>
 {
 	private final Supplier<HashStrategy>	hashStrategySupplier;
 	private final int						hashLength;
-	
-	
+
+
 	protected AbstractHashConverter(final Supplier<HashStrategy> hashStrategySupplier,
 			final int hashLength)
 	{
 		this.hashStrategySupplier = hashStrategySupplier;
 		this.hashLength = hashLength;
 	}
-	
-	
+
+
 	@Override
 	public String convertToModel(final String value, final Class<? extends String> targetType,
 			final Locale locale) throws Converter.ConversionException
@@ -56,18 +57,18 @@ public class AbstractHashConverter implements Converter<String, String>
 		{
 			return null;
 		}
-		
+
 		final byte[] bytes = value.getBytes();
-		
+
 		if(bytes.length == this.hashLength)
 		{
 			return value;
 		}
-
+		
 		return Hex.encodeToString(this.hashStrategySupplier.get().hashPassword(bytes));
 	}
-	
-	
+
+
 	@Override
 	public String convertToPresentation(final String value,
 			final Class<? extends String> targetType, final Locale locale)
@@ -75,15 +76,15 @@ public class AbstractHashConverter implements Converter<String, String>
 	{
 		return value;
 	}
-	
-	
+
+
 	@Override
 	public Class<String> getModelType()
 	{
 		return String.class;
 	}
-	
-	
+
+
 	@Override
 	public Class<String> getPresentationType()
 	{

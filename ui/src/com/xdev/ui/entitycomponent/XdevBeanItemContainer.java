@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,8 +24,8 @@ package com.xdev.ui.entitycomponent;
 import java.util.Collection;
 import java.util.List;
 
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.v7.data.util.BeanItem;
+import com.vaadin.v7.data.util.BeanItemContainer;
 import com.xdev.util.DTOUtils;
 import com.xdev.util.JPAEntityIDResolver;
 import com.xdev.util.JPAMetaDataUtils;
@@ -35,12 +35,13 @@ import com.xdev.util.JPAMetaDataUtils;
  * @author XDEV Software (JW,FH)
  *
  */
+@SuppressWarnings("deprecation")
 public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		implements XdevBeanContainer<BEANTYPE>
 {
 	private Object[] requiredProperties;
-
-
+	
+	
 	/**
 	 * @param type
 	 * @throws IllegalArgumentException
@@ -49,8 +50,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		super(type);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -61,8 +62,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		this.removeAllItems();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -73,8 +74,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		// no need to synchronize
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -92,11 +93,11 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 			removeItem(id);
 			return addBeanAt(index,newBean);
 		}
-
+		
 		return null;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -108,27 +109,26 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	public void setRequiredProperties(final Object... propertyIDs)
 	{
 		this.requiredProperties = propertyIDs;
-
+		
 		for(final BEANTYPE bean : getAllItemIds())
 		{
 			preload(bean);
 		}
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * com.xdev.ui.entitycomponent.XdevBeanContainer#getRequiredProperties()
+	 * @see com.xdev.ui.entitycomponent.XdevBeanContainer#getRequiredProperties()
 	 */
 	@Override
 	public Object[] getRequiredProperties()
 	{
 		return this.requiredProperties;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -143,8 +143,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 			this.removeItem(bean);
 		}
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -155,13 +155,12 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		return super.getAllItemIds();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * com.vaadin.data.util.AbstractBeanContainer#getUnfilteredItem(java.lang.
+	 * @see com.vaadin.data.util.AbstractBeanContainer#getUnfilteredItem(java.lang.
 	 * Object)
 	 */
 	@Override
@@ -169,8 +168,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 	{
 		return super.getUnfilteredItem(itemId);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -185,8 +184,8 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		preload(item.getBean());
 		return super.internalAddItemAfter(previousItemId,newItemId,item,filter);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -201,26 +200,26 @@ public class XdevBeanItemContainer<BEANTYPE> extends BeanItemContainer<BEANTYPE>
 		preload(item.getBean());
 		return super.internalAddItemAtEnd(newItemId,item,filter);
 	}
-
-
+	
+	
 	protected void preload(final BEANTYPE bean)
 	{
 		if(bean == null || !JPAMetaDataUtils.isManaged(bean.getClass()))
 		{
 			return;
 		}
-
+		
 		if(this.requiredProperties == null || this.requiredProperties.length == 0)
 		{
 			return;
 		}
-
+		
 		final String[] properties = new String[this.requiredProperties.length];
 		for(int i = 0; i < properties.length; i++)
 		{
 			properties[i] = this.requiredProperties[i].toString();
 		}
-
+		
 		DTOUtils.preload(bean,JPAEntityIDResolver.getInstance(),properties);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ package com.xdev.security.authorization.ui;
 
 
 import com.xdev.ui.XdevComponent;
+import com.xdev.ui.XdevField;
 
 
 /**
@@ -58,15 +59,18 @@ public interface SubjectEvaluationStrategy
 																};
 
 	/**
-	 * Default strategy which sets read only mode for the component depending on
-	 * the evaluation's result.
+	 * Default strategy which sets read only mode for the component depending on the
+	 * evaluation's result.
 	 */
 	public final static SubjectEvaluationStrategy	READ_ONLY	= (component, hasPermissions) -> {
-																	if(component
-																			.isReadOnly() == hasPermissions)
+																	if(component instanceof XdevField)
 																	{
-																		component.setReadOnly(
-																				!hasPermissions);
+																		final XdevField field = (XdevField)component;
+																		if(field.isReadOnly() == hasPermissions)
+																		{
+																			field.setReadOnly(
+																					!hasPermissions);
+																		}
 																	}
 																};
 
@@ -77,8 +81,8 @@ public interface SubjectEvaluationStrategy
 	 * @param component
 	 *            the component to change
 	 * @param hasPermissions
-	 *            <code>true</code> if the subject had all necessary
-	 *            permissions, <code>false</code> otherwise
+	 *            <code>true</code> if the subject had all necessary permissions,
+	 *            <code>false</code> otherwise
 	 */
 	public void subjectEvaluated(XdevComponent component, boolean hasPermissions);
 }

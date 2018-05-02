@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,16 +34,17 @@ import com.xdev.ui.event.ActionEvent;
  * System button component.
  *
  * @author XDEV Software
- *		
+ *
  */
+@SuppressWarnings("deprecation")
 public class XdevNativeButton extends NativeButton implements XdevComponent, ActionComponent
 {
 	private final Extensions		extensions	= new Extensions();
 	private Action					action;
 	private PropertyChangeListener	actionPropertyChangeListener;
 	private ClickListener			actionClickListener;
-									
-									
+	
+	
 	/**
 	 *
 	 */
@@ -51,8 +52,8 @@ public class XdevNativeButton extends NativeButton implements XdevComponent, Act
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 * @param listener
@@ -61,8 +62,8 @@ public class XdevNativeButton extends NativeButton implements XdevComponent, Act
 	{
 		super(caption,listener);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 */
@@ -70,8 +71,8 @@ public class XdevNativeButton extends NativeButton implements XdevComponent, Act
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public XdevNativeButton(final Action action)
 	{
 		setAction(action);
@@ -96,8 +97,8 @@ public class XdevNativeButton extends NativeButton implements XdevComponent, Act
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -113,9 +114,9 @@ public class XdevNativeButton extends NativeButton implements XdevComponent, Act
 				removeClickListener(this.actionClickListener);
 				this.actionClickListener = null;
 			}
-
+			
 			this.action = action;
-
+			
 			if(action != null)
 			{
 				Utils.setComponentPropertiesFromAction(this,action);
@@ -127,8 +128,8 @@ public class XdevNativeButton extends NativeButton implements XdevComponent, Act
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

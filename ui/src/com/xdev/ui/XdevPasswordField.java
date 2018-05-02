@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,8 +21,8 @@
 package com.xdev.ui;
 
 
-import com.vaadin.data.Property;
-import com.vaadin.ui.PasswordField;
+import com.vaadin.v7.data.Property;
+import com.vaadin.v7.ui.PasswordField;
 
 
 /**
@@ -30,14 +30,15 @@ import com.vaadin.ui.PasswordField;
  * entered text is not displayed on the screen.
  *
  * @author XDEV Software
- * 		
+ * 
  */
+@SuppressWarnings("deprecation")
 public class XdevPasswordField extends PasswordField implements XdevField
 {
 	private final Extensions	extensions		= new Extensions();
 	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-												
-												
+	
+	
 	/**
 	 * Constructs an empty PasswordField.
 	 */
@@ -45,8 +46,8 @@ public class XdevPasswordField extends PasswordField implements XdevField
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a PasswordField with given property data source.
 	 *
@@ -57,8 +58,8 @@ public class XdevPasswordField extends PasswordField implements XdevField
 	{
 		super(dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a PasswordField with given caption and property data source.
 	 *
@@ -71,8 +72,8 @@ public class XdevPasswordField extends PasswordField implements XdevField
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a PasswordField with given value and caption.
 	 *
@@ -85,8 +86,8 @@ public class XdevPasswordField extends PasswordField implements XdevField
 	{
 		super(caption,value);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a PasswordField with given caption.
 	 *
@@ -97,8 +98,8 @@ public class XdevPasswordField extends PasswordField implements XdevField
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -107,8 +108,8 @@ public class XdevPasswordField extends PasswordField implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -117,8 +118,8 @@ public class XdevPasswordField extends PasswordField implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -127,8 +128,8 @@ public class XdevPasswordField extends PasswordField implements XdevField
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

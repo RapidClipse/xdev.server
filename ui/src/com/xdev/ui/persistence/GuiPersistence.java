@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,7 +31,7 @@ import com.vaadin.ui.Component;
  * @see #load(Component, String, String)
  * @see #persist(Component, String)
  * @see #restore(Component, String, GuiPersistentStates)
- *		
+ * 
  * @author XDEV Software
  */
 public final class GuiPersistence
@@ -39,8 +39,8 @@ public final class GuiPersistence
 	private GuiPersistence()
 	{
 	}
-	
-	
+
+
 	/**
 	 * Persists the state of <code>component</code> and its sub-components and
 	 * returns the serialized data.
@@ -56,8 +56,8 @@ public final class GuiPersistence
 	{
 		return GuiPersistenceSerializer.DEFAULT.serialize(persist(component,name));
 	}
-	
-	
+
+
 	/**
 	 * Persists the state of <code>component</code> and its sub-components.
 	 *
@@ -72,8 +72,8 @@ public final class GuiPersistence
 	{
 		return GuiPersistenceAnalyzer.New().createPersister(name,component).persistState();
 	}
-	
-	
+
+
 	/**
 	 * Restores a previously saved state of the <code>component</code> and its
 	 * sub-components.
@@ -90,8 +90,8 @@ public final class GuiPersistence
 	{
 		restore(component,name,GuiPersistenceSerializer.DEFAULT.deserialize(data));
 	}
-	
-	
+
+
 	/**
 	 * Restores a previously saved state of the <code>component</code> and its
 	 * sub-components.

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,10 +25,11 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.vaadin.ui.Table;
+import com.vaadin.v7.ui.Table;
 import com.xdev.ui.persistence.GuiPersistenceEntry;
 
 
+@SuppressWarnings("deprecation")
 public class TableHandler extends AbstractFieldHandler<Table>
 {
 	protected static final String	KEY_SORT_CONTAINER_PROPERTY_ID	= "sortContainerPropertyId";
@@ -36,27 +37,27 @@ public class TableHandler extends AbstractFieldHandler<Table>
 	protected static final String	KEY_IS_COLLAPSED				= "isCollapsed";
 	protected static final String	KEY_IS_ASCENDING				= "isAscending";
 	protected static final String	KEY_COLUMN_WIDTH				= "columnWidth";
-
-
+	
+	
 	@Override
 	public Class<Table> handledType()
 	{
 		return Table.class;
 	}
-
-
+	
+	
 	@Override
 	protected void addEntryValues(final Map<String, Object> entryValues, final Table component)
 	{
 		super.addEntryValues(entryValues,component);
-
+		
 		entryValues.put(KEY_SORT_CONTAINER_PROPERTY_ID,component.getSortContainerPropertyId());
-
+		
 		final boolean[] comVisCol = new boolean[component.getVisibleColumns().length];
 		final int[] widthCol = new int[component.getVisibleColumns().length];
 		final Object[] allColumns = component.getVisibleColumns();
 		int i = 0;
-
+		
 		for(final Object o : allColumns)
 		{
 			widthCol[i] = component.getColumnWidth(allColumns[i]);
@@ -70,29 +71,29 @@ public class TableHandler extends AbstractFieldHandler<Table>
 			}
 			i++;
 		}
-
+		
 		entryValues.put(KEY_VISIBLE_COLUMNS,allColumns);
 		entryValues.put(KEY_IS_COLLAPSED,comVisCol);
 		entryValues.put(KEY_COLUMN_WIDTH,widthCol);
 		entryValues.put(KEY_IS_ASCENDING,component.isSortAscending());
 	}
-
-
+	
+	
 	@Override
 	public void restore(final Table component, final GuiPersistenceEntry entry)
 	{
 		super.restore(component,entry);
-
+		
 		component.setSortContainerPropertyId(entry.value(KEY_SORT_CONTAINER_PROPERTY_ID));
-
+		
 		final boolean[] comVisCol = (boolean[])entry.value(KEY_IS_COLLAPSED);
 		final int[] widthCol = (int[])entry.value(KEY_COLUMN_WIDTH);
 		final Object[] namesCol = (Object[])entry.value(KEY_VISIBLE_COLUMNS);
-
+		
 		try
 		{
 			component.setVisibleColumns(namesCol);
-
+			
 			if(component.isColumnCollapsingAllowed())
 			{
 				for(int i = 0; i < comVisCol.length; i++)

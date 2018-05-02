@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,8 +21,8 @@
 package com.xdev.ui;
 
 
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.server.Resource;
+import com.vaadin.v7.data.util.BeanItem;
 import com.xdev.ui.entitycomponent.BeanComponent;
 import com.xdev.util.Caption;
 import com.xdev.util.CaptionResolver;
@@ -33,6 +33,7 @@ import com.xdev.util.CaptionUtils;
  * @author XDEV Software
  * @since 3.0.2
  */
+@SuppressWarnings("deprecation")
 public interface XdevSelect<T> extends XdevField, BeanComponent<T>
 {
 	/**
@@ -45,15 +46,15 @@ public interface XdevSelect<T> extends XdevField, BeanComponent<T>
 	 *            the itemCaptionFromAnnotation to set
 	 */
 	public void setItemCaptionFromAnnotation(final boolean itemCaptionFromAnnotation);
-
-
+	
+	
 	/**
 	 * @return if the item's caption should be derived from its {@link Caption}
 	 *         annotation
 	 */
 	public boolean isItemCaptionFromAnnotation();
-
-
+	
+	
 	/**
 	 * Sets a user defined caption value for the items to display.
 	 *
@@ -63,47 +64,47 @@ public interface XdevSelect<T> extends XdevField, BeanComponent<T>
 	 *            the itemCaptionValue to set
 	 */
 	public void setItemCaptionValue(final String itemCaptionValue);
-
-
+	
+	
 	/**
 	 * Returns the user defined caption value for the items to display
 	 *
 	 * @return the itemCaptionValue
 	 */
 	public String getItemCaptionValue();
-
-
+	
+	
 	/**
 	 * @param itemCaptionProvider
 	 *            the itemCaptionProvider to set
 	 * @since 3.0.2
 	 */
 	public void setItemCaptionProvider(final ItemCaptionProvider<T> itemCaptionProvider);
-
-
+	
+	
 	/**
 	 * @return the itemCaptionProvider
 	 * @since 3.0.2
 	 */
 	public ItemCaptionProvider<T> getItemCaptionProvider();
-
-
+	
+	
 	/**
 	 * @param itemIconProvider
 	 *            the itemIconProvider to set
 	 * @since 3.0.2
 	 */
 	public void setItemIconProvider(final ItemIconProvider<T> itemIconProvider);
-
-
+	
+	
 	/**
 	 * @return the itemIconProvider
 	 * @since 3.0.2
 	 */
 	public ItemIconProvider<T> getItemIconProvider();
-
-
-
+	
+	
+	
 	public final static class SelectUtils
 	{
 		private static <T> T getBean(final XdevSelect<T> select, final Object itemId)
@@ -111,8 +112,8 @@ public interface XdevSelect<T> extends XdevField, BeanComponent<T>
 			final BeanItem<T> item = select.getBeanItem(itemId);
 			return item != null ? item.getBean() : null;
 		}
-
-
+		
+		
 		public static <T> String getItemCaption(final XdevSelect<T> select, final Object itemId)
 		{
 			if(itemId != null && select.getBeanContainerDataSource() != null)
@@ -126,7 +127,7 @@ public interface XdevSelect<T> extends XdevField, BeanComponent<T>
 				{
 					return caption;
 				}
-
+				
 				String itemCaptionValue;
 				if(select.isItemCaptionFromAnnotation() && (bean = getBean(select,itemId)) != null)
 				{
@@ -141,11 +142,11 @@ public interface XdevSelect<T> extends XdevField, BeanComponent<T>
 					return CaptionUtils.resolveCaption(bean,itemCaptionValue,select.getLocale());
 				}
 			}
-
+			
 			return null;
 		}
-
-
+		
+		
 		public static <T> Resource getItemIcon(final XdevSelect<T> select, final Object itemId)
 		{
 			if(itemId != null && select.getBeanContainerDataSource() != null)
@@ -158,11 +159,11 @@ public interface XdevSelect<T> extends XdevField, BeanComponent<T>
 					return itemIconProvider.getIcon(bean);
 				}
 			}
-
+			
 			return null;
 		}
-
-
+		
+		
 		private SelectUtils()
 		{
 		}

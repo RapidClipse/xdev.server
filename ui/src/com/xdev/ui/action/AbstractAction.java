@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -52,22 +52,22 @@ public abstract class AbstractAction implements Action
 	private class ActionShortcut extends ShortcutListener
 	{
 		final Shortcut shortcut;
-
-
+		
+		
 		ActionShortcut(final Shortcut shortcut)
 		{
 			super("",shortcut.getKeyCode(),shortcut.getModifiers());
 			this.shortcut = shortcut;
 		}
-
-
+		
+		
 		@Override
 		public String getCaption()
 		{
 			return AbstractAction.this.getCaption();
 		}
-
-
+		
+		
 		@Override
 		public void handleAction(final Object sender, final Object target)
 		{
@@ -78,7 +78,7 @@ public abstract class AbstractAction implements Action
 			}
 		}
 	}
-
+	
 	private XdevUI					ui;
 	private String					caption			= "";
 	private Resource				icon			= null;
@@ -86,16 +86,16 @@ public abstract class AbstractAction implements Action
 	private ActionShortcut			actionShortcut	= null;
 	private boolean					enabled			= true;
 	private PropertyChangeSupport	propertyChangeSupport;
-
-
+	
+	
 	/**
 	 * Creates an {@code Action}.
 	 */
 	public AbstractAction()
 	{
 	}
-
-
+	
+	
 	/**
 	 * Creates an {@code Action} with the specified caption.
 	 */
@@ -103,8 +103,8 @@ public abstract class AbstractAction implements Action
 	{
 		this.caption = caption;
 	}
-
-
+	
+	
 	/**
 	 * Creates an {@code Action} with the specified icon.
 	 */
@@ -112,8 +112,8 @@ public abstract class AbstractAction implements Action
 	{
 		this.icon = icon;
 	}
-
-
+	
+	
 	/**
 	 * Creates an {@code Action} with the specified caption and icon.
 	 */
@@ -122,8 +122,8 @@ public abstract class AbstractAction implements Action
 		this.caption = caption;
 		this.icon = icon;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -134,11 +134,11 @@ public abstract class AbstractAction implements Action
 		{
 			this.propertyChangeSupport = new PropertyChangeSupport(this);
 		}
-
+		
 		this.propertyChangeSupport.addPropertyChangeListener(listener);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -150,8 +150,8 @@ public abstract class AbstractAction implements Action
 			this.propertyChangeSupport.removePropertyChangeListener(listener);
 		}
 	}
-
-
+	
+	
 	protected void firePropertyChange(final String name, final Object oldValue,
 			final Object newValue)
 	{
@@ -160,8 +160,8 @@ public abstract class AbstractAction implements Action
 			this.propertyChangeSupport.firePropertyChange(name,oldValue,newValue);
 		}
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -176,11 +176,11 @@ public abstract class AbstractAction implements Action
 				this.ui = (XdevUI)ui;
 			}
 		}
-
+		
 		return this.ui;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -189,8 +189,8 @@ public abstract class AbstractAction implements Action
 	{
 		return this.caption;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -200,14 +200,14 @@ public abstract class AbstractAction implements Action
 		if(!Objects.equals(caption,this.caption))
 		{
 			final Object oldValue = this.caption;
-
+			
 			this.caption = caption;
-
+			
 			firePropertyChange(CAPTION_PROPERTY,oldValue,caption);
 		}
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -216,8 +216,8 @@ public abstract class AbstractAction implements Action
 	{
 		return this.icon;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -227,14 +227,14 @@ public abstract class AbstractAction implements Action
 		if(!Objects.equals(icon,this.icon))
 		{
 			final Object oldValue = this.icon;
-
+			
 			this.icon = icon;
-
+			
 			firePropertyChange(ICON_PROPERTY,oldValue,icon);
 		}
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -243,8 +243,8 @@ public abstract class AbstractAction implements Action
 	{
 		return this.description;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -254,14 +254,14 @@ public abstract class AbstractAction implements Action
 		if(!Objects.equals(description,this.description))
 		{
 			final Object oldValue = this.description;
-
+			
 			this.description = description;
-
+			
 			firePropertyChange(DESCRIPTION_PROPERTY,oldValue,description);
 		}
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -270,8 +270,8 @@ public abstract class AbstractAction implements Action
 	{
 		return this.actionShortcut != null ? this.actionShortcut.shortcut : null;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -282,7 +282,7 @@ public abstract class AbstractAction implements Action
 		if(!Objects.equals(oldValue,shortcut))
 		{
 			final UI ui = UI.getCurrent();
-
+			
 			if(this.actionShortcut != null)
 			{
 				if(ui != null)
@@ -290,7 +290,7 @@ public abstract class AbstractAction implements Action
 					ui.removeAction(this.actionShortcut);
 				}
 			}
-
+			
 			if(shortcut != null)
 			{
 				this.actionShortcut = new ActionShortcut(shortcut);
@@ -303,12 +303,12 @@ public abstract class AbstractAction implements Action
 			{
 				this.actionShortcut = null;
 			}
-
+			
 			firePropertyChange(SHORTCUT_PROPERTY,oldValue,shortcut);
 		}
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -317,8 +317,8 @@ public abstract class AbstractAction implements Action
 	{
 		return this.enabled;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -328,13 +328,13 @@ public abstract class AbstractAction implements Action
 		if(this.enabled != enabled)
 		{
 			final Object oldValue = this.enabled;
-
+			
 			this.enabled = enabled;
-
+			
 			firePropertyChange(ENABLED_PROPERTY,oldValue,enabled);
 		}
 	}
-
+	
 	// @Override
 	// public boolean equals(final Object obj)
 	// {

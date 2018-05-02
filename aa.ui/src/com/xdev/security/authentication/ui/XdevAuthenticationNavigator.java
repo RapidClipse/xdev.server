@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,8 +53,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	private String									loginViewName							= "";
 	private String									redirectViewName						= null;
 	private UnauthenticatedNavigationRequestHandler	unauthenticatedNavigationRequestHandler	= UnauthenticatedNavigationRequestHandler.DEFAULT;
-	
-	
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments of
 	 * the {@link Page} containing the given UI and replacing the contents of a
@@ -79,8 +79,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		super(ui,container);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator.
 	 * <p>
@@ -106,8 +106,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		super(ui,stateManager,display);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments of
 	 * the {@link Page} containing the given UI and replacing the contents of a
@@ -130,8 +130,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		super(ui,container);
 	}
-	
-	
+
+
 	/**
 	 * Creates a navigator that is tracking the active view using URI fragments of
 	 * the {@link Page} containing the given UI.
@@ -150,12 +150,12 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		super(ui,display);
 	}
-	
+
 	{
 		this.initAuthenticationListener();
 	}
-	
-	
+
+
 	/**
 	 * @return the loginViewName
 	 */
@@ -163,8 +163,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		return this.loginViewName;
 	}
-	
-	
+
+
 	/**
 	 * @param loginViewName
 	 *            the loginViewName to set
@@ -173,8 +173,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		this.loginViewName = loginViewName;
 	}
-	
-	
+
+
 	/**
 	 * @return the redirectViewName
 	 */
@@ -182,8 +182,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		return this.redirectViewName;
 	}
-	
-	
+
+
 	/**
 	 * @param redirectViewName
 	 *            the redirectViewName to set
@@ -192,8 +192,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		this.redirectViewName = redirectViewName;
 	}
-	
-	
+
+
 	/**
 	 * @return the unauthenticatedNavigationRequestHandler
 	 * @since 3.0
@@ -202,8 +202,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		return this.unauthenticatedNavigationRequestHandler;
 	}
-	
-	
+
+
 	/**
 	 * @param unauthenticatedNavigationRequestHandler
 	 *            the unauthenticatedNavigationRequestHandler to set
@@ -214,8 +214,8 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 	{
 		this.unauthenticatedNavigationRequestHandler = unauthenticatedNavigationRequestHandler;
 	}
-	
-	
+
+
 	protected void initAuthenticationListener()
 	{
 		this.addViewChangeListener(new ViewChangeListener()
@@ -227,25 +227,25 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 				{
 					return true;
 				}
-				
+
 				final UnauthenticatedNavigationRequestHandler handler = getUnauthenticatedNavigationRequestHandler();
 				if(handler != null)
 				{
 					handler.handle(XdevAuthenticationNavigator.this,event);
 				}
-				
+
 				return false;
 			}
-			
-			
+
+
 			@Override
 			public void afterViewChange(final ViewChangeEvent event)
 			{
 			}
 		});
 	}
-	
-	
+
+
 	/**
 	 * Navigates to the login view URL set with {@link #setLoginViewName(String)}.
 	 *
@@ -259,11 +259,11 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		{
 			throw new IllegalStateException("No login view set");
 		}
-		
+
 		navigateTo(loginViewName);
 	}
-	
-	
+
+
 	/**
 	 * Navigates to the redirect view URL set with
 	 * {@link #setRedirectViewName(String)}.
@@ -278,7 +278,7 @@ public class XdevAuthenticationNavigator extends XdevNavigator
 		{
 			throw new IllegalStateException("No redirect view set");
 		}
-		
+
 		navigateTo(redirectViewName);
 	}
 }

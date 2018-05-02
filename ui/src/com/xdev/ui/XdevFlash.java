@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,13 +29,13 @@ import com.vaadin.ui.Flash;
  * A component for displaying Adobe� Flash� content.
  *
  * @author XDEV Software
- *		
+ *
  */
 public class XdevFlash extends Flash implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-	
-	
+
+
 	/**
 	 * Creates a new empty Flash component.
 	 */
@@ -43,23 +43,22 @@ public class XdevFlash extends Flash implements XdevComponent
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Creates a new Flash component with the given caption and content.
 	 *
 	 * @param caption
 	 *            The caption for the component
 	 * @param source
-	 *            A Resource representing the Flash content that should be
-	 *            displayed
+	 *            A Resource representing the Flash content that should be displayed
 	 */
 	public XdevFlash(final String caption, final Resource source)
 	{
 		super(caption,source);
 	}
-
-
+	
+	
 	/**
 	 * Creates a new empty Flash component with the given caption
 	 *
@@ -70,8 +69,8 @@ public class XdevFlash extends Flash implements XdevComponent
 	{
 		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * Sets the fullscreen allowed flag, short for
 	 *
@@ -85,8 +84,8 @@ public class XdevFlash extends Flash implements XdevComponent
 	{
 		setParameter("allowFullScreen",String.valueOf(b));
 	}
-
-
+	
+	
 	/**
 	 * Returns the value of the fullscreen allowed flag, short for
 	 *
@@ -100,8 +99,8 @@ public class XdevFlash extends Flash implements XdevComponent
 	{
 		return "true".equals(getParameter("allowFullScreen"));
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -110,8 +109,8 @@ public class XdevFlash extends Flash implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

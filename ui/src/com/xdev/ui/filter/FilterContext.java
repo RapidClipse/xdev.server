@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,33 +21,34 @@
 package com.xdev.ui.filter;
 
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Container.Filterable;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Container.Filterable;
 
 
 /**
  * @author XDEV Software
- * 		
+ * 
  */
+@SuppressWarnings("deprecation")
 public interface FilterContext
 {
 	public FilterSettings getSettings();
-	
-	
+
+
 	public Container.Filterable getContainer();
-	
-	
+
+
 	public Object getPropertyId();
-
-
-
+	
+	
+	
 	public static class Implementation implements FilterContext
 	{
 		private final FilterSettings		settings;
 		private final Container.Filterable	container;
 		private final Object				propertyId;
-											
-											
+		
+		
 		public Implementation(final FilterSettings settings, final Filterable container,
 				final Object propertyId)
 		{
@@ -55,22 +56,22 @@ public interface FilterContext
 			this.container = container;
 			this.propertyId = propertyId;
 		}
-		
-		
+
+
 		@Override
 		public FilterSettings getSettings()
 		{
 			return this.settings;
 		}
-		
-		
+
+
 		@Override
 		public Container.Filterable getContainer()
 		{
 			return this.container;
 		}
-		
-		
+
+
 		@Override
 		public Object getPropertyId()
 		{

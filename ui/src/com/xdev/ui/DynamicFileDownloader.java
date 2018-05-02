@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -50,20 +50,20 @@ public class DynamicFileDownloader extends FileDownloader
 	{
 		new DynamicFileDownloader(resourceSupplier).extend(target);
 	}
-
+	
 	private final Supplier<Resource> resourceSupplier;
-	
-	
+
+
 	public DynamicFileDownloader(final Supplier<Resource> resourceSupplier)
 	{
 		super(createEmptyResource());
-		
-		this.resourceSupplier = resourceSupplier;
 
+		this.resourceSupplier = resourceSupplier;
+		
 		setOverrideContentType(false);
 	}
-	
-	
+
+
 	private static Resource createEmptyResource()
 	{
 		final StreamResource resource = new StreamResource(
@@ -71,16 +71,16 @@ public class DynamicFileDownloader extends FileDownloader
 		resource.setMIMEType("text/plain");
 		return resource;
 	}
-	
-	
+
+
 	@Override
 	public boolean handleConnectorRequest(final VaadinRequest request,
 			final VaadinResponse response, final String path) throws IOException
 	{
 		return super.handleConnectorRequest(request,response,path);
 	}
-	
-	
+
+
 	@Override
 	public Resource getFileDownloadResource()
 	{
@@ -91,7 +91,7 @@ public class DynamicFileDownloader extends FileDownloader
 		catch(final Exception e)
 		{
 			Logger.getLogger(getClass()).error(e);
-			
+
 			final byte[] data = ExceptionUtils.getStackTrace(e).getBytes(StandardCharsets.UTF_8);
 			final StreamResource resource = new StreamResource(() -> new ByteArrayInputStream(data),
 					"error");

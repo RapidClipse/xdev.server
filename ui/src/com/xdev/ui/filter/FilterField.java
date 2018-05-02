@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,50 +24,51 @@ package com.xdev.ui.filter;
 import java.util.EventListener;
 import java.util.EventObject;
 
-import com.vaadin.ui.Field;
+import com.vaadin.v7.ui.Field;
 
 
 /**
  * @author XDEV Software
  *
  */
+@SuppressWarnings("deprecation")
 public interface FilterField<T> extends Field<T>
 {
 	public static class FilterFieldChangeEvent extends EventObject
 	{
 		private final Object filterValue;
-
-
+		
+		
 		public FilterFieldChangeEvent(final FilterField<?> filterField, final Object filterValue)
 		{
 			super(filterField);
-
+			
 			this.filterValue = filterValue;
 		}
-
-
+		
+		
 		public Object getFilterValue()
 		{
 			return this.filterValue;
 		}
 	}
-
-
-
+	
+	
+	
 	public static interface FilterFieldChangeListener extends EventListener
 	{
 		public void filterFieldChanged(FilterFieldChangeEvent event);
 	}
-
-
+	
+	
 	public void addFilterFieldChangeListener(FilterFieldChangeListener l);
-
-
+	
+	
 	public void removeFilterFieldChangeListener(FilterFieldChangeListener l);
-
-
+	
+	
 	public Object getFilterValue();
-
-
+	
+	
 	public void setFilterValue(Object filterValue);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ import java.util.Collection;
 
 import org.vaadin.addons.lazyquerycontainer.QueryFactory;
 
-import com.vaadin.data.util.BeanItem;
+import com.vaadin.v7.data.util.BeanItem;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 
 
@@ -38,14 +38,15 @@ import com.xdev.ui.entitycomponent.XdevBeanContainer;
  * @author Tommi Laukkanen / XDEV Software (JW,FH)
  */
 // copied from EntityContainer to become extendable
+@SuppressWarnings("deprecation")
 public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContainer
 		implements XdevBeanContainer<T>
 {
 	private static final long	serialVersionUID	= 1L;
 	private final Class<T>		entityType;
 	private Object[]			requiredProperties;
-
-
+	
+	
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
 	 *
@@ -67,8 +68,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		this(entityClass,batchSize,idPropertyId,applicationManagedTransactions,detachedEntities,
 				new RequisitioningEntityQueryFactory<T>());
 	}
-
-
+	
+	
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
 	 *
@@ -91,16 +92,16 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 				detachedEntities,false,entityClass,batchSize,idPropertyId),queryFactory);
 		this.entityType = entityClass;
 	}
-
-
+	
+	
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
 	 *
 	 * @param applicationManagedTransactions
 	 *            True if application manages transactions instead of container.
 	 * @param detachedEntities
-	 *            True if entities are detached from PersistenceContext. items
-	 *            until commit.
+	 *            True if entities are detached from PersistenceContext. items until
+	 *            commit.
 	 * @param entityClass
 	 *            The entity class.
 	 * @param batchSize
@@ -121,16 +122,16 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 				defaultSortPropertyIds,defaultSortPropertyAscendingStates,idPropertyId,
 				new RequisitioningEntityQueryFactory<T>());
 	}
-
-
+	
+	
 	/**
 	 * Constructor which configures query definition for accessing JPA entities.
 	 *
 	 * @param applicationManagedTransactions
 	 *            True if application manages transactions instead of container.
 	 * @param detachedEntities
-	 *            True if entities are detached from PersistenceContext. items
-	 *            until commit.
+	 *            True if entities are detached from PersistenceContext. items until
+	 *            commit.
 	 * @param entityClass
 	 *            The entity class.
 	 * @param batchSize
@@ -150,21 +151,21 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	{
 		super(new IntrospectionEntityQueryDefinition<T>(applicationManagedTransactions,
 				detachedEntities,false,entityClass,batchSize,idPropertyId),queryFactory);
-
+		
 		getQueryView().getQueryDefinition().setDefaultSortState(defaultSortPropertyIds,
 				defaultSortPropertyAscendingStates);
-
+		
 		this.entityType = entityClass;
 	}
-
-
+	
+	
 	@Override
 	public Class<T> getBeanType()
 	{
 		return this.entityType;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -177,8 +178,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		}
 		this.commit();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -195,8 +196,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		// this.commit();
 		// notifyItemSetChanged();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -217,13 +218,12 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		// }
 		// this.commit();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * com.xdev.ui.entitycomponent.XdevBeanContainer#addBean(java.lang.Object)
+	 * @see com.xdev.ui.entitycomponent.XdevBeanContainer#addBean(java.lang.Object)
 	 */
 	@Override
 	public BeanItem<T> addBean(final T bean) throws UnsupportedOperationException
@@ -232,13 +232,12 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 		this.commit();
 		return getItem(index);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * com.xdev.ui.entitycomponent.XdevBeanContainer#getItem(java.lang.Object)
+	 * @see com.xdev.ui.entitycomponent.XdevBeanContainer#getItem(java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -246,8 +245,8 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	{
 		return (BeanItem<T>)super.getItem(itemId);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -259,16 +258,16 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	public BeanItem<T> replaceItem(final BeanItem<T> oldItem, final T newBean)
 	{
 		final BeanItem<T> replaced = getQueryView().replaceItem(oldItem,newBean);
-
+		
 		if(replaced != null)
 		{
 			fireItemSetChange(() -> this);
 		}
-
+		
 		return replaced;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -280,16 +279,15 @@ public class ExtendableLazyEntityContainer<T> extends XdevEntityLazyQueryContain
 	public void setRequiredProperties(final Object... propertyIDs)
 	{
 		this.requiredProperties = propertyIDs;
-
+		
 		getQueryView().setRequiredProperties(propertyIDs);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * com.xdev.ui.entitycomponent.XdevBeanContainer#getRequiredProperties()
+	 * @see com.xdev.ui.entitycomponent.XdevBeanContainer#getRequiredProperties()
 	 */
 	@Override
 	public Object[] getRequiredProperties()

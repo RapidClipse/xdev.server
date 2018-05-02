@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,16 +23,17 @@ package com.xdev.ui.entitycomponent;
 
 import java.util.Locale;
 
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.v7.data.util.BeanItem;
+import com.vaadin.v7.data.util.converter.Converter;
 import com.xdev.util.JPAEntityIDResolver;
 
 
+@SuppressWarnings("deprecation")
 public class BeanToBeanConverter<T> implements Converter<T, T>
 {
 	private final XdevBeanContainer<T> container;
-	
-	
+
+
 	/**
 	 *
 	 */
@@ -40,16 +41,16 @@ public class BeanToBeanConverter<T> implements Converter<T, T>
 	{
 		this.container = container;
 	}
-	
-	
+
+
 	@Override
 	public T convertToModel(final T bean, final Class<? extends T> targetType, final Locale locale)
 			throws Converter.ConversionException
 	{
 		return bean;
 	}
-	
-	
+
+
 	@Override
 	public T convertToPresentation(final T value, final Class<? extends T> targetType,
 			final Locale locale) throws Converter.ConversionException
@@ -58,14 +59,14 @@ public class BeanToBeanConverter<T> implements Converter<T, T>
 		{
 			return null;
 		}
-		
+
 		final BeanItem<T> item = this.container.getItem(value);
 		if(item != null)
 		{
 			// same object
 			return item.getBean();
 		}
-		
+
 		// find by id
 		final JPAEntityIDResolver idResolver = JPAEntityIDResolver.getInstance();
 		final Object id = idResolver.getEntityIDAttributeValue(value);
@@ -80,16 +81,16 @@ public class BeanToBeanConverter<T> implements Converter<T, T>
 				.findFirst().orElse(null);
 		return containerValue != null ? containerValue : value;
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<T> getModelType()
 	{
 		return (Class<T>)this.container.getBeanType();
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<T> getPresentationType()

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ * Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -54,8 +54,8 @@ import com.xdev.ui.event.ContextSensitiveHandlerChangeListener;
  * 		super(ui,SaveHandler.class);
  * 		setCaption("Save");
  * 	}
- *	
- *	
+ * 	
+ * 	
  * 	&#64;Override
  * 	public void actionPerformed(ActionEvent e)
  * 	{
@@ -74,15 +74,15 @@ import com.xdev.ui.event.ContextSensitiveHandlerChangeListener;
  * 		super();
  * 		this.initUI();
  * 	}
- *	
- *	
+ * 	
+ * 	
  * 	&#64;Override
  * 	public void save()
  * 	{
  * 		// Implement save routine here
  * 	}
- *	
- *	
+ * 	
+ * 	
  * 	private void initUI()
  * 	{
  * 		// ...
@@ -124,8 +124,8 @@ public abstract class ContextSensitiveAction<T extends ContextSensitiveHandler>
 		extends AbstractAction implements ContextSensitiveHandlerChangeListener
 {
 	private T handler;
-
-
+	
+	
 	/**
 	 * Creates a action bound to the given UI and handler type.
 	 *
@@ -134,17 +134,17 @@ public abstract class ContextSensitiveAction<T extends ContextSensitiveHandler>
 	protected ContextSensitiveAction()
 	{
 		super();
-
+		
 		setEnabled(false);
-
+		
 		final XdevActionManager manager = XdevActionManager.getCurrent();
 		if(manager != null)
 		{
 			manager.registerContextSensitiveAction(this,determineHandlerType());
 		}
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	private Class<T> determineHandlerType()
 	{
@@ -158,11 +158,11 @@ public abstract class ContextSensitiveAction<T extends ContextSensitiveHandler>
 				return (Class<T>)rootType;
 			}
 		}
-
+		
 		throw new IllegalStateException("no handler type parameter defined");
 	}
-
-
+	
+	
 	/**
 	 * Returns the active handler, or <code>null</code> if no handler was found.
 	 *
@@ -172,8 +172,8 @@ public abstract class ContextSensitiveAction<T extends ContextSensitiveHandler>
 	{
 		return this.handler;
 	}
-
-
+	
+	
 	/**
 	 * Called by {@link XdevActionManager}.
 	 *
@@ -186,11 +186,11 @@ public abstract class ContextSensitiveAction<T extends ContextSensitiveHandler>
 		this.handler = handler;
 		handlerChanged(oldHandler,handler);
 	}
-
-
+	
+	
 	/**
-	 * Invoked when the active handler changes. May be used to register
-	 * listeners to the new handler.
+	 * Invoked when the active handler changes. May be used to register listeners to
+	 * the new handler.
 	 * <p>
 	 * The default implementation just sets the enabled state:
 	 *
@@ -205,15 +205,15 @@ public abstract class ContextSensitiveAction<T extends ContextSensitiveHandler>
 	{
 		update(newHandler);
 	}
-	
-	
+
+
 	@Override
 	public void contextSensitiveHandlerChanged(final ContextSensitiveHandlerChangeEvent event)
 	{
 		update(getHandler());
 	}
-	
-	
+
+
 	protected void update(final T handler)
 	{
 		setEnabled(handler != null);

@@ -114,7 +114,7 @@ public class XdevNavigation implements NavigationDefinition
 						parameterName);
 				if(value != null)
 				{
-					if(value.getType().isAssignableFrom(type))
+					if(type.isAssignableFrom(value.getType()))
 					{
 						if(value.getPersistentID() != null)
 						{

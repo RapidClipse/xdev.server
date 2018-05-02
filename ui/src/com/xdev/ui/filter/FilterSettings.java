@@ -21,26 +21,82 @@
 package com.xdev.ui.filter;
 
 
+import com.vaadin.v7.data.util.filter.SimpleStringFilter;
+
+
 /**
  * @author XDEV Software
- * 
+ *
  */
+@SuppressWarnings("deprecation")
 public interface FilterSettings
 {
 	/**
+	 *
+	 * @return <code>true</code> if the filter only applies to the beginning of the
+	 *         value string, <code>false</code> for any location in the value
+	 *
+	 * @see SimpleStringFilter#isOnlyMatchPrefix()
+	 *
 	 * @since 3.2
 	 */
 	public boolean isPrefixMatchOnly();
 
 
+	/**
+	 *
+	 * @return if the search should be case sensitive
+	 *
+	 * @see SimpleStringFilter#isIgnoreCase()
+	 */
 	public boolean isCaseSensitive();
 
 
+	/**
+	 *
+	 * @return the character which is used as wildcard in search terms
+	 */
 	public char getWildcard();
-	
-	
+
+
 	public Object[] getSearchableProperties();
 
 
 	public Object[] getFilterableProperties();
+
+
+	/**
+	 *
+	 * @return the connector for the searched properties of the container
+	 *
+	 * @since 3.2.1
+	 */
+	public Connector getSearchPropertiesConnector();
+
+
+	/**
+	 *
+	 * @return the connector for each word in a multi word search of the search term
+	 *
+	 * @since 3.2.1
+	 */
+	public Connector getSearchMultiWordConnector();
+
+
+	/**
+	 *
+	 * @return the connector for the properties of filter condition
+	 *
+	 * @since 3.2.1
+	 */
+	public Connector getFilterPropertiesConnector();
+
+
+	/**
+	 *
+	 * @return the connector for the search term and the filter condition
+	 *
+	 * @since 3.2.1
+	 */
+	public Connector getSearchAndFilterConnector();
 }

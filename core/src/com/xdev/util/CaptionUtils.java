@@ -82,8 +82,19 @@ public final class CaptionUtils
 	{
 		return getCaptionResolver().resolveCaption(element,captionValue,locale);
 	}
-	
-	
+
+
+	/**
+	 * @deprecated replaced by {@link #resolveCaption(Class, String)}
+	 */
+	@Deprecated
+	public static String resolveEntityMemberCaption(final Class<?> entityClass,
+			final String propertyName)
+	{
+		return resolveCaption(entityClass,propertyName);
+	}
+
+
 	/**
 	 * @since 3.0
 	 */
@@ -92,38 +103,34 @@ public final class CaptionUtils
 		if(JPAMetaDataUtils.isManaged(clazz))
 		{
 			final Attribute<?, ?> attribute = JPAMetaDataUtils.resolveAttribute(clazz,propertyName);
-			if(attribute == null)
+			if(attribute != null)
 			{
-				return propertyName;
-			}
+				final Member javaMember = attribute.getJavaMember();
+				if(javaMember instanceof AnnotatedElement
+						&& hasCaptionAnnotationValue((AnnotatedElement)javaMember))
+				{
+					return resolveCaption(javaMember);
+				}
 
-			final Member javaMember = attribute.getJavaMember();
-			if(javaMember instanceof AnnotatedElement
-					&& hasCaptionAnnotationValue((AnnotatedElement)javaMember))
-			{
-				return resolveCaption(javaMember);
+				return attribute.getName();
 			}
-
-			return attribute.getName();
 		}
-		else
+
+		final PropertyDescriptor propertyDescriptor = BeanInfoUtils.getPropertyDescriptor(clazz,
+				propertyName);
+		if(propertyDescriptor == null)
 		{
-			final PropertyDescriptor propertyDescriptor = BeanInfoUtils.getPropertyDescriptor(clazz,
-					propertyName);
-			if(propertyDescriptor == null)
-			{
-				return propertyName;
-			}
-			
-			final Member javaMember = propertyDescriptor.getReadMethod();
-			if(javaMember instanceof AnnotatedElement
-					&& hasCaptionAnnotationValue((AnnotatedElement)javaMember))
-			{
-				return resolveCaption(javaMember);
-			}
-
-			return propertyDescriptor.getDisplayName();
+			return propertyName;
 		}
+
+		final Member javaMember = propertyDescriptor.getReadMethod();
+		if(javaMember instanceof AnnotatedElement
+				&& hasCaptionAnnotationValue((AnnotatedElement)javaMember))
+		{
+			return resolveCaption(javaMember);
+		}
+
+		return propertyDescriptor.getDisplayName();
 	}
 
 

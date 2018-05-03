@@ -66,6 +66,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-themes</artifactId>
+			<version>${vaadinVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-push</artifactId>
 			<version>${vaadinVersion}</version>
 		</dependency>
@@ -77,6 +82,11 @@
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-compatibility-client-compiled</artifactId>
+			<version>${vaadinVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-client-compiled</artifactId>
 			<version>${vaadinVersion}</version>
 		</dependency>
 		<dependency>

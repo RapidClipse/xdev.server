@@ -27,6 +27,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.vaadin.annotations.Widgetset;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.server.DefaultErrorHandler;
@@ -80,6 +81,7 @@ import com.xdev.util.concurrent.XdevExecutorService;
 // https://www.xdevissues.com/browse/XWS-666
 // @PreserveOnRefresh
 @SuppressWarnings("deprecation")
+@Widgetset("com.vaadin.v7.Vaadin7WidgetSet")
 public abstract class XdevUI extends UI implements XdevComponent
 {
 	/**
@@ -94,8 +96,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		((XdevUI)getCurrent()).accessDefault(updater);
 	}
-	
-	
+
+
 	/**
 	 * Convenience method to call {@link UI#accessSynchronously(Runnable)} from a
 	 * task inside the {@link XdevExecutorService} without interfering with the
@@ -108,7 +110,7 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		((XdevUI)getCurrent()).accessSynchronouslyDefault(updater);
 	}
-	
+
 	private final Extensions				extensions			= new Extensions();
 	private final FocusListener				focusNotifier		= this::focusedComponentChanged;
 	private final ComponentAttachListener	focusAttachListener	= event -> addFocusWatcher(
@@ -116,8 +118,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	private final ComponentDetachListener	focusDetachListener	= event -> removeFocusWatcher(
 			event.getDetachedComponent());
 	private Component						lastFocusedComponent;
-	
-	
+
+
 	/**
 	 * Creates a new empty UI without a caption. The content of the UI must be set
 	 * by calling {@link #setContent(Component)} before using the UI.
@@ -126,8 +128,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new UI with the given component (often a layout) as its content.
 	 *
@@ -140,11 +142,11 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		super(content);
 	}
-	
+
 	// init defaults
 	{
 		setLocale(Locale.getDefault());
-		
+
 		// https://www.xdevissues.com/browse/XWS-666
 		// System.out.println("attach listener");
 		// addDetachListener(new DetachListener()
@@ -162,12 +164,12 @@ public abstract class XdevUI extends UI implements XdevComponent
 		// EntityManagerUtils.getEntityManager().close();
 		// }
 		// });
-		
+
 		try
 		{
 			final List<XdevUIExtension> extensions = ExtensionUtils.readExtensions("ui",
 					XdevUIExtension.class);
-			
+
 			for(final XdevUIExtension extension : extensions)
 			{
 				extension.uiInitialized(this);
@@ -178,8 +180,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -188,8 +190,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -198,8 +200,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
 	 * Ensures {@link UI#access(Runnable)} runs inside an {@link UIAccessWrapper}.
 	 * <p>
@@ -209,12 +211,12 @@ public abstract class XdevUI extends UI implements XdevComponent
 	public Future<Void> access(final Runnable runnable)
 	{
 		final VaadinSession session = getSession();
-		
+
 		if(session == null)
 		{
 			throw new UIDetachedException();
 		}
-		
+
 		final Runnable accessRunnable = getAccessRunnable(runnable);
 		return session.access(new ErrorHandlingRunnable()
 		{
@@ -223,8 +225,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 			{
 				accessSynchronouslyDefault(accessRunnable);
 			}
-			
-			
+
+
 			@Override
 			public void handleError(final Exception exception)
 			{
@@ -233,22 +235,22 @@ public abstract class XdevUI extends UI implements XdevComponent
 					if(runnable instanceof ErrorHandlingRunnable)
 					{
 						final ErrorHandlingRunnable errorHandlingRunnable = (ErrorHandlingRunnable)runnable;
-						
+
 						errorHandlingRunnable.handleError(exception);
 					}
 					else
 					{
 						final ConnectorErrorEvent errorEvent = new ConnectorErrorEvent(XdevUI.this,
 								exception);
-						
+
 						ErrorHandler errorHandler = com.vaadin.server.ErrorEvent
 								.findErrorHandler(XdevUI.this);
-						
+
 						if(errorHandler == null)
 						{
 							errorHandler = new DefaultErrorHandler();
 						}
-						
+
 						errorHandler.error(errorEvent);
 					}
 				}
@@ -259,8 +261,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 			}
 		});
 	}
-	
-	
+
+
 	/**
 	 * Ensures {@link UI#accessSynchronously(Runnable)} runs inside an
 	 * {@link UIAccessWrapper}.
@@ -273,8 +275,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		super.accessSynchronously(getAccessRunnable(runnable));
 	}
-	
-	
+
+
 	/**
 	 * Ensures that <code>runnable</code> is an {@link UIAccessWrapper}.
 	 *
@@ -289,8 +291,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 		}
 		return new UIAccessWrapper(runnable);
 	}
-	
-	
+
+
 	/**
 	 * Calls {@link UI#access(Runnable)} without an {@link UIAccessWrapper}.
 	 *
@@ -300,12 +302,12 @@ public abstract class XdevUI extends UI implements XdevComponent
 	public Future<Void> accessDefault(final Runnable runnable)
 	{
 		final VaadinSession session = getSession();
-		
+
 		if(session == null)
 		{
 			throw new UIDetachedException();
 		}
-		
+
 		return session.access(new ErrorHandlingRunnable()
 		{
 			@Override
@@ -313,8 +315,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 			{
 				accessSynchronouslyDefault(runnable);
 			}
-			
-			
+
+
 			@Override
 			public void handleError(final Exception exception)
 			{
@@ -323,22 +325,22 @@ public abstract class XdevUI extends UI implements XdevComponent
 					if(runnable instanceof ErrorHandlingRunnable)
 					{
 						final ErrorHandlingRunnable errorHandlingRunnable = (ErrorHandlingRunnable)runnable;
-						
+
 						errorHandlingRunnable.handleError(exception);
 					}
 					else
 					{
 						final ConnectorErrorEvent errorEvent = new ConnectorErrorEvent(XdevUI.this,
 								exception);
-						
+
 						ErrorHandler errorHandler = com.vaadin.server.ErrorEvent
 								.findErrorHandler(XdevUI.this);
-						
+
 						if(errorHandler == null)
 						{
 							errorHandler = new DefaultErrorHandler();
 						}
-						
+
 						errorHandler.error(errorEvent);
 					}
 				}
@@ -349,8 +351,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 			}
 		});
 	}
-	
-	
+
+
 	/**
 	 * Calls {@link UI#accessSynchronouslyDefault(Runnable)} without an
 	 * {@link UIAccessWrapper}.
@@ -362,8 +364,8 @@ public abstract class XdevUI extends UI implements XdevComponent
 	{
 		super.accessSynchronously(runnable);
 	}
-	
-	
+
+
 	public void addFocusChangeListener(final FocusChangeListener listener)
 	{
 		if(getListeners(FocusChangeEvent.class).isEmpty())
@@ -374,16 +376,16 @@ public abstract class XdevUI extends UI implements XdevComponent
 				addFocusWatcher(content);
 			}
 		}
-		
+
 		addListener(FocusChangeEvent.EVENT_ID,FocusChangeEvent.class,listener,
 				FocusChangeListener.focusChangedMethod);
 	}
-	
-	
+
+
 	public void removeFocusChangeListener(final FocusChangeListener listener)
 	{
 		removeListener(FocusChangeEvent.EVENT_ID,FocusChangeEvent.class,listener);
-		
+
 		if(getListeners(FocusChangeEvent.class).isEmpty())
 		{
 			final Component content = getContent();
@@ -393,31 +395,31 @@ public abstract class XdevUI extends UI implements XdevComponent
 			}
 		}
 	}
-	
-	
+
+
 	private void focusedComponentChanged(final FocusEvent event)
 	{
 		this.lastFocusedComponent = event.getComponent();
 		fireEvent(new FocusChangeEvent(this.lastFocusedComponent));
 	}
-	
-	
+
+
 	@Override
 	public void setContent(final Component content)
 	{
 		super.setContent(content);
-		
+
 		if(content != null && !getListeners(FocusChangeEvent.class).isEmpty())
 		{
 			addFocusWatcher(content);
 		}
 	}
-	
-	
+
+
 	private void addFocusWatcher(final Component root)
 	{
 		UIUtils.lookupComponentTree(root,c -> {
-			
+
 			if(c instanceof FocusNotifier)
 			{
 				((FocusNotifier)c).addFocusListener(this.focusNotifier);
@@ -429,19 +431,19 @@ public abstract class XdevUI extends UI implements XdevComponent
 				((ComponentAttachDetachNotifier)c)
 						.addComponentDetachListener(this.focusDetachListener);
 			}
-			
+
 			return null;
 		});
-		
+
 		fireEvent(new FocusChangeEvent(
 				this.lastFocusedComponent != null ? this.lastFocusedComponent : this));
 	}
-	
-	
+
+
 	private void removeFocusWatcher(final Component component)
 	{
 		UIUtils.lookupComponentTree(component,c -> {
-			
+
 			if(c instanceof FocusNotifier)
 			{
 				((FocusNotifier)c).removeFocusListener(this.focusNotifier);
@@ -453,7 +455,7 @@ public abstract class XdevUI extends UI implements XdevComponent
 				((ComponentAttachDetachNotifier)c)
 						.removeComponentDetachListener(this.focusDetachListener);
 			}
-			
+
 			return null;
 		});
 	}

@@ -26,16 +26,16 @@ import com.vaadin.ui.Flash;
 
 
 /**
- * A component for displaying Adobe� Flash� content.
- *
  * @author XDEV Software
  *
+ * @deprecated will be removed in a future release
  */
+@Deprecated
 public class XdevFlash extends Flash implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-
-
+	
+	
 	/**
 	 * Creates a new empty Flash component.
 	 */
@@ -43,8 +43,8 @@ public class XdevFlash extends Flash implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new Flash component with the given caption and content.
 	 *
@@ -57,8 +57,8 @@ public class XdevFlash extends Flash implements XdevComponent
 	{
 		super(caption,source);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new empty Flash component with the given caption
 	 *
@@ -69,8 +69,8 @@ public class XdevFlash extends Flash implements XdevComponent
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * Sets the fullscreen allowed flag, short for
 	 *
@@ -84,8 +84,8 @@ public class XdevFlash extends Flash implements XdevComponent
 	{
 		setParameter("allowFullScreen",String.valueOf(b));
 	}
-	
-	
+
+
 	/**
 	 * Returns the value of the fullscreen allowed flag, short for
 	 *
@@ -99,8 +99,8 @@ public class XdevFlash extends Flash implements XdevComponent
 	{
 		return "true".equals(getParameter("allowFullScreen"));
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -109,8 +109,8 @@ public class XdevFlash extends Flash implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

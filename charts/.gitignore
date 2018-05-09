@@ -1,0 +1,5 @@
+/bin/
+/bindev/
+/target/
+/lib/
+/.flattened-pom.xml

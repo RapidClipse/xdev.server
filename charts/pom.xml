@@ -33,7 +33,7 @@
 	<name>RapidClipse Framework Charts</name>
 
 	<properties>
-		<shortName>ui</shortName>
+		<shortName>charts</shortName>
 	</properties>
 
 	<dependencies>

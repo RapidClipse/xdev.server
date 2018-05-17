@@ -24,7 +24,7 @@
 
 	<groupId>com.xdev-software</groupId>
 	<artifactId>xdev-server</artifactId>
-	<version>4.0.0</version>
+	<version>4.0.0-M20190517-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>RapidClipse Framework</name>
@@ -85,7 +85,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>flatten-maven-plugin</artifactId>
-						<version>1.0.0</version>
+						<version>1.0.1</version>
 						<executions>
 							<execution>
 								<id>flatten</id>
@@ -134,7 +134,7 @@
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.7</version>
+						<version>1.6.8</version>
 						<extensions>true</extensions>
 						<configuration>
 							<serverId>${repositoryServerId}</serverId>
@@ -152,7 +152,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>flatten-maven-plugin</artifactId>
-						<version>1.0.0</version>
+						<version>1.0.1</version>
 						<executions>
 							<execution>
 								<id>flatten</id>
@@ -262,7 +262,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.1</version>
+				<version>3.7.0</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -279,7 +279,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
+				<version>3.1.0</version>
 				<configuration>
 					<archive>
 						<manifestEntries>
@@ -311,7 +311,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.2</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -319,7 +319,7 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
-							<additionalparam>-Xdoclint:none</additionalparam>
+							<doclint>none</doclint>
 							<archive>
 								<manifestEntries>
 									<built-by>${project.organization.name}</built-by>
@@ -332,7 +332,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>flatten-maven-plugin</artifactId>
-				<version>1.0.0</version>
+				<version>1.0.1</version>
 				<executions>
 					<execution>
 						<id>flatten</id>

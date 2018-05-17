@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
- - Copyright (C) 2013-2017 by XDEV Software, All Rights Reserved.
+ - Copyright (C) 2013-2018 by XDEV Software, All Rights Reserved.
  -
  - This program is free software: you can redistribute it and/or modify
  - it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@
 
 	<groupId>com.xdev-software</groupId>
 	<artifactId>xdev-server</artifactId>
-	<version>4.0.0-M20190517-SNAPSHOT</version>
+	<version>4.0.0-M20180517-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>RapidClipse Framework</name>

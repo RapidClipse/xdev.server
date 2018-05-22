@@ -29,7 +29,7 @@ import com.vaadin.v7.data.Item;
 /**
  * Lazy ID list implementation used in LazyQueryContainer.getItemIds method.
  * Wraps LazyQueryView and gets item ID's from the view on demand.
- * 
+ *
  * @param <T>
  *            the id class
  *
@@ -97,8 +97,7 @@ public final class LazyIdList<T> extends AbstractList<T> implements Serializable
 	 * {@inheritDoc}
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T[] toArray(final T[] a)
+	public <AT> AT[] toArray(final AT[] a)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -107,6 +106,7 @@ public final class LazyIdList<T> extends AbstractList<T> implements Serializable
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public T get(final int index)
 	{

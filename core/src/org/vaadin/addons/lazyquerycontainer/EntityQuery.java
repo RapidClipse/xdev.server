@@ -56,6 +56,7 @@ import com.vaadin.v7.data.util.filter.SimpleStringFilter;
  *
  * @author Tommi S.E. Laukkanen
  */
+@SuppressWarnings("deprecation")
 public class EntityQuery<E> implements Query, Serializable
 {
 	/**
@@ -92,6 +93,7 @@ public class EntityQuery<E> implements Query, Serializable
 	 * @param entityManager
 	 *            The entity manager.
 	 */
+	@SuppressWarnings("unchecked")
 	public EntityQuery(final EntityQueryDefinition entityQueryDefinition,
 			final EntityManager entityManager)
 	{
@@ -214,7 +216,7 @@ public class EntityQuery<E> implements Query, Serializable
 	/**
 	 * Sets where criteria of JPA 2.0 Criteria API query according to Vaadin
 	 * filters.
-	 * 
+	 *
 	 * @param cb
 	 *            the CriteriaBuilder
 	 * @param cq
@@ -230,9 +232,6 @@ public class EntityQuery<E> implements Query, Serializable
 		final List<Container.Filter> filters = new ArrayList<Container.Filter>();
 		filters.addAll(this.queryDefinition.getDefaultFilters());
 		filters.addAll(this.queryDefinition.getFilters());
-		
-		final Object[] sortPropertyIds;
-		final boolean[] sortPropertyAscendingStates;
 		
 		Container.Filter rootFilter;
 		if(filters.size() > 0)
@@ -259,7 +258,7 @@ public class EntityQuery<E> implements Query, Serializable
 	/**
 	 * Sets order clause of JPA 2.0 Criteria API query according to Vaadin sort
 	 * states.
-	 * 
+	 *
 	 * @param cb
 	 *            the CriteriaBuilder
 	 * @param cq
@@ -292,6 +291,7 @@ public class EntityQuery<E> implements Query, Serializable
 			final List<Order> orders = new ArrayList<Order>();
 			for(int i = 0; i < sortPropertyIds.length; i++)
 			{
+				@SuppressWarnings("rawtypes")
 				final Expression property = getPropertyPath(root,sortPropertyIds[i]);
 				if(sortPropertyAscendingStates[i])
 				{
@@ -325,6 +325,7 @@ public class EntityQuery<E> implements Query, Serializable
 	 *            the root
 	 * @return the predicate
 	 */
+	@SuppressWarnings({"rawtypes","unchecked"})
 	private Predicate setFilter(final Container.Filter filter, final CriteriaBuilder cb,
 			final CriteriaQuery<?> cq, final Root<?> root)
 	{
@@ -439,7 +440,7 @@ public class EntityQuery<E> implements Query, Serializable
 	
 	/**
 	 * Gets property path.
-	 * 
+	 *
 	 * @param root
 	 *            the root where path starts form
 	 * @param propertyId

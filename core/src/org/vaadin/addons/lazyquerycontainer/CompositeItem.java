@@ -60,8 +60,8 @@ public final class CompositeItem implements Item, Serializable
 	 * The default item.
 	 */
 	private final Item				defaultItem			= new PropertysetItem();
-	
-	
+
+
 	/**
 	 * Default constructor initializes default Item.
 	 */
@@ -69,8 +69,8 @@ public final class CompositeItem implements Item, Serializable
 	{
 		addItem(DEFAULT_ITEM_KEY,this.defaultItem);
 	}
-	
-	
+
+
 	/**
 	 * Adds new Item.
 	 *
@@ -84,8 +84,8 @@ public final class CompositeItem implements Item, Serializable
 		this.itemKeys.add(key);
 		this.items.put(key,item);
 	}
-	
-	
+
+
 	/**
 	 * Removes item.
 	 *
@@ -97,8 +97,8 @@ public final class CompositeItem implements Item, Serializable
 		this.itemKeys.remove(key);
 		this.items.remove(key);
 	}
-	
-	
+
+
 	/**
 	 * Gets keys of Items.
 	 *
@@ -108,8 +108,8 @@ public final class CompositeItem implements Item, Serializable
 	{
 		return Collections.unmodifiableList(this.itemKeys);
 	}
-	
-	
+
+
 	/**
 	 * Gets Item identified by Key.
 	 *
@@ -121,8 +121,8 @@ public final class CompositeItem implements Item, Serializable
 	{
 		return this.items.get(key);
 	}
-	
-	
+
+
 	/**
 	 * Lists IDs of the properties in the item.
 	 *
@@ -142,8 +142,8 @@ public final class CompositeItem implements Item, Serializable
 		}
 		return itemPropertyIds;
 	}
-	
-	
+
+
 	/**
 	 * Gets Item property by Item id.
 	 *
@@ -152,6 +152,7 @@ public final class CompositeItem implements Item, Serializable
 	 * @return property corresponding to the given ID or null if no matching
 	 *         property is found.
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Property getItemProperty(final Object id)
 	{
@@ -166,8 +167,8 @@ public final class CompositeItem implements Item, Serializable
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Adds property to default Item.
 	 *
@@ -178,12 +179,13 @@ public final class CompositeItem implements Item, Serializable
 	 * @return true if Property was added successfully.
 	 */
 	@Override
-	public boolean addItemProperty(final Object id, final Property property)
+	public boolean addItemProperty(final Object id,
+			@SuppressWarnings("rawtypes") final Property property)
 	{
 		return this.defaultItem.addItemProperty(id,property);
 	}
-	
-	
+
+
 	/**
 	 * Removes item from default Item.
 	 *
@@ -196,5 +198,5 @@ public final class CompositeItem implements Item, Serializable
 	{
 		return this.defaultItem.removeItemProperty(id);
 	}
-	
+
 }

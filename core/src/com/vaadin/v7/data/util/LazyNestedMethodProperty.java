@@ -49,28 +49,28 @@ import com.vaadin.v7.data.util.MethodProperty.MethodException;
 @SuppressWarnings("deprecation")
 public class LazyNestedMethodProperty<T> extends AbstractProperty<T>
 {
-
+	
 	/** The property name. */
 	private String					propertyName;
-
+	
 	/** The getter methods. */
 	private transient List<Method>	getMethods;
 	/**
 	 * The setter method.
 	 */
 	private transient Method		setMethod;
-
+	
 	/**
 	 * Bean instance used as a starting point for accessing the property value.
 	 */
 	private final Object			instance;
-
+	
 	/**
 	 * The property class.
 	 */
 	private Class<? extends T>		type;
-
-
+	
+	
 	/**
 	 * Special serialization to handle method references
 	 *
@@ -82,10 +82,10 @@ public class LazyNestedMethodProperty<T> extends AbstractProperty<T>
 	private void writeObject(final java.io.ObjectOutputStream out) throws IOException
 	{
 		out.defaultWriteObject();
-
+		
 	}
-
-
+	
+	
 	/**
 	 * Special serialization to handle method references.
 	 *
@@ -100,11 +100,11 @@ public class LazyNestedMethodProperty<T> extends AbstractProperty<T>
 			throws IOException, ClassNotFoundException
 	{
 		in.defaultReadObject();
-
+		
 		initialize(this.instance.getClass(),this.propertyName);
 	}
-
-
+	
+	
 	/**
 	 * Constructs a nested method property for a given object instance. The property
 	 * name is a dot separated string pointing to a nested property, e.g.
@@ -120,8 +120,8 @@ public class LazyNestedMethodProperty<T> extends AbstractProperty<T>
 		this.instance = instance;
 		initialize(instance.getClass(),propertyName);
 	}
-
-
+	
+	
 	/**
 	 * For internal use to deduce property type etc. without a bean instance.
 	 * Calling {@link #setValue(Object)} or {@link #getValue()} on properties
@@ -137,8 +137,8 @@ public class LazyNestedMethodProperty<T> extends AbstractProperty<T>
 		this.instance = null;
 		initialize(instanceClass,propertyName);
 	}
-
-
+	
+	
 	/**
 	 * Initializes most of the internal fields based on the top-level bean instance
 	 * and property name (dot-separated string).
@@ -148,14 +148,15 @@ public class LazyNestedMethodProperty<T> extends AbstractProperty<T>
 	 * @param propertyName
 	 *            dot separated nested property name
 	 */
+	@SuppressWarnings("unchecked")
 	private void initialize(final Class<?> beanClass, final String propertyName)
 	{
-
+		
 		final List<Method> getMethods = new ArrayList<Method>();
-
+		
 		String lastSimplePropertyName = propertyName;
 		Class<?> lastClass = beanClass;
-
+		
 		// first top-level property, then go deeper in a loop
 		Class<?> propertyClass = beanClass;
 		final String[] simplePropertyNames = propertyName.split("\\.");
@@ -189,11 +190,11 @@ public class LazyNestedMethodProperty<T> extends AbstractProperty<T>
 						"Empty or invalid bean property identifier in '" + propertyName + "'");
 			}
 		}
-
+		
 		// In case the get method is found, resolve the type
 		final Method lastGetMethod = getMethods.get(getMethods.size() - 1);
 		final Class<?> type = lastGetMethod.getReturnType();
-
+		
 		// Finds the set method
 		Method setMethod = null;
 		try
@@ -206,40 +207,41 @@ public class LazyNestedMethodProperty<T> extends AbstractProperty<T>
 				buf[0] = Character.toUpperCase(buf[0]);
 				lastSimplePropertyName = new String(buf);
 			}
-
+			
 			setMethod = lastClass.getMethod("set" + lastSimplePropertyName,new Class[]{type});
 		}
 		catch(final NoSuchMethodException skipped)
 		{
 		}
-
+		
 		this.type = (Class<? extends T>)ReflectTools.convertPrimitiveType(type);
 		this.propertyName = propertyName;
 		this.getMethods = getMethods;
 		this.setMethod = setMethod;
 	}
-
-
+	
+	
 	@Override
 	public Class<? extends T> getType()
 	{
 		return this.type;
 	}
-
-
+	
+	
 	@Override
 	public boolean isReadOnly()
 	{
 		return super.isReadOnly() || (null == this.setMethod);
 	}
-
-
+	
+	
 	/**
 	 * Gets the value stored in the Property. The value is resolved by calling the
 	 * specified getter method with the argument specified at instantiation.
 	 *
 	 * @return the value of the Property
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public T getValue()
 	{
@@ -261,8 +263,8 @@ public class LazyNestedMethodProperty<T> extends AbstractProperty<T>
 			throw new MethodException(this,e);
 		}
 	}
-
-
+	
+	
 	/**
 	 * Sets the value of the property. The new value must be assignable to the type
 	 * of this property.
@@ -281,12 +283,12 @@ public class LazyNestedMethodProperty<T> extends AbstractProperty<T>
 		{
 			throw new Property.ReadOnlyException();
 		}
-
+		
 		invokeSetMethod(newValue);
 		fireValueChange();
 	}
-
-
+	
+	
 	/**
 	 * Internal method to actually call the setter method of the wrapped property.
 	 *
@@ -317,8 +319,8 @@ public class LazyNestedMethodProperty<T> extends AbstractProperty<T>
 			throw new MethodException(this,e);
 		}
 	}
-
-
+	
+	
 	/**
 	 * Returns an unmodifiable list of getter methods to call in sequence to get the
 	 * property value.
@@ -332,5 +334,5 @@ public class LazyNestedMethodProperty<T> extends AbstractProperty<T>
 	{
 		return Collections.unmodifiableList(this.getMethods);
 	}
-
+	
 }

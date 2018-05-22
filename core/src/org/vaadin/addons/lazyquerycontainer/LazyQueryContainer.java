@@ -61,8 +61,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	 * List of registered PropertySetChangeListeners.
 	 */
 	private final List<PropertySetChangeListener>	propertySetChangeListeners	= new ArrayList<PropertySetChangeListener>();
-	
-	
+
+
 	/**
 	 * Constructs LazyQueryContainer with LazyQueryView and given queryFactory.
 	 *
@@ -81,8 +81,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		this.queryView = new LazyQueryView(
 				new LazyQueryDefinition(compositeItems,batchSize,idPropertyId),queryFactory);
 	}
-	
-	
+
+
 	/**
 	 * Constructs LazyQueryContainer with LazyQueryView and given queryFactory and
 	 * queryDefinition.
@@ -97,8 +97,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		this.queryView = new LazyQueryView(queryDefinition,queryFactory);
 	}
-	
-	
+
+
 	/**
 	 * Constructs LazyQueryContainer with the given QueryView. This constructor role
 	 * is to enable use of custom view implementations.
@@ -110,8 +110,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		this.queryView = queryView;
 	}
-	
-	
+
+
 	/**
 	 * Sets new sort state and refreshes container.
 	 *
@@ -127,8 +127,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		this.queryView.sort(sortPropertyIds,ascendingStates);
 		notifyItemSetChanged();
 	}
-	
-	
+
+
 	/**
 	 * Lists of the property IDs queried.
 	 *
@@ -139,8 +139,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.getQueryDefinition().getPropertyIds();
 	}
-	
-	
+
+
 	/**
 	 * List of the property IDs which can be sorted.
 	 *
@@ -151,8 +151,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.getQueryDefinition().getSortablePropertyIds();
 	}
-	
-	
+
+
 	/**
 	 * Gets the property value class of the given property.
 	 *
@@ -165,8 +165,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.getQueryDefinition().getPropertyType(propertyId);
 	}
-	
-	
+
+
 	/**
 	 * Adds a new property to the definition.
 	 *
@@ -186,8 +186,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		notifyPropertySetChanged();
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Adds a new property to the definition.
 	 *
@@ -211,8 +211,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		notifyPropertySetChanged();
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Removes the given property from the definition.
 	 *
@@ -227,8 +227,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		notifyPropertySetChanged();
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Number of items in the container.
 	 *
@@ -239,8 +239,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.size();
 	}
-	
-	
+
+
 	/**
 	 * Gets list of item indexes in the container.
 	 *
@@ -251,8 +251,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.getItemIdList();
 	}
-	
-	
+
+
 	/**
 	 * Gets item at given index.
 	 *
@@ -277,8 +277,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 			return this.queryView.getItem(index);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Gets property of an item.
 	 *
@@ -288,6 +288,7 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	 *            ID of the property.
 	 * @return the property corresponding to given IDs.
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public final Property getContainerProperty(final Object itemId, final Object propertyId)
 	{
@@ -298,8 +299,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		}
 		return item.getItemProperty(propertyId);
 	}
-	
-	
+
+
 	/**
 	 * Gets ID of given index. In other words returns the index itself.
 	 *
@@ -312,8 +313,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.getItemIdList().get(index);
 	}
-	
-	
+
+
 	/**
 	 * Gets index of given ID. In other words returns the index itself.
 	 *
@@ -326,8 +327,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.getItemIdList().indexOf(itemId);
 	}
-	
-	
+
+
 	/**
 	 * True if container contains the given index.
 	 *
@@ -340,8 +341,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.getItemIdList().contains(itemId);
 	}
-	
-	
+
+
 	/**
 	 * Check if given index is first i.e. 0.
 	 *
@@ -354,8 +355,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.getItemIdList().indexOf(itemId) == 0;
 	}
-	
-	
+
+
 	/**
 	 * Check if given index is first i.e. size() - 1.
 	 *
@@ -368,8 +369,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.getItemIdList().indexOf(itemId) == size() - 1;
 	}
-	
-	
+
+
 	/**
 	 * @return first item ID i.e. 0.
 	 */
@@ -378,8 +379,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.getItemIdList().get(0);
 	}
-	
-	
+
+
 	/**
 	 * @return last item ID i.e. size() - 1
 	 */
@@ -388,8 +389,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.getItemIdList().get(size() - 1);
 	}
-	
-	
+
+
 	/**
 	 * @param itemId
 	 *            the item index
@@ -409,8 +410,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 			return itemIdList.get(currentIndex + 1);
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param itemId
 	 *            the item index
@@ -430,8 +431,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 			return itemIdList.get(currentIndex - 1);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Not supported.
 	 *
@@ -444,8 +445,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
 	 * Not supported.
 	 *
@@ -458,8 +459,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
 	 * Not supported.
 	 *
@@ -474,8 +475,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
 	 * Not supported.
 	 *
@@ -490,8 +491,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
 	 * Not supported.
 	 *
@@ -504,8 +505,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
 	 * Constructs and adds new item.
 	 *
@@ -519,8 +520,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		notifyItemSetChanged();
 		return itemId;
 	}
-	
-	
+
+
 	/**
 	 * Removes Item at given index.
 	 *
@@ -535,8 +536,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		notifyItemSetChanged();
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Removes all items.
 	 *
@@ -549,8 +550,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		refresh();
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Adds ItemSetChangeListener.
 	 *
@@ -562,10 +563,10 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	public final void addListener(final ItemSetChangeListener listener)
 	{
 		addItemSetChangeListener(listener);
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Removes ItemSetChangeListener.
 	 *
@@ -578,15 +579,15 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		removeItemSetChangeListener(listener);
 	}
-	
-	
+
+
 	@Override
 	public final void removeItemSetChangeListener(final ItemSetChangeListener listener)
 	{
 		this.itemSetChangeListeners.remove(listener);
 	}
-	
-	
+
+
 	/**
 	 * Refreshes container.
 	 */
@@ -595,8 +596,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		this.queryView.refresh();
 		notifyItemSetChanged();
 	}
-	
-	
+
+
 	/**
 	 * Notifies that item set has been changed.
 	 */
@@ -608,8 +609,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 			listener.containerItemSetChange(event);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Adds PropertySetChangeListener.
 	 *
@@ -622,22 +623,22 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		addPropertySetChangeListener(listener);
 	}
-	
-	
+
+
 	@Override
 	public final void addItemSetChangeListener(final ItemSetChangeListener listener)
 	{
 		this.itemSetChangeListeners.add(listener);
 	}
-	
-	
+
+
 	@Override
 	public final void addPropertySetChangeListener(final PropertySetChangeListener listener)
 	{
 		this.propertySetChangeListeners.add(listener);
 	}
-	
-	
+
+
 	/**
 	 * Removes PropertySetChangeListener.
 	 *
@@ -650,15 +651,15 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		removePropertySetChangeListener(listener);
 	}
-	
-	
+
+
 	@Override
 	public final void removePropertySetChangeListener(final PropertySetChangeListener listener)
 	{
 		this.propertySetChangeListeners.remove(listener);
 	}
-	
-	
+
+
 	/**
 	 * Notifies that property set has been changed.
 	 */
@@ -670,42 +671,42 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 			listener.containerPropertySetChange(event);
 		}
 	}
-	
-	
+
+
 	@Override
 	public final void addContainerFilter(final Filter filter)
 	{
 		getQueryView().addFilter(filter);
 		notifyItemSetChanged();
 	}
-	
-	
+
+
 	@Override
 	public final void removeContainerFilter(final Filter filter)
 	{
 		getQueryView().removeFilter(filter);
 		notifyItemSetChanged();
 	}
-	
-	
+
+
 	@Override
 	public final void removeAllContainerFilters()
 	{
 		getQueryView().removeFilters();
 		notifyItemSetChanged();
 	}
-	
-	
+
+
 	@Override
 	public Collection<Filter> getContainerFilters()
 	{
 		return getQueryView().getFilters();
 	}
-	
-	
+
+
 	/**
 	 * Adds default filter to underlying QueryDefinition.
-	 * 
+	 *
 	 * @param filter
 	 *            the default filter
 	 */
@@ -714,11 +715,11 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		getQueryView().getQueryDefinition().addDefaultFilter(filter);
 		notifyItemSetChanged();
 	}
-	
-	
+
+
 	/**
 	 * Removes default filter from underlying QueryDefinition.
-	 * 
+	 *
 	 * @param filter
 	 *            the default filter
 	 */
@@ -727,8 +728,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		getQueryView().getQueryDefinition().removeDefaultFilter(filter);
 		notifyItemSetChanged();
 	}
-	
-	
+
+
 	/**
 	 * Removes all default filters from underlying QueryDefinition.
 	 */
@@ -737,9 +738,9 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		getQueryView().getQueryDefinition().removeDefaultFilters();
 		notifyItemSetChanged();
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Private ItemSetChangeEvent implementation.
 	 *
@@ -755,8 +756,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		 * The container where event occurred.
 		 */
 		private final LazyQueryContainer	container;
-		
-		
+
+
 		/**
 		 * Constructor for setting the container.
 		 *
@@ -767,8 +768,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		{
 			this.container = container;
 		}
-		
-		
+
+
 		/**
 		 * Gets the container where event occurred.
 		 *
@@ -779,11 +780,11 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		{
 			return this.container;
 		}
-		
+
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Private PropertySetChangeEvent implementation.
 	 *
@@ -799,8 +800,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		 * The container where event occurred.
 		 */
 		private final LazyQueryContainer	container;
-		
-		
+
+
 		/**
 		 * Constructor for setting the container.
 		 *
@@ -811,8 +812,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		{
 			this.container = container;
 		}
-		
-		
+
+
 		/**
 		 * Gets the container where event occurred.
 		 *
@@ -823,10 +824,10 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		{
 			return this.container;
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Commits changed and refreshes container.
 	 */
@@ -836,8 +837,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		this.queryView.commit();
 		refresh();
 	}
-	
-	
+
+
 	/**
 	 * Discards changes and refreshes container.
 	 */
@@ -847,8 +848,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 		this.queryView.discard();
 		refresh();
 	}
-	
-	
+
+
 	/**
 	 * @return true if container contains not commited modifications.
 	 */
@@ -857,8 +858,8 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView.isModified();
 	}
-	
-	
+
+
 	/**
 	 * @return the queryView
 	 */
@@ -866,26 +867,26 @@ public class LazyQueryContainer implements Indexed, Sortable, ItemSetChangeNotif
 	{
 		return this.queryView;
 	}
-	
-	
+
+
 	@Override
 	public final void setBuffered(final boolean buffered)
 	{
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	@Override
 	public final boolean isBuffered()
 	{
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public final List<?> getItemIds(final int startIndex, final int numberOfItems)
 	{
 		return ContainerHelpers.getItemIdsUsingGetIdByIndex(startIndex,numberOfItems,this);
 	}
-	
+
 }

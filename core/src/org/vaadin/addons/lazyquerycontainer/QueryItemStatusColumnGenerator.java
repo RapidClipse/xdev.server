@@ -64,16 +64,16 @@ public final class QueryItemStatusColumnGenerator
 	 * The status icon Vaadin component.
 	 */
 	private Image				statusIcon;
-
-
+	
+	
 	/**
 	 * Construct which sets the application instance.
 	 */
 	public QueryItemStatusColumnGenerator()
 	{
 	}
-
-
+	
+	
 	/**
 	 * Generates cell component.
 	 *
@@ -85,11 +85,12 @@ public final class QueryItemStatusColumnGenerator
 	 *            ID of the column this cell is located at.
 	 * @return Component used to render this cell.
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Component generateCell(final Table source, final Object itemId, final Object columnId)
 	{
 		final Property statusProperty = source.getItem(itemId).getItemProperty(columnId);
-
+		
 		this.noneIconResource = new ClassResource(QueryItemStatusColumnGenerator.class,
 				"images/textfield.png");
 		this.addedIconResource = new ClassResource(QueryItemStatusColumnGenerator.class,
@@ -98,22 +99,22 @@ public final class QueryItemStatusColumnGenerator
 				"images/textfield_rename.png");
 		this.removedIconResource = new ClassResource(QueryItemStatusColumnGenerator.class,
 				"images/textfield_delete.png");
-
+		
 		this.statusIcon = new Image(null,this.noneIconResource);
 		this.statusIcon.setHeight("16px");
-
+		
 		if(statusProperty instanceof ValueChangeNotifier)
 		{
 			final ValueChangeNotifier notifier = (ValueChangeNotifier)statusProperty;
 			notifier.addValueChangeListener(this);
 		}
-
+		
 		refreshImage(statusProperty);
-
+		
 		return this.statusIcon;
 	}
-
-
+	
+	
 	/**
 	 * Event handler for ValueChangeEvent.
 	 *
@@ -126,14 +127,15 @@ public final class QueryItemStatusColumnGenerator
 		refreshImage(event.getProperty());
 		this.statusIcon.markAsDirty();
 	}
-
-
+	
+	
 	/**
 	 * Refreshes the status Icon according to the property value.
 	 *
 	 * @param statusProperty
 	 *            The property according to which status is updated.
 	 */
+	@SuppressWarnings("rawtypes")
 	private void refreshImage(final Property statusProperty)
 	{
 		if(statusProperty.getValue() == null)
@@ -159,5 +161,5 @@ public final class QueryItemStatusColumnGenerator
 			this.statusIcon.setSource(this.removedIconResource);
 		}
 	}
-
+	
 }

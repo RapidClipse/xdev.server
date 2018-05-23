@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.CacheRetrieveMode;
+import javax.persistence.CacheStoreMode;
 import javax.persistence.metamodel.Attribute;
 
 import com.google.common.collect.Lists;
@@ -84,48 +86,50 @@ import com.google.common.collect.Lists;
 public class SearchParameters implements Serializable
 {
 	private static final long					serialVersionUID	= 1L;
-	
+
 	private SearchMode							searchMode			= SearchMode.EQUALS;
 	private boolean								andMode				= true;
-	
+
 	private final Set<OrderBy>					orders				= new HashSet<>();
-	
+
 	// technical parameters
 	private boolean								caseSensitive		= true;
-	
+
 	private PredicateSupplier					predicateSupplier;
-	
+
 	// pagination
 	private int									maxResults			= -1;
 	private int									first				= 0;
 	private int									pageSize			= 0;
-	
+
 	// fetches
 	private final Set<PathHolder>				fetches				= new HashSet<>();
-	
+
 	// ranges
 	private final List<Range<?, ?>>				ranges				= new ArrayList<>();
-	
+
 	// property selectors
 	private final List<PropertySelector<?, ?>>	properties			= new ArrayList<>();
-	
+
 	// pattern to match against all strings.
 	private String								searchPattern;
-	
+
 	// Warn: before enabling cache for queries,
 	// check this: https://hibernate.atlassian.net/browse/HHH-1523
 	private Boolean								cacheable			= false;
 	private String								cacheRegion;
-	
+	private CacheStoreMode						cacheStoreMode;
+	private CacheRetrieveMode					cacheRetrieveMode;
+
 	private boolean								useAndInXToMany		= true;
-	
+
 	private boolean								useDistinct			= false;
-	
+
 	// -----------------------------------
 	// SearchMode
 	// -----------------------------------
-	
-	
+
+
 	/**
 	 * Fluently set the @{link SearchMode}. It defaults to EQUALS.
 	 *
@@ -138,8 +142,8 @@ public class SearchParameters implements Serializable
 	{
 		this.searchMode = searchMode;
 	}
-	
-	
+
+
 	/**
 	 * Return the @{link SearchMode}. It defaults to EQUALS.
 	 *
@@ -149,14 +153,14 @@ public class SearchParameters implements Serializable
 	{
 		return this.searchMode;
 	}
-	
-	
+
+
 	public boolean is(final SearchMode searchMode)
 	{
 		return getSearchMode() == searchMode;
 	}
-	
-	
+
+
 	/**
 	 * Fluently set the @{link SearchMode}. It defaults to EQUALS.
 	 *
@@ -170,8 +174,8 @@ public class SearchParameters implements Serializable
 		setSearchMode(searchMode);
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * Use the EQUALS @{link SearchMode}.
 	 *
@@ -184,8 +188,8 @@ public class SearchParameters implements Serializable
 	{
 		return searchMode(SearchMode.EQUALS);
 	}
-	
-	
+
+
 	/**
 	 * Use the ANYWHERE @{link SearchMode}.
 	 *
@@ -198,8 +202,8 @@ public class SearchParameters implements Serializable
 	{
 		return searchMode(SearchMode.ANYWHERE);
 	}
-	
-	
+
+
 	/**
 	 * Use the STARTING_LIKE @{link SearchMode}.
 	 *
@@ -209,8 +213,8 @@ public class SearchParameters implements Serializable
 	{
 		return searchMode(SearchMode.STARTING_LIKE);
 	}
-	
-	
+
+
 	/**
 	 * Use the LIKE @{link SearchMode}.
 	 *
@@ -220,8 +224,8 @@ public class SearchParameters implements Serializable
 	{
 		return searchMode(SearchMode.LIKE);
 	}
-	
-	
+
+
 	/**
 	 * Use the ENDING_LIKE @{link SearchMode}.
 	 *
@@ -231,24 +235,24 @@ public class SearchParameters implements Serializable
 	{
 		return searchMode(SearchMode.ENDING_LIKE);
 	}
-	
-	
+
+
 	// -----------------------------------
 	// Predicate mode
 	// -----------------------------------
-	
+
 	public void setAndMode(final boolean andMode)
 	{
 		this.andMode = andMode;
 	}
-	
-	
+
+
 	public boolean isAndMode()
 	{
 		return this.andMode;
 	}
-	
-	
+
+
 	/*
 	 * use <code>and</code> to build the final predicate
 	 */
@@ -257,8 +261,8 @@ public class SearchParameters implements Serializable
 		setAndMode(true);
 		return this;
 	}
-	
-	
+
+
 	/*
 	 * use <code>or</code> to build the final predicate
 	 */
@@ -267,12 +271,12 @@ public class SearchParameters implements Serializable
 		setAndMode(false);
 		return this;
 	}
-	
+
 	// -----------------------------------
 	// Search pattern support
 	// -----------------------------------
-	
-	
+
+
 	/**
 	 * When it returns true, it indicates to the DAO layer to use the given
 	 * searchPattern on all string properties.
@@ -281,37 +285,37 @@ public class SearchParameters implements Serializable
 	{
 		return this.searchPattern != null && this.searchPattern.trim().length() > 0;
 	}
-	
-	
+
+
 	/**
 	 * Set the pattern which may contains wildcards (ex: <code>e%r%ka</code> ).
 	 * <p>
-	 * The given searchPattern is used by the DAO layer on all string
-	 * properties. Null by default.
+	 * The given searchPattern is used by the DAO layer on all string properties.
+	 * Null by default.
 	 */
 	public void setSearchPattern(final String searchPattern)
 	{
 		this.searchPattern = searchPattern;
 	}
-	
-	
+
+
 	public SearchParameters searchPattern(final String searchPattern)
 	{
 		setSearchPattern(searchPattern);
 		return this;
 	}
-	
-	
+
+
 	public String getSearchPattern()
 	{
 		return this.searchPattern;
 	}
-	
-	
+
+
 	// -----------------------------------
 	// Case sensitiveness support
 	// -----------------------------------
-	
+
 	/**
 	 * Set the case sensitiveness. Defaults to false.
 	 *
@@ -322,20 +326,20 @@ public class SearchParameters implements Serializable
 	{
 		this.caseSensitive = caseSensitive;
 	}
-	
-	
+
+
 	public boolean isCaseSensitive()
 	{
 		return this.caseSensitive;
 	}
-	
-	
+
+
 	public boolean isCaseInsensitive()
 	{
 		return !this.caseSensitive;
 	}
-	
-	
+
+
 	/**
 	 * Fluently set the case sensitiveness. Defaults to false.
 	 *
@@ -347,8 +351,8 @@ public class SearchParameters implements Serializable
 		setCaseSensitive(caseSensitive);
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * Fluently set the case sensitiveness to true.
 	 */
@@ -356,8 +360,8 @@ public class SearchParameters implements Serializable
 	{
 		return caseSensitive(true);
 	}
-	
-	
+
+
 	/**
 	 * Fluently set the case sensitiveness to false.
 	 */
@@ -365,8 +369,8 @@ public class SearchParameters implements Serializable
 	{
 		return caseSensitive(false);
 	}
-	
-	
+
+
 	// -----------------------------------
 	// Predicate support
 	// -----------------------------------
@@ -375,8 +379,8 @@ public class SearchParameters implements Serializable
 	{
 		this.predicateSupplier = predicateSupplier;
 	}
-	
-	
+
+
 	public PredicateSupplier getPredicateSupplier()
 	{
 		return this.predicateSupplier;
@@ -388,18 +392,18 @@ public class SearchParameters implements Serializable
 		this.predicateSupplier = predicateSupplier;
 		return this;
 	}
-	
-	
+
+
 	// -----------------------------------
 	// Order by support
 	// -----------------------------------
-	
+
 	public List<OrderBy> getOrders()
 	{
 		return new ArrayList<>(this.orders);
 	}
-	
-	
+
+
 	public void addOrderBy(final OrderBy orderBy)
 	{
 		if(!this.orders.add(orderBy))
@@ -407,14 +411,14 @@ public class SearchParameters implements Serializable
 			throw new IllegalArgumentException("Duplicate orderBy: '" + orderBy + "'.");
 		}
 	}
-	
-	
+
+
 	public boolean hasOrders()
 	{
 		return !this.orders.isEmpty();
 	}
-	
-	
+
+
 	public SearchParameters orderBy(final OrderBy... orderBys)
 	{
 		for(final OrderBy orderBy : orderBys)
@@ -423,68 +427,68 @@ public class SearchParameters implements Serializable
 		}
 		return this;
 	}
-	
-	
+
+
 	public SearchParameters asc(final Attribute<?, ?>... attributes)
 	{
 		return orderBy(new OrderBy(OrderByDirection.ASC,attributes));
 	}
-	
-	
+
+
 	public SearchParameters desc(final Attribute<?, ?>... attributes)
 	{
 		return orderBy(new OrderBy(OrderByDirection.DESC,attributes));
 	}
-	
-	
+
+
 	public SearchParameters orderBy(final OrderByDirection orderByDirection,
 			final Attribute<?, ?>... attributes)
 	{
 		return orderBy(new OrderBy(orderByDirection,attributes));
 	}
-	
-	
+
+
 	public SearchParameters asc(final String property, final Class<?> from)
 	{
 		return orderBy(new OrderBy(OrderByDirection.ASC,property,from));
 	}
-	
-	
+
+
 	public SearchParameters desc(final String property, final Class<?> from)
 	{
 		return orderBy(new OrderBy(OrderByDirection.DESC,property,from));
 	}
-	
-	
+
+
 	public SearchParameters orderBy(final OrderByDirection orderByDirection, final String property,
 			final Class<?> from)
 	{
 		return orderBy(new OrderBy(orderByDirection,property,from));
 	}
-	
-	
+
+
 	// -----------------------------------
 	// Search by range support
 	// -----------------------------------
-	
+
 	public List<Range<?, ?>> getRanges()
 	{
 		return this.ranges;
 	}
-	
-	
+
+
 	public void addRange(final Range<?, ?> range)
 	{
 		this.ranges.add(range);
 	}
-	
-	
+
+
 	public boolean hasRanges()
 	{
 		return !this.ranges.isEmpty();
 	}
-	
-	
+
+
 	public SearchParameters range(final Range<?, ?>... ranges)
 	{
 		for(final Range<?, ?> range : ranges)
@@ -493,37 +497,37 @@ public class SearchParameters implements Serializable
 		}
 		return this;
 	}
-	
-	
+
+
 	public <D extends Comparable<? super D>> SearchParameters range(final D from, final D to,
 			final Attribute<?, ?>... attributes)
 	{
 		return range(new Range<D, D>(from,to,attributes));
 	}
-	
-	
+
+
 	// -----------------------------------
 	// Search by property selector support
 	// -----------------------------------
-	
+
 	public List<PropertySelector<?, ?>> getProperties()
 	{
 		return this.properties;
 	}
-	
-	
+
+
 	public void addProperty(final PropertySelector<?, ?> propertySelector)
 	{
 		this.properties.add(propertySelector);
 	}
-	
-	
+
+
 	public boolean hasProperties()
 	{
 		return !this.properties.isEmpty();
 	}
-	
-	
+
+
 	public SearchParameters property(final PropertySelector<?, ?>... propertySelectors)
 	{
 		for(final PropertySelector<?, ?> propertySelector : propertySelectors)
@@ -532,19 +536,19 @@ public class SearchParameters implements Serializable
 		}
 		return this;
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	public <F> SearchParameters property(final Attribute<?, ?> fields, final F... selected)
 	{
 		return property(PropertySelector.newPropertySelector(fields).selected(selected));
 	}
-	
+
 	// -----------------------------------
 	// Pagination support
 	// -----------------------------------
-	
-	
+
+
 	/**
 	 * Set the maximum number of results to retrieve. Pass -1 for no limits.
 	 */
@@ -552,14 +556,14 @@ public class SearchParameters implements Serializable
 	{
 		this.maxResults = maxResults;
 	}
-	
-	
+
+
 	public int getMaxResults()
 	{
 		return this.maxResults;
 	}
-	
-	
+
+
 	/**
 	 * Set the position of the first result to retrieve.
 	 *
@@ -570,14 +574,14 @@ public class SearchParameters implements Serializable
 	{
 		this.first = first;
 	}
-	
-	
+
+
 	public int getFirst()
 	{
 		return this.first;
 	}
-	
-	
+
+
 	/**
 	 * Set the page size, that is the maximum number of result to retrieve.
 	 */
@@ -585,85 +589,84 @@ public class SearchParameters implements Serializable
 	{
 		this.pageSize = pageSize;
 	}
-	
-	
+
+
 	public int getPageSize()
 	{
 		return this.pageSize;
 	}
-	
-	
+
+
 	public SearchParameters maxResults(final int maxResults)
 	{
 		setMaxResults(maxResults);
 		return this;
 	}
-	
-	
+
+
 	public SearchParameters noLimit()
 	{
 		setMaxResults(-1);
 		return this;
 	}
-	
-	
+
+
 	public SearchParameters limitBroadSearch()
 	{
 		setMaxResults(500);
 		return this;
 	}
-	
-	
+
+
 	public SearchParameters first(final int first)
 	{
 		setFirst(first);
 		return this;
 	}
-	
-	
+
+
 	public SearchParameters pageSize(final int pageSize)
 	{
 		setPageSize(pageSize);
 		return this;
 	}
-	
+
 	// -----------------------------------------
 	// Fetch associated entity using a LEFT Join
 	// -----------------------------------------
-	
-	
+
+
 	/**
-	 * Returns the attributes (x-to-one association) which must be fetched with
-	 * a left join.
+	 * Returns the attributes (x-to-one association) which must be fetched with a
+	 * left join.
 	 */
 	public List<List<Attribute<?, ?>>> getFetches()
 	{
 		return this.fetches.stream().map(PathHolder::getAttributes).collect(Collectors.toList());
 	}
-	
-	
+
+
 	public boolean hasFetches()
 	{
 		return !this.fetches.isEmpty();
 	}
-	
-	
+
+
 	/**
-	 * The given attribute (x-to-one association) will be fetched with a left
-	 * join.
+	 * The given attribute (x-to-one association) will be fetched with a left join.
 	 */
 	public void addFetch(final Attribute<?, ?>... attributes)
 	{
 		addFetch(Lists.newArrayList(attributes));
 	}
-	
-	
+
+
 	public void addFetch(final List<Attribute<?, ?>> attributes)
 	{
 		this.fetches.add(new PathHolder(attributes));
 	}
-	
-	
+
+
 	/**
 	 * Fluently set the fetch attribute
 	 */
@@ -672,8 +675,8 @@ public class SearchParameters implements Serializable
 		fetch(Lists.newArrayList(attributes));
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * Fluently set the fetch attribute
 	 */
@@ -682,132 +685,182 @@ public class SearchParameters implements Serializable
 		addFetch(attributes);
 		return this;
 	}
-	
+
 	// -----------------------------------
 	// Caching support
 	// -----------------------------------
-	
-	
+
+
 	/**
-	 * Default to false. Please read
-	 * https://hibernate.atlassian.net/browse/HHH-1523 before using cache.
+	 * Default to false. Please read https://hibernate.atlassian.net/browse/HHH-1523
+	 * before using cache.
 	 */
 	public void setCacheable(final boolean cacheable)
 	{
 		this.cacheable = cacheable;
 	}
-	
-	
+
+
 	public boolean isCacheable()
 	{
 		return this.cacheable;
 	}
-	
-	
+
+
 	public boolean hasCacheRegion()
 	{
 		return this.cacheRegion != null && this.cacheRegion.trim().length() > 0;
 	}
-	
-	
+
+
 	public void setCacheRegion(final String cacheRegion)
 	{
 		this.cacheRegion = cacheRegion;
 	}
-	
-	
+
+
 	public String getCacheRegion()
 	{
 		return this.cacheRegion;
 	}
-	
-	
+
+
+	public boolean hasCacheStoreMode()
+	{
+		return this.cacheStoreMode != null;
+	}
+
+
+	public void setCacheStoreMode(final CacheStoreMode cacheStoreMode)
+	{
+		this.cacheStoreMode = cacheStoreMode;
+	}
+
+
+	public CacheStoreMode getCacheStoreMode()
+	{
+		return this.cacheStoreMode;
+	}
+
+
+	public boolean hasCacheRetrieveMode()
+	{
+		return this.cacheRetrieveMode != null;
+	}
+
+
+	public void setCacheRetrieveMode(final CacheRetrieveMode cacheRetrieveMode)
+	{
+		this.cacheRetrieveMode = cacheRetrieveMode;
+	}
+
+
+	public CacheRetrieveMode getCacheRetrieveMode()
+	{
+		return this.cacheRetrieveMode;
+	}
+
+
 	public SearchParameters cacheable(final boolean cacheable)
 	{
 		setCacheable(cacheable);
 		return this;
 	}
-	
-	
+
+
 	public SearchParameters enableCache()
 	{
 		setCacheable(true);
 		return this;
 	}
-	
-	
+
+
 	public SearchParameters disableCache()
 	{
 		setCacheable(false);
 		return this;
 	}
-	
-	
+
+
 	public SearchParameters cacheRegion(final String cacheRegion)
 	{
 		setCacheRegion(cacheRegion);
 		return this;
 	}
-	
-	
+
+
+	public SearchParameters cacheStoreMode(final CacheStoreMode cacheStoreMode)
+	{
+		setCacheStoreMode(cacheStoreMode);
+		return this;
+	}
+
+
+	public SearchParameters cacheRetrieveMode(final CacheRetrieveMode cacheRetrieveMode)
+	{
+		setCacheRetrieveMode(cacheRetrieveMode);
+		return this;
+	}
+
+
 	// -----------------------------------
 	// Use and in XToMany Search
 	// -----------------------------------
-	
+
 	public void setUseAndInXToMany(final boolean useAndInXToMany)
 	{
 		this.useAndInXToMany = useAndInXToMany;
 	}
-	
-	
+
+
 	public boolean getUseAndInXToMany()
 	{
 		return this.useAndInXToMany;
 	}
-	
-	
+
+
 	public SearchParameters useOrInXToMany()
 	{
 		return useAndInXToMany(false);
 	}
-	
-	
+
+
 	public SearchParameters useAndInXToMany()
 	{
 		return useAndInXToMany(true);
 	}
-	
-	
+
+
 	public SearchParameters useAndInXToMany(final boolean xToManyAndMode)
 	{
 		setUseAndInXToMany(xToManyAndMode);
 		return this;
 	}
-	
-	
+
+
 	// -----------------------------------
 	// Distinct
 	// -----------------------------------
-	
+
 	public void setDistinct(final boolean useDistinct)
 	{
 		this.useDistinct = useDistinct;
 	}
-	
-	
+
+
 	public boolean getDistinct()
 	{
 		return this.useDistinct;
 	}
-	
-	
+
+
 	public SearchParameters distinct(final boolean useDistinct)
 	{
 		setDistinct(useDistinct);
 		return this;
 	}
-	
-	
+
+
 	public SearchParameters distinct()
 	{
 		return distinct(true);

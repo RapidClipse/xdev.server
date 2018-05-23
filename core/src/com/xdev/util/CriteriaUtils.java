@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.FetchParent;
@@ -38,7 +39,11 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.PluralAttribute;
 
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.QueryHints;
+
 import com.google.common.collect.Lists;
+import com.xdev.dal.CacheableQuery;
 
 
 /**
@@ -142,5 +147,28 @@ public final class CriteriaUtils
 			}
 		}
 		return (Path<F>)path;
+	}
+
+
+	/**
+	 * @since 4.0
+	 */
+	public static void applyCacheHints(final TypedQuery<?> typedQuery,
+			final CacheableQuery cacheableQuery)
+	{
+		if(cacheableQuery != null)
+		{
+			typedQuery.setHint(QueryHints.CACHEABLE,true);
+
+			final String region = cacheableQuery.region();
+			if(!StringUtils.isBlank(region))
+			{
+				typedQuery.setHint(QueryHints.CACHE_REGION,region);
+			}
+
+			typedQuery.setHint("javax.persistence.cache.storeMode",cacheableQuery.storeMode());
+			typedQuery.setHint("javax.persistence.cache.retrieveMode",
+					cacheableQuery.retrieveMode());
+		}
 	}
 }

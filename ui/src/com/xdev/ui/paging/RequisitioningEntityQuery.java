@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -58,10 +59,11 @@ import com.vaadin.v7.data.util.filter.Like;
 import com.vaadin.v7.data.util.filter.Not;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
-import com.xdev.Application;
+import com.xdev.dal.DAOs;
 import com.xdev.data.util.filter.CaptionStringFilter;
 import com.xdev.data.util.filter.CompareBIDirect;
 import com.xdev.persistence.PersistenceUtils;
+import com.xdev.util.CriteriaUtils;
 import com.xdev.util.DTOUtils;
 import com.xdev.util.JPAEntityIDResolver;
 import com.xdev.util.JPAMetaDataUtils;
@@ -92,10 +94,10 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	 * The size of the query.
 	 */
 	private int							querySize			= -1;
-	
+
 	private Object[]					requiredProperties;
-	
-	
+
+
 	/**
 	 * Constructor for configuring the query.
 	 *
@@ -109,22 +111,22 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		this.applicationTransactionManagement = entityQueryDefinition
 				.isApplicationManagedTransactions();
 	}
-	
-	
+
+
 	@Override
 	public void setRequiredProperties(final Object... propertyIDs)
 	{
 		this.requiredProperties = propertyIDs;
 	}
-	
-	
+
+
 	@Override
 	public Object[] getRequiredProperties()
 	{
 		return this.requiredProperties;
 	}
-	
-	
+
+
 	/**
 	 * Constructs new item based on QueryDefinition.
 	 *
@@ -166,8 +168,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 					"Error in bean construction or property population with default values.",e);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Number of beans returned by query.
 	 *
@@ -183,33 +185,30 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 				LOGGER.debug(this.entityClass.getName() + " size skipped due to 0 batch size.");
 				return -1;
 			}
-			
+
 			final EntityManager entityManager = em();
 			final CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			final CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 			final Root<E> root = cq.from(this.entityClass);
 			final QueryContext context = new QueryContext(root);
-			
+
 			cq.select(cb.count(root));
-			
+
 			setWhereCriteria(cb,cq,context);
-			
+
 			// setOrderClause(cb, cq, context);
-			
-			final javax.persistence.Query query = entityManager.createQuery(cq);
-			if(isQueryCacheEnabled())
-			{
-				query.setHint("org.hibernate.cacheable",true);
-			}
-			
+
+			final TypedQuery<Long> query = entityManager.createQuery(cq);
+			applyCacheHints(query);
+
 			this.querySize = ((Number)query.getSingleResult()).intValue();
-			
+
 			LOGGER.debug(this.entityClass.getName() + " container size: " + this.querySize);
 		}
 		return this.querySize;
 	}
-	
-	
+
+
 	/**
 	 * Load batch of items.
 	 *
@@ -227,65 +226,62 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		final CriteriaQuery<E> cq = cb.createQuery(this.entityClass);
 		final Root<E> root = cq.from(this.entityClass);
 		final QueryContext context = new QueryContext(root);
-		
+
 		cq.select(root);
-		
+
 		setWhereCriteria(cb,cq,context);
-		
+
 		setOrderClause(cb,cq,context);
-		
+
 		final javax.persistence.TypedQuery<E> query = entityManager.createQuery(cq);
 		query.setFirstResult(startIndex);
 		query.setMaxResults(count);
-		if(isQueryCacheEnabled())
-		{
-			query.setHint("org.hibernate.cacheable",true);
-		}
-		
+		applyCacheHints(query);
+
 		final List<?> entities = query.getResultList();
 		final List<Item> items = new ArrayList<Item>();
-		
+
 		for(final Object entity : entities)
 		{
 			if(entity != null)
 			{
 				preload(entity);
-				
+
 				if(this.queryDefinition.isDetachedEntities())
 				{
 					entityManager.detach(entity);
 				}
-				
+
 				items.add(toItem(entity));
 			}
 		}
-		
+
 		return items;
 	}
-	
-	
+
+
 	protected void preload(final Object entity)
 	{
 		if(entity == null || !JPAMetaDataUtils.isManaged(entity.getClass()))
 		{
 			return;
 		}
-		
+
 		if(this.requiredProperties == null || this.requiredProperties.length == 0)
 		{
 			return;
 		}
-		
+
 		final String[] properties = new String[this.requiredProperties.length];
 		for(int i = 0; i < properties.length; i++)
 		{
 			properties[i] = this.requiredProperties[i].toString();
 		}
-		
+
 		DTOUtils.preload(entity,JPAEntityIDResolver.getInstance(),properties);
 	}
-	
-	
+
+
 	/**
 	 * Sets where criteria of JPA 2.0 Criteria API query according to Vaadin
 	 * filters.
@@ -305,10 +301,10 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		final List<Container.Filter> filters = new ArrayList<Container.Filter>();
 		filters.addAll(this.queryDefinition.getDefaultFilters());
 		filters.addAll(this.queryDefinition.getFilters());
-		
+
 		// final Object[] sortPropertyIds;
 		// final boolean[] sortPropertyAscendingStates;
-		
+
 		Container.Filter rootFilter;
 		if(filters.size() > 0)
 		{
@@ -323,14 +319,14 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			final Container.Filter filter = filters.remove(0);
 			rootFilter = new And(rootFilter,filter);
 		}
-		
+
 		if(rootFilter != null)
 		{
 			cq.where(setFilter(rootFilter,cb,cq,context));
 		}
 	}
-	
-	
+
+
 	/**
 	 * Sets order clause of JPA 2.0 Criteria API query according to Vaadin sort
 	 * states.
@@ -349,7 +345,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	{
 		Object[] sortPropertyIds;
 		boolean[] sortPropertyAscendingStates;
-		
+
 		if(this.queryDefinition.getSortPropertyIds().length == 0)
 		{
 			sortPropertyIds = this.queryDefinition.getDefaultSortPropertyIds();
@@ -361,7 +357,7 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			sortPropertyIds = this.queryDefinition.getSortPropertyIds();
 			sortPropertyAscendingStates = this.queryDefinition.getSortPropertyAscendingStates();
 		}
-		
+
 		if(sortPropertyIds.length > 0)
 		{
 			final List<Order> orders = new ArrayList<Order>();
@@ -380,8 +376,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			cq.orderBy(orders);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Implements conversion of Vaadin filter to JPA 2.0 Criteria API based
 	 * predicate. Supports the following operations:
@@ -409,40 +405,40 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			final And and = (And)filter;
 			final List<Container.Filter> filters = new ArrayList<Container.Filter>(
 					and.getFilters());
-			
+
 			Predicate predicate = cb.and(setFilter(filters.remove(0),cb,cq,context),
 					setFilter(filters.remove(0),cb,cq,context));
-			
+
 			while(filters.size() > 0)
 			{
 				predicate = cb.and(predicate,setFilter(filters.remove(0),cb,cq,context));
 			}
-			
+
 			return predicate;
 		}
-		
+
 		if(filter instanceof Or)
 		{
 			final Or or = (Or)filter;
 			final List<Container.Filter> filters = new ArrayList<Container.Filter>(or.getFilters());
-			
+
 			Predicate predicate = cb.or(setFilter(filters.remove(0),cb,cq,context),
 					setFilter(filters.remove(0),cb,cq,context));
-			
+
 			while(filters.size() > 0)
 			{
 				predicate = cb.or(predicate,setFilter(filters.remove(0),cb,cq,context));
 			}
-			
+
 			return predicate;
 		}
-		
+
 		if(filter instanceof Not)
 		{
 			final Not not = (Not)filter;
 			return cb.not(setFilter(not.getFilter(),cb,cq,context));
 		}
-		
+
 		if(filter instanceof Between)
 		{
 			final Between between = (Between)filter;
@@ -450,14 +446,14 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			return cb.between(property,(Comparable)between.getStartValue(),
 					(Comparable)between.getEndValue());
 		}
-		
+
 		// workaround because vaadin compare / compare.equal is not extensible
 		if(filter instanceof CompareBIDirect)
 		{
 			final CompareBIDirect compare = (CompareBIDirect)filter;
 			final Path<?> propertyPath = context.getPropertyPath(compare.getPropertyId());
 			final Expression property = propertyPath;
-			
+
 			if(Collection.class.isAssignableFrom(property.getJavaType()))
 			{
 				/*
@@ -470,17 +466,17 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 				return cb.equal(property,compare.getValue());
 			}
 		}
-		
+
 		if(filter instanceof com.vaadin.v7.data.util.filter.Compare)
 		{
 			final com.vaadin.v7.data.util.filter.Compare compare = (com.vaadin.v7.data.util.filter.Compare)filter;
 			final Path<?> propertyPath = context.getPropertyPath(compare.getPropertyId());
 			final Expression property = propertyPath;
-			
+
 			switch(compare.getOperation())
 			{
 				case EQUAL:
-					
+
 					if(Collection.class.isAssignableFrom(property.getJavaType()))
 					{
 						/*
@@ -507,17 +503,17 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 				default:
 			}
 		}
-		
+
 		if(filter instanceof com.xdev.data.util.filter.Compare)
 		{
 			final com.xdev.data.util.filter.Compare compare = (com.xdev.data.util.filter.Compare)filter;
 			final Path<?> propertyPath = context.getPropertyPath(compare.getPropertyId());
 			final Expression property = propertyPath;
-			
+
 			switch(compare.getOperation())
 			{
 				case EQUAL:
-					
+
 					if(Collection.class.isAssignableFrom(property.getJavaType()))
 					{
 						/*
@@ -544,13 +540,13 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 				default:
 			}
 		}
-		
+
 		if(filter instanceof IsNull)
 		{
 			final IsNull isNull = (IsNull)filter;
 			return cb.isNull(context.getPropertyPath(isNull.getPropertyId()));
 		}
-		
+
 		if(filter instanceof Like)
 		{
 			final Like like = (Like)filter;
@@ -565,26 +561,26 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 						like.getValue().toLowerCase());
 			}
 		}
-		
+
 		if(filter instanceof SimpleStringFilter)
 		{
 			final SimpleStringFilter stringFilter = (SimpleStringFilter)filter;
 			return createLike(cb,context,stringFilter.getPropertyId(),stringFilter.isIgnoreCase(),
 					stringFilter.isOnlyMatchPrefix(),stringFilter.getFilterString());
 		}
-		
+
 		if(filter instanceof CaptionStringFilter)
 		{
 			final CaptionStringFilter stringFilter = (CaptionStringFilter)filter;
 			return createLike(cb,context,stringFilter.getPropertyId(),stringFilter.isIgnoreCase(),
 					stringFilter.isOnlyMatchPrefix(),stringFilter.getFilterString());
 		}
-		
+
 		throw new UnsupportedOperationException(
 				"Vaadin filter: " + filter.getClass().getName() + " is not supported.");
 	}
-	
-	
+
+
 	private Predicate createLike(final CriteriaBuilder cb, final QueryContext context,
 			final Object propertyId, final boolean ignoreCase, final boolean onlyMatchPrefix,
 			final String filterString)
@@ -614,8 +610,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			return cb.like(property,pattern.toString());
 		}
 	}
-	
-	
+
+
 	/**
 	 * Saves the modifications done by container to the query result. Query will be
 	 * discarded after changes have been saved and new query loaded so that changed
@@ -687,8 +683,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Removes all items. Query will be discarded after delete all items has been
 	 * called.
@@ -709,25 +705,22 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			final CriteriaQuery<E> cq = cb.createQuery(this.entityClass);
 			final Root<E> root = cq.from(this.entityClass);
 			final QueryContext context = new QueryContext(root);
-			
+
 			cq.select(root);
-			
+
 			setWhereCriteria(cb,cq,context);
-			
+
 			setOrderClause(cb,cq,context);
-			
+
 			final javax.persistence.TypedQuery<E> query = entityManager.createQuery(cq);
-			if(isQueryCacheEnabled())
-			{
-				query.setHint("org.hibernate.cacheable",true);
-			}
-			
+			applyCacheHints(query);
+
 			final List<?> entities = query.getResultList();
 			for(final Object entity : entities)
 			{
 				entityManager.remove(entity);
 			}
-			
+
 			if(this.applicationTransactionManagement)
 			{
 				entityManager.getTransaction().commit();
@@ -746,8 +739,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		}
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Converts bean to Item. Implemented by encapsulating the Bean first to
 	 * BeanItem and then to CompositeItem.
@@ -792,8 +785,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 		// }
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Converts item back to bean.
 	 *
@@ -812,8 +805,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			return ((BeanItem<?>)item).getBean();
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the queryDefinition
 	 */
@@ -821,33 +814,39 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	{
 		return this.queryDefinition;
 	}
-	
-	
+
+
 	protected EntityManager em()
 	{
 		return PersistenceUtils.getEntityManager(this.entityClass);
 	}
-	
-	
-	protected boolean isQueryCacheEnabled()
+
+
+	protected void applyCacheHints(final TypedQuery<?> query)
 	{
-		return Application.getPersistenceManager()
-				.isQueryCacheEnabled(em().getEntityManagerFactory());
+		CriteriaUtils.applyCacheHints(query,DAOs.getCacheableQueryAnnotation(this.entityClass,
+				XdevLazyEntityContainer.ENTITY_QUERY));
 	}
-	
-	
-	
+
+	// protected boolean isQueryCacheEnabled()
+	// {
+	// return Application.getPersistenceManager()
+	// .isQueryCacheEnabled(em().getEntityManagerFactory());
+	// }
+
+
+
 	private static class QueryContext
 	{
 		final PathElement root;
-		
-		
+
+
 		QueryContext(final Root<?> root)
 		{
 			this.root = new PathElement(root);
 		}
-		
-		
+
+
 		Path<?> getPropertyPath(final Object propertyId)
 		{
 			final String[] propertyIdParts = ((String)propertyId).split("\\.");
@@ -859,21 +858,21 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 			}
 			return pathElement.attribute(propertyIdParts[last]);
 		}
-		
-		
-		
+
+
+
 		private static class PathElement
 		{
 			final From<?, ?>				from;
 			final Map<String, PathElement>	children	= new HashMap<>();
-			
-			
+
+
 			PathElement(final From<?, ?> from)
 			{
 				this.from = from;
 			}
-			
-			
+
+
 			PathElement child(final String attribute)
 			{
 				PathElement child = this.children.get(attribute);
@@ -884,8 +883,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 				}
 				return child;
 			}
-			
-			
+
+
 			Path<?> attribute(final String attribute)
 			{
 				return this.from.get(attribute);

@@ -18,31 +18,23 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.ui.paging;
+package com.xdev.dal;
 
 
-public class XdevLazyEntityContainer<T> extends ExtendableLazyEntityContainer<T>
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+
+/**
+ * @author XDEV Software
+ * @since 4.0
+ *
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface CacheableQueries
 {
-	public final static String	ENTITY_QUERY		= RequisitioningEntityQuery.class.getName();
-
-	/**
-	 *
-	 */
-	private static final long	serialVersionUID	= -687747633245500730L;
-	
-	
-	public XdevLazyEntityContainer(final Class<T> entityClass, final int batchSize,
-			final Object idPropertyId)
-	{
-		super(entityClass,batchSize,idPropertyId,false,false);
-	}
-	
-	
-	public XdevLazyEntityContainer(final Class<T> entityClass, final int batchSize,
-			final Object idPropertyId, final Object[] sortPropertyIds,
-			final boolean[] sortPropertyAscendingStates)
-	{
-		super(false,false,entityClass,batchSize,sortPropertyIds,sortPropertyAscendingStates,
-				idPropertyId);
-	}
+	public CacheableQuery[] value();
 }

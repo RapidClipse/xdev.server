@@ -22,6 +22,7 @@ package com.xdev.dal;
 
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import com.xdev.util.SoftCache;
 
@@ -29,7 +30,7 @@ import com.xdev.util.SoftCache;
 /**
  *
  * @author XDEV Software
- * 
+ *
  */
 public class DAOs
 {
@@ -81,5 +82,39 @@ public class DAOs
 		}
 
 		return (DataAccessObject<T, I>)get(dao.daoClass());
+	}
+
+
+	/**
+	 * @since 4.0
+	 */
+	public static CacheableQuery getCacheableQueryAnnotation(final Class<?> clazz,
+			final String cacheableQueryName)
+	{
+		CacheableQuery cacheableQuery = clazz.getAnnotation(CacheableQuery.class);
+		if(cacheableQuery != null && cacheableQuery.name().equals(cacheableQueryName))
+		{
+			return cacheableQuery;
+		}
+
+		final CacheableQueries cacheableQueries = clazz.getAnnotation(CacheableQueries.class);
+		if(cacheableQueries != null)
+		{
+			cacheableQuery = Arrays.stream(cacheableQueries.value())
+					.filter(query -> query.name().equals(cacheableQueryName)).findAny()
+					.orElse(null);
+			if(cacheableQuery != null)
+			{
+				return cacheableQuery;
+			}
+		}
+
+		final Class<?> superclass = clazz.getSuperclass();
+		if(superclass != null)
+		{
+			return getCacheableQueryAnnotation(superclass,cacheableQueryName);
+		}
+
+		return null;
 	}
 }

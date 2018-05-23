@@ -43,8 +43,8 @@ public final class DTOUtils
 	private DTOUtils()
 	{
 	}
-
-
+	
+	
 	public static void reattachIfManaged(final Object bean)
 	{
 		if(JPAMetaDataUtils.isManaged(bean.getClass()))
@@ -52,8 +52,8 @@ public final class DTOUtils
 			DAOs.get(bean).reattach(bean);
 		}
 	}
-	
-	
+
+
 	public static void preload(final Object bean, final EntityIDResolver idResolver,
 			final String... requiredProperties)
 	{
@@ -81,8 +81,8 @@ public final class DTOUtils
 			}
 		}
 	}
-	
-	
+
+
 	public static Object resolveAttributeValue(Object managedObject, final String propertyPath)
 	{
 		final EntityManager entityManager = PersistenceUtils
@@ -91,12 +91,12 @@ public final class DTOUtils
 		{
 			return null;
 		}
-		
+
 		Object propertyValue = null;
-		
+
 		final Metamodel metamodel = entityManager.getMetamodel();
 		ManagedType<?> managedType = null;
-		
+
 		final String[] parts = propertyPath.split("\\.");
 		for(int i = 0; i < parts.length; i++)
 		{
@@ -110,7 +110,7 @@ public final class DTOUtils
 				// not a managed type, XWS-870
 				return null;
 			}
-			
+
 			final String name = parts[i];
 			Attribute<?, ?> attribute = null;
 			try
@@ -139,14 +139,14 @@ public final class DTOUtils
 					return null;
 				}
 			}
-			
+
 			propertyValue = ReflectionUtils.getMemberValue(managedObject,attribute.getJavaMember());
 			if(propertyValue != null && JPAMetaDataUtils.isManaged(propertyValue.getClass()))
 			{
 				managedObject = propertyValue;
 			}
 		}
-		
+
 		return propertyValue;
 	}
 }

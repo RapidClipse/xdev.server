@@ -37,6 +37,7 @@ import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
 
+import com.xdev.persistence.CacheableQuery;
 import com.xdev.persistence.PersistenceUtils;
 import com.xdev.util.CriteriaUtils;
 import com.xdev.util.JPAMetaDataUtils;
@@ -58,10 +59,7 @@ import com.xdev.util.ReflectionUtils;
  */
 public class JPADAO<T, ID extends Serializable> implements DataAccessObject<T, ID>
 {
-	public final static String	FIND_ALL_QUERY		= "findAll";
-	public final static String	REMOVE_BY_ID_QUERY	= "removeById";
-
-	private final Class<T>		persistentClass;
+	private final Class<T> persistentClass;
 
 
 	public JPADAO(final Class<T> persistentClass)
@@ -100,26 +98,9 @@ public class JPADAO<T, ID extends Serializable> implements DataAccessObject<T, I
 	}
 
 
-	// protected boolean isQueryCacheEnabled()
-	// {
-	// final PersistenceManager persistenceManager =
-	// Application.getPersistenceManager();
-	// final String persistenceUnit =
-	// persistenceManager.getPersistenceUnit(this.persistentClass);
-	// return persistenceManager.isQueryCacheEnabled(persistenceUnit);
-	// }
-
-	protected void applyCacheHints(final TypedQuery<?> typedQuery, final String cacheableQueryName)
+	protected void applyCacheHints(final TypedQuery<?> typedQuery, final CacheableQuery.Kind kind)
 	{
-		applyCacheHints(typedQuery,
-				DAOs.getCacheableQueryAnnotation(this.persistentClass,cacheableQueryName));
-	}
-
-
-	protected void applyCacheHints(final TypedQuery<?> typedQuery,
-			final CacheableQuery cacheableQuery)
-	{
-		CriteriaUtils.applyCacheHints(typedQuery,cacheableQuery);
+		CriteriaUtils.applyCacheHints(typedQuery,kind,this.persistentClass);
 	}
 
 
@@ -180,7 +161,7 @@ public class JPADAO<T, ID extends Serializable> implements DataAccessObject<T, I
 				.createQuery(this.persistentClass);
 		criteriaQuery.from(this.persistentClass);
 		final TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
-		applyCacheHints(typedQuery,FIND_ALL_QUERY);
+		applyCacheHints(typedQuery,CacheableQuery.Kind.FIND_ALL);
 		return typedQuery.getResultList();
 	}
 
@@ -287,7 +268,7 @@ public class JPADAO<T, ID extends Serializable> implements DataAccessObject<T, I
 			final Root<T> root = criteriaQuery.from(this.persistentClass);
 			criteriaQuery.where(criteriaBuilder.equal(root.get(idAttribute().getName()),id));
 			final TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
-			applyCacheHints(typedQuery,REMOVE_BY_ID_QUERY);
+			applyCacheHints(typedQuery,CacheableQuery.Kind.REMOVE_BY_ID);
 			final List<T> result = typedQuery.getResultList();
 			if(result.size() == 1)
 			{

@@ -18,16 +18,13 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.dal;
+package com.xdev.persistence;
 
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import javax.persistence.CacheRetrieveMode;
-import javax.persistence.CacheStoreMode;
 
 
 /**
@@ -37,16 +34,7 @@ import javax.persistence.CacheStoreMode;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CacheableQuery
+public @interface CacheableQueries
 {
-	String name();
-	
-	
-	String region() default "";
-	
-	
-	CacheStoreMode storeMode() default CacheStoreMode.USE;
-	
-	
-	CacheRetrieveMode retrieveMode() default CacheRetrieveMode.USE;
+	public CacheableQuery[] value();
 }

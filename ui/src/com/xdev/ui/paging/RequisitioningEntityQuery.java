@@ -59,9 +59,9 @@ import com.vaadin.v7.data.util.filter.Like;
 import com.vaadin.v7.data.util.filter.Not;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
-import com.xdev.dal.DAOs;
 import com.xdev.data.util.filter.CaptionStringFilter;
 import com.xdev.data.util.filter.CompareBIDirect;
+import com.xdev.persistence.CacheableQuery;
 import com.xdev.persistence.PersistenceUtils;
 import com.xdev.util.CriteriaUtils;
 import com.xdev.util.DTOUtils;
@@ -824,8 +824,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 
 	protected void applyCacheHints(final TypedQuery<?> query)
 	{
-		CriteriaUtils.applyCacheHints(query,DAOs.getCacheableQueryAnnotation(this.entityClass,
-				XdevLazyEntityContainer.ENTITY_QUERY));
+		CriteriaUtils.applyCacheHints(query,CacheableQuery.Kind.LAZY_QUERY_CONTAINER,
+				this.entityClass);
 	}
 
 	// protected boolean isQueryCacheEnabled()

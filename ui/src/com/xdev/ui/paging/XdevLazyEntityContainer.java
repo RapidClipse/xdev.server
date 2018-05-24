@@ -23,21 +23,19 @@ package com.xdev.ui.paging;
 
 public class XdevLazyEntityContainer<T> extends ExtendableLazyEntityContainer<T>
 {
-	public final static String	ENTITY_QUERY		= RequisitioningEntityQuery.class.getName();
-
 	/**
 	 *
 	 */
-	private static final long	serialVersionUID	= -687747633245500730L;
-	
-	
+	private static final long serialVersionUID = -687747633245500730L;
+
+
 	public XdevLazyEntityContainer(final Class<T> entityClass, final int batchSize,
 			final Object idPropertyId)
 	{
 		super(entityClass,batchSize,idPropertyId,false,false);
 	}
-	
-	
+
+
 	public XdevLazyEntityContainer(final Class<T> entityClass, final int batchSize,
 			final Object idPropertyId, final Object[] sortPropertyIds,
 			final boolean[] sortPropertyAscendingStates)

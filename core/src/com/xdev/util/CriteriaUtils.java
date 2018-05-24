@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.persistence.SharedCacheMode;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Fetch;
@@ -43,7 +44,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.QueryHints;
 
 import com.google.common.collect.Lists;
-import com.xdev.dal.CacheableQuery;
+import com.xdev.Application;
+import com.xdev.dal.DAOs;
+import com.xdev.persistence.CacheableQuery;
+import com.xdev.persistence.PersistenceUtils;
 
 
 /**
@@ -148,24 +152,73 @@ public final class CriteriaUtils
 		}
 		return (Path<F>)path;
 	}
-
-
+	
+	
+	/**
+	 * @since 4.0
+	 */
+	public static void applyCacheHints(final TypedQuery<?> query, final CacheableQuery.Kind kind,
+			final Class<?> managedType)
+	{
+		applyCacheHints(query,DAOs.getCacheableQueryAnnotation(managedType,kind),
+				PersistenceUtils.getPersistenceUnit(managedType));
+	}
+	
+	
 	/**
 	 * @since 4.0
 	 */
 	public static void applyCacheHints(final TypedQuery<?> typedQuery,
-			final CacheableQuery cacheableQuery)
+			final CacheableQuery cacheableQuery, final String persistenceUnit)
 	{
-		if(cacheableQuery != null)
+		boolean cacheable = false;
+		
+		final SharedCacheMode queryCacheMode = Application.getPersistenceManager()
+				.getQueryCacheMode(persistenceUnit);
+		switch(queryCacheMode)
 		{
-			typedQuery.setHint(QueryHints.CACHEABLE,true);
+			case ALL:
+				cacheable = true;
+			break;
 
+			case NONE:
+			case UNSPECIFIED:
+				cacheable = false;
+			break;
+
+			case DISABLE_SELECTIVE:
+				if(cacheableQuery != null)
+				{
+					cacheable = cacheableQuery.cache();
+				}
+				else
+				{
+					cacheable = true;
+				}
+			break;
+		
+			case ENABLE_SELECTIVE:
+				if(cacheableQuery != null)
+				{
+					cacheable = cacheableQuery.cache();
+				}
+				else
+				{
+					cacheable = false;
+				}
+			break;
+		}
+		
+		typedQuery.setHint(QueryHints.CACHEABLE,cacheable);
+		
+		if(cacheable && cacheableQuery != null)
+		{
 			final String region = cacheableQuery.region();
 			if(!StringUtils.isBlank(region))
 			{
 				typedQuery.setHint(QueryHints.CACHE_REGION,region);
 			}
-
+			
 			typedQuery.setHint("javax.persistence.cache.storeMode",cacheableQuery.storeMode());
 			typedQuery.setHint("javax.persistence.cache.retrieveMode",
 					cacheableQuery.retrieveMode());

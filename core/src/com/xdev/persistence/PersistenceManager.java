@@ -32,6 +32,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceException;
+import javax.persistence.SharedCacheMode;
 import javax.servlet.ServletContext;
 
 import org.dom4j.Document;
@@ -75,6 +76,21 @@ public interface PersistenceManager
 	public boolean isQueryCacheEnabled(final EntityManagerFactory factory);
 	
 	
+	/**
+	 * @since 4.0
+	 */
+	public default SharedCacheMode getQueryCacheMode(final String persistenceUnit)
+	{
+		return getQueryCacheMode(getEntityManagerFactory(persistenceUnit));
+	}
+	
+	
+	/**
+	 * @since 4.0
+	 */
+	public SharedCacheMode getQueryCacheMode(final EntityManagerFactory factory);
+	
+	
 	public void close();
 	
 	
@@ -84,6 +100,8 @@ public interface PersistenceManager
 		private final Map<String, Collection<Class<?>>>	unitToClasses;
 		private final Map<Class<?>, String>				classToUnit;
 		private final Map<String, EntityManagerFactory>	entityManagerFactories	= new HashMap<>();
+		private Boolean									queryCacheEnabled;
+		private SharedCacheMode							queryCacheMode;
 		
 		
 		public Implementation(final ServletContext servletContext) throws PersistenceException
@@ -225,9 +243,39 @@ public interface PersistenceManager
 		@Override
 		public boolean isQueryCacheEnabled(final EntityManagerFactory factory)
 		{
-			final Map<String, Object> properties = factory.getProperties();
-			final Object queryCacheProperty = properties.get("hibernate.cache.use_query_cache");
-			return "true".equals(queryCacheProperty);
+			if(this.queryCacheEnabled == null)
+			{
+				final Map<String, Object> properties = factory.getProperties();
+				final Object property = properties.get("hibernate.cache.use_query_cache");
+				this.queryCacheEnabled = "true".equals(property);
+			}
+			
+			return this.queryCacheEnabled;
+		}
+		
+		
+		@Override
+		public SharedCacheMode getQueryCacheMode(final EntityManagerFactory factory)
+		{
+			if(this.queryCacheMode == null)
+			{
+				this.queryCacheMode = SharedCacheMode.ENABLE_SELECTIVE;
+				
+				final Map<String, Object> properties = factory.getProperties();
+				final Object property = properties.get("xdev.queryCache.mode");
+				if(property != null)
+				{
+					try
+					{
+						this.queryCacheMode = SharedCacheMode.valueOf(property.toString());
+					}
+					catch(final IllegalArgumentException e)
+					{
+					}
+				}
+			}
+			
+			return this.queryCacheMode;
 		}
 		
 		

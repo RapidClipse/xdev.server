@@ -24,6 +24,8 @@ package com.xdev.dal;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import com.xdev.persistence.CacheableQueries;
+import com.xdev.persistence.CacheableQuery;
 import com.xdev.util.SoftCache;
 
 
@@ -35,8 +37,8 @@ import com.xdev.util.SoftCache;
 public class DAOs
 {
 	private static final SoftCache<Class<?>, DataAccessObject<?, ?>> cache = new SoftCache<>();
-
-
+	
+	
 	public static <D extends DataAccessObject<?, ?>> D get(final Class<D> daoType)
 			throws RuntimeException
 	{
@@ -44,7 +46,7 @@ public class DAOs
 		{
 			@SuppressWarnings("unchecked")
 			D dao = (D)cache.get(daoType);
-
+			
 			if(dao == null)
 			{
 				try
@@ -57,20 +59,20 @@ public class DAOs
 					throw new RuntimeException(e);
 				}
 			}
-
+			
 			return dao;
 		}
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	public static <T, I extends Serializable> DataAccessObject<T, I> get(final T entity)
 			throws RuntimeException
 	{
 		return (DataAccessObject<T, I>)getByEntityType(entity.getClass());
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	public static <T, I extends Serializable> DataAccessObject<T, I> getByEntityType(
 			final Class<T> entity) throws RuntimeException
@@ -80,41 +82,40 @@ public class DAOs
 		{
 			throw new RuntimeException("Not an entity");
 		}
-
+		
 		return (DataAccessObject<T, I>)get(dao.daoClass());
 	}
-
-
+	
+	
 	/**
 	 * @since 4.0
 	 */
 	public static CacheableQuery getCacheableQueryAnnotation(final Class<?> clazz,
-			final String cacheableQueryName)
+			final CacheableQuery.Kind kind)
 	{
 		CacheableQuery cacheableQuery = clazz.getAnnotation(CacheableQuery.class);
-		if(cacheableQuery != null && cacheableQuery.name().equals(cacheableQueryName))
+		if(cacheableQuery != null && kind.equals(cacheableQuery.kind()))
 		{
 			return cacheableQuery;
 		}
-
+		
 		final CacheableQueries cacheableQueries = clazz.getAnnotation(CacheableQueries.class);
 		if(cacheableQueries != null)
 		{
 			cacheableQuery = Arrays.stream(cacheableQueries.value())
-					.filter(query -> query.name().equals(cacheableQueryName)).findAny()
-					.orElse(null);
+					.filter(query -> kind.equals(query.kind())).findAny().orElse(null);
 			if(cacheableQuery != null)
 			{
 				return cacheableQuery;
 			}
 		}
-
+		
 		final Class<?> superclass = clazz.getSuperclass();
 		if(superclass != null)
 		{
-			return getCacheableQueryAnnotation(superclass,cacheableQueryName);
+			return getCacheableQueryAnnotation(superclass,kind);
 		}
-
+		
 		return null;
 	}
 }

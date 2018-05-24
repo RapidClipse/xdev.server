@@ -41,16 +41,27 @@ public final class PersistenceUtils
 	}
 
 
-	public static EntityManager getEntityManager(final Class<?> managedType)
+	/**
+	 * @since 4.0
+	 */
+	public static String getPersistenceUnit(final Class<?> managedType)
 	{
 		final PersistenceManager persistenceManager = Application.getPersistenceManager();
 		if(persistenceManager != null)
 		{
-			final String persistenceUnit = persistenceManager.getPersistenceUnit(managedType);
-			if(persistenceUnit != null)
-			{
-				return getEntityManager(persistenceUnit);
-			}
+			return persistenceManager.getPersistenceUnit(managedType);
+		}
+
+		return null;
+	}
+
+
+	public static EntityManager getEntityManager(final Class<?> managedType)
+	{
+		final String persistenceUnit = getPersistenceUnit(managedType);
+		if(persistenceUnit != null)
+		{
+			return getEntityManager(persistenceUnit);
 		}
 
 		return null;

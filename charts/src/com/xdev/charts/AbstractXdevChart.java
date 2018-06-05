@@ -31,6 +31,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
+import com.xdev.res.CommonJavaScripts;
 
 import elemental.json.JsonArray;
 
@@ -40,18 +41,20 @@ import elemental.json.JsonArray;
  * @author XDEV Software (SS)
  * @since 4.0
  */
-@JavaScript({"https://www.gstatic.com/charts/loader.js","jquery-3.2.1.min.js",
-		"jquery.ba-resize.min.js","utils.js"})
+@JavaScript({"https://www.gstatic.com/charts/loader.js",CommonJavaScripts.JQUERY,
+		CommonJavaScripts.JQUERY_RESIZE,"xdev-chart-utils.js"})
 public abstract class AbstractXdevChart extends AbstractJavaScriptComponent implements XdevChart
 {
 	private static final long					serialVersionUID	= 1L;
-	
+
+	private final Extensions					extensions			= new Extensions();
+
 	private String								divId				= null;
 	private byte[]								chart_image			= null;
 	private final Map<String, Consumer<byte[]>>	getPrintCalls		= new HashMap<>();
 	ArrayList<ValueChangeListener>				listeners			= new ArrayList<>();
-	
-	
+
+
 	public AbstractXdevChart()
 	{
 		addFunction("select",this::select);
@@ -60,33 +63,53 @@ public abstract class AbstractXdevChart extends AbstractJavaScriptComponent impl
 	}
 	
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E addExtension(final Class<? super E> type, final E extension)
+	{
+		return this.extensions.add(type,extension);
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E> E getExtension(final Class<E> type)
+	{
+		return this.extensions.get(type);
+	}
+
+
 	public void getPrint(final Consumer<byte[]> successCallback)
 	{
 		if(this.divId != null)
 		{
 			com.vaadin.ui.JavaScript.getCurrent()
 					.execute("$(" + this.divId + ").trigger('printImage');");
-			
+
 			this.getPrintCalls.put("1",successCallback);
 		}
 	}
-	
-	
+
+
 	private void print_success(final JsonArray arguments)
 	{
 		if(arguments.length() == 1)
 		{
 			final Consumer<byte[]> consumer = this.getPrintCalls.get("1");
-			
+
 			final String base64Image = arguments.getString(0).split(",")[1];
-			
+
 			this.chart_image = DatatypeConverter.parseBase64Binary(base64Image);
-			
+
 			consumer.accept(this.chart_image);
 		}
 	}
-	
-	
+
+
 	private void addDivId(final JsonArray arguments)
 	{
 		if(arguments.length() == 1)
@@ -94,8 +117,8 @@ public abstract class AbstractXdevChart extends AbstractJavaScriptComponent impl
 			this.divId = arguments.getString(0);
 		}
 	}
-	
-	
+
+
 	public void triggerJavaScriptRefresh()
 	{
 		if(this.divId != null)
@@ -104,21 +127,21 @@ public abstract class AbstractXdevChart extends AbstractJavaScriptComponent impl
 					.execute("$(" + this.divId + ").trigger('refresh');");
 		}
 	}
-	
-	
-	
+
+
+
 	public interface ValueChangeListener extends Serializable
 	{
 		void valueChange(JsonArray arguments);
 	}
-	
-	
+
+
 	public void addValueChangeListener(final ValueChangeListener listener)
 	{
 		this.listeners.add(listener);
 	}
-	
-	
+
+
 	private void select(final JsonArray arguments)
 	{
 		this.listeners.forEach(listener -> {

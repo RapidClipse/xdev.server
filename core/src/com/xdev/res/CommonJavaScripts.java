@@ -18,21 +18,20 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts;
-
-
-import com.xdev.ui.XdevComponent;
+package com.xdev.res;
 
 
 /**
- *
- * @author XDEV Software (SS)
+ * @author XDEV Software
  * @since 4.0
  */
-public interface XdevChart extends XdevComponent
+public final class CommonJavaScripts
 {
-	public void setModel(XdevChartModel model);
-
-
-	public void refresh();
+	public final static String	JQUERY			= "vaadin://js/jquery-3.3.1.min.js";
+	public final static String	JQUERY_RESIZE	= "vaadin://js/jquery-ba-resize-1.1.min.js";
+	
+	
+	private CommonJavaScripts()
+	{
+	}
 }

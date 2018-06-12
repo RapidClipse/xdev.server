@@ -18,27 +18,37 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts;
+package com.xdev.charts.config;
 
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import com.xdev.charts.config.Series;
+import java.io.Serializable;
 
 
 /**
+ * @author XDEV Software
  *
- * @author XDEV Software (SS)
- * @since 4.0
  */
-public interface XdevChartModel
+public class Series implements Serializable
 {
-	public DataTable getDataTable();
-	
-	
-	public List<Series> getSeries();
-	
-	
-	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData();
+	private String type = "line";
+
+
+	/**
+	 * @return the type
+	 */
+	public String getType()
+	{
+		return this.type;
+	}
+
+
+	/**
+	 * @param type
+	 *            the type to set
+	 */
+	public void setType(final String type)
+	{
+		this.type = type;
+	}
+
 }

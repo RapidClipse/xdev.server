@@ -22,11 +22,13 @@ package com.xdev.charts.column;
 
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
 import com.xdev.charts.DataTable;
 import com.xdev.charts.XdevChartModel;
+import com.xdev.charts.config.Series;
 
 
 /**
@@ -36,19 +38,19 @@ import com.xdev.charts.XdevChartModel;
  */
 public class XdevColumnChartModel implements XdevChartModel
 {
-
+	
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
 	private final LinkedHashMap<String, Object>							categories	= new LinkedHashMap<>();
-	
-	
+
+
 	public XdevColumnChartModel()
 	{
 		this.getDataTable().getColumns()
 				.add(Column.create("xcaption","xcaption",ColumnType.STRING));
 	}
-	
-	
+
+
 	@Override
 	public DataTable getDataTable()
 	{
@@ -61,19 +63,26 @@ public class XdevColumnChartModel implements XdevChartModel
 	
 	
 	@Override
+	public List<Series> getSeries()
+	{
+		return null;
+	}
+
+
+	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
 		return this.data;
 	}
-	
-	
+
+
 	public void addCategory(final String caption, final ColumnType type)
 	{
 		this.categories.put(caption,null);
 		this.getDataTable().getColumns().add(Column.create(caption.toLowerCase(),caption,type));
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	public void addItem(final String group, final String category, final Object value)
 	{
@@ -91,5 +100,5 @@ public class XdevColumnChartModel implements XdevChartModel
 			this.data.put(group,v);
 		}
 	}
-	
+
 }

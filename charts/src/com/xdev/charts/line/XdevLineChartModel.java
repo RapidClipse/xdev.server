@@ -23,11 +23,13 @@ package com.xdev.charts.line;
 
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
 import com.xdev.charts.DataTable;
 import com.xdev.charts.XdevChartModel;
+import com.xdev.charts.config.Series;
 
 
 /**
@@ -41,12 +43,6 @@ public class XdevLineChartModel implements XdevChartModel
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
 	private final LinkedHashMap<String, Object>							categories	= new LinkedHashMap<>();
-	
-	
-	public XdevLineChartModel()
-	{
-		
-	}
 	
 	
 	@Override
@@ -64,6 +60,13 @@ public class XdevLineChartModel implements XdevChartModel
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
 		return this.data;
+	}
+
+
+	@Override
+	public List<Series> getSeries()
+	{
+		return null;
 	}
 	
 	

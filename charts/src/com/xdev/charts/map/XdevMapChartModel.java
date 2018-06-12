@@ -22,12 +22,14 @@ package com.xdev.charts.map;
 
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
 import com.xdev.charts.DataTable;
 import com.xdev.charts.Row;
 import com.xdev.charts.XdevChartModel;
+import com.xdev.charts.config.Series;
 
 
 /**
@@ -40,15 +42,46 @@ public class XdevMapChartModel implements XdevChartModel
 
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
-	
-	
-	public XdevMapChartModel()
+
+
+
+	/**
+	 * Two alternative data formats are supported: <br>
+	 * 1. Latitude: The first two columns should be numbers designating the latitude
+	 * and longitude, respectively. An optional third column holds a string that
+	 * describes the location specified in the first two columns. <br>
+	 * 2. Address: The first column should be a string that contains an address.
+	 * This address should be as complete as you can make it. An optional second
+	 * column holds a string that describes the location in the first column. String
+	 * addresses load more slowly, especially when you have more than 10 addresses.
+	 * <br>
+	 *
+	 */
+	public enum DataMapFormat
 	{
-		this.getDataTable().getColumns()
-				.add(Column.create("latitude","latitude",ColumnType.NUMBER));
-		this.getDataTable().getColumns()
-				.add(Column.create("longitude","longitude",ColumnType.NUMBER));
-		this.getDataTable().getColumns().add(Column.create("caption","caption",ColumnType.STRING));
+		Latitude, Address
+	}
+
+
+	public XdevMapChartModel(final DataMapFormat dataMapFormat)
+	{
+		if(dataMapFormat.equals(DataMapFormat.Latitude))
+		{
+			this.getDataTable().getColumns()
+					.add(Column.create("latitude","latitude",ColumnType.NUMBER));
+			this.getDataTable().getColumns()
+					.add(Column.create("longitude","longitude",ColumnType.NUMBER));
+			this.getDataTable().getColumns()
+					.add(Column.create("caption","caption",ColumnType.STRING));
+		}
+		else
+		{
+			this.getDataTable().getColumns()
+					.add(Column.create("address","Address",ColumnType.STRING));
+			this.getDataTable().getColumns()
+					.add(Column.create("caption","Caption",ColumnType.STRING));
+		}
+		
 	}
 	
 	
@@ -70,8 +103,34 @@ public class XdevMapChartModel implements XdevChartModel
 	}
 	
 	
+	@Override
+	public List<Series> getSeries()
+	{
+		return null;
+	}
+	
+	
+	/**
+	 * Only works with the DataMapFormat.Latitude option. <br>
+	 *
+	 * @param latitude
+	 * @param longitude
+	 * @param caption
+	 */
 	public void addItem(final Double latitude, final Double longitude, final String caption)
 	{
 		this.getDataTable().getRows().add(Row.create(latitude,longitude,caption));
+	}
+
+
+	/**
+	 * Only works with the DataMapFormat.Address option. <br>
+	 *
+	 * @param address
+	 * @param caption
+	 */
+	public void addItem(final String address, final String caption)
+	{
+		this.getDataTable().getRows().add(Row.create(address,caption));
 	}
 }

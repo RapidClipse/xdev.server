@@ -1,43 +1,44 @@
 
-window.com_xdev_charts_map_XdevMapChart = function() {
-	var component = new google_map_chart.XdevMapChart(this.getElement());
+window.com_xdev_charts_combo_XdevComboChart = function() {
+	var component = new google_combo_chart.XdevComboChart(this.getElement());
 	
 	var state = this.getState();
 	var connector = this;
-	
-	var chart_div = this.getElement().getElementsByClassName("map");
+		
+	var chart_div = this.getElement().getElementsByClassName("combo");
 	
 	connector.divId(chart_div[0].id);
-
+	
 	var chart;
 	var data;
 	var view;
 	var options;
-	
-	google.charts.load('current', {packages: ['map'], 'mapsApiKey' : state.mapsApiKey});
+
+	google.charts.load('current', {packages: ['corechart']});
 	google.charts.setOnLoadCallback(function(div, state, connector) {
 		
 		return function()
 		{
 			options = 
 	    	{
-					mapType: state.config.mapType,
-					enableScrollWheel: state.config.enableScrollWheel,
-					zoomLevel: state.config.zoomLevel,
-					useMapTypeControl: state.config.useMapTypeControl,
-					showLine: state.config.showLine,
-					lineColor: state.config.lineColor,
-					lineWidth: state.config.lineWidth
+				title: state.config.title,
+				titleTextStyle: state.config.titleTextStyle,
+    			backgroundColor: state.config.backgroundColor,
+				vAxis: state.config.vAxis,
+				hAxis: state.config.hAxis,
+				seriesType: 'bars',
+				series: state.config.series
 	    	};
 			
-	    	data = new google.visualization.DataTable(
-	    		{
-	    			cols: state.dataTable.columns,
-	    			rows: state.dataTable.rows
-	    		}
-	    	)
+		    data = new google.visualization.DataTable(
+			   	{
+			   		cols: state.dataTable.columns,
+			   		rows: state.dataTable.rows
+			   	}
+		    )
 	    	
 	    	view = new google.visualization.DataView(data);
+	    	
 	    	var values = state.dataTable.columns.map(function (icol) { return icol.label; });
 	    	var indices = getAllIndexes(values, 'hidden');
 
@@ -46,7 +47,7 @@ window.com_xdev_charts_map_XdevMapChart = function() {
 	    		view.hideColumns(indices);
 	    	}
 	    	
-	    	chart = new google.visualization.Map(document.getElementById(div));		
+	    	chart = new google.visualization.ComboChart(document.getElementById(div));		
 	    	chart.draw(view, options);
 	       
 	        $('#' + div).resize(function(e) {
@@ -60,9 +61,7 @@ window.com_xdev_charts_map_XdevMapChart = function() {
 
 	function selectHandler() {
 		var selection = chart.getSelection();
-		
-		console.log(selection);
-		
+
 		for (var i = 0; i < selection.length; i++)
 		{
 			var item = selection[i];
@@ -75,7 +74,7 @@ window.com_xdev_charts_map_XdevMapChart = function() {
 		}
 	}
 
-	$('#' + chart_div[0].id).bind('refresh', function() {
+	$('#' + chart_div[0].id).bind('refresh', function() {		
 		data = new google.visualization.DataTable(
 				{
 					cols: state.dataTable.columns,
@@ -85,12 +84,13 @@ window.com_xdev_charts_map_XdevMapChart = function() {
 			
 		view = new google.visualization.DataView(data);
 	
-		var index = state.dataTable.columns.map(function (icol) { return icol.id; }).indexOf('id');
-		
-		if(index >= 0)
-		{
-			view.hideColumns([index]);
-		}
+		var values = state.dataTable.columns.map(function (icol) { return icol.label; });
+    	var indices = getAllIndexes(values, 'hidden');
+
+    	if(indices.length > 0)
+    	{
+    		view.hideColumns(indices);
+    	}
 
 		chart.draw(view, options);
 	});
@@ -98,9 +98,7 @@ window.com_xdev_charts_map_XdevMapChart = function() {
 	$('#' + chart_div[0].id).bind('config', function() {
 		options = 
 		{
-				title: state.config.title,
-				titleTextStyle: state.config.titleTextStyle,
-				mapType: state.config.mapType
+				
 		};
 
 		chart.draw(view, options);

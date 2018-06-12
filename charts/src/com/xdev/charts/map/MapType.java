@@ -18,13 +18,7 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts;
-
-
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import com.xdev.charts.config.Series;
+package com.xdev.charts.map;
 
 
 /**
@@ -32,13 +26,10 @@ import com.xdev.charts.config.Series;
  * @author XDEV Software (SS)
  * @since 4.0
  */
-public interface XdevChartModel
+public class MapType
 {
-	public DataTable getDataTable();
-	
-	
-	public List<Series> getSeries();
-	
-	
-	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData();
+	public static final String	NORMAL		= "normal";
+	public static final String	TERRAIN		= "terrain";
+	public static final String	SATELLITE	= "satellite";
+	public static final String	HYBRID		= "hybrid";
 }

@@ -18,11 +18,12 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts.map;
+package com.xdev.charts.combo;
 
 
 import com.vaadin.annotations.JavaScript;
 import com.xdev.charts.AbstractXdevChart;
+import com.xdev.charts.Row;
 import com.xdev.charts.XdevChart;
 import com.xdev.charts.XdevChartModel;
 
@@ -32,69 +33,49 @@ import com.xdev.charts.XdevChartModel;
  * @author XDEV Software (SS)
  * @since 4.0
  */
-@JavaScript({"map-chart.js","map-chart-connector.js"})
-public class XdevMapChart extends AbstractXdevChart implements XdevChart
+@JavaScript({"combo-chart.js","combo-chart-connector.js"})
+public class XdevComboChart extends AbstractXdevChart implements XdevChart
 {
-	
-	private XdevChartModel chartModel = null;
-	
-	
-	public XdevMapChart()
+	public XdevComboChart()
 	{
 		super();
-		
-		this.getState().setConfig(new XdevMapChartConfig());
-		this.getState().setMapsApiKey("");
-	}
-
-
-	public XdevMapChart(final String apiKey)
-	{
-		super();
-
-		this.getState().setConfig(new XdevMapChartConfig());
-		this.getState().setMapsApiKey(apiKey);
+		this.getState().setConfig(new XdevComboChartConfig());
 	}
 	
 	
 	@Override
-	protected MapChartComponentState getState()
+	protected ComboChartComponentState getState()
 	{
-		return (MapChartComponentState)super.getState();
+		return (ComboChartComponentState)super.getState();
 	}
-	
-	
-	public void setConfig(final XdevMapChartConfig config)
+
+
+	public void setConfig(final XdevComboChartConfig config)
 	{
-		this.getState().setConfig(config);
-	}
-	
-	
-	public void setApiKey(final String apiKey)
-	{
-		this.getState().setMapsApiKey(apiKey);
+		if(config != null)
+		{
+			this.getState().setConfig(config);
+		}
 	}
 	
 	
 	@Override
 	public void setModel(final XdevChartModel model)
 	{
-
-		this.chartModel = model;
-
+		Row.createFromHashmap(model.getData()).forEach(row -> {
+			model.getDataTable().getRows().add(row);
+		});
+		
 		this.getState().setDataTable(model.getDataTable());
+		this.getState().getConfig().setSeries(model.getSeries());
 	}
 	
 	
 	@Override
 	public void refresh()
 	{
-		if(this.chartModel != null)
-		{
-			this.getState().setDataTable(this.chartModel.getDataTable());
+		// TODO Auto-generated method stub
 
-			this.triggerJavaScriptRefresh();
-		}
 	}
-
+	
 }

@@ -22,12 +22,14 @@ package com.xdev.charts.geo;
 
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
 import com.xdev.charts.DataTable;
 import com.xdev.charts.Row;
 import com.xdev.charts.XdevChartModel;
+import com.xdev.charts.config.Series;
 
 
 /**
@@ -37,11 +39,11 @@ import com.xdev.charts.XdevChartModel;
  */
 public class XdevGeoChartModel implements XdevChartModel
 {
-
+	
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
-
-
+	
+	
 	public XdevGeoChartModel(final String caption, final String value)
 	{
 		this.getDataTable().getColumns()
@@ -49,8 +51,8 @@ public class XdevGeoChartModel implements XdevChartModel
 		this.getDataTable().getColumns()
 				.add(Column.create(value.toLowerCase(),value,ColumnType.NUMBER));
 	}
-	
-	
+
+
 	@Override
 	public DataTable getDataTable()
 	{
@@ -60,8 +62,8 @@ public class XdevGeoChartModel implements XdevChartModel
 		}
 		return this.dataTable;
 	}
-	
-	
+
+
 	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
@@ -69,9 +71,16 @@ public class XdevGeoChartModel implements XdevChartModel
 	}
 	
 	
+	@Override
+	public List<Series> getSeries()
+	{
+		return null;
+	}
+
+
 	public void addItem(final String country, final Object value)
 	{
 		this.getDataTable().getRows().add(Row.create(country,value));
 	}
-
+	
 }

@@ -22,12 +22,14 @@ package com.xdev.charts.candlestick;
 
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
 import com.xdev.charts.DataTable;
 import com.xdev.charts.Row;
 import com.xdev.charts.XdevChartModel;
+import com.xdev.charts.config.Series;
 
 
 /**
@@ -37,11 +39,11 @@ import com.xdev.charts.XdevChartModel;
  */
 public class XdevCandleStickModel implements XdevChartModel
 {
-
+	
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
-	
-	
+
+
 	public XdevCandleStickModel()
 	{
 		this.getDataTable().getColumns().add(Column.create("caption","",ColumnType.STRING));
@@ -50,8 +52,8 @@ public class XdevCandleStickModel implements XdevChartModel
 		this.getDataTable().getColumns().add(Column.create("closing","",ColumnType.NUMBER));
 		this.getDataTable().getColumns().add(Column.create("maximum","",ColumnType.NUMBER));
 	}
-	
-	
+
+
 	@Override
 	public DataTable getDataTable()
 	{
@@ -61,8 +63,8 @@ public class XdevCandleStickModel implements XdevChartModel
 		}
 		return this.dataTable;
 	}
-	
-	
+
+
 	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
@@ -70,6 +72,13 @@ public class XdevCandleStickModel implements XdevChartModel
 	}
 	
 	
+	@Override
+	public List<Series> getSeries()
+	{
+		return null;
+	}
+
+
 	public void addItem(final String caption, final Integer minimum, final Integer maximum,
 			final Integer opening, final Integer closing)
 	{

@@ -18,27 +18,43 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts;
+package com.xdev.charts.combo;
 
 
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import com.xdev.charts.config.Series;
+import com.vaadin.shared.ui.JavaScriptComponentState;
+import com.xdev.charts.DataTable;
 
 
 /**
+ * @author XDEV Software
  *
- * @author XDEV Software (SS)
- * @since 4.0
  */
-public interface XdevChartModel
+public class ComboChartComponentState extends JavaScriptComponentState
 {
-	public DataTable getDataTable();
+	private XdevComboChartConfig	config;
+	private DataTable				dataTable;
 	
 	
-	public List<Series> getSeries();
-	
-	
-	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData();
+	public XdevComboChartConfig getConfig()
+	{
+		return this.config;
+	}
+
+
+	public void setConfig(final XdevComboChartConfig config)
+	{
+		this.config = config;
+	}
+
+
+	public DataTable getDataTable()
+	{
+		return this.dataTable;
+	}
+
+
+	public void setDataTable(final DataTable dataTable)
+	{
+		this.dataTable = dataTable;
+	}
 }

@@ -18,12 +18,13 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts;
+package com.xdev.charts.combo;
 
 
-import java.util.LinkedHashMap;
+import java.io.Serializable;
 import java.util.List;
 
+import com.xdev.charts.AbstractXdevChartConfig;
 import com.xdev.charts.config.Series;
 
 
@@ -31,14 +32,28 @@ import com.xdev.charts.config.Series;
  *
  * @author XDEV Software (SS)
  * @since 4.0
+ *
  */
-public interface XdevChartModel
+public class XdevComboChartConfig extends AbstractXdevChartConfig implements Serializable
 {
-	public DataTable getDataTable();
+	private List<Series> series;
 	
 	
-	public List<Series> getSeries();
-	
-	
-	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData();
+	/**
+	 * @return the series
+	 */
+	public List<Series> getSeries()
+	{
+		return this.series;
+	}
+
+
+	/**
+	 * @param series
+	 *            the series to set
+	 */
+	public void setSeries(final List<Series> series)
+	{
+		this.series = series;
+	}
 }

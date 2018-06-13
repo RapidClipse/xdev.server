@@ -30,7 +30,12 @@ import java.io.Serializable;
  */
 public class Series implements Serializable
 {
-	private String type = "line";
+	private String	type			= "line";
+	private String	color;
+	private String	labelInLegend;
+	private boolean	visibleInLegend	= true;
+	private Integer	lineWidth		= 2;
+	private Integer	pointSize		= 0;
 
 
 	/**
@@ -43,6 +48,10 @@ public class Series implements Serializable
 
 
 	/**
+	 * The type of marker for this series. Valid values are 'line', 'area', 'bars'
+	 * and 'steppedArea'. Note that bars are actually vertical bars (columns). The
+	 * default value is specified by the chart's seriesType option. <br>
+	 *
 	 * @param type
 	 *            the type to set
 	 */
@@ -50,5 +59,112 @@ public class Series implements Serializable
 	{
 		this.type = type;
 	}
+	
+	
+	/**
+	 * @return the color
+	 */
+	public String getColor()
+	{
+		return this.color;
+	}
+	
+	
+	/**
+	 * The color to use for this series. Specify a valid HTML color string. <br>
+	 *
+	 * @param color
+	 *            the color to set
+	 */
+	public void setColor(final String color)
+	{
+		this.color = color;
+	}
+	
+	
+	/**
+	 * @return the labelInLegend
+	 */
+	public String getLabelInLegend()
+	{
+		return this.labelInLegend;
+	}
+	
+	
+	/**
+	 * The description of the series to appear in the chart legend. <br>
+	 *
+	 * @param labelInLegend
+	 *            the labelInLegend to set
+	 */
+	public void setLabelInLegend(final String labelInLegend)
+	{
+		this.labelInLegend = labelInLegend;
+	}
+	
+	
+	/**
+	 * @return the visibleInLegend
+	 */
+	public boolean isVisibleInLegend()
+	{
+		return this.visibleInLegend;
+	}
+	
+	
+	/**
+	 * A boolean value, where true means that the series should have a legend entry,
+	 * and false means that it should not. Default is true. <br>
+	 *
+	 * @param visibleInLegend
+	 *            the visibleInLegend to set
+	 */
+	public void setVisibleInLegend(final boolean visibleInLegend)
+	{
+		this.visibleInLegend = visibleInLegend;
+	}
 
+
+	/**
+	 * @return the lineWidth
+	 */
+	public Integer getLineWidth()
+	{
+		return this.lineWidth;
+	}
+
+
+	/**
+	 * Data line width in pixels. Use zero to hide all lines and show only the
+	 * points. <br>
+	 *
+	 * @param lineWidth
+	 *            the lineWidth to set
+	 */
+	public void setLineWidth(final Integer lineWidth)
+	{
+		this.lineWidth = lineWidth;
+	}
+	
+	
+	/**
+	 * @return the pointSize
+	 */
+	public Integer getPointSize()
+	{
+		return this.pointSize;
+	}
+	
+	
+	/**
+	 * Diameter of displayed points in pixels. Use zero to hide all points. <br>
+	 *
+	 * @param pointSize
+	 *            the pointSize to set
+	 */
+	public void setPointSize(final Integer pointSize)
+	{
+		this.pointSize = pointSize;
+	}
+	
 }

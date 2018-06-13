@@ -23,6 +23,8 @@ package com.xdev.charts;
 
 import java.util.List;
 
+import com.xdev.charts.config.Tooltip;
+
 
 /**
  *

@@ -22,14 +22,12 @@ package com.xdev.charts.map;
 
 
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
 import com.xdev.charts.DataTable;
 import com.xdev.charts.Row;
 import com.xdev.charts.XdevChartModel;
-import com.xdev.charts.config.Series;
 
 
 /**
@@ -39,12 +37,12 @@ import com.xdev.charts.config.Series;
  */
 public class XdevMapChartModel implements XdevChartModel
 {
-
+	
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
-
-
-
+	
+	
+	
 	/**
 	 * Two alternative data formats are supported: <br>
 	 * 1. Latitude: The first two columns should be numbers designating the latitude
@@ -61,8 +59,8 @@ public class XdevMapChartModel implements XdevChartModel
 	{
 		Latitude, Address
 	}
-
-
+	
+	
 	public XdevMapChartModel(final DataMapFormat dataMapFormat)
 	{
 		if(dataMapFormat.equals(DataMapFormat.Latitude))
@@ -81,10 +79,10 @@ public class XdevMapChartModel implements XdevChartModel
 			this.getDataTable().getColumns()
 					.add(Column.create("caption","Caption",ColumnType.STRING));
 		}
-		
+
 	}
-	
-	
+
+
 	@Override
 	public DataTable getDataTable()
 	{
@@ -94,19 +92,12 @@ public class XdevMapChartModel implements XdevChartModel
 		}
 		return this.dataTable;
 	}
-	
-	
+
+
 	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
 		return this.data;
-	}
-	
-	
-	@Override
-	public List<Series> getSeries()
-	{
-		return null;
 	}
 	
 	
@@ -121,8 +112,8 @@ public class XdevMapChartModel implements XdevChartModel
 	{
 		this.getDataTable().getRows().add(Row.create(latitude,longitude,caption));
 	}
-
-
+	
+	
 	/**
 	 * Only works with the DataMapFormat.Address option. <br>
 	 *

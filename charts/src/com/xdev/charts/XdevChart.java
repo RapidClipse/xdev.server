@@ -32,7 +32,7 @@ import com.xdev.ui.XdevComponent;
 public interface XdevChart extends XdevComponent
 {
 	public void setModel(XdevChartModel model);
-
-
+	
+	
 	public void refresh();
 }

@@ -26,8 +26,9 @@ window.com_xdev_charts_combo_XdevComboChart = function() {
     			backgroundColor: state.config.backgroundColor,
 				vAxis: state.config.vAxis,
 				hAxis: state.config.hAxis,
-				seriesType: 'bars',
-				series: state.config.series
+				legend: state.config.legend,
+				seriesType: state.config.seriesType,
+				series: state.series
 	    	};
 			
 		    data = new google.visualization.DataTable(

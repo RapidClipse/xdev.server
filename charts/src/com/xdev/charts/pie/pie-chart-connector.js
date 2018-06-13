@@ -35,7 +35,10 @@ window.com_xdev_charts_pie_XdevPieChart = function() {
 					pieSliceBorderColor: state.config.pieSliceBorderColor,
 					sliceVisibilityThreshold: state.config.sliceVisibilityThreshold,
 					pieResidueSliceColor: state.config.pieResidueSliceColor,
-					pieResidueSliceLabel: state.config.pieResidueSliceLabel
+					pieResidueSliceLabel: state.config.pieResidueSliceLabel,
+					slices: state.slices,
+					tooltip: state.config.tooltip,
+					pieStartAngle: state.config.pieStartAngle
 	    	};
 			
 	    	data = new google.visualization.DataTable(
@@ -57,10 +60,64 @@ window.com_xdev_charts_pie_XdevPieChart = function() {
 	    	chart = new google.visualization.PieChart(document.getElementById(div));		
 	    	chart.draw(view, options);
 	       
-	        $('#' + div).resize(function(e) {
-	        	chart.draw(view, options);
-	        });
-	        
+	    	window.addEventListener('resize', function() {
+	    		chart.draw(view, options);
+	    	});
+	    	
+	    	var element = document.getElementById(div);
+	    	element.config = function() {
+	    		options = 
+	    		{
+	    				title: state.config.title,
+	    				titleTextStyle: state.config.titleTextStyle,
+	    				is3D: state.config.is3D,
+	    				pieHole: state.config.pieHole,
+	    				backgroundColor: state.config.backgroundColor,
+	    				fontName: state.config.fontName,
+	    				fontSize: state.config.fontSize,
+	    				pieSliceText: state.config.pieSliceText,
+	    				pieSliceTextStyle: state.config.pieSliceTextStyle,
+	    				legend: state.config.legend,
+	    				chartArea: state.config.chartArea,
+	    				pieSliceBorderColor: state.config.pieSliceBorderColor,
+	    				sliceVisibilityThreshold: state.config.sliceVisibilityThreshold,
+	    				pieResidueSliceColor: state.config.pieResidueSliceColor,
+	    				pieResidueSliceLabel: state.config.pieResidueSliceLabel,
+	    				slices: state.slices,
+	    				tooltip: state.config.tooltip,
+	    				pieStartAngle: state.config.pieStartAngle
+	    		};
+
+	    		chart.draw(view, options);
+	    	};
+	    	
+	    	element.refresh = function() {
+	    		console.log("-------------------------------------------");
+	    		console.log("Aktion!!!");
+	    		data = new google.visualization.DataTable(
+	    				{
+	    					cols: state.dataTable.columns,
+	    					rows: state.dataTable.rows
+	    				}
+	    			)
+	    			
+	    		view = new google.visualization.DataView(data);
+	    		console.log(state);
+	    		console.log(state.dataTable.columns);
+	    		var index = state.dataTable.columns.map(function (icol) { return icol.id; }).indexOf('id');
+	    		
+	    		if(index >= 0)
+	    		{
+	    			view.hideColumns([index]);
+	    		}
+
+	    		chart.draw(view, options);
+	    	};
+	    	
+	    	element.printImage = function() {
+	    		connector.print_success(chart.getImageURI());
+	    	};
+	    	
 	        google.visualization.events.addListener(chart, 'select', selectHandler);
 		}
 		
@@ -80,51 +137,4 @@ window.com_xdev_charts_pie_XdevPieChart = function() {
 			}
 		}
 	}
-
-	$('#' + chart_div[0].id).bind('refresh', function() {
-		data = new google.visualization.DataTable(
-				{
-					cols: state.dataTable.columns,
-					rows: state.dataTable.rows
-				}
-			)
-			
-		view = new google.visualization.DataView(data);
-	
-		var index = state.dataTable.columns.map(function (icol) { return icol.id; }).indexOf('id');
-		
-		if(index >= 0)
-		{
-			view.hideColumns([index]);
-		}
-
-		chart.draw(view, options);
-	});
-
-	$('#' + chart_div[0].id).bind('config', function() {
-		options = 
-		{
-				title: state.config.title,
-				titleTextStyle: state.config.titleTextStyle,
-				is3D: state.config.is3D,
-				pieHole: state.config.pieHole,
-				backgroundColor: state.config.backgroundColor,
-				fontName: state.config.fontName,
-				fontSize: state.config.fontSize,
-				pieSliceText: state.config.pieSliceText,
-				pieSliceTextStyle: state.config.pieSliceTextStyle,
-				legend: state.config.legend,
-				chartArea: state.config.chartArea,
-				pieSliceBorderColor: state.config.pieSliceBorderColor,
-				sliceVisibilityThreshold: state.config.sliceVisibilityThreshold,
-				pieResidueSliceColor: state.config.pieResidueSliceColor,
-				pieResidueSliceLabel: state.config.pieResidueSliceLabel
-		};
-
-		chart.draw(view, options);
-	});
-	
-	$('#' + chart_div[0].id).bind('printImage', function() {		
-		connector.print_success(chart.getImageURI());
-	});
 }

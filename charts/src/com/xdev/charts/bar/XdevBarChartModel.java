@@ -22,14 +22,12 @@ package com.xdev.charts.bar;
 
 
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
 import com.xdev.charts.DataRoleType;
 import com.xdev.charts.DataTable;
 import com.xdev.charts.XdevChartModel;
-import com.xdev.charts.config.Series;
 
 
 /**
@@ -39,19 +37,19 @@ import com.xdev.charts.config.Series;
  */
 public class XdevBarChartModel implements XdevChartModel
 {
-
+	
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
 	private final LinkedHashMap<String, Object>							categories	= new LinkedHashMap<>();
-	
-	
+
+
 	public XdevBarChartModel()
 	{
 		this.getDataTable().getColumns()
 				.add(Column.create("ycaption","ycaption",ColumnType.STRING));
 	}
-	
-	
+
+
 	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
@@ -59,13 +57,6 @@ public class XdevBarChartModel implements XdevChartModel
 	}
 	
 	
-	@Override
-	public List<Series> getSeries()
-	{
-		return null;
-	}
-
-
 	@Override
 	public DataTable getDataTable()
 	{
@@ -75,8 +66,8 @@ public class XdevBarChartModel implements XdevChartModel
 		}
 		return this.dataTable;
 	}
-	
-	
+
+
 	public void addCategory(final String caption, final ColumnType type)
 	{
 		this.categories.put(caption,null);
@@ -84,8 +75,8 @@ public class XdevBarChartModel implements XdevChartModel
 		this.getDataTable().getColumns()
 				.add(Column.DataRoleColumn(ColumnType.STRING,DataRoleType.ANNOTATION));
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	public void addItem(final String group, final String category, final Object value,
 			final String barCaption)
@@ -95,7 +86,7 @@ public class XdevBarChartModel implements XdevChartModel
 			final Object[] insertValues = new Object[2];
 			insertValues[0] = value;
 			insertValues[1] = barCaption;
-
+			
 			final LinkedHashMap<String, Object> v = (LinkedHashMap<String, Object>)this.categories
 					.clone();
 			v.put(category,insertValues);
@@ -106,7 +97,7 @@ public class XdevBarChartModel implements XdevChartModel
 			final Object[] insertValues = new Object[2];
 			insertValues[0] = value;
 			insertValues[1] = barCaption;
-
+			
 			final LinkedHashMap<String, Object> v = this.data.get(group);
 			v.put(category,insertValues);
 			this.data.put(group,v);

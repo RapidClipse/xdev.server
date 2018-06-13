@@ -22,10 +22,8 @@ package com.xdev.charts.combo;
 
 
 import java.io.Serializable;
-import java.util.List;
 
 import com.xdev.charts.AbstractXdevChartConfig;
-import com.xdev.charts.config.Series;
 
 
 /**
@@ -36,24 +34,28 @@ import com.xdev.charts.config.Series;
  */
 public class XdevComboChartConfig extends AbstractXdevChartConfig implements Serializable
 {
-	private List<Series> series;
+	private String seriesType = "bars";
 	
 	
 	/**
-	 * @return the series
+	 * @return the seriesType
 	 */
-	public List<Series> getSeries()
+	public String getSeriesType()
 	{
-		return this.series;
+		return this.seriesType;
 	}
-
-
+	
+	
 	/**
-	 * @param series
-	 *            the series to set
+	 * The default line type for any series not specified in the series property.
+	 * Available values are 'line', 'area', 'bars' and 'steppedArea'. <br>
+	 *
+	 * @param seriesType
+	 *            the seriesType to set
 	 */
-	public void setSeries(final List<Series> series)
+	public void setSeriesType(final String seriesType)
 	{
-		this.series = series;
+		this.seriesType = seriesType;
 	}
+	
 }

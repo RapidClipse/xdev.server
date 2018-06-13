@@ -22,9 +22,6 @@ package com.xdev.charts;
 
 
 import java.util.LinkedHashMap;
-import java.util.List;
-
-import com.xdev.charts.config.Series;
 
 
 /**
@@ -35,9 +32,6 @@ import com.xdev.charts.config.Series;
 public interface XdevChartModel
 {
 	public DataTable getDataTable();
-	
-	
-	public List<Series> getSeries();
 	
 	
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData();

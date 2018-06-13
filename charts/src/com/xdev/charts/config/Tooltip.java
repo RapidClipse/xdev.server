@@ -18,7 +18,7 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts;
+package com.xdev.charts.config;
 
 
 /**
@@ -28,7 +28,8 @@ package com.xdev.charts;
  */
 public class Tooltip
 {
-	private boolean isHtml = false;
+	private boolean	isHtml	= false;
+	private String	trigger	= "focus";
 	
 	
 	public boolean getisHtml()
@@ -41,4 +42,34 @@ public class Tooltip
 	{
 		this.isHtml = isHtml;
 	}
+
+
+	/**
+	 * @return the trigger
+	 */
+	public String getTrigger()
+	{
+		return this.trigger;
+	}
+
+
+	/**
+	 * The user interaction that causes the tooltip to be displayed: <br>
+	 * <ul>
+	 * <li>'focus' - The tooltip will be displayed when the user hovers over the
+	 * element.</li>
+	 * <li>'none' - The tooltip will not be displayed.</li>
+	 * <li>'selection' - The tooltip will be displayed when the user selects the
+	 * element.</li>
+	 * </ul>
+	 * <br>
+	 * 
+	 * @param trigger
+	 *            the trigger to set
+	 */
+	public void setTrigger(final String trigger)
+	{
+		this.trigger = trigger;
+	}
+
 }

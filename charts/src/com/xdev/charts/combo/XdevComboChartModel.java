@@ -69,30 +69,8 @@ public class XdevComboChartModel implements XdevChartModel
 	}
 	
 	
-	@Override
 	public List<Series> getSeries()
 	{
-		// final Object[] seriesObject = new Object[this.seriesList.size()];
-		//
-		// for(int i = 0; i < this.seriesList.size(); i++)
-		// {
-		// if(this.seriesList.get(i) != null)
-		// {
-		// // seriesObject[i] = this.seriesList.get(i);
-		// final Series s = new Series();
-		// s.setType("line");
-		// seriesObject[i] = s;
-		// }
-		// else
-		// {
-		// // seriesObject[i] = "{}";
-		//
-		// final Series s = new Series();
-		// s.setType("line");
-		// seriesObject[i] = s;
-		// }
-		// }
-
 		return this.seriesList;
 	}
 	

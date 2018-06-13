@@ -22,13 +22,11 @@ package com.xdev.charts.stepped;
 
 
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
 import com.xdev.charts.DataTable;
 import com.xdev.charts.XdevChartModel;
-import com.xdev.charts.config.Series;
 
 
 /**
@@ -38,19 +36,19 @@ import com.xdev.charts.config.Series;
  */
 public class XdevSteppedAreaChartModel implements XdevChartModel
 {
-	
+
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
 	private final LinkedHashMap<String, Object>							categories	= new LinkedHashMap<>();
-
-
+	
+	
 	public XdevSteppedAreaChartModel()
 	{
 		this.getDataTable().getColumns()
 				.add(Column.create("ycaption","ycaption",ColumnType.STRING));
 	}
-
-
+	
+	
 	@Override
 	public DataTable getDataTable()
 	{
@@ -60,19 +58,12 @@ public class XdevSteppedAreaChartModel implements XdevChartModel
 		}
 		return this.dataTable;
 	}
-
-
+	
+	
 	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
 		return this.data;
-	}
-
-
-	@Override
-	public List<Series> getSeries()
-	{
-		return null;
 	}
 	
 	
@@ -82,8 +73,8 @@ public class XdevSteppedAreaChartModel implements XdevChartModel
 		this.getDataTable().getColumns()
 				.add(Column.create(category.toLowerCase(),category,ColumnType.NUMBER));
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	public void addItem(final String group, final String category, final Double value)
 	{
@@ -101,5 +92,5 @@ public class XdevSteppedAreaChartModel implements XdevChartModel
 			this.data.put(group,v);
 		}
 	}
-
+	
 }

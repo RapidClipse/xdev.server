@@ -23,13 +23,11 @@ package com.xdev.charts.area;
 
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
 import com.xdev.charts.DataTable;
 import com.xdev.charts.XdevChartModel;
-import com.xdev.charts.config.Series;
 
 
 /**
@@ -39,12 +37,12 @@ import com.xdev.charts.config.Series;
  */
 public class XdevAreaChartModel implements XdevChartModel
 {
-	
+
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
 	private final LinkedHashMap<String, Object>							categories	= new LinkedHashMap<>();
-
-
+	
+	
 	@Override
 	public DataTable getDataTable()
 	{
@@ -54,8 +52,8 @@ public class XdevAreaChartModel implements XdevChartModel
 		}
 		return this.dataTable;
 	}
-
-
+	
+	
 	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
@@ -63,37 +61,30 @@ public class XdevAreaChartModel implements XdevChartModel
 	}
 	
 	
-	@Override
-	public List<Series> getSeries()
-	{
-		return null;
-	}
-
-
 	public void addXCategory(final ColumnType type)
 	{
 		this.getDataTable().getColumns().add(Column.create("xcategory","xcategory",type));
 	}
-
-
+	
+	
 	public void addCategory(final String caption, final ColumnType type)
 	{
 		this.categories.put(caption,null);
 		this.getDataTable().getColumns().add(Column.create(caption.toLowerCase(),caption,type));
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	public void addItem(final String category, Object xValue, final Integer yValue)
 	{
 		if(xValue instanceof LocalDate)
 		{
 			final LocalDate date = (LocalDate)xValue;
-			
+
 			xValue = "Date(" + date.getYear() + ", " + date.getMonthValue() + ", "
 					+ date.getDayOfMonth() + ")";
 		}
-		
+
 		if(!this.data.containsKey(xValue))
 		{
 			final LinkedHashMap<String, Object> rowData = (LinkedHashMap<String, Object>)this.categories

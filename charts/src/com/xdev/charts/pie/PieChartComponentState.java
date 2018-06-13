@@ -21,8 +21,11 @@
 package com.xdev.charts.pie;
 
 
+import java.util.List;
+
 import com.vaadin.shared.ui.JavaScriptComponentState;
 import com.xdev.charts.DataTable;
+import com.xdev.charts.config.XdevPieSlice;
 
 
 /**
@@ -32,31 +35,52 @@ import com.xdev.charts.DataTable;
  */
 public class PieChartComponentState extends JavaScriptComponentState
 {
-
+	
 	private XdevPieChartConfig	config;
 	private DataTable			dataTable;
-	
-	
+	private List<XdevPieSlice>		slices;
+
+
 	public XdevPieChartConfig getConfig()
 	{
 		return this.config;
 	}
-	
-	
+
+
 	public void setConfig(final XdevPieChartConfig config)
 	{
 		this.config = config;
 	}
-	
-	
+
+
 	public DataTable getDataTable()
 	{
 		return this.dataTable;
 	}
-	
-	
+
+
 	public void setDataTable(final DataTable dataTable)
 	{
 		this.dataTable = dataTable;
 	}
+	
+	
+	/**
+	 * @return the slices
+	 */
+	public List<XdevPieSlice> getSlices()
+	{
+		return this.slices;
+	}
+	
+	
+	/**
+	 * @param slices
+	 *            the slices to set
+	 */
+	public void setSlices(final List<XdevPieSlice> slices)
+	{
+		this.slices = slices;
+	}
+	
 }

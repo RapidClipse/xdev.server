@@ -22,14 +22,12 @@ package com.xdev.charts.org;
 
 
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
 import com.xdev.charts.DataTable;
 import com.xdev.charts.Row;
 import com.xdev.charts.XdevChartModel;
-import com.xdev.charts.config.Series;
 
 
 /**
@@ -39,19 +37,19 @@ import com.xdev.charts.config.Series;
  */
 public class XdevOrgChartModel implements XdevChartModel
 {
-	
+
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
-
-
+	
+	
 	public XdevOrgChartModel()
 	{
 		this.getDataTable().getColumns().add(Column.create("name","name",ColumnType.STRING));
 		this.getDataTable().getColumns().add(Column.create("root","root",ColumnType.STRING));
 		this.getDataTable().getColumns().add(Column.create("tooltip","tooltip",ColumnType.STRING));
 	}
-
-
+	
+	
 	@Override
 	public DataTable getDataTable()
 	{
@@ -64,22 +62,15 @@ public class XdevOrgChartModel implements XdevChartModel
 	
 	
 	@Override
-	public List<Series> getSeries()
-	{
-		return null;
-	}
-
-
-	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
 		return this.data;
 	}
-
-
+	
+	
 	public void addItem(final String name, final String root, final String tooltip)
 	{
 		this.getDataTable().getRows().add(Row.create(name,root,tooltip));
 	}
-
+	
 }

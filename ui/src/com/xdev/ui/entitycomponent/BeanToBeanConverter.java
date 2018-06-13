@@ -26,14 +26,15 @@ import java.util.Locale;
 import com.vaadin.v7.data.util.BeanItem;
 import com.vaadin.v7.data.util.converter.Converter;
 import com.xdev.util.JPAEntityIDResolver;
+import com.xdev.util.JPAMetaDataUtils;
 
 
 @SuppressWarnings("deprecation")
 public class BeanToBeanConverter<T> implements Converter<T, T>
 {
 	private final XdevBeanContainer<T> container;
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -41,16 +42,16 @@ public class BeanToBeanConverter<T> implements Converter<T, T>
 	{
 		this.container = container;
 	}
-
-
+	
+	
 	@Override
 	public T convertToModel(final T bean, final Class<? extends T> targetType, final Locale locale)
 			throws Converter.ConversionException
 	{
 		return bean;
 	}
-
-
+	
+	
 	@Override
 	public T convertToPresentation(final T value, final Class<? extends T> targetType,
 			final Locale locale) throws Converter.ConversionException
@@ -59,7 +60,7 @@ public class BeanToBeanConverter<T> implements Converter<T, T>
 		{
 			return null;
 		}
-
+		
 		final BeanItem<T> item = this.container.getItem(value);
 		if(item != null)
 		{
@@ -67,6 +68,11 @@ public class BeanToBeanConverter<T> implements Converter<T, T>
 			return item.getBean();
 		}
 
+		if(!JPAMetaDataUtils.isManaged(value.getClass()))
+		{
+			return value;
+		}
+		
 		// find by id
 		final JPAEntityIDResolver idResolver = JPAEntityIDResolver.getInstance();
 		final Object id = idResolver.getEntityIDAttributeValue(value);
@@ -81,16 +87,16 @@ public class BeanToBeanConverter<T> implements Converter<T, T>
 				.findFirst().orElse(null);
 		return containerValue != null ? containerValue : value;
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<T> getModelType()
 	{
 		return (Class<T>)this.container.getBeanType();
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<T> getPresentationType()

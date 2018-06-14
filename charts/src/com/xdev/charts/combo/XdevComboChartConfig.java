@@ -18,21 +18,44 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts;
+package com.xdev.charts.combo;
 
 
-import com.xdev.ui.XdevComponent;
+import java.io.Serializable;
+
+import com.xdev.charts.AbstractXdevChartConfig;
 
 
 /**
  *
  * @author XDEV Software (SS)
  * @since 4.0
+ *
  */
-public interface XdevChart extends XdevComponent
+public class XdevComboChartConfig extends AbstractXdevChartConfig implements Serializable
 {
-	public void setModel(XdevChartModel model);
+	private String seriesType = "bars";
 	
 	
-	public void refresh();
+	/**
+	 * @return the seriesType
+	 */
+	public String getSeriesType()
+	{
+		return this.seriesType;
+	}
+	
+	
+	/**
+	 * The default line type for any series not specified in the series property.
+	 * Available values are 'line', 'area', 'bars' and 'steppedArea'. <br>
+	 *
+	 * @param seriesType
+	 *            the seriesType to set
+	 */
+	public void setSeriesType(final String seriesType)
+	{
+		this.seriesType = seriesType;
+	}
+	
 }

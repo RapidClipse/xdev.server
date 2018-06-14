@@ -35,26 +35,35 @@ import com.xdev.charts.XdevChartModel;
 @JavaScript({"geo-chart.js","geo-chart-connector.js"})
 public class XdevGeoChart extends AbstractXdevChart implements XdevChart
 {
-
+	
 	private XdevChartModel chartModel = null;
+
+
+	public XdevGeoChart()
+	{
+		super();
+
+		this.getState().setConfig(new XdevGeoChartConfig());
+		this.getState().setMapsApiKey("");
+	}
 	
 	
 	public XdevGeoChart(final String apiKey)
 	{
 		super();
-
+		
 		this.getState().setConfig(new XdevGeoChartConfig());
 		this.getState().setMapsApiKey(apiKey);
 	}
-	
-	
+
+
 	@Override
 	protected GeoChartComponentState getState()
 	{
 		return (GeoChartComponentState)super.getState();
 	}
-	
-	
+
+
 	public void setConfig(final XdevGeoChartConfig config)
 	{
 		this.getState().setConfig(config);
@@ -65,27 +74,27 @@ public class XdevGeoChart extends AbstractXdevChart implements XdevChart
 	{
 		this.getState().setMapsApiKey(apiKey);
 	}
-	
-	
+
+
 	@Override
 	public void setModel(final XdevChartModel model)
 	{
-
+		
 		this.chartModel = model;
-
+		
 		this.getState().setDataTable(model.getDataTable());
 	}
-	
-	
+
+
 	@Override
 	public void refresh()
 	{
 		if(this.chartModel != null)
 		{
 			this.getState().setDataTable(this.chartModel.getDataTable());
-
+			
 			this.triggerJavaScriptRefresh();
 		}
 	}
-
+	
 }

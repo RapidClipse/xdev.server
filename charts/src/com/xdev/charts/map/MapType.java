@@ -18,7 +18,7 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts;
+package com.xdev.charts.map;
 
 
 /**
@@ -26,19 +26,10 @@ package com.xdev.charts;
  * @author XDEV Software (SS)
  * @since 4.0
  */
-public class Tooltip
+public class MapType
 {
-	private boolean isHtml = false;
-	
-	
-	public boolean getisHtml()
-	{
-		return this.isHtml;
-	}
-	
-	
-	public void setisHtml(final boolean isHtml)
-	{
-		this.isHtml = isHtml;
-	}
+	public static final String	NORMAL		= "normal";
+	public static final String	TERRAIN		= "terrain";
+	public static final String	SATELLITE	= "satellite";
+	public static final String	HYBRID		= "hybrid";
 }

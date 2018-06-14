@@ -31,7 +31,6 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
-import com.xdev.res.CommonJavaScripts;
 
 import elemental.json.JsonArray;
 
@@ -41,18 +40,17 @@ import elemental.json.JsonArray;
  * @author XDEV Software (SS)
  * @since 4.0
  */
-@JavaScript({"https://www.gstatic.com/charts/loader.js",CommonJavaScripts.JQUERY,
-		CommonJavaScripts.JQUERY_RESIZE,"xdev-chart-utils.js"})
+@JavaScript({"https://www.gstatic.com/charts/loader.js","xdev-chart-utils.js"})
 public abstract class AbstractXdevChart extends AbstractJavaScriptComponent implements XdevChart
 {
-	private static final long					serialVersionUID	= 1L;
+	private static final long						serialVersionUID	= 1L;
 
-	private final Extensions					extensions			= new Extensions();
+	private final Extensions						extensions			= new Extensions();
 
-	private String								divId				= null;
-	private byte[]								chart_image			= null;
-	private final Map<String, Consumer<byte[]>>	getPrintCalls		= new HashMap<>();
-	ArrayList<ValueChangeListener>				listeners			= new ArrayList<>();
+	private String									divId				= null;
+	private byte[]									chart_image			= null;
+	private final Map<String, Consumer<byte[]>>		getPrintCalls		= new HashMap<>();
+	private final ArrayList<ValueChangeListener>	listeners			= new ArrayList<>();
 
 
 	public AbstractXdevChart()
@@ -61,8 +59,8 @@ public abstract class AbstractXdevChart extends AbstractJavaScriptComponent impl
 		addFunction("divId",this::addDivId);
 		addFunction("print_success",this::print_success);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -71,8 +69,8 @@ public abstract class AbstractXdevChart extends AbstractJavaScriptComponent impl
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -123,8 +121,26 @@ public abstract class AbstractXdevChart extends AbstractJavaScriptComponent impl
 	{
 		if(this.divId != null)
 		{
-			com.vaadin.ui.JavaScript.getCurrent()
-					.execute("$(" + this.divId + ").trigger('refresh');");
+			// com.vaadin.ui.JavaScript.getCurrent()
+			// .execute("$(" + this.divId + ").trigger('refresh');");
+			
+			final String action = "document.getElementById('" + this.divId + "').refresh();";
+			
+			com.vaadin.ui.JavaScript.getCurrent().execute(action);
+		}
+	}
+	
+	
+	public void triggerJavaScriptConfigRefresh()
+	{
+		if(this.divId != null)
+		{
+			// com.vaadin.ui.JavaScript.getCurrent()
+			// .execute("$(" + this.divId + ").trigger('config');");
+
+			final String action = "document.getElementById('" + this.divId + "').config();";
+			
+			com.vaadin.ui.JavaScript.getCurrent().execute(action);
 		}
 	}
 

@@ -38,19 +38,21 @@ import com.xdev.charts.XdevChartModel;
  */
 public class XdevTimeLineChartModel implements XdevChartModel
 {
-
+	
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
-	
-	
+
+
 	public XdevTimeLineChartModel()
 	{
+		this.getDataTable().getColumns()
+				.add(Column.create("category","category",ColumnType.STRING));
 		this.getDataTable().getColumns().add(Column.create("caption","caption",ColumnType.STRING));
 		this.getDataTable().getColumns().add(Column.create("start","start",ColumnType.DATE));
 		this.getDataTable().getColumns().add(Column.create("end","end",ColumnType.DATE));
 	}
-	
-	
+
+
 	@Override
 	public DataTable getDataTable()
 	{
@@ -60,8 +62,8 @@ public class XdevTimeLineChartModel implements XdevChartModel
 		}
 		return this.dataTable;
 	}
-	
-	
+
+
 	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
@@ -69,17 +71,18 @@ public class XdevTimeLineChartModel implements XdevChartModel
 	}
 	
 	
-	public void addItem(final String category, final LocalDate start, final LocalDate end)
+	public void addItem(final String category, final String caption, final LocalDate start,
+			final LocalDate end)
 	{
 		final int startMonth = start.getMonthValue() - 1;
 		final int endMonth = end.getMonthValue() - 1;
-
+		
 		final String convertedStart = "Date(" + start.getYear() + "," + startMonth + ","
 				+ start.getDayOfMonth() + ")";
 		final String convertedEnd = "Date(" + end.getYear() + "," + endMonth + ","
 				+ end.getDayOfMonth() + ")";
-
-		this.getDataTable().getRows().add(Row.create(category,convertedStart,convertedEnd));
+		
+		this.getDataTable().getRows().add(Row.create(category,caption,convertedStart,convertedEnd));
 	}
-	
+
 }

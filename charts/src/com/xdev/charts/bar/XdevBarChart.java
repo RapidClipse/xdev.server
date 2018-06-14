@@ -84,4 +84,25 @@ public class XdevBarChart extends AbstractXdevChart implements XdevChart
 			this.triggerJavaScriptRefresh();
 		}
 	}
+
+
+	// FIXME wieder entfernen
+	public void test(final XdevChartModel model)
+	{
+		// if(model != null)
+		// {
+		// final DataTable dataTable = model.getDataTable();
+		//
+		// model.getColumns().forEach(column -> {
+		// dataTable.getColumns().add(column);
+		// });
+		//
+		// Row.createFromHashmap(model.getData()).forEach(row -> {
+		// dataTable.getRows().add(row);
+		// });
+		//
+		// this.getState().setDataTable(dataTable);
+		// this.triggerJavaScriptRefresh();
+		// }
+	}
 }

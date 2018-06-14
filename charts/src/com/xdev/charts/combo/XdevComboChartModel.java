@@ -18,29 +18,37 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts.line;
+package com.xdev.charts.combo;
 
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
 import com.xdev.charts.DataTable;
 import com.xdev.charts.XdevChartModel;
+import com.xdev.charts.config.Series;
 
 
 /**
+ * @author XDEV Software
  *
- * @author XDEV Software (SS)
- * @since 4.0
  */
-public class XdevLineChartModel implements XdevChartModel
+public class XdevComboChartModel implements XdevChartModel
 {
-	
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
 	private final LinkedHashMap<String, Object>							categories	= new LinkedHashMap<>();
+	private final List<Series>											seriesList	= new ArrayList<>();
+	
+	
+	public XdevComboChartModel()
+	{
+		this.getDataTable().getColumns()
+				.add(Column.create("ycaption","ycaption",ColumnType.STRING));
+	}
 
 
 	@Override
@@ -61,51 +69,45 @@ public class XdevLineChartModel implements XdevChartModel
 	}
 	
 	
-	public void addYCategory(final String caption)
+	public List<Series> getSeries()
+	{
+		return this.seriesList;
+	}
+	
+	
+	public void addCategory(final String caption, final Series series)
 	{
 		this.categories.put(caption,null);
 		this.getDataTable().getColumns()
 				.add(Column.create(caption.toLowerCase(),caption,ColumnType.NUMBER));
-	}
 
-
-	public void addXCategory(final String caption, final ColumnType type)
-	{
-		this.getDataTable().getColumns().add(Column.create(caption.toLowerCase(),caption,type));
-	}
-
-
-	public void addHiddenCategory(final String caption, final ColumnType type)
-	{
-		this.getDataTable().getColumns().add(Column.create(caption.toLowerCase(),"hidden",type));
+		if(series != null)
+		{
+			this.seriesList.add(series);
+		}
+		else
+		{
+			this.seriesList.add(null);
+		}
 	}
 
 
 	@SuppressWarnings("unchecked")
-	public void addItem(final String category, Object xValue, final Integer yValue)
+	public void addItem(final String group, final String category, final Object value)
 	{
-		if(xValue instanceof LocalDate)
+		if(!this.data.containsKey(group))
 		{
-			final LocalDate date = (LocalDate)xValue;
-			
-			xValue = "Date(" + date.getYear() + ", " + date.getMonthValue() + ", "
-					+ date.getDayOfMonth() + ")";
-		}
-		
-		if(!this.data.containsKey(xValue))
-		{
-			final LinkedHashMap<String, Object> rowData = (LinkedHashMap<String, Object>)this.categories
+			final LinkedHashMap<String, Object> v = (LinkedHashMap<String, Object>)this.categories
 					.clone();
-			rowData.put(category,yValue);
-			this.data.put(xValue,rowData);
+			v.put(category,value);
+			this.data.put(group,v);
 		}
 		else
 		{
-			final LinkedHashMap<String, Object> rowData = this.data.get(xValue);
-			rowData.put(category,yValue);
-			this.data.put(xValue,rowData);
+			final LinkedHashMap<String, Object> v = this.data.get(group);
+			v.put(category,value);
+			this.data.put(group,v);
 		}
-
 	}
-
+	
 }

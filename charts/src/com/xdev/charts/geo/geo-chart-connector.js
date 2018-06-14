@@ -23,6 +23,9 @@ window.com_xdev_charts_geo_XdevGeoChart = function() {
 	    	{
 	    		region: state.config.region,
 	    		displayMode: state.config.displayMode,
+	    		defaultColor: state.config.defaultColor,
+	    		datalessRegionColor: state.config.datalessRegionColor,
+	    		colorAxis: state.config.colorAxis,
 	    		backgroundColor: state.config.backgroundColor
 	    	};
 			

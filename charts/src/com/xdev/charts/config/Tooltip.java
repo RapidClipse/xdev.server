@@ -18,10 +18,7 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts;
-
-
-import com.xdev.ui.XdevComponent;
+package com.xdev.charts.config;
 
 
 /**
@@ -29,10 +26,50 @@ import com.xdev.ui.XdevComponent;
  * @author XDEV Software (SS)
  * @since 4.0
  */
-public interface XdevChart extends XdevComponent
+public class Tooltip
 {
-	public void setModel(XdevChartModel model);
+	private boolean	isHtml	= false;
+	private String	trigger	= "focus";
 	
 	
-	public void refresh();
+	public boolean getisHtml()
+	{
+		return this.isHtml;
+	}
+	
+	
+	public void setisHtml(final boolean isHtml)
+	{
+		this.isHtml = isHtml;
+	}
+
+
+	/**
+	 * @return the trigger
+	 */
+	public String getTrigger()
+	{
+		return this.trigger;
+	}
+
+
+	/**
+	 * The user interaction that causes the tooltip to be displayed: <br>
+	 * <ul>
+	 * <li>'focus' - The tooltip will be displayed when the user hovers over the
+	 * element.</li>
+	 * <li>'none' - The tooltip will not be displayed.</li>
+	 * <li>'selection' - The tooltip will be displayed when the user selects the
+	 * element.</li>
+	 * </ul>
+	 * <br>
+	 * 
+	 * @param trigger
+	 *            the trigger to set
+	 */
+	public void setTrigger(final String trigger)
+	{
+		this.trigger = trigger;
+	}
+
 }

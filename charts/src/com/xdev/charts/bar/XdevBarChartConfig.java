@@ -38,6 +38,7 @@ public class XdevBarChartConfig extends AbstractXdevChartConfig implements Seria
 	private String	subtitle;
 	private HAxis	hAxis;
 	private VAxis	vAxis;
+	private boolean	isStacked	= false;
 	
 	
 	public XdevBarChartConfig()
@@ -80,4 +81,26 @@ public class XdevBarChartConfig extends AbstractXdevChartConfig implements Seria
 	{
 		this.vAxis = vAxis;
 	}
+	
+	
+	/**
+	 * @return the isStacked
+	 */
+	public boolean isStacked()
+	{
+		return this.isStacked;
+	}
+	
+	
+	/**
+	 * If set to true, stacks the elements for all series at each domain value. <br>
+	 *
+	 * @param isStacked
+	 *            the isStacked to set
+	 */
+	public void setStacked(final boolean isStacked)
+	{
+		this.isStacked = isStacked;
+	}
+	
 }

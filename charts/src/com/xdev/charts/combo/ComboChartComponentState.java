@@ -18,36 +18,34 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts.pie;
+package com.xdev.charts.combo;
 
 
 import java.util.List;
 
 import com.vaadin.shared.ui.JavaScriptComponentState;
 import com.xdev.charts.DataTable;
-import com.xdev.charts.config.XdevPieSlice;
+import com.xdev.charts.config.Series;
 
 
 /**
+ * @author XDEV Software
  *
- * @author XDEV Software (SS)
- * @since 4.0
  */
-public class PieChartComponentState extends JavaScriptComponentState
+public class ComboChartComponentState extends JavaScriptComponentState
 {
-	
-	private XdevPieChartConfig	config;
-	private DataTable			dataTable;
-	private List<XdevPieSlice>		slices;
+	private XdevComboChartConfig	config;
+	private DataTable				dataTable;
+	private List<Series>			series;
 
 
-	public XdevPieChartConfig getConfig()
+	public XdevComboChartConfig getConfig()
 	{
 		return this.config;
 	}
 
 
-	public void setConfig(final XdevPieChartConfig config)
+	public void setConfig(final XdevComboChartConfig config)
 	{
 		this.config = config;
 	}
@@ -66,21 +64,21 @@ public class PieChartComponentState extends JavaScriptComponentState
 	
 	
 	/**
-	 * @return the slices
+	 * @return the series
 	 */
-	public List<XdevPieSlice> getSlices()
+	public List<Series> getSeries()
 	{
-		return this.slices;
+		return this.series;
 	}
 	
 	
 	/**
-	 * @param slices
-	 *            the slices to set
+	 * @param series
+	 *            the series to set
 	 */
-	public void setSlices(final List<XdevPieSlice> slices)
+	public void setSeries(final List<Series> series)
 	{
-		this.slices = slices;
+		this.series = series;
 	}
 	
 }

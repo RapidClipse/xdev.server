@@ -40,8 +40,8 @@ public class XdevTimelineChartConfig implements Serializable
 	{
 		return this.timeline;
 	}
-	
-	
+
+
 	public void setTimeline(final TimelineOptions timeline)
 	{
 		this.timeline = timeline;

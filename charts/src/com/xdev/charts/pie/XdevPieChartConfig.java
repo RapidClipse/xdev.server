@@ -47,6 +47,7 @@ public class XdevPieChartConfig extends AbstractXdevChartConfig implements Seria
 	private Double				sliceVisibilityThreshold;
 	private String				pieResidueSliceColor	= "#ccc";
 	private String				pieResidueSliceLabel	= "Other";
+	private Integer				pieStartAngle			= 0;
 
 	private TextStyle			pieSliceTextStyle		= new TextStyle();
 	
@@ -67,8 +68,15 @@ public class XdevPieChartConfig extends AbstractXdevChartConfig implements Seria
 	{
 		return this.pieHole;
 	}
-	
-	
+
+
+	/**
+	 * If between 0 and 1, displays a donut chart. The hole with have a radius equal
+	 * to number times the radius of the chart. <br>
+	 * Numbers between 0.4 and 0.6 will look best on most charts. <br>
+	 *
+	 * @param pieHole
+	 */
 	public void setPieHole(final Double pieHole)
 	{
 		this.pieHole = pieHole;
@@ -90,7 +98,7 @@ public class XdevPieChartConfig extends AbstractXdevChartConfig implements Seria
 	 * <li>'label' - The name of the slice.</li>
 	 * <li>'none' - No text is displayed.</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param pieSliceText
 	 */
 	public void setPieSliceText(final String pieSliceText)
@@ -109,7 +117,7 @@ public class XdevPieChartConfig extends AbstractXdevChartConfig implements Seria
 	 * The color of the slice borders. Only applicable when the chart is
 	 * two-dimensional. <br>
 	 * Can be a simple HTML color string, for example: 'red' or '#00cc00'.
-	 * 
+	 *
 	 * @param pieSliceBorderColor
 	 */
 	public void setPieSliceBorderColor(final String pieSliceBorderColor)
@@ -129,7 +137,7 @@ public class XdevPieChartConfig extends AbstractXdevChartConfig implements Seria
 	 * individually. All slices that have not passed this threshold will be combined
 	 * to a single "Other" slice, whose size is the sum of all their sizes. Default
 	 * is not to show individually any slice which is smaller than half a degree.
-	 * 
+	 *
 	 * @param sliceVisibilityThreshold
 	 */
 	public void setSliceVisibilityThreshold(final Double sliceVisibilityThreshold)
@@ -147,7 +155,7 @@ public class XdevPieChartConfig extends AbstractXdevChartConfig implements Seria
 	/**
 	 * Color for the combination slice that holds all slices below
 	 * sliceVisibilityThreshold.
-	 * 
+	 *
 	 * @param pieResidueSliceColor
 	 */
 	public void setPieResidueSliceColor(final String pieResidueSliceColor)
@@ -165,7 +173,7 @@ public class XdevPieChartConfig extends AbstractXdevChartConfig implements Seria
 	/**
 	 * A label for the combination slice that holds all slices below
 	 * sliceVisibilityThreshold.
-	 * 
+	 *
 	 * @param pieResidueSliceLabel
 	 */
 	public void setPieResidueSliceLabel(final String pieResidueSliceLabel)
@@ -182,11 +190,34 @@ public class XdevPieChartConfig extends AbstractXdevChartConfig implements Seria
 	
 	/**
 	 * An object that specifies the slice text style.
-	 * 
+	 *
 	 * @param pieSliceTextStyle
 	 */
 	public void setPieSliceTextStyle(final TextStyle pieSliceTextStyle)
 	{
 		this.pieSliceTextStyle = pieSliceTextStyle;
 	}
+	
+	
+	/**
+	 * @return the pieStartAngle
+	 */
+	public Integer getPieStartAngle()
+	{
+		return this.pieStartAngle;
+	}
+	
+	
+	/**
+	 * The angle, in degrees, to rotate the chart by. The default of 0 will orient
+	 * the leftmost edge of the first slice directly up. <br>
+	 * 
+	 * @param pieStartAngle
+	 *            the pieStartAngle to set
+	 */
+	public void setPieStartAngle(final Integer pieStartAngle)
+	{
+		this.pieStartAngle = pieStartAngle;
+	}
+	
 }

@@ -31,6 +31,7 @@ window.com_xdev_charts_area_XdevAreaChart = function() {
 	    			lineWidth: state.config.lineWidth,
 	    			lineDashStyle: state.config.lineDashStyle,
 	    			chartArea: state.config.chartArea,
+	    			isStacked: state.config.isStacked,
 	    			hAxis: state.config.hAxis,
 	    			vAxis: state.config.vAxis
 	    	};

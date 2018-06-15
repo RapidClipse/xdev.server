@@ -22,6 +22,8 @@ package com.xdev.charts.bar;
 
 
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
@@ -41,8 +43,8 @@ public class XdevBarChartModel implements XdevChartModel
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
 	private final LinkedHashMap<String, Object>							categories	= new LinkedHashMap<>();
-
-
+	
+	
 	public XdevBarChartModel()
 	{
 		this.getDataTable().getColumns()
@@ -71,12 +73,47 @@ public class XdevBarChartModel implements XdevChartModel
 	public void addCategory(final String caption, final ColumnType type)
 	{
 		this.categories.put(caption,null);
-		this.getDataTable().getColumns().add(Column.create(caption.toLowerCase(),caption,type));
-		this.getDataTable().getColumns()
-				.add(Column.DataRoleColumn(ColumnType.STRING,DataRoleType.ANNOTATION));
+		
+		final List<Column> columns = this.getDataTable().getColumns();
+		
+		if(columns.isEmpty())
+		{
+			final Column valueColumn = Column.create(caption.toLowerCase(),caption,type);
+			final Column dataRoleColumn = Column.DataRoleColumn(ColumnType.STRING,
+					DataRoleType.ANNOTATION);
+			this.getDataTable().getColumns().add(valueColumn);
+			this.getDataTable().getColumns().add(dataRoleColumn);
+		}
+		else
+		{
+			final Optional<Column> item = columns.stream()
+					.filter(column -> column.getLabel().equals(caption)).findFirst();
+			
+			if(!item.isPresent())
+			{
+				final Column valueColumn = Column.create(caption.toLowerCase(),caption,type);
+				final Column dataRoleColumn = Column.DataRoleColumn(ColumnType.STRING,
+						DataRoleType.ANNOTATION);
+				this.getDataTable().getColumns().add(valueColumn);
+				this.getDataTable().getColumns().add(dataRoleColumn);
+			}
+		}
+		
 	}
-
-
+	
+	
+	public void addHiddenCategory(final String caption, final ColumnType type)
+	{
+		this.getDataTable().getColumns().add(Column.create(caption.toLowerCase(),"hidden",type));
+	}
+	
+	
+	public void addItem(final String group, final String category, final Object value)
+	{
+		this.addItem(group,category,value,"");
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public void addItem(final String group, final String category, final Object value,
 			final String barCaption)
@@ -86,9 +123,10 @@ public class XdevBarChartModel implements XdevChartModel
 			final Object[] insertValues = new Object[2];
 			insertValues[0] = value;
 			insertValues[1] = barCaption;
-			
+
 			final LinkedHashMap<String, Object> v = (LinkedHashMap<String, Object>)this.categories
 					.clone();
+			
 			v.put(category,insertValues);
 			this.data.put(group,v);
 		}
@@ -97,8 +135,9 @@ public class XdevBarChartModel implements XdevChartModel
 			final Object[] insertValues = new Object[2];
 			insertValues[0] = value;
 			insertValues[1] = barCaption;
-			
+
 			final LinkedHashMap<String, Object> v = this.data.get(group);
+			
 			v.put(category,insertValues);
 			this.data.put(group,v);
 		}

@@ -23,6 +23,7 @@ package com.xdev.charts.pie;
 
 import com.vaadin.annotations.JavaScript;
 import com.xdev.charts.AbstractXdevChart;
+import com.xdev.charts.DataTable;
 import com.xdev.charts.XdevChart;
 import com.xdev.charts.XdevChartModel;
 
@@ -67,10 +68,16 @@ public class XdevPieChart extends AbstractXdevChart implements XdevChart
 	{
 		final XdevPieChartModel pieModel = (XdevPieChartModel)model;
 
+		final DataTable table = new DataTable();
+		table.setColumns(pieModel.getDataTable().getColumns());
+		table.setRows(pieModel.getDataTable().getRows());
+
 		this.chartModel = pieModel;
 		
-		this.getState().setDataTable(pieModel.getDataTable());
+		this.getState().setDataTable(table);
 		this.getState().setSlices(pieModel.getSlices());
+		
+		this.triggerJavaScriptRefresh();
 	}
 
 

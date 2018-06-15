@@ -29,7 +29,7 @@ import com.xdev.charts.Column;
 import com.xdev.charts.ColumnType;
 import com.xdev.charts.DataTable;
 import com.xdev.charts.XdevChartModel;
-import com.xdev.charts.config.Series;
+import com.xdev.charts.config.XdevSeries;
 
 
 /**
@@ -41,7 +41,7 @@ public class XdevComboChartModel implements XdevChartModel
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
 	private final LinkedHashMap<String, Object>							categories	= new LinkedHashMap<>();
-	private final List<Series>											seriesList	= new ArrayList<>();
+	private final List<XdevSeries>											seriesList	= new ArrayList<>();
 	
 	
 	public XdevComboChartModel()
@@ -69,13 +69,13 @@ public class XdevComboChartModel implements XdevChartModel
 	}
 	
 	
-	public List<Series> getSeries()
+	public List<XdevSeries> getSeries()
 	{
 		return this.seriesList;
 	}
 	
 	
-	public void addCategory(final String caption, final Series series)
+	public void addCategory(final String caption, final XdevSeries series)
 	{
 		this.categories.put(caption,null);
 		this.getDataTable().getColumns()

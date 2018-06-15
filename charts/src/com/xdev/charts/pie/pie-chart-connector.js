@@ -13,6 +13,7 @@ window.com_xdev_charts_pie_XdevPieChart = function() {
 	var data;
 	var view;
 	var options;
+	var col = state.dataTable.columns;
 	
 	google.charts.load('current', {packages: ['corechart']});
 	google.charts.setOnLoadCallback(function(div, state, connector) {
@@ -43,7 +44,7 @@ window.com_xdev_charts_pie_XdevPieChart = function() {
 			
 	    	data = new google.visualization.DataTable(
 	    		{
-	    			cols: state.dataTable.columns,
+	    			cols: col,
 	    			rows: state.dataTable.rows
 	    		}
 	    	)
@@ -92,19 +93,16 @@ window.com_xdev_charts_pie_XdevPieChart = function() {
 	    	};
 	    	
 	    	element.refresh = function() {
-	    		console.log("-------------------------------------------");
-	    		console.log("Aktion!!!");
+	    		
 	    		data = new google.visualization.DataTable(
 	    				{
-	    					cols: state.dataTable.columns,
+	    					cols: col,
 	    					rows: state.dataTable.rows
 	    				}
 	    			)
 	    			
 	    		view = new google.visualization.DataView(data);
-	    		console.log(state);
-	    		console.log(state.dataTable.columns);
-	    		var index = state.dataTable.columns.map(function (icol) { return icol.id; }).indexOf('id');
+	    		var index = col.map(function (icol) { return icol.id; }).indexOf('id');
 	    		
 	    		if(index >= 0)
 	    		{
@@ -112,6 +110,7 @@ window.com_xdev_charts_pie_XdevPieChart = function() {
 	    		}
 
 	    		chart.draw(view, options);
+	    		
 	    	};
 	    	
 	    	element.printImage = function() {

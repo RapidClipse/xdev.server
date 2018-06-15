@@ -23,6 +23,7 @@ package com.xdev.charts.bar;
 
 import com.vaadin.annotations.JavaScript;
 import com.xdev.charts.AbstractXdevChart;
+import com.xdev.charts.DataTable;
 import com.xdev.charts.Row;
 import com.xdev.charts.XdevChart;
 import com.xdev.charts.XdevChartModel;
@@ -63,14 +64,21 @@ public class XdevBarChart extends AbstractXdevChart implements XdevChart
 	@Override
 	public void setModel(final XdevChartModel model)
 	{
+		final DataTable table = new DataTable();
+		
+		model.getDataTable().getColumns().forEach(column -> {
+			table.getColumns().add(column);
+		});
 		
 		Row.createFromHashmap(model.getData()).forEach(row -> {
-			model.getDataTable().getRows().add(row);
+			table.getRows().add(row);
 		});
-
+		
 		this.chartModel = model;
 
-		this.getState().setDataTable(model.getDataTable());
+		this.getState().setDataTable(table);
+		
+		this.triggerJavaScriptRefresh();
 	}
 	
 	
@@ -79,30 +87,7 @@ public class XdevBarChart extends AbstractXdevChart implements XdevChart
 	{
 		if(this.chartModel != null)
 		{
-			this.getState().setDataTable(this.chartModel.getDataTable());
-
 			this.triggerJavaScriptRefresh();
 		}
-	}
-
-
-	// FIXME wieder entfernen
-	public void test(final XdevChartModel model)
-	{
-		// if(model != null)
-		// {
-		// final DataTable dataTable = model.getDataTable();
-		//
-		// model.getColumns().forEach(column -> {
-		// dataTable.getColumns().add(column);
-		// });
-		//
-		// Row.createFromHashmap(model.getData()).forEach(row -> {
-		// dataTable.getRows().add(row);
-		// });
-		//
-		// this.getState().setDataTable(dataTable);
-		// this.triggerJavaScriptRefresh();
-		// }
 	}
 }

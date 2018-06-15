@@ -28,7 +28,7 @@ import java.io.Serializable;
  * @author XDEV Software
  *
  */
-public class Series implements Serializable
+public class XdevSeries implements Serializable
 {
 	private String	type			= "line";
 	private String	color;

@@ -81,8 +81,6 @@ window.com_xdev_charts_bar_XdevBarChart = function() {
 	    	};
 	    	
 	    	element.refresh = function() {
-	    		console.log("-------------------------------------------");
-	    		console.log("Aktion!!!");
 	    		data = new google.visualization.DataTable(
 	    				{
 	    					cols: state.dataTable.columns,
@@ -91,8 +89,6 @@ window.com_xdev_charts_bar_XdevBarChart = function() {
 	    			)
 	    			
 	    		view = new google.visualization.DataView(data);
-	    		console.log(state);
-	    		console.log(state.dataTable.columns);
 	    		var index = state.dataTable.columns.map(function (icol) { return icol.id; }).indexOf('id');
 	    		
 	    		if(index >= 0)

@@ -25,7 +25,7 @@ import java.util.List;
 
 import com.vaadin.shared.ui.JavaScriptComponentState;
 import com.xdev.charts.DataTable;
-import com.xdev.charts.config.Series;
+import com.xdev.charts.config.XdevSeries;
 
 
 /**
@@ -36,7 +36,7 @@ public class ComboChartComponentState extends JavaScriptComponentState
 {
 	private XdevComboChartConfig	config;
 	private DataTable				dataTable;
-	private List<Series>			series;
+	private List<XdevSeries>			series;
 
 
 	public XdevComboChartConfig getConfig()
@@ -66,7 +66,7 @@ public class ComboChartComponentState extends JavaScriptComponentState
 	/**
 	 * @return the series
 	 */
-	public List<Series> getSeries()
+	public List<XdevSeries> getSeries()
 	{
 		return this.series;
 	}
@@ -76,7 +76,7 @@ public class ComboChartComponentState extends JavaScriptComponentState
 	 * @param series
 	 *            the series to set
 	 */
-	public void setSeries(final List<Series> series)
+	public void setSeries(final List<XdevSeries> series)
 	{
 		this.series = series;
 	}

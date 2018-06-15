@@ -49,9 +49,48 @@ window.com_xdev_charts_map_XdevMapChart = function() {
 	    	chart = new google.visualization.Map(document.getElementById(div));		
 	    	chart.draw(view, options);
 	       
-	        $('#' + div).resize(function(e) {
-	        	chart.draw(view, options);
-	        });
+	    	window.addEventListener('resize', function() {
+	    		chart.draw(view, options);
+	    	});
+	    	
+	    	var element = document.getElementById(div);
+	    	element.config = function() {
+	    		options = 
+	    		{
+	    				mapType: state.config.mapType,
+						enableScrollWheel: state.config.enableScrollWheel,
+						zoomLevel: state.config.zoomLevel,
+						useMapTypeControl: state.config.useMapTypeControl,
+						showLine: state.config.showLine,
+						lineColor: state.config.lineColor,
+						lineWidth: state.config.lineWidth
+	    		};
+
+	    		chart.draw(view, options);
+	    	};
+	    	
+	    	element.refresh = function() {
+	    		data = new google.visualization.DataTable(
+	    				{
+	    					cols: state.dataTable.columns,
+	    					rows: state.dataTable.rows
+	    				}
+	    			)
+	    			
+	    		view = new google.visualization.DataView(data);
+	    		var index = state.dataTable.columns.map(function (icol) { return icol.id; }).indexOf('id');
+	    		
+	    		if(index >= 0)
+	    		{
+	    			view.hideColumns([index]);
+	    		}
+
+	    		chart.draw(view, options);
+	    	};
+	    	
+	    	element.printImage = function() {
+	    		connector.print_success(chart.getImageURI());
+	    	};
 	        
 	        google.visualization.events.addListener(chart, 'select', selectHandler);
 		}
@@ -74,39 +113,4 @@ window.com_xdev_charts_map_XdevMapChart = function() {
 			}
 		}
 	}
-
-	$('#' + chart_div[0].id).bind('refresh', function() {
-		data = new google.visualization.DataTable(
-				{
-					cols: state.dataTable.columns,
-					rows: state.dataTable.rows
-				}
-			)
-			
-		view = new google.visualization.DataView(data);
-	
-		var index = state.dataTable.columns.map(function (icol) { return icol.id; }).indexOf('id');
-		
-		if(index >= 0)
-		{
-			view.hideColumns([index]);
-		}
-
-		chart.draw(view, options);
-	});
-
-	$('#' + chart_div[0].id).bind('config', function() {
-		options = 
-		{
-				title: state.config.title,
-				titleTextStyle: state.config.titleTextStyle,
-				mapType: state.config.mapType
-		};
-
-		chart.draw(view, options);
-	});
-	
-	$('#' + chart_div[0].id).bind('printImage', function() {		
-		connector.print_success(chart.getImageURI());
-	});
 }

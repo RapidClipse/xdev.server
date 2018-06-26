@@ -117,40 +117,7 @@ public abstract class AbstractXdevChart extends AbstractJavaScriptComponent impl
 	}
 	
 	
-	public void triggerJavaScriptRefresh()
-	{
-		if(this.divId != null)
-		{
-			final String action = "document.getElementById('" + this.divId + "').refresh();";
-
-			com.vaadin.ui.JavaScript.getCurrent().execute(action);
-		}
-	}
-
-
-	public void triggerJavaScriptConfigRefresh()
-	{
-		if(this.divId != null)
-		{
-			final String action = "document.getElementById('" + this.divId + "').config();";
-
-			com.vaadin.ui.JavaScript.getCurrent().execute(action);
-		}
-	}
-
-
-	public void triggerJavaScriptColumnRefresh()
-	{
-		if(this.divId != null)
-		{
-			final String action = "document.getElementById('" + this.divId + "').column();";
-
-			com.vaadin.ui.JavaScript.getCurrent().execute(action);
-		}
-	}
-
-
-
+	
 	public interface ValueChangeListener extends Serializable
 	{
 		void valueChange(JsonArray arguments);

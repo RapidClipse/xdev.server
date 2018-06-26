@@ -37,15 +37,15 @@ import com.xdev.charts.XdevChartModel;
  */
 public class XdevBubbleChartModel implements XdevChartModel
 {
-
+	
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
-	
-	
+
+
 	public XdevBubbleChartModel(final String xColumnCaption, final String yColumnCaption,
 			final String groupCaption, final String sizeCaption)
 	{
-		this.getDataTable().getColumns().add(Column.create("id","ID",ColumnType.STRING));
+		this.getDataTable().getColumns().add(Column.create("caption","Caption",ColumnType.STRING));
 		this.getDataTable().getColumns()
 				.add(Column.create(xColumnCaption.toLowerCase(),xColumnCaption,ColumnType.NUMBER));
 		this.getDataTable().getColumns()
@@ -55,8 +55,8 @@ public class XdevBubbleChartModel implements XdevChartModel
 		this.getDataTable().getColumns()
 				.add(Column.create(sizeCaption.toLowerCase(),sizeCaption,ColumnType.NUMBER));
 	}
-	
-	
+
+
 	@Override
 	public DataTable getDataTable()
 	{
@@ -66,15 +66,15 @@ public class XdevBubbleChartModel implements XdevChartModel
 		}
 		return this.dataTable;
 	}
-	
-	
+
+
 	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
 		return this.data;
 	}
-	
-	
+
+
 	public void addItem(final String caption, final Double x, final Double y, final String group,
 			final Double size)
 	{

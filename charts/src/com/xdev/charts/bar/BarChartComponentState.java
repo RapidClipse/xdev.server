@@ -35,26 +35,26 @@ public class BarChartComponentState extends JavaScriptComponentState
 
 	private XdevBarChartConfig	config;
 	private DataTable			dataTable;
-	
-	
+
+
 	public XdevBarChartConfig getConfig()
 	{
 		return this.config;
 	}
-	
-	
+
+
 	public void setConfig(final XdevBarChartConfig config)
 	{
 		this.config = config;
 	}
-	
-	
+
+
 	public DataTable getDataTable()
 	{
 		return this.dataTable;
 	}
-	
-	
+
+
 	public void setDataTable(final DataTable dataTable)
 	{
 		this.dataTable = dataTable;

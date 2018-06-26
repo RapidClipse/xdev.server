@@ -36,53 +36,36 @@ import com.xdev.charts.XdevChartModel;
 @JavaScript({"stepped-chart.js","stepped-chart-connector.js"})
 public class XdevSteppedAreaChart extends AbstractXdevChart implements XdevChart
 {
-	
-	private XdevChartModel chartModel = null;
-	
-	
+
 	public XdevSteppedAreaChart()
 	{
 		super();
-
+		
 		this.getState().setConfig(new XdevSteppedAreaChartConfig());
 	}
-	
-	
+
+
 	@Override
 	protected SteppedAreaChartComponentState getState()
 	{
 		return (SteppedAreaChartComponentState)super.getState();
 	}
-	
-	
+
+
 	public void setConfig(final XdevSteppedAreaChartConfig config)
 	{
 		this.getState().setConfig(config);
 	}
-	
-	
+
+
 	@Override
 	public void setModel(final XdevChartModel model)
 	{
 		Row.createFromHashmap(model.getData()).forEach(row -> {
 			model.getDataTable().getRows().add(row);
 		});
-
-		this.chartModel = model;
-
+		
 		this.getState().setDataTable(model.getDataTable());
-	}
-	
-	
-	@Override
-	public void refresh()
-	{
-		if(this.chartModel != null)
-		{
-			this.getState().setDataTable(this.chartModel.getDataTable());
-
-			this.triggerJavaScriptRefresh();
-		}
 	}
 
 }

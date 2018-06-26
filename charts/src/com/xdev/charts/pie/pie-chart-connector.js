@@ -13,15 +13,54 @@ window.com_xdev_charts_pie_XdevPieChart = function() {
 	var data;
 	var view;
 	var options;
-	var col = state.dataTable.columns;
+	var columns;
+	
+	this.onStateChange = function() 
+	{
+		if(typeof state.dataTable != 'undefined')
+		{
+			createAndDrawChart(this.getState());
+		}		
+    };
 	
 	google.charts.load('current', {packages: ['corechart']});
 	google.charts.setOnLoadCallback(function(div, state, connector) {
 		
 		return function()
 		{
+			chart = new google.visualization.PieChart(document.getElementById(chart_div[0].id));
+			
+			if(typeof state.dataTable != 'undefined')
+			{
+				createAndDrawChart(state);
+			}
+	       
+	    	window.addEventListener('resize', function() {
+	    		chart.draw(view, options);
+	    	});
+	    	
+	    	var element = document.getElementById(div);
+	    	
+	    	element.printImage = function() {
+	    		connector.print_success(chart.getImageURI());
+	    	};
+	    	
+	        google.visualization.events.addListener(chart, 'select', selectHandler);
+		}
+		
+	}(chart_div[0].id, state, connector));
+	
+	function createAndDrawChart(state)
+	{	
+		if(typeof state.dataTable.columns != 'undefined')
+		{
+			columns = state.dataTable.columns;
+		}
+		
+		if(typeof chart != 'undefined')
+		{
 			options = 
-	    	{
+			{
 					title: state.config.title,
 					titleTextStyle: state.config.titleTextStyle,
 					is3D: state.config.is3D,
@@ -40,88 +79,27 @@ window.com_xdev_charts_pie_XdevPieChart = function() {
 					slices: state.slices,
 					tooltip: state.config.tooltip,
 					pieStartAngle: state.config.pieStartAngle
-	    	};
+			};
 			
-	    	data = new google.visualization.DataTable(
-	    		{
-	    			cols: col,
-	    			rows: state.dataTable.rows
-	    		}
-	    	)
-	    	
-	    	view = new google.visualization.DataView(data);
-	    	var values = state.dataTable.columns.map(function (icol) { return icol.label; });
-		    var indices = getAllIndexes(values, 'hidden');
-
-		    if(indices.length > 0)
-		    {
-		    	view.hideColumns(indices);
-		    }
-	    	
-	    	chart = new google.visualization.PieChart(document.getElementById(div));		
-	    	chart.draw(view, options);
-	       
-	    	window.addEventListener('resize', function() {
-	    		chart.draw(view, options);
-	    	});
-	    	
-	    	var element = document.getElementById(div);
-	    	element.config = function() {
-	    		options = 
-	    		{
-	    				title: state.config.title,
-	    				titleTextStyle: state.config.titleTextStyle,
-	    				is3D: state.config.is3D,
-	    				pieHole: state.config.pieHole,
-	    				backgroundColor: state.config.backgroundColor,
-	    				fontName: state.config.fontName,
-	    				fontSize: state.config.fontSize,
-	    				pieSliceText: state.config.pieSliceText,
-	    				pieSliceTextStyle: state.config.pieSliceTextStyle,
-	    				legend: state.config.legend,
-	    				chartArea: state.config.chartArea,
-	    				pieSliceBorderColor: state.config.pieSliceBorderColor,
-	    				sliceVisibilityThreshold: state.config.sliceVisibilityThreshold,
-	    				pieResidueSliceColor: state.config.pieResidueSliceColor,
-	    				pieResidueSliceLabel: state.config.pieResidueSliceLabel,
-	    				slices: state.slices,
-	    				tooltip: state.config.tooltip,
-	    				pieStartAngle: state.config.pieStartAngle
-	    		};
-
-	    		chart.draw(view, options);
-	    	};
-	    	
-	    	element.refresh = function() {
-	    		
-	    		data = new google.visualization.DataTable(
-	    				{
-	    					cols: col,
-	    					rows: state.dataTable.rows
-	    				}
-	    			)
-	    			
-	    		view = new google.visualization.DataView(data);
-	    		var index = col.map(function (icol) { return icol.id; }).indexOf('id');
-	    		
-	    		if(index >= 0)
-	    		{
-	    			view.hideColumns([index]);
-	    		}
-
-	    		chart.draw(view, options);
-	    		
-	    	};
-	    	
-	    	element.printImage = function() {
-	    		connector.print_success(chart.getImageURI());
-	    	};
-	    	
-	        google.visualization.events.addListener(chart, 'select', selectHandler);
+			data = new google.visualization.DataTable(
+					{
+						cols: columns,
+						rows: state.dataTable.rows
+					}
+				)
+				
+			view = new google.visualization.DataView(data);
+			var index = columns.map(function (icol) { return icol.id; }).indexOf('id');
+			
+			if(index >= 0)
+			{
+				view.hideColumns([index]);
+			}
+			
+			chart.draw(view, options);
 		}
-		
-	}(chart_div[0].id, state, connector));
-
+	}
+	
 	function selectHandler() {
 		var selection = chart.getSelection();
 
@@ -131,9 +109,29 @@ window.com_xdev_charts_pie_XdevPieChart = function() {
 		
 			if (item.row != null)
 			{
-				var json = translateToJSON(state, item, data);
+				var json = translatePieToJSON(state, item, data);
 				connector.select(json);
 			}
 		}
+	}
+	
+	function translatePieToJSON(state, item, data) {
+		var columnLength = col.length;
+		
+		var resultMap = new Map();
+		
+		for(cIndex = 0; cIndex < columnLength; cIndex++) {
+			var colCaption = col[cIndex].id;
+			var colIndex = col.map(function (icol) { return icol.id; }).indexOf(colCaption);
+			var colType = col[colIndex].type;
+			var colValue = data.getValue(item.row, colIndex);
+			
+			if(colCaption != "role")
+			{
+				resultMap.set(colCaption, colValue);
+			}
+		}
+		
+		return strMapToObj(resultMap);
 	}
 }

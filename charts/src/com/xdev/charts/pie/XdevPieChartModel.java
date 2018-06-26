@@ -48,9 +48,8 @@ public class XdevPieChartModel implements XdevChartModel
 	
 	public XdevPieChartModel()
 	{
-
-		this.getDataTable().getColumns().add(Column.create("x","x",ColumnType.STRING));
-		this.getDataTable().getColumns().add(Column.create("y","y",ColumnType.NUMBER));
+		this.getDataTable().getColumns().add(Column.create("caption","caption",ColumnType.STRING));
+		this.getDataTable().getColumns().add(Column.create("value","value",ColumnType.NUMBER));
 	}
 
 

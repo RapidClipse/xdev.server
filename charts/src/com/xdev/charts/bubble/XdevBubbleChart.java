@@ -23,6 +23,7 @@ package com.xdev.charts.bubble;
 
 import com.vaadin.annotations.JavaScript;
 import com.xdev.charts.AbstractXdevChart;
+import com.xdev.charts.DataTable;
 import com.xdev.charts.XdevChart;
 import com.xdev.charts.XdevChartModel;
 
@@ -35,49 +36,41 @@ import com.xdev.charts.XdevChartModel;
 @JavaScript({"bubble-chart.js","bubble-chart-connector.js"})
 public class XdevBubbleChart extends AbstractXdevChart implements XdevChart
 {
-	
-	private XdevChartModel chartModel = null;
-	
-	
+
 	public XdevBubbleChart()
 	{
 		super();
 		this.getState().setConfig(new XdevBubbleChartConfig());
 	}
-	
-	
+
+
 	@Override
 	protected BubbleChartComponentState getState()
 	{
 		return (BubbleChartComponentState)super.getState();
 	}
-	
-	
+
+
 	public void setConfig(final XdevBubbleChartConfig config)
 	{
 		this.getState().setConfig(config);
 	}
-	
-	
+
+
 	@Override
 	public void setModel(final XdevChartModel model)
 	{
-
-		this.chartModel = model;
-
-		this.getState().setDataTable(model.getDataTable());
+		final DataTable table = new DataTable();
+		
+		model.getDataTable().getColumns().forEach(column -> {
+			table.getColumns().add(column);
+		});
+		
+		model.getDataTable().getRows().forEach(row -> {
+			table.getRows().add(row);
+		});
+		
+		this.getState().setDataTable(table);
 	}
 	
-	
-	@Override
-	public void refresh()
-	{
-		if(this.chartModel != null)
-		{
-			this.getState().setDataTable(this.chartModel.getDataTable());
-
-			this.triggerJavaScriptRefresh();
-		}
-	}
-
 }

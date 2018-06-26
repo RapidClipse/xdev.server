@@ -36,65 +36,47 @@ import com.xdev.charts.XdevChartModel;
 public class XdevMapChart extends AbstractXdevChart implements XdevChart
 {
 	
-	private XdevChartModel chartModel = null;
-	
-	
 	public XdevMapChart()
+	{
+		super();
+
+		this.getState().setConfig(new XdevMapChartConfig());
+		this.getState().setMapsApiKey("");
+	}
+	
+	
+	public XdevMapChart(final String apiKey)
 	{
 		super();
 		
 		this.getState().setConfig(new XdevMapChartConfig());
-		this.getState().setMapsApiKey("");
-	}
-
-
-	public XdevMapChart(final String apiKey)
-	{
-		super();
-
-		this.getState().setConfig(new XdevMapChartConfig());
 		this.getState().setMapsApiKey(apiKey);
 	}
-	
-	
+
+
 	@Override
 	protected MapChartComponentState getState()
 	{
 		return (MapChartComponentState)super.getState();
 	}
-	
-	
+
+
 	public void setConfig(final XdevMapChartConfig config)
 	{
 		this.getState().setConfig(config);
 	}
-	
-	
+
+
 	public void setApiKey(final String apiKey)
 	{
 		this.getState().setMapsApiKey(apiKey);
 	}
-	
-	
+
+
 	@Override
 	public void setModel(final XdevChartModel model)
 	{
-
-		this.chartModel = model;
-
 		this.getState().setDataTable(model.getDataTable());
-	}
-	
-	
-	@Override
-	public void refresh()
-	{
-		if(this.chartModel != null)
-		{
-			this.getState().setDataTable(this.chartModel.getDataTable());
-
-			this.triggerJavaScriptRefresh();
-		}
 	}
 
 }

@@ -36,14 +36,10 @@ import com.xdev.charts.XdevChartModel;
 @JavaScript({"pie-chart.js","pie-chart-connector.js"})
 public class XdevPieChart extends AbstractXdevChart implements XdevChart
 {
-
-	private XdevPieChartModel chartModel = null;
-
-
 	public XdevPieChart()
 	{
 		super();
-		
+
 		this.getState().setConfig(new XdevPieChartConfig());
 	}
 	
@@ -58,8 +54,6 @@ public class XdevPieChart extends AbstractXdevChart implements XdevChart
 	public void setConfig(final XdevPieChartConfig config)
 	{
 		this.getState().setConfig(config);
-
-		this.triggerJavaScriptConfigRefresh();
 	}
 
 
@@ -71,25 +65,8 @@ public class XdevPieChart extends AbstractXdevChart implements XdevChart
 		final DataTable table = new DataTable();
 		table.setColumns(pieModel.getDataTable().getColumns());
 		table.setRows(pieModel.getDataTable().getRows());
-
-		this.chartModel = pieModel;
 		
 		this.getState().setDataTable(table);
 		this.getState().setSlices(pieModel.getSlices());
-		
-		this.triggerJavaScriptRefresh();
 	}
-
-
-	@Override
-	public void refresh()
-	{
-		if(this.chartModel != null)
-		{
-			this.getState().setDataTable(this.chartModel.getDataTable());
-			
-			this.triggerJavaScriptRefresh();
-		}
-	}
-
 }

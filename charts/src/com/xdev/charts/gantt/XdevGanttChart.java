@@ -36,48 +36,30 @@ import com.xdev.charts.XdevChartModel;
 public class XdevGanttChart extends AbstractXdevChart implements XdevChart
 {
 	
-	private XdevChartModel chartModel = null;
-	
-	
 	public XdevGanttChart()
 	{
 		super();
-
+		
 		this.getState().setConfig(new XdevGanttChartConfig());
 	}
-	
-	
+
+
 	@Override
 	protected GanttChartComponentState getState()
 	{
 		return (GanttChartComponentState)super.getState();
 	}
-	
-	
+
+
 	public void setConfig(final XdevGanttChartConfig config)
 	{
 		this.getState().setConfig(config);
 	}
-	
-	
+
+
 	@Override
 	public void setModel(final XdevChartModel model)
 	{
-		this.chartModel = model;
-
+		this.getState().setDataTable(model.getDataTable());
 	}
-	
-	
-	@Override
-	public void refresh()
-	{
-		if(this.chartModel != null)
-		{
-			this.getState().setDataTable(this.chartModel.getDataTable());
-
-			this.triggerJavaScriptRefresh();
-		}
-
-	}
-	
 }

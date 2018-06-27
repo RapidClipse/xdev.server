@@ -35,50 +35,32 @@ import com.xdev.charts.XdevChartModel;
 @JavaScript({"org-chart.js","org-chart-connector.js"})
 public class XdevOrgChart extends AbstractXdevChart implements XdevChart
 {
-
-	private XdevChartModel chartModel = null;
-	
 	
 	public XdevOrgChart()
 	{
 		super();
-
+		
 		this.getState().setConfig(new XdevOrgChartConfig());
 	}
-	
-	
+
+
 	@Override
 	protected OrgChartComponentState getState()
 	{
 		return (OrgChartComponentState)super.getState();
 	}
-	
-	
+
+
 	public void setConfig(final XdevOrgChartConfig config)
 	{
 		this.getState().setConfig(config);
 	}
-	
-	
+
+
 	@Override
 	public void setModel(final XdevChartModel model)
 	{
-
-		this.chartModel = model;
-
 		this.getState().setDataTable(model.getDataTable());
-	}
-	
-	
-	@Override
-	public void refresh()
-	{
-		if(this.chartModel != null)
-		{
-			this.getState().setDataTable(this.chartModel.getDataTable());
-			
-			this.triggerJavaScriptRefresh();
-		}
 	}
 
 }

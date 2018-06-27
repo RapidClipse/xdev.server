@@ -38,9 +38,6 @@ import com.xdev.charts.XdevChartModel;
 public class XdevBarChart extends AbstractXdevChart implements XdevChart
 {
 
-	private XdevChartModel chartModel = null;
-	
-	
 	public XdevBarChart()
 	{
 		super();
@@ -65,7 +62,7 @@ public class XdevBarChart extends AbstractXdevChart implements XdevChart
 	public void setModel(final XdevChartModel model)
 	{
 		final DataTable table = new DataTable();
-		
+
 		model.getDataTable().getColumns().forEach(column -> {
 			table.getColumns().add(column);
 		});
@@ -74,20 +71,7 @@ public class XdevBarChart extends AbstractXdevChart implements XdevChart
 			table.getRows().add(row);
 		});
 		
-		this.chartModel = model;
-
 		this.getState().setDataTable(table);
-		
-		this.triggerJavaScriptRefresh();
 	}
 	
-	
-	@Override
-	public void refresh()
-	{
-		if(this.chartModel != null)
-		{
-			this.triggerJavaScriptRefresh();
-		}
-	}
 }

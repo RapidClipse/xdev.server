@@ -35,50 +35,31 @@ import com.xdev.charts.XdevChartModel;
 @JavaScript({"timeline-chart.js","timeline-chart-connector.js"})
 public class XdevTimelineChart extends AbstractXdevChart implements XdevChart
 {
-	
-	private XdevChartModel chartModel = null;
-	
-	
 	public XdevTimelineChart()
 	{
 		super();
-
+		
 		this.getState().setConfig(new XdevTimelineChartConfig());
 	}
-	
-	
+
+
 	@Override
 	protected TimelineChartComponentState getState()
 	{
 		return (TimelineChartComponentState)super.getState();
 	}
-	
-	
+
+
 	public void setConfig(final XdevTimelineChartConfig config)
 	{
 		this.getState().setConfig(config);
 	}
-	
-	
+
+
 	@Override
 	public void setModel(final XdevChartModel model)
 	{
-
-		this.chartModel = model;
-
 		this.getState().setDataTable(model.getDataTable());
 	}
 	
-	
-	@Override
-	public void refresh()
-	{
-		if(this.chartModel != null)
-		{
-			this.getState().setDataTable(this.chartModel.getDataTable());
-
-			this.triggerJavaScriptRefresh();
-		}
-	}
-
 }

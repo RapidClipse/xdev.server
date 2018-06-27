@@ -39,8 +39,8 @@ public class XdevBarChartConfig extends AbstractXdevChartConfig implements Seria
 	private HAxis	hAxis;
 	private VAxis	vAxis;
 	private boolean	isStacked	= false;
-	
-	
+
+
 	public XdevBarChartConfig()
 	{
 		this.subtitle = "";

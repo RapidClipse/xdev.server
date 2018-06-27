@@ -41,15 +41,15 @@ public class XdevComboChart extends AbstractXdevChart implements XdevChart
 		super();
 		this.getState().setConfig(new XdevComboChartConfig());
 	}
-
-
+	
+	
 	@Override
 	protected ComboChartComponentState getState()
 	{
 		return (ComboChartComponentState)super.getState();
 	}
-	
-	
+
+
 	public void setConfig(final XdevComboChartConfig config)
 	{
 		if(config != null)
@@ -57,27 +57,18 @@ public class XdevComboChart extends AbstractXdevChart implements XdevChart
 			this.getState().setConfig(config);
 		}
 	}
-
-
+	
+	
 	@Override
 	public void setModel(final XdevChartModel model)
 	{
 		final XdevComboChartModel combo = (XdevComboChartModel)model;
-		
+
 		Row.createFromHashmap(combo.getData()).forEach(row -> {
 			combo.getDataTable().getRows().add(row);
 		});
-
+		
 		this.getState().setDataTable(combo.getDataTable());
 		this.getState().setSeries(combo.getSeries());
 	}
-
-
-	@Override
-	public void refresh()
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

@@ -37,59 +37,42 @@ import com.xdev.charts.XdevChartModel;
 @JavaScript({"line-chart.js","line-chart-connector.js"})
 public class XdevLineChart extends AbstractXdevChart implements XdevChart
 {
-
-	private XdevChartModel chartModel = null;
-	
 	
 	public XdevLineChart()
 	{
 		super();
-
+		
 		this.getState().setConfig(new XdevLineChartConfig());
 	}
-	
-	
+
+
 	@Override
 	protected LineChartComponentState getState()
 	{
 		return (LineChartComponentState)super.getState();
 	}
-	
-	
+
+
 	public void setConfig(final XdevLineChartConfig config)
 	{
 		this.getState().setConfig(config);
 	}
-	
-	
+
+
 	@Override
 	public void setModel(final XdevChartModel model)
 	{
 		final DataTable table = new DataTable();
-
+		
 		model.getDataTable().getColumns().forEach(column -> {
 			table.getColumns().add(column);
 		});
-
+		
 		Row.createFromHashmap(model.getData()).forEach(row -> {
 			table.getRows().add(row);
 		});
-
-		this.chartModel = model;
 		
 		this.getState().setDataTable(table);
+	}
 
-		this.triggerJavaScriptRefresh();
-	}
-	
-	
-	@Override
-	public void refresh()
-	{
-		if(this.chartModel != null)
-		{
-			this.triggerJavaScriptRefresh();
-		}
-	}
-	
 }

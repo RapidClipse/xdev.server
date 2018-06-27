@@ -13,69 +13,34 @@ window.com_xdev_charts_timeline_XdevTimelineChart = function() {
 	var data;
 	var view;
 	var options;
+	var columns;
+	
+	this.onStateChange = function() 
+	{
+		if(typeof state.dataTable != 'undefined')
+		{
+			createAndDrawChart(this.getState());
+		}	
+    };
 		
 	google.charts.load('current', {packages: ['timeline']});
 	google.charts.setOnLoadCallback(function(div, state, connector) {
 		
 		return function()
 		{
-			options = 
-	    	{
-					timeline: state.config.timeline
-	    	};
+			chart = new google.visualization.Timeline(document.getElementById(div));
 			
-	    	 data = new google.visualization.DataTable(
-	    		{
-	    			cols: state.dataTable.columns,
-	    			rows: state.dataTable.rows
-	    		}
-	    	)
-	    	    	 
-	    	view = new google.visualization.DataView(data);
-	    	var values = state.dataTable.columns.map(function (icol) { return icol.label; });
-	    	var indices = getAllIndexes(values, 'hidden');
-
-	    	if(indices.length > 0)
-	    	{
-	    		view.hideColumns(indices);
-	    	}
-	    	
-	    	chart = new google.visualization.Timeline(document.getElementById(div));		
-	    	chart.draw(view, options);
+			if(typeof state.dataTable != 'undefined')
+			{
+				createAndDrawChart(state);
+			}
 	       
 	    	window.addEventListener('resize', function() {
 	    		chart.draw(view, options);
 	    	});
 	    	
 	    	var element = document.getElementById(div);
-	    	element.config = function() {
-	    		options = 
-	    		{
-	    				timeline: state.config.timeline
-	    		};
 
-	    		chart.draw(view, options);
-	    	};
-	    	
-	    	element.refresh = function() {
-	    		data = new google.visualization.DataTable(
-	    				{
-	    					cols: state.dataTable.columns,
-	    					rows: state.dataTable.rows
-	    				}
-	    			)
-	    			
-	    		view = new google.visualization.DataView(data);
-	    		var index = state.dataTable.columns.map(function (icol) { return icol.id; }).indexOf('id');
-	    		
-	    		if(index >= 0)
-	    		{
-	    			view.hideColumns([index]);
-	    		}
-
-	    		chart.draw(view, options);
-	    	};
-	    	
 	    	element.printImage = function() {
 	    		connector.print_success(chart.getImageURI());
 	    	};
@@ -85,6 +50,39 @@ window.com_xdev_charts_timeline_XdevTimelineChart = function() {
 		}
 
 	}(chart_div[0].id, state, connector));
+	
+	function createAndDrawChart(state)
+	{	
+		if(typeof state.dataTable.columns != 'undefined')
+		{
+			columns = state.dataTable.columns;
+		}
+		
+		if(typeof chart != 'undefined')
+		{
+			options = 
+			{
+					timeline: state.config.timeline
+			};
+			
+			data = new google.visualization.DataTable(
+					{
+						cols: columns,
+						rows: state.dataTable.rows
+					}
+				)
+				
+			view = new google.visualization.DataView(data);
+			var index = columns.map(function (icol) { return icol.id; }).indexOf('id');
+			
+			if(index >= 0)
+			{
+				view.hideColumns([index]);
+			}
+			
+			chart.draw(view, options);
+		}	
+	}
 
 	function selectHandler() {
 		var selection = chart.getSelection();

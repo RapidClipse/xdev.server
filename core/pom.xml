@@ -17,7 +17,7 @@
 	<parent>
 		<groupId>com.xdev-software</groupId>
 		<artifactId>xdev-server</artifactId>
-		<version>4.0.0-M20180625-SNAPSHOT</version>
+		<version>4.0.0-M20180626-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -27,7 +27,7 @@
 	<properties>
 		<shortName>core</shortName>
 		<vaadinVersion>8.4.3</vaadinVersion>
-		<hibernateVersion>5.2.17.Final</hibernateVersion>
+		<hibernateVersion>5.3.1.Final</hibernateVersion>
 	</properties>
 
 	<dependencies>

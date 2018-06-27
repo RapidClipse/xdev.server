@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>com.xdev-software</groupId>
 		<artifactId>xdev-server</artifactId>
-		<version>4.0.0-M20180625-SNAPSHOT</version>
+		<version>4.0.0-M20180626-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 

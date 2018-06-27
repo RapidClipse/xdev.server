@@ -21,8 +21,8 @@
 package com.xdev.ui;
 
 
-import com.vaadin.v7.data.Property;
-import com.vaadin.v7.ui.CheckBox;
+import com.vaadin.data.Property;
+import com.vaadin.ui.CheckBox;
 
 
 /**
@@ -32,13 +32,12 @@ import com.vaadin.v7.ui.CheckBox;
  * @author XDEV Software
  *
  */
-@SuppressWarnings("deprecation")
 public class XdevCheckBox extends CheckBox implements XdevField
 {
 	private final Extensions	extensions		= new Extensions();
 	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-	
-	
+
+
 	/**
 	 * Creates a new checkbox.
 	 */
@@ -46,8 +45,8 @@ public class XdevCheckBox extends CheckBox implements XdevField
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new checkbox with a caption and a set initial state.
 	 *
@@ -60,8 +59,8 @@ public class XdevCheckBox extends CheckBox implements XdevField
 	{
 		super(caption,initialState);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new checkbox that is connected to a boolean property.
 	 *
@@ -73,8 +72,8 @@ public class XdevCheckBox extends CheckBox implements XdevField
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new checkbox with a set caption.
 	 *
@@ -85,8 +84,8 @@ public class XdevCheckBox extends CheckBox implements XdevField
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -95,8 +94,8 @@ public class XdevCheckBox extends CheckBox implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -105,8 +104,8 @@ public class XdevCheckBox extends CheckBox implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -115,8 +114,8 @@ public class XdevCheckBox extends CheckBox implements XdevField
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

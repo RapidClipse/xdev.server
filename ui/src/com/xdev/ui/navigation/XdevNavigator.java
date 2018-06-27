@@ -52,24 +52,25 @@ import com.vaadin.ui.UI;
 public class XdevNavigator extends Navigator
 {
 	/**
-	 * Creates a navigator that is tracking the active view using URI fragments of
-	 * the {@link Page} containing the given UI and replacing the contents of a
-	 * {@link ComponentContainer} with the active view.
+	 * Creates a navigator that is tracking the active view using URI fragments
+	 * of the {@link Page} containing the given UI and replacing the contents of
+	 * a {@link ComponentContainer} with the active view.
 	 * <p>
 	 * All components of the container are removed each time before adding the
-	 * active {@link View}. Views must implement {@link Component} when using this
-	 * constructor.
+	 * active {@link View}. Views must implement {@link Component} when using
+	 * this constructor.
 	 * <p>
-	 * Navigation is automatically initiated after {@code UI.init()}Â if a navigator
-	 * was created. If at a later point changes are made to the navigator,
-	 * {@code navigator.navigateTo(navigator.getState())} may need to be explicitly
-	 * called to ensure the current view matches the navigation state.
+	 * Navigation is automatically initiated after {@code UI.init()}Â if a
+	 * navigator was created. If at a later point changes are made to the
+	 * navigator, {@code navigator.navigateTo(navigator.getState())} may need to
+	 * be explicitly called to ensure the current view matches the navigation
+	 * state.
 	 *
 	 * @param ui
 	 *            The UI to which this Navigator is attached.
 	 * @param container
-	 *            The ComponentContainer whose contents should be replaced with the
-	 *            active view on view change
+	 *            The ComponentContainer whose contents should be replaced with
+	 *            the active view on view change
 	 */
 	public XdevNavigator(final UI ui, final ComponentContainer container)
 	{
@@ -80,19 +81,20 @@ public class XdevNavigator extends Navigator
 	/**
 	 * Creates a navigator.
 	 * <p>
-	 * When a custom navigation state manager is not needed, use one of the other
-	 * constructors which use a URI fragment based state manager.
+	 * When a custom navigation state manager is not needed, use one of the
+	 * other constructors which use a URI fragment based state manager.
 	 * <p>
-	 * Navigation is automatically initiated after {@code UI.init()}Â if a navigator
-	 * was created. If at a later point changes are made to the navigator,
-	 * {@code navigator.navigateTo(navigator.getState())} may need to be explicitly
-	 * called to ensure the current view matches the navigation state.
+	 * Navigation is automatically initiated after {@code UI.init()}Â if a
+	 * navigator was created. If at a later point changes are made to the
+	 * navigator, {@code navigator.navigateTo(navigator.getState())} may need to
+	 * be explicitly called to ensure the current view matches the navigation
+	 * state.
 	 *
 	 * @param ui
 	 *            The UI to which this Navigator is attached.
 	 * @param stateManager
-	 *            The NavigationStateManager keeping track of the active view and
-	 *            enabling bookmarking and direct navigation
+	 *            The NavigationStateManager keeping track of the active view
+	 *            and enabling bookmarking and direct navigation
 	 * @param display
 	 *            The ViewDisplay used to display the views handled by this
 	 *            navigator
@@ -105,16 +107,17 @@ public class XdevNavigator extends Navigator
 
 
 	/**
-	 * Creates a navigator that is tracking the active view using URI fragments of
-	 * the {@link Page} containing the given UI and replacing the contents of a
-	 * {@link SingleComponentContainer} with the active view.
+	 * Creates a navigator that is tracking the active view using URI fragments
+	 * of the {@link Page} containing the given UI and replacing the contents of
+	 * a {@link SingleComponentContainer} with the active view.
 	 * <p>
 	 * Views must implement {@link Component} when using this constructor.
 	 * <p>
-	 * Navigation is automatically initiated after {@code UI.init()}Â if a navigator
-	 * was created. If at a later point changes are made to the navigator,
-	 * {@code navigator.navigateTo(navigator.getState())} may need to be explicitly
-	 * called to ensure the current view matches the navigation state.
+	 * Navigation is automatically initiated after {@code UI.init()}Â if a
+	 * navigator was created. If at a later point changes are made to the
+	 * navigator, {@code navigator.navigateTo(navigator.getState())} may need to
+	 * be explicitly called to ensure the current view matches the navigation
+	 * state.
 	 *
 	 * @param ui
 	 *            The UI to which this Navigator is attached.
@@ -129,13 +132,14 @@ public class XdevNavigator extends Navigator
 
 
 	/**
-	 * Creates a navigator that is tracking the active view using URI fragments of
-	 * the {@link Page} containing the given UI.
+	 * Creates a navigator that is tracking the active view using URI fragments
+	 * of the {@link Page} containing the given UI.
 	 * <p>
-	 * Navigation is automatically initiated after {@code UI.init()}Â if a navigator
-	 * was created. If at a later point changes are made to the navigator,
-	 * {@code navigator.navigateTo(navigator.getState())} may need to be explicitly
-	 * called to ensure the current view matches the navigation state.
+	 * Navigation is automatically initiated after {@code UI.init()}Â if a
+	 * navigator was created. If at a later point changes are made to the
+	 * navigator, {@code navigator.navigateTo(navigator.getState())} may need to
+	 * be explicitly called to ensure the current view matches the navigation
+	 * state.
 	 *
 	 * @param ui
 	 *            The UI to which this Navigator is attached.
@@ -155,8 +159,9 @@ public class XdevNavigator extends Navigator
 	public void navigateTo(final String navigationState)
 	{
 		/*
-		 * UI#doInit initialized the navigator with its default state. If no view is set
-		 * the state is null and an IllegalArgumentException is thrown.
+		 * UI#doInit initialized the navigator with its default state. If no
+		 * view is set the state is null and an IllegalArgumentException is
+		 * thrown.
 		 */
 		if(navigationState != null)
 		{

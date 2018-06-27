@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
-import com.vaadin.v7.data.util.BeanItem;
+import com.vaadin.data.util.BeanItem;
 import com.xdev.ui.entitycomponent.BeanComponent;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.util.DTOUtils;
@@ -45,21 +45,20 @@ import com.xdev.util.DTOUtils;
  * @author XDEV Software
  * @since 3.0
  */
-@SuppressWarnings("deprecation")
 public class LazyMasterDetailConnection<M, D> extends BeanComponentsMasterDetailConnection<M, D>
 {
 	protected Function<M, Collection<? extends D>> masterToDetail;
-
-
+	
+	
 	public LazyMasterDetailConnection(final BeanComponent<M> master, final BeanComponent<D> detail,
 			final Function<M, Collection<? extends D>> masterToDetail)
 	{
 		super(master,detail);
-
+		
 		this.masterToDetail = masterToDetail;
 	}
-
-
+	
+	
 	@Override
 	protected void masterValueChanged()
 	{
@@ -78,13 +77,13 @@ public class LazyMasterDetailConnection<M, D> extends BeanComponentsMasterDetail
 			Logger.getLogger(LazyMasterDetailConnection.class).error(e);
 		}
 	}
-
-
+	
+	
 	@Override
 	public void disconnect()
 	{
 		this.masterToDetail = null;
-
+		
 		super.disconnect();
 	}
 }

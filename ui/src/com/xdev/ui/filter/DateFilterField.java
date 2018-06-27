@@ -25,21 +25,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.ui.PopupDateField;
 
 
 /**
  * @author XDEV Software
- * 
+ * 		
  */
-@SuppressWarnings("deprecation")
 public class DateFilterField extends PopupDateField implements FilterField<Date>
 {
 	protected final List<FilterFieldChangeListener>	listeners	= new ArrayList<>();
 	protected Object								filterValue;
-	
-	
+													
+													
 	public DateFilterField()
 	{
 		setImmediate(true);
@@ -47,41 +46,41 @@ public class DateFilterField extends PopupDateField implements FilterField<Date>
 		addStyleName(XdevContainerFilterComponent.FILTER_EDITOR_CLASS);
 		addValueChangeListener(event -> fireFilterFieldChanged(getConvertedValue()));
 	}
-	
-	
+
+
 	@Override
 	public void addFilterFieldChangeListener(final FilterFieldChangeListener l)
 	{
 		this.listeners.add(l);
 	}
-	
-	
+
+
 	@Override
 	public void removeFilterFieldChangeListener(final FilterFieldChangeListener l)
 	{
 		this.listeners.remove(l);
 	}
-
-
+	
+	
 	protected void fireFilterFieldChanged(final Object filterValue)
 	{
 		this.filterValue = filterValue;
-
+		
 		final FilterFieldChangeEvent event = new FilterFieldChangeEvent(this,filterValue);
 		for(final FilterFieldChangeListener l : this.listeners)
 		{
 			l.filterFieldChanged(event);
 		}
 	}
-
-
+	
+	
 	@Override
 	public Object getFilterValue()
 	{
 		return this.filterValue;
 	}
-	
-	
+
+
 	@Override
 	public void setFilterValue(final Object filterValue)
 	{

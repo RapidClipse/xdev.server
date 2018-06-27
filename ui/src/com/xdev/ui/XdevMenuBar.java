@@ -216,18 +216,19 @@ public class XdevMenuBar extends MenuBar implements XdevComponent
 		}
 
 
-		// @Override
-		// public boolean isReadOnly()
-		// {
-		// return !isEnabled();
-		// }
-		//
-		//
-		// @Override
-		// public void setReadOnly(final boolean readOnly)
-		// {
-		// setEnabled(!readOnly);
-		// }
+		@Override
+		public boolean isReadOnly()
+		{
+			return !isEnabled();
+		}
+
+
+		@Override
+		public void setReadOnly(final boolean readOnly)
+		{
+			setEnabled(!readOnly);
+		}
+
 
 		/**
 		 * {@inheritDoc}

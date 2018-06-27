@@ -27,9 +27,9 @@ import java.util.Map;
 
 import javax.persistence.metamodel.Attribute;
 
+import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
-import com.vaadin.v7.ui.AbstractField;
-import com.vaadin.v7.ui.AbstractSelect;
 import com.xdev.dal.DAOs;
 import com.xdev.ui.XdevField;
 import com.xdev.ui.persistence.GuiPersistenceEntry;
@@ -37,101 +37,101 @@ import com.xdev.util.JPAMetaDataUtils;
 import com.xdev.util.ReflectionUtils;
 
 
-@SuppressWarnings({"rawtypes","deprecation"})
+@SuppressWarnings("rawtypes")
 public abstract class AbstractFieldHandler<C extends AbstractField>
 		extends AbstractComponentHandler<C>
 {
 	protected static final String KEY_VALUE = "value";
-
-
+	
+	
 	protected static boolean persistFieldValue(final Component component)
 	{
 		if(component instanceof XdevField)
 		{
 			return ((XdevField)component).isPersistValue();
 		}
-
+		
 		return true;
 	}
-
-
-
+	
+	
+	
 	public final static class IdEntry
 	{
 		private Class<?>	entityType;
 		private Class<?>	idType;
 		private Object		id;
-
-
+		
+		
 		public IdEntry()
 		{
 		}
-
-
+		
+		
 		public IdEntry(final Class<?> entityType, final Class<?> idType, final Object id)
 		{
 			this.entityType = entityType;
 			this.idType = idType;
 			this.id = id;
 		}
-
-
+		
+		
 		public Class<?> getEntityType()
 		{
 			return this.entityType;
 		}
-
-
+		
+		
 		public void setEntityType(final Class<?> entityType)
 		{
 			this.entityType = entityType;
 		}
-
-
+		
+		
 		public Class<?> getIdType()
 		{
 			return this.idType;
 		}
-
-
+		
+		
 		public void setIdType(final Class<?> idType)
 		{
 			this.idType = idType;
 		}
-
-
+		
+		
 		public Object getId()
 		{
 			return this.id;
 		}
-
-
+		
+		
 		public void setId(final Object id)
 		{
 			this.id = id;
 		}
 	}
-
-
+	
+	
 	@Override
 	protected void addEntryValues(final Map<String, Object> entryValues, final C component)
 	{
 		super.addEntryValues(entryValues,component);
-
+		
 		if(persistFieldValue(component))
 		{
 			entryValues.put(KEY_VALUE,getFieldValueToStore(component.getValue()));
 		}
 	}
-
-
+	
+	
 	protected Object getFieldValueToStore(final Object value)
 	{
 		if(value == null)
 		{
 			return null;
 		}
-		
+
 		final Class<? extends Object> clazz = value.getClass();
 		if(clazz.isArray())
 		{
@@ -143,7 +143,7 @@ public abstract class AbstractFieldHandler<C extends AbstractField>
 			}
 			return array;
 		}
-
+		
 		if(JPAMetaDataUtils.isManaged(clazz))
 		{
 			final Attribute<?, ?> idAttribute = JPAMetaDataUtils.getIdAttribute(clazz);
@@ -153,31 +153,31 @@ public abstract class AbstractFieldHandler<C extends AbstractField>
 				return new IdEntry(clazz,id.getClass(),id);
 			}
 		}
-
+		
 		return value;
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void restore(final C component, final GuiPersistenceEntry entry)
 	{
 		super.restore(component,entry);
-
+		
 		if(persistFieldValue(component))
 		{
 			component.setValue(getFieldValueToRestore(component,entry.value(KEY_VALUE)));
 		}
 	}
-
-
+	
+	
 	protected Object getFieldValueToRestore(final C component, final Object value)
 	{
 		if(value == null)
 		{
 			return null;
 		}
-		
+
 		final Class<? extends Object> clazz = value.getClass();
 		if(clazz.isArray())
 		{
@@ -189,7 +189,7 @@ public abstract class AbstractFieldHandler<C extends AbstractField>
 			}
 			return array;
 		}
-		
+
 		if(value instanceof IdEntry)
 		{
 			final IdEntry idEntry = (IdEntry)value;
@@ -218,7 +218,7 @@ public abstract class AbstractFieldHandler<C extends AbstractField>
 					id = ((Number)id).floatValue();
 				}
 			}
-			
+
 			if(component instanceof AbstractSelect)
 			{
 				for(final Object existingItemId : ((AbstractSelect)component).getItemIds())
@@ -240,10 +240,10 @@ public abstract class AbstractFieldHandler<C extends AbstractField>
 					}
 				}
 			}
-			
+
 			return DAOs.getByEntityType(idEntry.entityType).find((Serializable)id);
 		}
-
+		
 		return value;
 	}
 }

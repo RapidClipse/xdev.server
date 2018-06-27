@@ -23,24 +23,23 @@ package com.xdev.ui.paging;
 
 import org.hibernate.ScrollableResults;
 
-import com.vaadin.v7.ui.AbstractSelect;
+import com.vaadin.ui.AbstractSelect;
 import com.xdev.ui.entitycomponent.UIModelProvider;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.util.KeyValueType;
 
 
-@SuppressWarnings("deprecation")
 public class PagingUIModelProvider<BEANTYPE> implements UIModelProvider<BEANTYPE>
 {
 	private final ScrollableResults results;
-
-
+	
+	
 	public PagingUIModelProvider(final ScrollableResults results)
 	{
 		this.results = results;
 	}
-
-
+	
+	
 	@Override
 	public XdevBeanContainer<BEANTYPE> getModel(final AbstractSelect component,
 			final Class<BEANTYPE> entityClass, final KeyValueType<?, ?>... nestedProperties)
@@ -51,11 +50,11 @@ public class PagingUIModelProvider<BEANTYPE> implements UIModelProvider<BEANTYPE
 		{
 			beanItemContainer.addNestedContainerProperty(keyValuePair.getKey().toString());
 		}
-
+		
 		return beanItemContainer;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

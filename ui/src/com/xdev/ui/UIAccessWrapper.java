@@ -39,31 +39,31 @@ import com.xdev.communication.XdevServletService;
  *
  * @see EntityManager
  * @see Conversation
- * 
+ * 		
  * @author XDEV Software
- * 
+ * 		
  */
 public class UIAccessWrapper implements Runnable
 {
 	private final Runnable runnable;
-
-
+	
+	
 	public UIAccessWrapper(final Runnable runnable)
 	{
 		this.runnable = runnable;
 	}
-
-
+	
+	
 	@Override
 	public void run()
 	{
 		final XdevServletService service = XdevServlet.getServlet().getService();
 		final VaadinSession session = UI.getCurrent().getSession();
-		
+
 		try
 		{
 			service.handleRequestStart(session);
-
+			
 			this.runnable.run();
 		}
 		finally

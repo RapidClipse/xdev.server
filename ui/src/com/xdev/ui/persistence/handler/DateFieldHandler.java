@@ -21,10 +21,9 @@
 package com.xdev.ui.persistence.handler;
 
 
-import com.vaadin.v7.ui.DateField;
+import com.vaadin.ui.DateField;
 
 
-@SuppressWarnings("deprecation")
 public class DateFieldHandler extends AbstractFieldHandler<DateField>
 {
 	@Override

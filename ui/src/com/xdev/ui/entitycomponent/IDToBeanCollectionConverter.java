@@ -28,21 +28,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import com.vaadin.v7.data.util.BeanItem;
-import com.vaadin.v7.data.util.converter.Converter;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.converter.Converter;
 import com.xdev.util.JPAEntityIDResolver;
 
 
 //TODO check if object as ID type is always suitable
-@SuppressWarnings("deprecation")
 public class IDToBeanCollectionConverter<T>
 		implements Converter<Set<T>, Collection<? extends Object>>
 {
 	private final XdevBeanContainer<T>	container;
 	private Collection<T>				beanCollection	= new ArrayList<T>();
 	private Collection<Object>			idCollection	= new HashSet<>();
-	
-	
+
+
 	/**
 	 *
 	 */
@@ -50,25 +49,25 @@ public class IDToBeanCollectionConverter<T>
 	{
 		this.container = container;
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Collection<? extends Object>> getModelType()
 	{
 		return (Class<Collection<? extends Object>>)this.idCollection.getClass();
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<Set<T>> getPresentationType()
 	{
 		return (Class<Set<T>>)this.beanCollection.getClass();
-		
+
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -90,7 +89,7 @@ public class IDToBeanCollectionConverter<T>
 		{
 			this.beanCollection = new HashSet<>();
 		}
-		
+
 		if(itemIds != null)
 		{
 			for(final Object itemId : itemIds)
@@ -103,15 +102,16 @@ public class IDToBeanCollectionConverter<T>
 			}
 			return this.beanCollection;
 		}
-		
+
 		return this.beanCollection;
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang
+	 * @see
+	 * com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang
 	 * .Object, java.lang.Class, java.util.Locale)
 	 */
 	@SuppressWarnings("unchecked")
@@ -126,14 +126,15 @@ public class IDToBeanCollectionConverter<T>
 			for(final Object bean : values)
 			{
 				/*
-				 * TODO rather make entity manager accessible within entitycontainer and use it
-				 * for this purpose
+				 * TODO rather make entity manager accessible within
+				 * entitycontainer and use it for this purpose
 				 */
-				final JPAEntityIDResolver idResolver = JPAEntityIDResolver.getInstance();
+				final JPAEntityIDResolver idResolver = JPAEntityIDResolver
+						.getInstance();
 				this.idCollection.add(idResolver.getEntityIDAttributeValue(bean));
 			}
 		}
 		return (Set<T>)this.idCollection;
 	}
-	
+
 }

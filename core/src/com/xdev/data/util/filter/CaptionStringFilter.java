@@ -23,18 +23,17 @@ package com.xdev.data.util.filter;
 
 import java.util.Objects;
 
-import com.vaadin.v7.data.Container.Filter;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.Property;
-import com.vaadin.v7.data.util.BeanItem;
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItem;
 import com.xdev.util.CaptionUtils;
 
 
 /**
  * @author XDEV Software
- * 
+ *		
  */
-@SuppressWarnings("deprecation")
 public class CaptionStringFilter implements Filter
 {
 	private final Object	propertyId;
@@ -43,8 +42,8 @@ public class CaptionStringFilter implements Filter
 	private final boolean	onlyMatchPrefix;
 	private final String	itemCaptionValue;
 	private int				hash	= 0;
-	
-	
+
+
 	public CaptionStringFilter(final Object propertyId, final String filterString,
 			final boolean ignoreCase, final boolean onlyMatchPrefix, final String itemCaptionValue)
 	{
@@ -54,8 +53,8 @@ public class CaptionStringFilter implements Filter
 		this.onlyMatchPrefix = onlyMatchPrefix;
 		this.itemCaptionValue = itemCaptionValue;
 	}
-	
-	
+
+
 	@Override
 	public boolean passesFilter(final Object itemId, final Item item)
 	{
@@ -64,7 +63,7 @@ public class CaptionStringFilter implements Filter
 		{
 			return false;
 		}
-		
+
 		if(this.onlyMatchPrefix)
 		{
 			if(!value.startsWith(this.filterString))
@@ -81,8 +80,8 @@ public class CaptionStringFilter implements Filter
 		}
 		return true;
 	}
-	
-	
+
+
 	private String getValue(final Item item)
 	{
 		String value = null;
@@ -98,7 +97,7 @@ public class CaptionStringFilter implements Filter
 				value = CaptionUtils.resolveCaption(bean);
 			}
 		}
-		
+
 		if(value == null)
 		{
 			final Property<?> p = item.getItemProperty(this.propertyId);
@@ -111,23 +110,23 @@ public class CaptionStringFilter implements Filter
 				}
 			}
 		}
-		
+
 		if(value == null)
 		{
 			return null;
 		}
-		
+
 		return this.ignoreCase ? value.toLowerCase() : value;
 	}
-	
-	
+
+
 	@Override
 	public boolean appliesToProperty(final Object propertyId)
 	{
 		return this.propertyId.equals(propertyId);
 	}
-	
-	
+
+
 	@Override
 	public boolean equals(final Object obj)
 	{
@@ -135,14 +134,14 @@ public class CaptionStringFilter implements Filter
 		{
 			return false;
 		}
-		
+
 		// Only ones of the objects of the same class can be equal
 		if(!(obj instanceof CaptionStringFilter))
 		{
 			return false;
 		}
 		final CaptionStringFilter other = (CaptionStringFilter)obj;
-		
+
 		// Checks the properties one by one
 		if(this.propertyId != other.propertyId && other.propertyId != null
 				&& !other.propertyId.equals(this.propertyId))
@@ -167,11 +166,11 @@ public class CaptionStringFilter implements Filter
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public int hashCode()
 	{
@@ -182,8 +181,8 @@ public class CaptionStringFilter implements Filter
 		}
 		return this.hash;
 	}
-	
-	
+
+
 	/**
 	 * Returns the property identifier to which this filter applies.
 	 *
@@ -193,13 +192,13 @@ public class CaptionStringFilter implements Filter
 	{
 		return this.propertyId;
 	}
-	
-	
+
+
 	/**
 	 * Returns the filter string.
 	 *
-	 * Note: this method is intended only for implementations of lazy string filters
-	 * and may change in the future.
+	 * Note: this method is intended only for implementations of lazy string
+	 * filters and may change in the future.
 	 *
 	 * @return filter string given to the constructor
 	 */
@@ -207,13 +206,13 @@ public class CaptionStringFilter implements Filter
 	{
 		return this.filterString;
 	}
-	
-	
+
+
 	/**
 	 * Returns whether the filter is case-insensitive or case-sensitive.
 	 *
-	 * Note: this method is intended only for implementations of lazy string filters
-	 * and may change in the future.
+	 * Note: this method is intended only for implementations of lazy string
+	 * filters and may change in the future.
 	 *
 	 * @return true if performing case-insensitive filtering, false for
 	 *         case-sensitive
@@ -222,14 +221,14 @@ public class CaptionStringFilter implements Filter
 	{
 		return this.ignoreCase;
 	}
-	
-	
+
+
 	/**
-	 * Returns true if the filter only applies to the beginning of the value string,
-	 * false for any location in the value.
+	 * Returns true if the filter only applies to the beginning of the value
+	 * string, false for any location in the value.
 	 *
-	 * Note: this method is intended only for implementations of lazy string filters
-	 * and may change in the future.
+	 * Note: this method is intended only for implementations of lazy string
+	 * filters and may change in the future.
 	 *
 	 * @return true if checking for matches at the beginning of the value only,
 	 *         false if matching any part of value

@@ -26,18 +26,17 @@ import java.util.List;
 
 import org.jsoup.nodes.Element;
 
+import com.vaadin.data.Container;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.declarative.DesignContext;
-import com.vaadin.v7.data.Container;
-import com.vaadin.v7.data.util.BeanItem;
-import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.v7.ui.ComboBox;
 import com.xdev.ui.entitycomponent.BeanComponent;
 import com.xdev.ui.entitycomponent.UIModelProvider;
 import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.paging.LazyLoadingUIModelProvider;
 
 
-@SuppressWarnings("deprecation")
 public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 		implements BeanComponent<BEANTYPE>
 {
@@ -46,32 +45,32 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	 */
 	private static final long	serialVersionUID	= 897703398940222936L;
 	private boolean				autoQueryData		= true;
-
-
+	
+	
 	public AbstractBeanComboBox()
 	{
 		super();
 	}
-	
-	
+
+
 	public AbstractBeanComboBox(final String caption)
 	{
 		super(caption);
 	}
-	
-	
+
+
 	public AbstractBeanComboBox(final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
 	}
-	
-	
+
+
 	public AbstractBeanComboBox(final String caption, final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -90,8 +89,8 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 			super.setContainerDataSource(newDataSource);
 		}
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -100,8 +99,8 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	{
 		return this.getBeanContainerDataSource().getItem(this.getValue());
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -112,8 +111,8 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 		list.add(getSelectedItem());
 		return list;
 	}
-
-
+	
+	
 	protected UIModelProvider<BEANTYPE> getModelProvider()
 	{
 		if(this.isAutoQueryData())
@@ -126,8 +125,8 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 			return new UIModelProvider.Implementation<BEANTYPE>();
 		}
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -138,8 +137,8 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	{
 		return this.autoQueryData;
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -150,13 +149,13 @@ public abstract class AbstractBeanComboBox<BEANTYPE> extends ComboBox
 	{
 		this.autoQueryData = autoQuery;
 	}
-
-
+	
+	
 	@Override
 	public void readDesign(final Element design, final DesignContext context)
 	{
 		setContainerDataSource(new IndexedContainer());
-
+		
 		super.readDesign(design,context);
 	}
 }

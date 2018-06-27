@@ -24,21 +24,20 @@ package com.xdev.ui.filter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.ui.CheckBox;
 
 
 /**
  * @author XDEV Software
- * 
+ * 		
  */
-@SuppressWarnings("deprecation")
 public class BooleanFilterField extends CheckBox implements FilterField<Boolean>
 {
 	protected final List<FilterFieldChangeListener>	listeners	= new ArrayList<>();
 	protected Object								filterValue;
-	
-	
+													
+													
 	public BooleanFilterField()
 	{
 		setImmediate(true);
@@ -46,41 +45,41 @@ public class BooleanFilterField extends CheckBox implements FilterField<Boolean>
 		addStyleName(ValoTheme.CHECKBOX_SMALL);
 		addStyleName(XdevContainerFilterComponent.FILTER_EDITOR_CLASS);
 	}
-
-
+	
+	
 	@Override
 	public void addFilterFieldChangeListener(final FilterFieldChangeListener l)
 	{
 		this.listeners.add(l);
 	}
-
-
+	
+	
 	@Override
 	public void removeFilterFieldChangeListener(final FilterFieldChangeListener l)
 	{
 		this.listeners.remove(l);
 	}
-
-
+	
+	
 	protected void fireFilterFieldChanged(final Object filterValue)
 	{
 		this.filterValue = filterValue;
-
+		
 		final FilterFieldChangeEvent event = new FilterFieldChangeEvent(this,filterValue);
 		for(final FilterFieldChangeListener l : this.listeners)
 		{
 			l.filterFieldChanged(event);
 		}
 	}
-
-
+	
+	
 	@Override
 	public Object getFilterValue()
 	{
 		return this.filterValue;
 	}
-
-
+	
+	
 	@Override
 	public void setFilterValue(final Object filterValue)
 	{

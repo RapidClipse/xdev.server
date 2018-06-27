@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.vaadin.v7.data.Container;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.util.converter.Converter;
-import com.vaadin.v7.ui.Table;
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.converter.Converter;
+import com.vaadin.ui.Table;
 
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -38,16 +38,15 @@ import net.sf.jasperreports.engine.JRDataSource;
  * @author XDEV Software
  *
  */
-@SuppressWarnings("deprecation")
 public interface TableDataSourceFactory
 {
 	public final static TableDataSourceFactory DEFAULT = new Default();
-	
-	
+
+
 	public JRDataSource createDataSource(final Table table, final List<Column> columns);
-	
-	
-	
+
+
+
 	public static class Default implements TableDataSourceFactory
 	{
 		@Override
@@ -55,31 +54,31 @@ public interface TableDataSourceFactory
 		{
 			final String[] columnNames = columns.stream().map(Column::getColumnHeader)
 					.toArray(String[]::new);
-			
+
 			final DRDataSource dataSource = new DRDataSource(columnNames);
-			
+
 			final Container container = table.getContainerDataSource();
 			final Locale locale = table.getLocale();
-			
+
 			for(final Object id : container.getItemIds())
 			{
 				dataSource.add(getFormattedValues(container.getItem(id),columns,locale));
 			}
-			
+
 			return dataSource;
 		}
-		
-		
+
+
 		protected Object[] getFormattedValues(final Item item, final List<Column> columns,
 				final Locale locale)
 		{
 			final List<Object> values = new ArrayList<>();
-			
+
 			for(final Column column : columns)
 			{
 				final Object propertyId = column.getPropertyID();
 				final Object value = item.getItemProperty(propertyId).getValue();
-				
+
 				final Converter<String, Object> converter = column.getConverter();
 				if(converter != null)
 				{
@@ -90,7 +89,7 @@ public interface TableDataSourceFactory
 					values.add(String.valueOf(value));
 				}
 			}
-			
+
 			return values.toArray();
 		}
 	}

@@ -37,8 +37,8 @@ public class FocusChangeEvent extends Component.Event
 	 * Identifier for event that can be used in {@link EventRouter}
 	 */
 	public static final String EVENT_ID = "focusChange";
-	
-	
+
+
 	/**
 	 * Creates a new focus change event.
 	 *

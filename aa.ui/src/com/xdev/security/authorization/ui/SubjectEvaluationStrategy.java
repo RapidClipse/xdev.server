@@ -22,7 +22,6 @@ package com.xdev.security.authorization.ui;
 
 
 import com.xdev.ui.XdevComponent;
-import com.xdev.ui.XdevField;
 
 
 /**
@@ -59,18 +58,15 @@ public interface SubjectEvaluationStrategy
 																};
 
 	/**
-	 * Default strategy which sets read only mode for the component depending on the
-	 * evaluation's result.
+	 * Default strategy which sets read only mode for the component depending on
+	 * the evaluation's result.
 	 */
 	public final static SubjectEvaluationStrategy	READ_ONLY	= (component, hasPermissions) -> {
-																	if(component instanceof XdevField)
+																	if(component
+																			.isReadOnly() == hasPermissions)
 																	{
-																		final XdevField field = (XdevField)component;
-																		if(field.isReadOnly() == hasPermissions)
-																		{
-																			field.setReadOnly(
-																					!hasPermissions);
-																		}
+																		component.setReadOnly(
+																				!hasPermissions);
 																	}
 																};
 
@@ -81,8 +77,8 @@ public interface SubjectEvaluationStrategy
 	 * @param component
 	 *            the component to change
 	 * @param hasPermissions
-	 *            <code>true</code> if the subject had all necessary permissions,
-	 *            <code>false</code> otherwise
+	 *            <code>true</code> if the subject had all necessary
+	 *            permissions, <code>false</code> otherwise
 	 */
 	public void subjectEvaluated(XdevComponent component, boolean hasPermissions);
 }

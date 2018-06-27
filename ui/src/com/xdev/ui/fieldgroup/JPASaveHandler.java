@@ -23,7 +23,7 @@ package com.xdev.ui.fieldgroup;
 
 import org.hibernate.StaleObjectStateException;
 
-import com.vaadin.v7.data.util.BeanItem;
+import com.vaadin.data.util.BeanItem;
 import com.xdev.dal.DAOs;
 import com.xdev.ui.XdevFieldGroup;
 
@@ -32,7 +32,6 @@ import com.xdev.ui.XdevFieldGroup;
  * @author XDEV Software
  * @since 3.2
  */
-@SuppressWarnings("deprecation")
 public class JPASaveHandler<T> implements SaveHandler<T>
 {
 	@Override
@@ -40,15 +39,15 @@ public class JPASaveHandler<T> implements SaveHandler<T>
 	{
 		final BeanItem<T> beanItem = fieldGroup.getItemDataSource();
 		final T bean = beanItem.getBean();
-
+		
 		try
 		{
 			final T persistentBean = DAOs.get(bean).save(bean);
-
+			
 			if(persistentBean != bean)
 			{
 				BeanItem<T> newItem = null;
-
+				
 				final BeanItemCreator<T> beanItemCreator = fieldGroup.getBeanItemCreator();
 				if(beanItemCreator != null)
 				{
@@ -60,7 +59,7 @@ public class JPASaveHandler<T> implements SaveHandler<T>
 				}
 				fieldGroup.setItemDataSource(newItem);
 			}
-
+			
 			return persistentBean;
 		}
 		catch(final StaleObjectStateException e)

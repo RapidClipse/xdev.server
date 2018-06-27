@@ -23,10 +23,10 @@ package com.xdev.ui.filter;
 
 import java.util.Date;
 
-import com.vaadin.v7.data.Container.Filter;
-import com.vaadin.v7.data.util.filter.Like;
-import com.vaadin.v7.data.util.filter.Not;
-import com.vaadin.v7.data.util.filter.Or;
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.util.filter.Like;
+import com.vaadin.data.util.filter.Not;
+import com.vaadin.data.util.filter.Or;
 import com.xdev.data.util.filter.Compare;
 import com.xdev.res.StringResourceUtils;
 
@@ -35,7 +35,6 @@ import com.xdev.res.StringResourceUtils;
  * @author XDEV Software
  *
  */
-@SuppressWarnings("deprecation")
 public interface FilterOperator
 {
 	public String getKey();
@@ -609,7 +608,7 @@ public interface FilterOperator
 				return null;
 			}
 
-			return new com.vaadin.v7.data.util.filter.Between(context.getPropertyId(),startValue,
+			return new com.vaadin.data.util.filter.Between(context.getPropertyId(),startValue,
 					endValue);
 		}
 	}

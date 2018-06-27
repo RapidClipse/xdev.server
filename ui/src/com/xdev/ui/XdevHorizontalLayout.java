@@ -27,7 +27,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.GridLayout.OutOfBoundsException;
 import com.vaadin.ui.GridLayout.OverlapsException;
-import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalLayout;
 
 
 /**
@@ -37,14 +37,13 @@ import com.vaadin.v7.ui.HorizontalLayout;
  * subcomponents in the order of their addition (horizontally).
  *
  * @author XDEV Software
- *
+ * 		
  */
-@SuppressWarnings("deprecation")
 public class XdevHorizontalLayout extends HorizontalLayout implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-	
-	
+
+
 	/**
 	 * Constructs an empty HorizontalLayout.
 	 */
@@ -52,11 +51,11 @@ public class XdevHorizontalLayout extends HorizontalLayout implements XdevCompon
 	{
 		super();
 	}
-	
-	
+
+
 	/**
-	 * Constructs a HorizontalLayout with the given components. The components are
-	 * added in the given order.
+	 * Constructs a HorizontalLayout with the given components. The components
+	 * are added in the given order.
 	 *
 	 * @see AbstractOrderedLayout#addComponents(Component...)
 	 *
@@ -67,17 +66,18 @@ public class XdevHorizontalLayout extends HorizontalLayout implements XdevCompon
 	{
 		super(children);
 	}
-	
+
+
 	// init defaults
 	{
 		setMargin(true);
 		setSpacing(true);
 	}
-	
-	
+
+
 	/**
-	 * Add a component into this container. The component is added to the right or
-	 * under the previous component.
+	 * Add a component into this container. The component is added to the right
+	 * or under the previous component.
 	 *
 	 * @param component
 	 *            the component to be added.
@@ -90,8 +90,8 @@ public class XdevHorizontalLayout extends HorizontalLayout implements XdevCompon
 		addComponent(component);
 		setComponentAlignment(component,alignment);
 	}
-	
-	
+
+
 	public void setExpandRatios(final float... ratios)
 	{
 		for(int i = 0; i < ratios.length; i++)
@@ -99,8 +99,8 @@ public class XdevHorizontalLayout extends HorizontalLayout implements XdevCompon
 			setExpandRatio(getComponent(i),ratios[i]);
 		}
 	}
-	
-	
+
+
 	public void addSpacer()
 	{
 		if(!hasExpandingComponent())
@@ -110,8 +110,8 @@ public class XdevHorizontalLayout extends HorizontalLayout implements XdevCompon
 			setExpandRatio(spacer,1f);
 		}
 	}
-	
-	
+
+
 	public boolean hasExpandingComponent()
 	{
 		for(int column = 0, columnCount = getComponentCount(); column < columnCount; column++)
@@ -121,12 +121,12 @@ public class XdevHorizontalLayout extends HorizontalLayout implements XdevCompon
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
-	
-	
+
+
+
 	protected static class Spacer extends CustomComponent
 	{
 		public Spacer()
@@ -134,8 +134,8 @@ public class XdevHorizontalLayout extends HorizontalLayout implements XdevCompon
 			setSizeFull();
 		}
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -144,8 +144,8 @@ public class XdevHorizontalLayout extends HorizontalLayout implements XdevCompon
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

@@ -29,7 +29,7 @@ import com.vaadin.ui.AbsoluteLayout;
  * positioning.
  *
  * @author XDEV Software
- *
+ * 		
  */
 public class XdevAbsoluteLayout extends AbsoluteLayout implements XdevComponent
 {
@@ -43,8 +43,8 @@ public class XdevAbsoluteLayout extends AbsoluteLayout implements XdevComponent
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -53,8 +53,8 @@ public class XdevAbsoluteLayout extends AbsoluteLayout implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

@@ -20,6 +20,7 @@
 
 package com.xdev.ui;
 
+
 /**
  * @author XDEV Software
  * @since 1.1
@@ -33,10 +34,4 @@ public interface XdevField extends XdevComponent
 
 
 	public boolean isPersistValue();
-	
-	
-	public boolean isReadOnly();
-	
-	
-	public void setReadOnly(boolean readOnly);
 }

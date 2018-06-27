@@ -21,10 +21,9 @@
 package com.xdev.ui.persistence.handler;
 
 
-import com.vaadin.v7.ui.AbstractTextField;
+import com.vaadin.ui.AbstractTextField;
 
 
-@SuppressWarnings("deprecation")
 public class AbstractTextFieldHandler extends AbstractFieldHandler<AbstractTextField>
 {
 	@Override

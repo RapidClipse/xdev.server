@@ -21,18 +21,17 @@
 package com.xdev.ui.hierarchical;
 
 
-import com.vaadin.v7.data.Container;
+import com.vaadin.data.Container;
 
 
 /**
  * @author XDEV Software
  * @since 1.1
  */
-@SuppressWarnings("deprecation")
 public interface DynamicHierarchicalContainer extends Container.Hierarchical
 {
 	public void preloadAll();
-	
-	
+
+
 	public boolean expand(final Object parentId);
 }

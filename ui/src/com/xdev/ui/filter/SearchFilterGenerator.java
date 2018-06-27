@@ -23,24 +23,23 @@ package com.xdev.ui.filter;
 
 import java.util.Arrays;
 
-import com.vaadin.v7.data.Container.Filter;
-import com.vaadin.v7.data.util.filter.Like;
-import com.vaadin.v7.data.util.filter.SimpleStringFilter;
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.util.filter.Like;
+import com.vaadin.data.util.filter.SimpleStringFilter;
 
 
 /**
  * @author XDEV Software
  *
  */
-@SuppressWarnings("deprecation")
 public interface SearchFilterGenerator
 {
 	public final static char SQL_WILDCARD = '%';
-	
-	
+
+
 	public Filter createSearchFilter(String searchText, FilterSettings settings);
-	
-	
+
+
 	public static String toPattern(final String value, final FilterSettings settings)
 	{
 		final char wildcard = settings.getWildcard();
@@ -58,9 +57,9 @@ public interface SearchFilterGenerator
 		}
 		return sb.toString();
 	}
-	
-	
-	
+
+
+
 	public static class Default implements SearchFilterGenerator
 	{
 		@Override
@@ -70,29 +69,29 @@ public interface SearchFilterGenerator
 			{
 				return null;
 			}
-			
+
 			final String[] words = searchText.split(" ");
-			
+
 			if(words.length == 1)
 			{
 				return createSingleWordSearchFilter(words[0],settings);
 			}
-			
+
 			return createMultiWordSearchFilter(words,settings);
 		}
-		
-		
+
+
 		protected Filter createSingleWordSearchFilter(final String word,
 				final FilterSettings settings)
 		{
 			final Filter[] propertyFilters = Arrays.stream(settings.getSearchableProperties())
 					.map(searchableProperty -> createWordFilter(word,searchableProperty,settings))
 					.toArray(Filter[]::new);
-			
+
 			return combinePropertyFilters(propertyFilters,settings);
 		}
-		
-		
+
+
 		protected Filter createMultiWordSearchFilter(final String[] words,
 				final FilterSettings settings)
 		{
@@ -102,11 +101,11 @@ public interface SearchFilterGenerator
 									.map(word -> createWordFilter(word,searchableProperty,settings))
 									.toArray(Filter[]::new)))
 					.toArray(Filter[]::new);
-			
+
 			return combinePropertyFilters(propertyFilters,settings);
 		}
-		
-		
+
+
 		protected Filter createWordFilter(final String word, final Object searchableProperty,
 				final FilterSettings settings)
 		{
@@ -115,12 +114,12 @@ public interface SearchFilterGenerator
 			{
 				return new Like(searchableProperty,pattern,settings.isCaseSensitive());
 			}
-			
+
 			return new SimpleStringFilter(searchableProperty,pattern,!settings.isCaseSensitive(),
 					settings.isPrefixMatchOnly());
 		}
-		
-		
+
+
 		protected Filter combinePropertyFilters(final Filter[] propertyFilters,
 				final FilterSettings settings)
 		{
@@ -128,12 +127,12 @@ public interface SearchFilterGenerator
 			{
 				return null;
 			}
-			
+
 			if(propertyFilters.length == 1)
 			{
 				return propertyFilters[0];
 			}
-			
+
 			return settings.getSearchPropertiesConnector().connect(propertyFilters);
 		}
 	}

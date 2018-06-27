@@ -21,8 +21,8 @@
 package com.xdev.ui;
 
 
-import com.vaadin.v7.data.Property;
-import com.vaadin.v7.ui.TextField;
+import com.vaadin.data.Property;
+import com.vaadin.ui.TextField;
 
 
 /**
@@ -36,20 +36,19 @@ import com.vaadin.v7.ui.TextField;
  * Since <code>TextField</code> extends <code>AbstractField</code> it implements
  * the {@link com.vaadin.data.Buffered} interface. A <code>TextField</code> is
  * in write-through mode by default, so
- * {@link com.vaadin.v7.ui.AbstractField#setWriteThrough(boolean)} must be
- * called to enable buffering.
+ * {@link com.vaadin.ui.AbstractField#setWriteThrough(boolean)} must be called
+ * to enable buffering.
  * </p>
  *
  * @author XDEV Software
  *
  */
-@SuppressWarnings("deprecation")
 public class XdevTextField extends TextField implements XdevField
 {
 	private final Extensions	extensions		= new Extensions();
 	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-	
-	
+												
+												
 	/**
 	 * Constructs an empty <code>TextField</code> with no caption.
 	 */
@@ -57,8 +56,8 @@ public class XdevTextField extends TextField implements XdevField
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a new <code>TextField</code> that's bound to the specified
 	 * <code>Property</code> and has no caption.
@@ -70,8 +69,8 @@ public class XdevTextField extends TextField implements XdevField
 	{
 		super(dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Constructs a new <code>TextField</code> that's bound to the specified
 	 * <code>Property</code> and has the given caption <code>String</code>.
@@ -85,14 +84,14 @@ public class XdevTextField extends TextField implements XdevField
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
-	 * Constructs a new <code>TextField</code> with the given caption and initial
-	 * text contents. The editor constructed this way will not be bound to a
-	 * Property unless
-	 * {@link com.vaadin.data.Property.Viewer#setPropertyDataSource(Property)} is
-	 * called to bind it.
+	 * Constructs a new <code>TextField</code> with the given caption and
+	 * initial text contents. The editor constructed this way will not be bound
+	 * to a Property unless
+	 * {@link com.vaadin.data.Property.Viewer#setPropertyDataSource(Property)}
+	 * is called to bind it.
 	 *
 	 * @param caption
 	 *            the caption <code>String</code> for the editor.
@@ -103,8 +102,8 @@ public class XdevTextField extends TextField implements XdevField
 	{
 		super(caption,value);
 	}
-	
-	
+
+
 	/**
 	 * Constructs an empty <code>TextField</code> with given caption.
 	 *
@@ -115,13 +114,14 @@ public class XdevTextField extends TextField implements XdevField
 	{
 		super(caption);
 	}
-	
+
+
 	// init defaults
 	{
 		setNullRepresentation("");
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -130,8 +130,8 @@ public class XdevTextField extends TextField implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -140,8 +140,8 @@ public class XdevTextField extends TextField implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -150,8 +150,8 @@ public class XdevTextField extends TextField implements XdevField
 	{
 		return this.persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

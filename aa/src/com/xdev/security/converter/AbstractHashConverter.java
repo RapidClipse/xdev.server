@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 
 import org.apache.shiro.codec.Hex;
 
-import com.vaadin.v7.data.util.converter.Converter;
+import com.vaadin.data.util.converter.Converter;
 import com.xdev.security.authentication.jpa.HashStrategy;
 
 
@@ -34,7 +34,6 @@ import com.xdev.security.authentication.jpa.HashStrategy;
  * @author XDEV Software
  * @since 3.1
  */
-@SuppressWarnings("deprecation")
 public class AbstractHashConverter implements Converter<String, String>
 {
 	private final Supplier<HashStrategy>	hashStrategySupplier;

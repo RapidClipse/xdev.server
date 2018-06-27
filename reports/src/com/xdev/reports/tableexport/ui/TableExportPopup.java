@@ -24,6 +24,9 @@ package com.xdev.reports.tableexport.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable.Unit;
@@ -31,14 +34,11 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.Align;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.Property;
-import com.vaadin.v7.data.util.converter.Converter;
-import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.v7.ui.Table;
-import com.vaadin.v7.ui.Table.Align;
-import com.vaadin.v7.ui.TextField;
 import com.xdev.reports.ExportType;
 import com.xdev.reports.ReportException;
 import com.xdev.reports.tableexport.Column;
@@ -62,7 +62,6 @@ import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.PageType;
 
 
-@SuppressWarnings("deprecation")
 public class TableExportPopup
 {
 	public static void show(final XdevTable<?> table)

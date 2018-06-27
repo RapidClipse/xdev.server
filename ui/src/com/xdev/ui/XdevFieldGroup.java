@@ -21,8 +21,8 @@
 package com.xdev.ui;
 
 
-import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.v7.data.util.BeanItem;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.util.BeanItem;
 import com.xdev.ui.fieldgroup.BeanItemCreator;
 import com.xdev.ui.fieldgroup.JPASaveHandler;
 import com.xdev.ui.fieldgroup.ObjectLockedException;
@@ -47,32 +47,31 @@ import com.xdev.util.JPAMetaDataUtils;
  * @author XDEV Software
  *
  */
-@SuppressWarnings("deprecation")
 public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 {
 	private final Class<T>		beanType;
-	
+
 	private BeanItemCreator<T>	beanItemCreator;
 	private SaveHandler<T>		saveHandler;
-	
-	
+
+
 	public XdevFieldGroup()
 	{
 		this(null);
 	}
-	
-	
+
+
 	/**
 	 * @param beanType
 	 */
 	public XdevFieldGroup(final Class<T> beanType)
 	{
 		super(beanType);
-		
+
 		this.beanType = beanType;
 	}
-	
-	
+
+
 	/**
 	 * @return the beanType
 	 * @since 3.2
@@ -81,8 +80,8 @@ public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 	{
 		return this.beanType;
 	}
-	
-	
+
+
 	/**
 	 * @param beanItemCreator
 	 *            the beanItemCreator to set
@@ -91,8 +90,8 @@ public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 	{
 		this.beanItemCreator = beanItemCreator;
 	}
-	
-	
+
+
 	/**
 	 * @return the beanItemCreator
 	 */
@@ -100,8 +99,8 @@ public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 	{
 		return this.beanItemCreator;
 	}
-	
-	
+
+
 	/**
 	 * @param saveHandler
 	 *            the saveHandler to set
@@ -111,8 +110,8 @@ public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 	{
 		this.saveHandler = saveHandler;
 	}
-	
-	
+
+
 	/**
 	 * @return the saveHandler
 	 * @since 3.2
@@ -121,8 +120,8 @@ public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 	{
 		return this.saveHandler;
 	}
-	
-	
+
+
 	public T save() throws com.xdev.ui.fieldgroup.CommitException, ObjectLockedException
 	{
 		try
@@ -133,32 +132,32 @@ public class XdevFieldGroup<T> extends BeanFieldGroup<T>
 		{
 			throw new com.xdev.ui.fieldgroup.CommitException(e);
 		}
-		
+
 		final BeanItem<T> beanItem = getItemDataSource();
 		final T bean = beanItem.getBean();
-		
+
 		final SaveHandler<T> saveHandler = lookupSaveHandler(bean);
 		if(saveHandler != null)
 		{
 			return saveHandler.save(this);
 		}
-		
+
 		return bean;
 	}
-	
-	
+
+
 	protected SaveHandler<T> lookupSaveHandler(final T bean)
 	{
 		if(this.saveHandler != null)
 		{
 			return this.saveHandler;
 		}
-		
+
 		if(JPAMetaDataUtils.isManaged(bean.getClass()))
 		{
 			return new JPASaveHandler<>();
 		}
-		
+
 		return null;
 	}
 }

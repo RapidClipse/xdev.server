@@ -33,25 +33,25 @@ import com.xdev.ui.util.UIUtils;
 
 public interface GuiPersistenceAnalyzer
 {
-	
+
 	public default GuiPersister createPersister(final String name, final Component root)
 	{
 		final Map<String, Component> map = new HashMap<>();
 		map.put(name,root);
 		return createPersister(map);
 	}
-	
-	
+
+
 	public GuiPersister createPersister(Map<String, Component> roots);
-	
-	
+
+
 	public static GuiPersistenceAnalyzer New()
 	{
 		return new Implementation();
 	}
-	
-	
-	
+
+
+
 	public static class Implementation implements GuiPersistenceAnalyzer
 	{
 		@Override
@@ -65,11 +65,11 @@ public interface GuiPersistenceAnalyzer
 						.collect(Collectors.toMap(c -> getIdentifier(c),c -> c));
 				entries.put(name,map);
 			});
-			
+
 			return GuiPersister.New(entries);
 		}
-		
-		
+
+
 		private String getIdentifier(final Component component)
 		{
 			final String identifier = componentIdentifier(component);
@@ -79,8 +79,8 @@ public interface GuiPersistenceAnalyzer
 			}
 			return identifier;
 		}
-		
-		
+
+
 		protected boolean persist(final Component component)
 		{
 			if(GuiPersistenceHandlerRegistry.getInstance().lookupHandler(component) == null)
@@ -90,14 +90,14 @@ public interface GuiPersistenceAnalyzer
 			final String identifier = componentIdentifier(component);
 			return identifier != null && identifier.length() > 0;
 		}
-		
-		
+
+
 		protected String componentIdentifier(final Component component)
 		{
 			return component.getId();
 		}
-		
-		
+
+
 		protected Collection<Component> collectComponents(final Component root)
 		{
 			final Collection<Component> collection = new HashSet<>();

@@ -21,23 +21,22 @@
 package com.xdev.ui;
 
 
-import com.vaadin.v7.data.Property;
-import com.vaadin.v7.ui.TextArea;
+import com.vaadin.data.Property;
+import com.vaadin.ui.TextArea;
 
 
 /**
  * A text field that supports multi line editing.
  *
  * @author XDEV Software
- * 
+ * 		
  */
-@SuppressWarnings("deprecation")
 public class XdevTextArea extends TextArea implements XdevField
 {
 	private final Extensions	extensions		= new Extensions();
 	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-	
-	
+												
+												
 	/**
 	 * Constructs an empty TextArea.
 	 */
@@ -45,8 +44,8 @@ public class XdevTextArea extends TextArea implements XdevField
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Constructs a TextArea with given property data source.
 	 *
@@ -57,8 +56,8 @@ public class XdevTextArea extends TextArea implements XdevField
 	{
 		super(dataSource);
 	}
-
-
+	
+	
 	/**
 	 * Constructs a TextArea with given caption and property data source.
 	 *
@@ -71,8 +70,8 @@ public class XdevTextArea extends TextArea implements XdevField
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * Constructs a TextArea with given caption and value.
 	 *
@@ -85,8 +84,8 @@ public class XdevTextArea extends TextArea implements XdevField
 	{
 		super(caption,value);
 	}
-
-
+	
+	
 	/**
 	 * Constructs an empty TextArea with given caption.
 	 *
@@ -97,8 +96,8 @@ public class XdevTextArea extends TextArea implements XdevField
 	{
 		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -107,8 +106,8 @@ public class XdevTextArea extends TextArea implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -117,8 +116,8 @@ public class XdevTextArea extends TextArea implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -127,8 +126,8 @@ public class XdevTextArea extends TextArea implements XdevField
 	{
 		return this.persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

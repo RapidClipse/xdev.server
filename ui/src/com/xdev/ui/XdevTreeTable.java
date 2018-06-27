@@ -21,11 +21,11 @@
 package com.xdev.ui;
 
 
-import com.vaadin.v7.data.Collapsible;
-import com.vaadin.v7.data.Container;
-import com.vaadin.v7.ui.Table;
-import com.vaadin.v7.ui.Tree;
-import com.vaadin.v7.ui.TreeTable;
+import com.vaadin.data.Collapsible;
+import com.vaadin.data.Container;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Tree;
+import com.vaadin.ui.TreeTable;
 
 
 /**
@@ -48,13 +48,12 @@ import com.vaadin.v7.ui.TreeTable;
  * @author XDEV Software
  *
  */
-@SuppressWarnings("deprecation")
 public class XdevTreeTable extends TreeTable implements XdevField
 {
 	private final Extensions	extensions		= new Extensions();
 	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-	
-	
+
+
 	/**
 	 * Creates an empty TreeTable with a default container.
 	 */
@@ -62,8 +61,8 @@ public class XdevTreeTable extends TreeTable implements XdevField
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a TreeTable instance with given captions and data source.
 	 *
@@ -76,8 +75,8 @@ public class XdevTreeTable extends TreeTable implements XdevField
 	{
 		super(caption,dataSource);
 	}
-	
-	
+
+
 	/**
 	 * Creates an empty TreeTable with a default container.
 	 *
@@ -88,8 +87,8 @@ public class XdevTreeTable extends TreeTable implements XdevField
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -98,8 +97,8 @@ public class XdevTreeTable extends TreeTable implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -108,8 +107,8 @@ public class XdevTreeTable extends TreeTable implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -118,8 +117,8 @@ public class XdevTreeTable extends TreeTable implements XdevField
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

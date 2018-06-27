@@ -21,9 +21,9 @@
 package com.xdev.ui.filter;
 
 
-import com.vaadin.v7.data.Container.Filter;
-import com.vaadin.v7.data.util.filter.And;
-import com.vaadin.v7.data.util.filter.Or;
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.util.filter.And;
+import com.vaadin.data.util.filter.Or;
 
 
 /**
@@ -31,7 +31,6 @@ import com.vaadin.v7.data.util.filter.Or;
  *
  * @since 3.2.1
  */
-@SuppressWarnings("deprecation")
 public enum Connector
 {
 	AND
@@ -42,7 +41,7 @@ public enum Connector
 			return new And(filters);
 		}
 	},
-
+	
 	OR
 	{
 		@Override
@@ -51,6 +50,6 @@ public enum Connector
 			return new Or(filters);
 		}
 	};
-
+	
 	abstract Filter connect(Filter... filters);
 }

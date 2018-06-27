@@ -40,25 +40,25 @@ import com.xdev.ui.persistence.GuiPersistence;
 public class XdevView extends CustomComponent implements View, XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-
-
+	
+	
 	/**
 	 *
 	 */
 	public XdevView()
 	{
 		super();
-
+		
 		setSizeFull();
 	}
-
-
+	
+	
 	public void setContent(final Component c)
 	{
 		setCompositionRoot(c);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -66,8 +66,8 @@ public class XdevView extends CustomComponent implements View, XdevComponent
 	public void enter(final ViewChangeEvent event)
 	{
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -76,8 +76,8 @@ public class XdevView extends CustomComponent implements View, XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,11 +86,11 @@ public class XdevView extends CustomComponent implements View, XdevComponent
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
-	 * Persists the state of all components in this view and returns the serialized
-	 * data which can be stored in an arbitrary location.
+	 * Persists the state of all components in this view and returns the
+	 * serialized data which can be stored in an arbitrary location.
 	 * <p>
 	 * This state can be restored with {@link #restoreState(String)}
 	 *
@@ -101,8 +101,8 @@ public class XdevView extends CustomComponent implements View, XdevComponent
 	{
 		return GuiPersistence.save(this,getClass().getName());
 	}
-
-
+	
+	
 	/**
 	 * Restores a previously saved state.
 	 *
@@ -115,8 +115,8 @@ public class XdevView extends CustomComponent implements View, XdevComponent
 	{
 		GuiPersistence.load(this,getClass().getName(),data);
 	}
-
-
+	
+	
 	@Override
 	public void readDesign(final Element design, final DesignContext designContext)
 	{
@@ -124,8 +124,8 @@ public class XdevView extends CustomComponent implements View, XdevComponent
 		super.readDesign(design,designContext);
 		readDesignChildren(design.children(),designContext);
 	}
-
-
+	
+	
 	protected void readDesignChildren(final Elements children, final DesignContext context)
 	{
 		if(children.size() > 1)
@@ -138,8 +138,8 @@ public class XdevView extends CustomComponent implements View, XdevComponent
 			setCompositionRoot(context.readDesign(children.first()));
 		}
 	}
-
-
+	
+	
 	@Override
 	public void writeDesign(final Element design, final DesignContext designContext)
 	{

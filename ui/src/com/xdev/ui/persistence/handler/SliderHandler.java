@@ -21,10 +21,9 @@
 package com.xdev.ui.persistence.handler;
 
 
-import com.vaadin.v7.ui.Slider;
+import com.vaadin.ui.Slider;
 
 
-@SuppressWarnings("deprecation")
 public class SliderHandler extends AbstractFieldHandler<Slider>
 {
 	@Override

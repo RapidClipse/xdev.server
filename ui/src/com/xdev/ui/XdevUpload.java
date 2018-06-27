@@ -21,7 +21,7 @@
 package com.xdev.ui;
 
 
-import com.vaadin.v7.ui.Upload;
+import com.vaadin.ui.Upload;
 
 
 /**
@@ -55,19 +55,18 @@ import com.vaadin.v7.ui.Upload;
  * button.
  *
  * <p>
- * Note! Because of browser dependent implementations of <input type="file">
- * element, setting size for Upload component is not supported. For some
- * browsers setting size may work to some extend.
+ * Note! Because of browser dependent implementations of
+ * <input type="file"> element, setting size for Upload component is not
+ * supported. For some browsers setting size may work to some extend.
  *
  * @author XDEV Software
- * 
+ *		
  */
-@SuppressWarnings("deprecation")
 public class XdevUpload extends Upload implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-
-
+	
+	
 	/**
 	 * Creates a new instance of Upload.
 	 *
@@ -77,8 +76,8 @@ public class XdevUpload extends Upload implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 * @param uploadReceiver
@@ -87,8 +86,8 @@ public class XdevUpload extends Upload implements XdevComponent
 	{
 		super(caption,uploadReceiver);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -97,8 +96,8 @@ public class XdevUpload extends Upload implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

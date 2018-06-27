@@ -28,12 +28,12 @@ import java.util.stream.Collectors;
 
 import org.jsoup.nodes.Element;
 
+import com.vaadin.data.Container;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.converter.Converter;
+import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.declarative.DesignContext;
-import com.vaadin.v7.data.Container;
-import com.vaadin.v7.data.util.BeanItem;
-import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.v7.data.util.converter.Converter;
-import com.vaadin.v7.ui.ListSelect;
 import com.xdev.ui.entitycomponent.BeanComponent;
 import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.UIModelProvider;
@@ -41,7 +41,6 @@ import com.xdev.ui.entitycomponent.XdevBeanContainer;
 import com.xdev.ui.paging.LazyLoadingUIModelProvider;
 
 
-@SuppressWarnings("deprecation")
 public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 		implements BeanComponent<BEANTYPE>
 {
@@ -50,33 +49,33 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 	 */
 	private static final long	serialVersionUID	= 897703398940222936L;
 	private boolean				autoQueryData		= true;
-	
-	
+
+
 	public AbstractBeanListSelect()
 	{
 		super();
 	}
-
-
+	
+	
 	public AbstractBeanListSelect(final String caption)
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public AbstractBeanListSelect(final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
 	}
-
-
+	
+	
 	public AbstractBeanListSelect(final String caption,
 			final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -94,11 +93,11 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 		{
 			super.setContainerDataSource(newDataSource);
 		}
-		
+
 		updateConverter();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -108,25 +107,25 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 	public void setAutoQueryData(final boolean autoQuery)
 	{
 		this.autoQueryData = autoQuery;
-		
+
 		updateConverter();
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see com.vaadin.v7.ui.AbstractSelect#setMultiSelect(boolean)
+	 * @see com.vaadin.ui.AbstractSelect#setMultiSelect(boolean)
 	 */
 	@Override
 	public void setMultiSelect(final boolean multiSelect)
 	{
 		super.setMultiSelect(multiSelect);
-		
+
 		updateConverter();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -137,8 +136,8 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 	{
 		return this.autoQueryData;
 	}
-
-
+	
+	
 	/**
 	 * @since 3.0
 	 */
@@ -156,8 +155,8 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 			this.setConverter((Converter)null);
 		}
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -166,8 +165,8 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 	{
 		return this.getBeanContainerDataSource().getItem(this.getValue());
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -187,8 +186,8 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 			return list;
 		}
 	}
-
-
+	
+	
 	protected UIModelProvider<BEANTYPE> getModelProvider()
 	{
 		if(this.isAutoQueryData())
@@ -200,13 +199,13 @@ public abstract class AbstractBeanListSelect<BEANTYPE> extends ListSelect
 			return new UIModelProvider.Implementation<BEANTYPE>();
 		}
 	}
-
-
+	
+	
 	@Override
 	public void readDesign(final Element design, final DesignContext context)
 	{
 		setContainerDataSource(new IndexedContainer());
-
+		
 		super.readDesign(design,context);
 	}
 }

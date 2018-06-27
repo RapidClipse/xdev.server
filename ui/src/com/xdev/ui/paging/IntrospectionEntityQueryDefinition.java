@@ -35,58 +35,56 @@ import java.util.Map;
 
 import org.vaadin.addons.lazyquerycontainer.EntityQueryDefinition;
 
-import com.vaadin.v7.data.Container.Sortable;
-import com.vaadin.v7.data.util.MethodPropertyDescriptor;
-import com.vaadin.v7.data.util.VaadinPropertyDescriptor;
+import com.vaadin.data.Container.Sortable;
+import com.vaadin.data.util.MethodPropertyDescriptor;
+import com.vaadin.data.util.VaadinPropertyDescriptor;
 
 
-@SuppressWarnings("deprecation")
 public class IntrospectionEntityQueryDefinition<T> extends EntityQueryDefinition
 {
-
+	
 	/**
-	 *
+	 * 
 	 */
 	private static final long	serialVersionUID	= -8366293949237228773L;
-
+	
 	private boolean				readOnlyProperties	= true;
-
-
+	
+	
 	public boolean isReadOnlyProperties()
 	{
-		return this.readOnlyProperties;
+		return readOnlyProperties;
 	}
-
-
-	public void setReadOnlyProperties(final boolean readOnlyProperties)
+	
+	
+	public void setReadOnlyProperties(boolean readOnlyProperties)
 	{
 		this.readOnlyProperties = readOnlyProperties;
 	}
-
-
-	public IntrospectionEntityQueryDefinition(final boolean applicationManagedTransactions,
-			final boolean detachedEntities, final boolean compositeItems,
-			final Class<T> entityClass, final int batchSize, final Object idPropertyId)
+	
+	
+	public IntrospectionEntityQueryDefinition(boolean applicationManagedTransactions,
+			boolean detachedEntities, boolean compositeItems, Class<T> entityClass, int batchSize,
+			Object idPropertyId)
 	{
 		super(applicationManagedTransactions,detachedEntities,compositeItems,entityClass,batchSize,
 				idPropertyId);
-
+		
 		this.addContainerProperties(getPropertyDescriptors(entityClass),entityClass);
 	}
-
-
+	
+	
 	protected void addContainerProperties(
-			final LinkedHashMap<String, VaadinPropertyDescriptor<T>> beanProperties,
-			final Class<T> entityClass)
+			LinkedHashMap<String, VaadinPropertyDescriptor<T>> beanProperties, Class<T> entityClass)
 	{
 		if(entityClass == null)
 		{
 			throw new IllegalArgumentException(
 					"The bean type passed to QueryDefinition must not be null");
 		}
-		for(final Map.Entry<String, VaadinPropertyDescriptor<T>> entry : beanProperties.entrySet())
+		for(Map.Entry<String, VaadinPropertyDescriptor<T>> entry : beanProperties.entrySet())
 		{
-			final List<?> sortables = this.sortableProperties(beanProperties);
+			List<?> sortables = this.sortableProperties(beanProperties);
 			boolean sortableProperty = false;
 			for(int i = 0; i < sortables.size(); i++)
 			{
@@ -95,9 +93,8 @@ public class IntrospectionEntityQueryDefinition<T> extends EntityQueryDefinition
 					sortableProperty = true;
 				}
 			}
-
-			// oddly there is no reasonable way to control read only state for particular
-			// columns.
+			
+			//oddly there is no reasonable way to control read only state for particular columns.
 			if(this.isReadOnlyProperties())
 			{
 				super.addProperty(entry.getKey(),entry.getValue().getPropertyType(),null,
@@ -110,19 +107,19 @@ public class IntrospectionEntityQueryDefinition<T> extends EntityQueryDefinition
 			}
 		}
 	}
-
-
+	
+	
 	/**
-	 * Returns the sortable property identifiers for the container. Can be used to
-	 * implement {@link Sortable#getSortableContainerPropertyIds()}.
+	 * Returns the sortable property identifiers for the container. Can be used
+	 * to implement {@link Sortable#getSortableContainerPropertyIds()}.
 	 */
 	protected List<?> sortableProperties(
-			final LinkedHashMap<String, VaadinPropertyDescriptor<T>> beanProperties)
+			LinkedHashMap<String, VaadinPropertyDescriptor<T>> beanProperties)
 	{
-		final LinkedList<Object> sortables = new LinkedList<Object>();
-		for(final Map.Entry<String, VaadinPropertyDescriptor<T>> entry : beanProperties.entrySet())
+		LinkedList<Object> sortables = new LinkedList<Object>();
+		for(Map.Entry<String, VaadinPropertyDescriptor<T>> entry : beanProperties.entrySet())
 		{
-			final Class<?> propertyType = entry.getValue().getPropertyType();
+			Class<?> propertyType = entry.getValue().getPropertyType();
 			if(Comparable.class.isAssignableFrom(propertyType) || propertyType.isPrimitive())
 			{
 				sortables.add(entry.getKey());
@@ -130,8 +127,8 @@ public class IntrospectionEntityQueryDefinition<T> extends EntityQueryDefinition
 		}
 		return sortables;
 	}
-
-
+	
+	
 	// getPropertyDescriptors code copied form Vaadin BeanItem
 	/**
 	 * <p>
@@ -139,9 +136,9 @@ public class IntrospectionEntityQueryDefinition<T> extends EntityQueryDefinition
 	 * </p>
 	 *
 	 * <p>
-	 * Note : This version only supports introspectable bean properties and their
-	 * getter and setter methods. Stand-alone <code>is</code> and <code>are</code>
-	 * methods are not supported.
+	 * Note : This version only supports introspectable bean properties and
+	 * their getter and setter methods. Stand-alone <code>is</code> and
+	 * <code>are</code> methods are not supported.
 	 * </p>
 	 *
 	 * @param beanClass
@@ -154,21 +151,20 @@ public class IntrospectionEntityQueryDefinition<T> extends EntityQueryDefinition
 			final Class<BT> beanClass)
 	{
 		final LinkedHashMap<String, VaadinPropertyDescriptor<BT>> pdMap = new LinkedHashMap<String, VaadinPropertyDescriptor<BT>>();
-
+		
 		// Try to introspect, if it fails, we just have an empty Item
 		try
 		{
-			final List<PropertyDescriptor> propertyDescriptors = getBeanPropertyDescriptor(
-					beanClass);
-
+			List<PropertyDescriptor> propertyDescriptors = getBeanPropertyDescriptor(beanClass);
+			
 			// Add all the bean properties as MethodProperties to this Item
 			// later entries on the list overwrite earlier ones
-			for(final PropertyDescriptor pd : propertyDescriptors)
+			for(PropertyDescriptor pd : propertyDescriptors)
 			{
 				final Method getMethod = pd.getReadMethod();
 				if((getMethod != null) && getMethod.getDeclaringClass() != Object.class)
 				{
-					final VaadinPropertyDescriptor<BT> vaadinPropertyDescriptor = new MethodPropertyDescriptor<BT>(
+					VaadinPropertyDescriptor<BT> vaadinPropertyDescriptor = new MethodPropertyDescriptor<BT>(
 							pd.getName(),pd.getPropertyType(),pd.getReadMethod(),
 							pd.getWriteMethod());
 					pdMap.put(pd.getName(),vaadinPropertyDescriptor);
@@ -178,19 +174,20 @@ public class IntrospectionEntityQueryDefinition<T> extends EntityQueryDefinition
 		catch(final java.beans.IntrospectionException ignored)
 		{
 		}
-
+		
 		return pdMap;
 	}
-
-
+	
+	
 	// code copied form vaadin BeanItem
 	/**
 	 * Returns the property descriptors of a class or an interface.
 	 *
-	 * For an interface, superinterfaces are also iterated as Introspector does not
-	 * take them into account (Oracle Java bug 4275879), but in that case, both the
-	 * setter and the getter for a property must be in the same interface and should
-	 * not be overridden in subinterfaces for the discovery to work correctly.
+	 * For an interface, superinterfaces are also iterated as Introspector does
+	 * not take them into account (Oracle Java bug 4275879), but in that case,
+	 * both the setter and the getter for a property must be in the same
+	 * interface and should not be overridden in subinterfaces for the discovery
+	 * to work correctly.
 	 *
 	 * For interfaces, the iteration is depth first and the properties of
 	 * superinterfaces are returned before those of their subinterfaces.
@@ -200,28 +197,28 @@ public class IntrospectionEntityQueryDefinition<T> extends EntityQueryDefinition
 	 * @return list of property descriptors
 	 * @throws IntrospectionException
 	 */
-	private static final List<PropertyDescriptor> getBeanPropertyDescriptor(
-			final Class<?> beanClass) throws IntrospectionException
+	private static final List<PropertyDescriptor> getBeanPropertyDescriptor(final Class<?> beanClass)
+			throws IntrospectionException
 	{
 		// Oracle bug 4275879: Introspector does not consider superinterfaces of
 		// an interface
 		if(beanClass.isInterface())
 		{
-			final List<PropertyDescriptor> propertyDescriptors = new ArrayList<PropertyDescriptor>();
-
-			for(final Class<?> cls : beanClass.getInterfaces())
+			List<PropertyDescriptor> propertyDescriptors = new ArrayList<PropertyDescriptor>();
+			
+			for(Class<?> cls : beanClass.getInterfaces())
 			{
 				propertyDescriptors.addAll(getBeanPropertyDescriptor(cls));
 			}
-
-			final BeanInfo info = Introspector.getBeanInfo(beanClass);
+			
+			BeanInfo info = Introspector.getBeanInfo(beanClass);
 			propertyDescriptors.addAll(Arrays.asList(info.getPropertyDescriptors()));
-
+			
 			return propertyDescriptors;
 		}
 		else
 		{
-			final BeanInfo info = Introspector.getBeanInfo(beanClass);
+			BeanInfo info = Introspector.getBeanInfo(beanClass);
 			return Arrays.asList(info.getPropertyDescriptors());
 		}
 	}

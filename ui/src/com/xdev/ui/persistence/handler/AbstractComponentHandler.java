@@ -33,8 +33,8 @@ public abstract class AbstractComponentHandler<C extends AbstractComponent>
 		implements GuiPersistenceHandler<C>
 {
 	protected static final String KEY_VISIBLE = "visible";
-
-
+	
+	
 	/**
 	 * Trivial utility method to improve use site readability.
 	 *
@@ -46,8 +46,8 @@ public abstract class AbstractComponentHandler<C extends AbstractComponent>
 	{
 		return (Number)uncastNumberInstance;
 	}
-
-
+	
+	
 	@Override
 	public GuiPersistenceEntry persist(final C component)
 	{
@@ -55,14 +55,14 @@ public abstract class AbstractComponentHandler<C extends AbstractComponent>
 		this.addEntryValues(valueTable,component);
 		return GuiPersistenceEntry.New(valueTable);
 	}
-
-
+	
+	
 	protected void addEntryValues(final Map<String, Object> entryValues, final C component)
 	{
 		entryValues.put(KEY_VISIBLE,component.isVisible());
 	}
-
-
+	
+	
 	@Override
 	public void restore(final C component, final GuiPersistenceEntry entry)
 	{

@@ -38,21 +38,21 @@ public class AbstractSplitPanelHandler extends AbstractComponentHandler<Abstract
 	protected static final String	KEY_SPLIT_POSITION_UNIT		= "splitPositionUnit";
 	protected static final String	KEY_SPLIT_POSITION_REVERSED	= "splitPositionReversed";
 	protected static final String	KEY_IS_LOCKED				= "isLocked";
-	
-	
+
+
 	@Override
 	public Class<AbstractSplitPanel> handledType()
 	{
 		return AbstractSplitPanel.class;
 	}
-	
-	
+
+
 	@Override
 	protected void addEntryValues(final Map<String, Object> entryValues,
 			final AbstractSplitPanel component)
 	{
 		super.addEntryValues(entryValues,component);
-		
+
 		entryValues.put(KEY_MIN_SPLIT_POSITION,component.getMinSplitPosition());
 		entryValues.put(KEY_MIN_SPLIT_POSITION_UNIT,component.getMinSplitPositionUnit());
 		entryValues.put(KEY_MAX_SPLIT_POSITION,component.getMaxSplitPosition());
@@ -62,13 +62,13 @@ public class AbstractSplitPanelHandler extends AbstractComponentHandler<Abstract
 		entryValues.put(KEY_SPLIT_POSITION_REVERSED,component.isSplitPositionReversed());
 		entryValues.put(KEY_IS_LOCKED,component.isLocked());
 	}
-	
-	
+
+
 	@Override
 	public void restore(final AbstractSplitPanel component, final GuiPersistenceEntry entry)
 	{
 		super.restore(component,entry);
-		
+
 		component.setMinSplitPosition(number(entry.value(KEY_MIN_SPLIT_POSITION)).floatValue(),
 				Unit.getUnitFromSymbol(entry.value(KEY_MIN_SPLIT_POSITION_UNIT).toString()));
 		component.setMaxSplitPosition(number(entry.value(KEY_MAX_SPLIT_POSITION)).floatValue(),

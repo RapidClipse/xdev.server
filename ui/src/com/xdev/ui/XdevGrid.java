@@ -21,26 +21,25 @@
 package com.xdev.ui;
 
 
-import com.vaadin.v7.data.Container.Indexed;
-import com.vaadin.v7.ui.Grid;
+import com.vaadin.data.Container.Indexed;
+import com.vaadin.ui.Grid;
 
 
 /**
  * @author XDEV Software
  * @since 4.0
  */
-@SuppressWarnings("deprecation")
 public class XdevGrid extends Grid implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-
-
+	
+	
 	public XdevGrid()
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * @param dataSource
 	 */
@@ -48,8 +47,8 @@ public class XdevGrid extends Grid implements XdevComponent
 	{
 		super(dataSource);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 * @param dataSource
@@ -58,8 +57,8 @@ public class XdevGrid extends Grid implements XdevComponent
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 */
@@ -67,8 +66,8 @@ public class XdevGrid extends Grid implements XdevComponent
 	{
 		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -77,8 +76,8 @@ public class XdevGrid extends Grid implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

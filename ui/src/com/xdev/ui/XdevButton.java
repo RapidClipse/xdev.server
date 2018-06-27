@@ -39,7 +39,7 @@ import com.xdev.ui.event.ActionEvent;
  *
  * @see #setAction(Action)
  * @see Action
- *
+ * 		
  * @author XDEV Software
  */
 
@@ -49,8 +49,8 @@ public class XdevButton extends Button implements XdevComponent, ActionComponent
 	private Action					action;
 	private PropertyChangeListener	actionPropertyChangeListener;
 	private ClickListener			actionClickListener;
-
-
+									
+									
 	/**
 	 * Creates a button with no set text or icon.
 	 */
@@ -141,7 +141,6 @@ public class XdevButton extends Button implements XdevComponent, ActionComponent
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	public void setAction(final Action action)
 	{

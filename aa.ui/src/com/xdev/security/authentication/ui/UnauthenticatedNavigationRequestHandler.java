@@ -39,8 +39,8 @@ import com.vaadin.ui.Notification.Type;
 public interface UnauthenticatedNavigationRequestHandler
 {
 	public final static UnauthenticatedNavigationRequestHandler DEFAULT = new Default();
-	
-	
+
+
 	/**
 	 * Handles the unauthenticated request, e.g. shows an error message and
 	 * redirects to the login view.
@@ -49,9 +49,9 @@ public interface UnauthenticatedNavigationRequestHandler
 	 * @param event
 	 */
 	public void handle(XdevAuthenticationNavigator navigator, ViewChangeEvent event);
-	
-	
-	
+
+
+
 	public static class Default implements UnauthenticatedNavigationRequestHandler
 	{
 		@Override

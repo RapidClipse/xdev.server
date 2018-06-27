@@ -21,10 +21,9 @@
 package com.xdev.ui.persistence.handler;
 
 
-import com.vaadin.v7.ui.CheckBox;
+import com.vaadin.ui.CheckBox;
 
 
-@SuppressWarnings("deprecation")
 public class CheckBoxHandler extends AbstractFieldHandler<CheckBox>
 {
 	@Override

@@ -21,9 +21,9 @@
 package com.xdev.ui;
 
 
-import com.vaadin.v7.data.Property;
-import com.vaadin.v7.shared.ui.label.ContentMode;
-import com.vaadin.v7.ui.Label;
+import com.vaadin.data.Property;
+import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Label;
 
 
 /**
@@ -46,14 +46,13 @@ import com.vaadin.v7.ui.Label;
  * </p>
  *
  * @author XDEV Software
- * 
+ *		
  */
-@SuppressWarnings("deprecation")
 public class XdevLabel extends Label implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-
-
+	
+	
 	/**
 	 * Creates an empty Label.
 	 */
@@ -61,8 +60,8 @@ public class XdevLabel extends Label implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Creates a new instance of Label with text-contents read from given
 	 * datasource.
@@ -74,8 +73,8 @@ public class XdevLabel extends Label implements XdevComponent
 	{
 		super(contentSource,contentMode);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new instance of Label with text-contents read from given
 	 * datasource.
@@ -86,8 +85,8 @@ public class XdevLabel extends Label implements XdevComponent
 	{
 		super(contentSource);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new instance of Label with text-contents.
 	 *
@@ -98,8 +97,8 @@ public class XdevLabel extends Label implements XdevComponent
 	{
 		super(content,contentMode);
 	}
-	
-	
+
+
 	/**
 	 * Creates a new instance of Label with text-contents.
 	 *
@@ -110,12 +109,13 @@ public class XdevLabel extends Label implements XdevComponent
 		super(content);
 	}
 	
+	
 	// init defaults
 	{
 		setSizeUndefined();
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -124,8 +124,8 @@ public class XdevLabel extends Label implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

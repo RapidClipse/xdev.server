@@ -21,14 +21,13 @@
 package com.xdev.data.util.sqlcontainer.query.generator.filter;
 
 
-import com.vaadin.v7.data.Container.Filter;
-import com.vaadin.v7.data.util.sqlcontainer.query.generator.StatementHelper;
-import com.vaadin.v7.data.util.sqlcontainer.query.generator.filter.FilterTranslator;
-import com.vaadin.v7.data.util.sqlcontainer.query.generator.filter.QueryBuilder;
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.util.sqlcontainer.query.generator.StatementHelper;
+import com.vaadin.data.util.sqlcontainer.query.generator.filter.FilterTranslator;
+import com.vaadin.data.util.sqlcontainer.query.generator.filter.QueryBuilder;
 import com.xdev.data.util.filter.Compare;
 
 
-@SuppressWarnings("deprecation")
 public class CompareTranslator implements FilterTranslator
 {
 	@Override
@@ -36,8 +35,8 @@ public class CompareTranslator implements FilterTranslator
 	{
 		return filter instanceof Compare;
 	}
-	
-	
+
+
 	@Override
 	public String getWhereStringForFilter(final Filter filter, final StatementHelper sh)
 	{

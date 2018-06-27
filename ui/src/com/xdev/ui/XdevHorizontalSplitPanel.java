@@ -44,13 +44,13 @@ import com.vaadin.ui.HorizontalSplitPanel;
  * </pre>
  *
  * @author XDEV Software
- *
+ *		
  */
 public class XdevHorizontalSplitPanel extends HorizontalSplitPanel implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-
-
+	
+	
 	/**
 	 * Creates an empty horizontal split panel
 	 */
@@ -58,8 +58,8 @@ public class XdevHorizontalSplitPanel extends HorizontalSplitPanel implements Xd
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Creates a horizontal split panel containing the given components
 	 *
@@ -73,12 +73,13 @@ public class XdevHorizontalSplitPanel extends HorizontalSplitPanel implements Xd
 		super(firstComponent,secondComponent);
 	}
 	
+	
 	// init defaults
 	{
 		setSplitPosition(getSplitPosition(),Unit.PIXELS);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -87,8 +88,8 @@ public class XdevHorizontalSplitPanel extends HorizontalSplitPanel implements Xd
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

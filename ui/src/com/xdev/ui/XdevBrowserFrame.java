@@ -29,13 +29,13 @@ import com.vaadin.ui.BrowserFrame;
  * <code>iframe</code> element.
  *
  * @author XDEV Software
- *
+ *		
  */
 public class XdevBrowserFrame extends BrowserFrame implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-
-
+	
+	
 	/**
 	 * Creates a new empty browser frame.
 	 */
@@ -43,8 +43,8 @@ public class XdevBrowserFrame extends BrowserFrame implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -53,8 +53,8 @@ public class XdevBrowserFrame extends BrowserFrame implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

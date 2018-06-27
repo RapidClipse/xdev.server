@@ -23,44 +23,43 @@ package com.xdev.ui.entitycomponent;
 
 import java.util.Collection;
 
-import com.vaadin.v7.data.Container;
-import com.vaadin.v7.data.util.BeanItem;
+import com.vaadin.data.Container;
+import com.vaadin.data.util.BeanItem;
 
 
-@SuppressWarnings("deprecation")
 public interface XdevBeanContainer<T>
 		extends Container.Sortable, Container.Filterable, Container.Indexed
 {
 	public BeanItem<T> addBean(final T bean) throws UnsupportedOperationException;
-
-
+	
+	
 	@Override
 	public BeanItem<T> getItem(Object itemId) throws UnsupportedOperationException;
-
-
+	
+	
 	public void addAll(Collection<? extends T> beans) throws UnsupportedOperationException;
-
-
+	
+	
 	public void removeAll() throws UnsupportedOperationException;
-
-
+	
+	
 	public void removeAll(Collection<? extends T> beans) throws UnsupportedOperationException;
-	
-	
+
+
 	/**
 	 * refresh data for query implementations
 	 */
 	public void refresh();
-
-
+	
+	
 	public BeanItem<T> replaceItem(BeanItem<T> oldItem, T newBean);
-
-
+	
+	
 	public Class<? super T> getBeanType();
-
-
+	
+	
 	public void setRequiredProperties(Object... propertyIDs);
-	
-	
+
+
 	public Object[] getRequiredProperties();
 }

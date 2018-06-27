@@ -23,14 +23,13 @@ package com.xdev.data.validator;
 
 import java.util.regex.Pattern;
 
-import com.vaadin.v7.data.validator.AbstractStringValidator;
+import com.vaadin.data.validator.AbstractStringValidator;
 
 
 /**
  * @author XDEV Software
  * @since 3.0
  */
-@SuppressWarnings("deprecation")
 public class PasswordValidator extends AbstractStringValidator
 {
 	public static enum Condition
@@ -39,61 +38,61 @@ public class PasswordValidator extends AbstractStringValidator
 		LOWERCASE_LETTERS("[a-z]"),
 		NUMBERS("\\d"),
 		SPECIAL_CHARACTERS("[^\\w\\s]");
-
+		
 		private Pattern pattern;
-
-
+		
+		
 		private Condition(final String regex)
 		{
 			this.pattern = Pattern.compile(regex);
 		}
 	}
-
+	
 	private final static Pattern	WHITESPACE_PATTERN	= Pattern.compile("\\s");
-
+	
 	private final int				minLength;
 	private final boolean			whitespacesAllowed;
 	private final int				minCompliedConditions;
 	private final Condition[]		conditions;
-
-
+	
+	
 	public PasswordValidator(final String errorMessage, final int minLength,
 			final boolean whitespacesAllowed, final int minCompliedConditions,
 			final Condition... conditions)
 	{
 		super(errorMessage);
-
+		
 		this.minLength = minLength;
 		this.whitespacesAllowed = whitespacesAllowed;
 		this.minCompliedConditions = minCompliedConditions;
 		this.conditions = conditions;
 	}
-
-
+	
+	
 	public int getMinLength()
 	{
 		return this.minLength;
 	}
-
-
+	
+	
 	public boolean isWhitespacesAllowed()
 	{
 		return this.whitespacesAllowed;
 	}
-
-
+	
+	
 	public Condition[] getConditions()
 	{
 		return this.conditions;
 	}
-
-
+	
+	
 	public int getMinCompliedConditions()
 	{
 		return this.minCompliedConditions;
 	}
-
-
+	
+	
 	@Override
 	protected boolean isValidValue(final String value)
 	{
@@ -101,7 +100,7 @@ public class PasswordValidator extends AbstractStringValidator
 		{
 			return false;
 		}
-
+		
 		if(!isWhitespacesAllowed())
 		{
 			if(WHITESPACE_PATTERN.matcher(value).find())
@@ -109,11 +108,11 @@ public class PasswordValidator extends AbstractStringValidator
 				return false;
 			}
 		}
-
+		
 		if(this.minCompliedConditions > 0 && this.conditions != null)
 		{
 			int compliedConditions = 0;
-
+			
 			for(final Condition condition : this.conditions)
 			{
 				if(condition.pattern.matcher(value).find())
@@ -126,13 +125,13 @@ public class PasswordValidator extends AbstractStringValidator
 					}
 				}
 			}
-
+			
 			if(compliedConditions < this.minCompliedConditions)
 			{
 				return false;
 			}
 		}
-
+		
 		return true;
 	}
 }

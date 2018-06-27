@@ -34,7 +34,7 @@ import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.xdev.ui.entitycomponent.BeanComponent;
 import com.xdev.util.DTOUtils;
 import com.xdev.util.JPAMetaDataUtils;
@@ -47,11 +47,11 @@ import com.xdev.util.JPAMetaDataUtils;
  * @author XDEV Software
  * @since 3.0
  */
-@SuppressWarnings("deprecation")
 public final class MasterDetail
 {
 	/**
-	 * Connects two {@link BeanComponent}s. The relation is resolved automatically.
+	 * Connects two {@link BeanComponent}s. The relation is resolved
+	 * automatically.
 	 *
 	 * @see FilterMasterDetailConnection
 	 * @see LazyMasterDetailConnection
@@ -107,8 +107,8 @@ public final class MasterDetail
 					+ "supply more detailed information for the relation.",e);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Creates a lazy {@link MasterDetailConnection} between two
 	 * {@link BeanComponent}s.
@@ -131,8 +131,8 @@ public final class MasterDetail
 	{
 		return new LazyMasterDetailConnection<>(master,detail,masterToDetail);
 	}
-	
-	
+
+
 	/**
 	 * Creates a filtered {@link MasterDetailConnection} between two
 	 * {@link BeanComponent}s.
@@ -156,8 +156,8 @@ public final class MasterDetail
 	{
 		return new FilterMasterDetailConnection<>(master,detail,value -> value,detailPropertyId);
 	}
-	
-	
+
+
 	/**
 	 * Creates a filtered {@link MasterDetailConnection} between two
 	 * {@link BeanComponent}s.
@@ -183,8 +183,8 @@ public final class MasterDetail
 		return new FilterMasterDetailConnection<>(master,detail,masterToFilterValue,
 				detailPropertyId);
 	}
-	
-	
+
+
 	/**
 	 * Connects a {@link BeanComponent} with a {@link BeanFieldGroup}.
 	 *
@@ -204,32 +204,32 @@ public final class MasterDetail
 	{
 		return new FieldGroupMasterDetailConnection<>(master,detail);
 	}
-	
-	
+
+
 	/**
-	 * Auto detail attribute resolver from old master detail implementation, which
-	 * is used if no detailed information for the relation is provided. But this one
-	 * throws an {@link IllegalStateException} if no distinct relation can be
-	 * resolved.
+	 * Auto detail attribute resolver from old master detail implementation,
+	 * which is used if no detailed information for the relation is provided.
+	 * But this one throws an {@link IllegalStateException} if no distinct
+	 * relation can be resolved.
 	 */
 	private static String getDetailAttributeName(final Class<?> masterEntity,
 			final Class<?> detailEntity) throws IllegalStateException
 	{
 		final ManagedType<?> managedType = JPAMetaDataUtils.getManagedType(detailEntity);
-		
+
 		final List<String> matchingAttributeNames = managedType.getAttributes().stream()
 				.filter(SingularAttribute.class::isInstance).map(SingularAttribute.class::cast)
-				.filter(pa -> pa.getBindableJavaType().equals(masterEntity) && (pa
-						.getPersistentAttributeType() == PersistentAttributeType.MANY_TO_ONE
-						|| pa.getPersistentAttributeType() == PersistentAttributeType.ONE_TO_ONE))
+				.filter(pa -> pa.getBindableJavaType().equals(masterEntity)
+						&& (pa.getPersistentAttributeType() == PersistentAttributeType.MANY_TO_ONE
+								|| pa.getPersistentAttributeType() == PersistentAttributeType.ONE_TO_ONE))
 				.map(Attribute::getName).collect(Collectors.toList());
-		
+
 		if(matchingAttributeNames.isEmpty())
 		{
 			throw new IllegalStateException("No matching reference attribute for relation: "
 					+ detailEntity.getCanonicalName() + " -> " + masterEntity.getCanonicalName());
 		}
-		
+
 		if(matchingAttributeNames.size() > 1)
 		{
 			throw new IllegalStateException("Multiple matching reference attributes for relation: "
@@ -237,34 +237,34 @@ public final class MasterDetail
 					+ " [" + matchingAttributeNames.stream().collect(Collectors.joining(", "))
 					+ "]");
 		}
-		
+
 		return matchingAttributeNames.get(0);
 	}
-	
-	
+
+
 	/**
-	 * Auto master attribute resolver from old master detail implementation, which
-	 * is used if no detailed information for the relation is provided. But this one
-	 * throws an {@link IllegalStateException} if no distinct relation can be
-	 * resolved.
+	 * Auto master attribute resolver from old master detail implementation,
+	 * which is used if no detailed information for the relation is provided.
+	 * But this one throws an {@link IllegalStateException} if no distinct
+	 * relation can be resolved.
 	 */
 	private static String getMasterAttributeName(final Class<?> masterEntity,
 			final Class<?> detailEntity) throws IllegalStateException
 	{
 		final ManagedType<?> managedType = JPAMetaDataUtils.getManagedType(masterEntity);
-		
+
 		final List<String> matchingAttributeNames = managedType.getAttributes().stream()
 				.filter(PluralAttribute.class::isInstance).map(PluralAttribute.class::cast)
 				.filter(pa -> pa.getElementType().getJavaType().equals(detailEntity)
 						&& pa.getPersistentAttributeType() == PersistentAttributeType.ONE_TO_MANY)
 				.map(Attribute::getName).collect(Collectors.toList());
-		
+
 		if(matchingAttributeNames.isEmpty())
 		{
 			throw new IllegalStateException("No matching reference attribute for relation: "
 					+ masterEntity.getCanonicalName() + " -> " + detailEntity.getCanonicalName());
 		}
-		
+
 		if(matchingAttributeNames.size() > 1)
 		{
 			throw new IllegalStateException("Multiple matching reference attributes for relation: "
@@ -272,11 +272,11 @@ public final class MasterDetail
 					+ " [" + matchingAttributeNames.stream().collect(Collectors.joining(", "))
 					+ "]");
 		}
-		
+
 		return matchingAttributeNames.get(0);
 	}
-	
-	
+
+
 	private MasterDetail()
 	{
 	}

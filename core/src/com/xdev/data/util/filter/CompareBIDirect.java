@@ -23,14 +23,14 @@ package com.xdev.data.util.filter;
 
 import java.util.Collection;
 
-import com.vaadin.v7.data.Container.Filter;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.Property;
-import com.vaadin.v7.data.util.filter.Compare;
-import com.vaadin.v7.data.util.filter.Compare.Greater;
-import com.vaadin.v7.data.util.filter.Compare.GreaterOrEqual;
-import com.vaadin.v7.data.util.filter.Compare.Less;
-import com.vaadin.v7.data.util.filter.Compare.LessOrEqual;
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.filter.Compare;
+import com.vaadin.data.util.filter.Compare.Greater;
+import com.vaadin.data.util.filter.Compare.GreaterOrEqual;
+import com.vaadin.data.util.filter.Compare.Less;
+import com.vaadin.data.util.filter.Compare.LessOrEqual;
 
 
 /**
@@ -49,67 +49,66 @@ import com.vaadin.v7.data.util.filter.Compare.LessOrEqual;
  * @noapi <strong>For internal use only. This class is subject to change in the
  *        future.</strong>
  */
-@SuppressWarnings("deprecation")
 public abstract class CompareBIDirect implements Filter
 {
-	
+
 	private final Object	propertyId;
 	private final Object	value;
-	
-	
-	
+
+
+
 	/**
-	 * A {@link Compare} filter that accepts items for which the identified property
-	 * value is equal to <code>value</code>.
+	 * A {@link Compare} filter that accepts items for which the identified
+	 * property value is equal to <code>value</code>.
 	 *
 	 * For in-memory filters, {@link Comparable#compareTo(Object)} or, if not
 	 * Comparable, {@link #equals(Object)} is used for the comparison. For other
-	 * containers, the comparison implementation is container dependent and may use
-	 * e.g. database comparison operations.
+	 * containers, the comparison implementation is container dependent and may
+	 * use e.g. database comparison operations.
 	 *
 	 * @since 6.6
 	 */
 	public static final class Equal extends CompareBIDirect
 	{
 		/**
-		 * Construct a filter that accepts items for which the identified property value
-		 * is equal to <code>value</code>.
+		 * Construct a filter that accepts items for which the identified
+		 * property value is equal to <code>value</code>.
 		 *
 		 * For in-memory filters, equals() is used for the comparison. For other
-		 * containers, the comparison implementation is container dependent and may use
-		 * e.g. database comparison operations.
+		 * containers, the comparison implementation is container dependent and
+		 * may use e.g. database comparison operations.
 		 *
 		 * @param propertyId
-		 *            the identifier of the property whose value to compare against
-		 *            value, not null
+		 *            the identifier of the property whose value to compare
+		 *            against value, not null
 		 * @param value
-		 *            the value to compare against - null values may or may not be
-		 *            supported depending on the container
+		 *            the value to compare against - null values may or may not
+		 *            be supported depending on the container
 		 */
 		public Equal(final Object propertyId, final Object value)
 		{
 			super(propertyId,value);
 		}
 	}
-	
-	
+
+
 	/**
-	 * Constructor for a {@link Compare} filter that compares the value of an item
-	 * property with the given constant <code>value</code>.
+	 * Constructor for a {@link Compare} filter that compares the value of an
+	 * item property with the given constant <code>value</code>.
 	 *
 	 * This constructor is intended to be used by the nested static classes only
 	 * ({@link Equal}, {@link Greater}, {@link Less}, {@link GreaterOrEqual},
 	 * {@link LessOrEqual}).
 	 *
 	 * For in-memory filtering, comparisons except EQUAL require that the values
-	 * implement {@link Comparable} and {@link Comparable#compareTo(Object)} is used
-	 * for the comparison. The equality comparison is performed using
+	 * implement {@link Comparable} and {@link Comparable#compareTo(Object)} is
+	 * used for the comparison. The equality comparison is performed using
 	 * {@link Object#equals(Object)}.
 	 *
-	 * For other containers, the comparison implementation is container dependent
-	 * and may use e.g. database comparison operations. Therefore, the behavior of
-	 * comparisons might differ in some cases between in-memory and other
-	 * containers.
+	 * For other containers, the comparison implementation is container
+	 * dependent and may use e.g. database comparison operations. Therefore, the
+	 * behavior of comparisons might differ in some cases between in-memory and
+	 * other containers.
 	 *
 	 * @param propertyId
 	 *            the identifier of the property whose value to compare against
@@ -123,8 +122,8 @@ public abstract class CompareBIDirect implements Filter
 		this.propertyId = propertyId;
 		this.value = value;
 	}
-	
-	
+
+
 	@Override
 	public boolean passesFilter(final Object itemId, final Item item)
 	{
@@ -136,8 +135,8 @@ public abstract class CompareBIDirect implements Filter
 		final Object value = p.getValue();
 		return compareEquals(value);
 	}
-	
-	
+
+
 	/**
 	 * Checks if the this value equals the given value. Favors Comparable over
 	 * equals to better support e.g. BigDecimal where equals is stricter than
@@ -174,8 +173,8 @@ public abstract class CompareBIDirect implements Filter
 			return this.value.equals(otherValue);
 		}
 	}
-	
-	
+
+
 	// @SuppressWarnings({"unchecked","rawtypes"})
 	// protected int compareValue(final Object value1)
 	// {
@@ -195,14 +194,14 @@ public abstract class CompareBIDirect implements Filter
 	// throw new IllegalArgumentException(
 	// "Could not compare the arguments: " + value1 + ", " + getValue());
 	// }
-	
+
 	@Override
 	public boolean appliesToProperty(final Object propertyId)
 	{
 		return getPropertyId().equals(propertyId);
 	}
-	
-	
+
+
 	@Override
 	public boolean equals(final Object obj)
 	{
@@ -210,14 +209,14 @@ public abstract class CompareBIDirect implements Filter
 		{
 			return false;
 		}
-		
+
 		// Only objects of the same class can be equal
 		if(!getClass().equals(obj.getClass()))
 		{
 			return false;
 		}
 		final CompareBIDirect o = (CompareBIDirect)obj;
-		
+
 		// Checks the properties one by one
 		if(getPropertyId() != o.getPropertyId() && null != o.getPropertyId()
 				&& !o.getPropertyId().equals(getPropertyId()))
@@ -226,18 +225,19 @@ public abstract class CompareBIDirect implements Filter
 		}
 		return (null == getValue()) ? null == o.getValue() : getValue().equals(o.getValue());
 	}
-	
-	
+
+
 	@Override
 	public int hashCode()
 	{
 		return (null != getPropertyId() ? getPropertyId().hashCode() : 0)
 				^ (null != getValue() ? getValue().hashCode() : 0);
 	}
-	
-	
+
+
 	/**
-	 * Returns the property id of the property to compare against the fixed value.
+	 * Returns the property id of the property to compare against the fixed
+	 * value.
 	 *
 	 * @return property id (not null)
 	 */
@@ -245,8 +245,8 @@ public abstract class CompareBIDirect implements Filter
 	{
 		return this.propertyId;
 	}
-	
-	
+
+
 	/**
 	 * Returns the value to compare the property against.
 	 *

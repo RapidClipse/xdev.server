@@ -33,7 +33,7 @@ import com.vaadin.ui.UI;
 
 /**
  * @author XDEV Software
- * 
+ * 		
  */
 public abstract class ConversationBuilder
 {
@@ -41,12 +41,12 @@ public abstract class ConversationBuilder
 	{
 		return new UIBoundConversationBuilder(ui);
 	}
-	
-	
+
+
 	public abstract Conversation startConversation();
-	
-	
-	
+
+
+
 	public static class UIBoundConversationBuilder extends ConversationBuilder
 	{
 		private final UI			ui;
@@ -55,21 +55,21 @@ public abstract class ConversationBuilder
 		private List<String>		allowedNavigationViews;
 		private DetachListener		detachListener;
 		private List<Component>		detachComponents;
-		
-		
+
+
 		public UIBoundConversationBuilder(final UI ui)
 		{
 			this.ui = ui;
 		}
-		
-		
+
+
 		public UIBoundConversationBuilder persistenceUnit(final String persistenceUnit)
 		{
 			this.persistenceUnit = persistenceUnit;
 			return this;
 		}
-
-
+		
+		
 		public UIBoundConversationBuilder endOnDetach(final Component... components)
 		{
 			if(this.detachListener == null)
@@ -77,17 +77,17 @@ public abstract class ConversationBuilder
 				this.detachListener = event -> endConversation();
 				this.detachComponents = new ArrayList<>();
 			}
-			
+
 			for(final Component c : components)
 			{
 				c.addDetachListener(this.detachListener);
 				this.detachComponents.add(c);
 			}
-			
+
 			return this;
 		}
-		
-		
+
+
 		public UIBoundConversationBuilder endOnNavigateOut(final String... views)
 		{
 			final Navigator navigator = this.ui.getNavigator();
@@ -95,7 +95,7 @@ public abstract class ConversationBuilder
 			{
 				throw new IllegalArgumentException("no navigator present");
 			}
-			
+
 			if(this.allowedNavigationViews == null)
 			{
 				this.allowedNavigationViews = new ArrayList<>();
@@ -104,7 +104,7 @@ public abstract class ConversationBuilder
 			{
 				this.allowedNavigationViews.add(view);
 			}
-			
+
 			if(this.viewChangeListener == null)
 			{
 				this.viewChangeListener = new ViewChangeListener()
@@ -114,8 +114,8 @@ public abstract class ConversationBuilder
 					{
 						return true;
 					}
-					
-					
+
+
 					@Override
 					public void afterViewChange(final ViewChangeEvent event)
 					{
@@ -127,15 +127,14 @@ public abstract class ConversationBuilder
 						}
 					}
 				};
-				
+
 				navigator.addViewChangeListener(this.viewChangeListener);
 			}
-			
+
 			return this;
 		}
-		
-		
-		@SuppressWarnings("deprecation")
+
+
 		private void endConversation()
 		{
 			if(this.detachListener != null)
@@ -148,14 +147,14 @@ public abstract class ConversationBuilder
 				this.detachComponents.clear();
 				this.detachComponents = null;
 			}
-			
+
 			if(this.viewChangeListener != null)
 			{
 				this.ui.getNavigator().removeViewChangeListener(this.viewChangeListener);
 				this.allowedNavigationViews.clear();
 				this.allowedNavigationViews = null;
 			}
-			
+
 			if(this.persistenceUnit != null)
 			{
 				ConversationUtils.endConversation(this.persistenceUnit);
@@ -165,8 +164,8 @@ public abstract class ConversationBuilder
 				ConversationUtils.endConversation();
 			}
 		}
-		
-		
+
+
 		@Override
 		public Conversation startConversation()
 		{
@@ -174,7 +173,7 @@ public abstract class ConversationBuilder
 			{
 				return ConversationUtils.startConversation(this.persistenceUnit);
 			}
-			
+
 			return ConversationUtils.startConversation();
 		}
 	}

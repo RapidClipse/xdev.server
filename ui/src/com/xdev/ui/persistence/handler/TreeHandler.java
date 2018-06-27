@@ -23,28 +23,27 @@ package com.xdev.ui.persistence.handler;
 
 import java.util.Map;
 
-import com.vaadin.v7.ui.Tree;
+import com.vaadin.ui.Tree;
 import com.xdev.ui.persistence.GuiPersistenceEntry;
 
 
-@SuppressWarnings("deprecation")
 public class TreeHandler extends AbstractFieldHandler<Tree>
 {
 	protected static final String KEY_EXPANDED = "expandedItems";
-	
-	
+
+
 	@Override
 	public Class<Tree> handledType()
 	{
 		return Tree.class;
 	}
-	
-	
+
+
 	@Override
 	protected void addEntryValues(final Map<String, Object> entryValues, final Tree component)
 	{
 		super.addEntryValues(entryValues,component);
-		
+
 		final Object[] expandedIds = component.getItemIds().stream().filter(component::isExpanded)
 				.toArray();
 		if(expandedIds != null && expandedIds.length > 0)
@@ -52,13 +51,13 @@ public class TreeHandler extends AbstractFieldHandler<Tree>
 			entryValues.put(KEY_EXPANDED,getFieldValueToStore(expandedIds));
 		}
 	}
-	
-	
+
+
 	@Override
 	public void restore(final Tree component, final GuiPersistenceEntry entry)
 	{
 		super.restore(component,entry);
-		
+
 		final Object[] expandedIds = (Object[])getFieldValueToRestore(component,
 				entry.value(KEY_EXPANDED));
 		if(expandedIds != null && expandedIds.length > 0)

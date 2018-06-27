@@ -26,8 +26,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.vaadin.v7.ui.Table;
-import com.vaadin.v7.ui.Table.Align;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.Align;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -41,52 +41,51 @@ import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
  * @author XDEV Software
  *
  */
-@SuppressWarnings("deprecation")
 public interface TableReportBuilder
 {
 	public final static TableReportBuilder DEFAULT = new Default();
-
-
+	
+	
 	public JasperReportBuilder buildReport(Table table, List<Column> columns,
 			TableExportSettings settings);
-
-
-
+	
+	
+	
 	public static class Default implements TableReportBuilder
 	{
 		protected final TableDataSourceFactory	dataSourceFactory;
 		protected final TableExportStyles		styles;
-
-
+		
+		
 		public Default()
 		{
 			this(TableDataSourceFactory.DEFAULT,TableExportStyles.DEFAULT);
 		}
-
-
+		
+		
 		public Default(final TableDataSourceFactory dataSourceFactory,
 				final TableExportStyles styles)
 		{
 			this.dataSourceFactory = dataSourceFactory;
 			this.styles = styles;
 		}
-
-
+		
+		
 		@Override
 		public JasperReportBuilder buildReport(final Table table, final List<Column> columns,
 				final TableExportSettings settings)
 		{
 			final JasperReportBuilder report = DynamicReports.report();
 			final List<TextColumnBuilder<?>> jasperCols = createTextColumns(columns);
-
+			
 			for(final TextColumnBuilder<?> textColumnBuilder : jasperCols)
 			{
 				report.columns(textColumnBuilder);
 			}
-
+			
 			report.setColumnTitleStyle(this.styles.columnTitleStyle());
 			report.setColumnStyle(this.styles.columnStyle());
-
+			
 			final String title = settings.getTitle();
 			if(!StringUtils.isEmpty(title))
 			{
@@ -97,52 +96,52 @@ public interface TableReportBuilder
 			{
 				report.setReportName("TableExport");
 			}
-
+			
 			if(settings.isShowPageNumber())
 			{
 				report.pageFooter(
 						DynamicReports.cmp.pageXofY().setStyle(this.styles.footerStyle()));
 			}
-
+			
 			if(settings.isHighlightRows())
 			{
 				report.highlightDetailOddRows();
 			}
-
+			
 			report.setShowColumnTitle(true);
 			report.setDataSource(this.dataSourceFactory.createDataSource(table,columns));
 			report.setPageFormat(settings.getPageType(),settings.getPageOrientation());
 			report.setPageMargin(DynamicReports.margin(20));
-
+			
 			return report;
 		}
-
-
+		
+		
 		protected List<TextColumnBuilder<?>> createTextColumns(final List<Column> columns)
 		{
 			final List<TextColumnBuilder<?>> reportColums = new ArrayList<TextColumnBuilder<?>>();
-
+			
 			for(final Column column : columns)
 			{
 				final TextColumnBuilder<String> reportColumn = Columns
 						.column(column.getColumnHeader(),column.getColumnHeader(),String.class);
-
+				
 				final Integer width = column.getColumnWidth();
 				if(width != null && width > 0)
 				{
 					reportColumn.setFixedWidth(width);
 				}
-
+				
 				reportColumn.setHorizontalTextAlignment(
 						convertVaadinJasperTextAlignment(column.getColumnAlignment()));
-
+				
 				reportColums.add(reportColumn);
 			}
-
+			
 			return reportColums;
 		}
-
-
+		
+		
 		protected HorizontalTextAlignment convertVaadinJasperTextAlignment(final Align alignment)
 		{
 			if(alignment.equals(Align.RIGHT))

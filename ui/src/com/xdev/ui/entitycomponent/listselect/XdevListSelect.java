@@ -38,7 +38,6 @@ import com.xdev.ui.util.KeyValueType;
  * @author XDEV Software
  *
  */
-@SuppressWarnings("deprecation")
 public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements XdevSelect<T>
 {
 	private final Extensions		extensions					= new Extensions();
@@ -47,8 +46,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	private String					itemCaptionValue;
 	private ItemCaptionProvider<T>	itemCaptionProvider;
 	private ItemIconProvider<T>		itemIconProvider;
-	
-	
+
+
 	/**
 	 *
 	 */
@@ -56,8 +55,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 */
@@ -65,13 +64,13 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		super(caption);
 	}
-	
+
 	// init defaults
 	{
 		setImmediate(true);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -80,8 +79,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -90,8 +89,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -100,8 +99,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -110,8 +109,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.persistValue = persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -120,8 +119,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -130,8 +129,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -140,8 +139,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.itemCaptionValue = itemCaptionValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -150,8 +149,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.itemCaptionValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -162,11 +161,11 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 		this.setAutoQueryData(autoQueryData);
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
-		
+
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -178,11 +177,11 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 		final XdevBeanContainer<T> container = this.getModelProvider().getModel(this,beanClass,
 				nestedProperties);
 		container.addAll(data);
-
+		
 		this.setContainerDataSource(container);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -191,8 +190,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.itemCaptionProvider = itemCaptionProvider;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -201,8 +200,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.itemCaptionProvider;
 	}
-
-
+	
+	
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
@@ -217,11 +216,11 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 		catch(final NoClassDefFoundError ncdfe)
 		{
 		}
-		
+
 		return super.getItemCaption(itemId);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -230,8 +229,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		this.itemIconProvider = itemIconProvider;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -240,8 +239,8 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 	{
 		return this.itemIconProvider;
 	}
-	
-	
+
+
 	@Override
 	public Resource getItemIcon(final Object itemId)
 	{
@@ -256,7 +255,7 @@ public class XdevListSelect<T> extends AbstractBeanListSelect<T> implements Xdev
 		catch(final NoClassDefFoundError ncdfe)
 		{
 		}
-		
+
 		return super.getItemIcon(itemId);
 	}
 }

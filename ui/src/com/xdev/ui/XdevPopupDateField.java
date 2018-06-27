@@ -23,8 +23,8 @@ package com.xdev.ui;
 
 import java.util.Date;
 
-import com.vaadin.v7.data.Property;
-import com.vaadin.v7.ui.PopupDateField;
+import com.vaadin.data.Property;
+import com.vaadin.ui.PopupDateField;
 
 
 /**
@@ -32,13 +32,12 @@ import com.vaadin.v7.ui.PopupDateField;
  *
  * @author XDEV Software
  */
-@SuppressWarnings("deprecation")
 public class XdevPopupDateField extends PopupDateField implements XdevField
 {
 	private final Extensions	extensions		= new Extensions();
 	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-	
-	
+												
+												
 	/**
 	 *
 	 */
@@ -46,8 +45,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevField
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * @param dataSource
 	 * @throws IllegalArgumentException
@@ -57,8 +56,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevField
 	{
 		super(dataSource);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 * @param value
@@ -67,8 +66,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevField
 	{
 		super(caption,value);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 * @param dataSource
@@ -78,8 +77,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevField
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * @param caption
 	 */
@@ -87,8 +86,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevField
 	{
 		super(caption);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -97,8 +96,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -107,8 +106,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -117,8 +116,8 @@ public class XdevPopupDateField extends PopupDateField implements XdevField
 	{
 		return this.persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

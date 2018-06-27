@@ -21,8 +21,8 @@
 package com.xdev.ui;
 
 
-import com.vaadin.v7.data.Property;
-import com.vaadin.v7.ui.ProgressBar;
+import com.vaadin.data.Property;
+import com.vaadin.ui.ProgressBar;
 
 
 /**
@@ -34,15 +34,14 @@ import com.vaadin.v7.ui.ProgressBar;
  * running but without providing any information about the current progress.
  *
  * @author XDEV Software
- * 
+ * 		
  */
-@SuppressWarnings("deprecation")
 public class XdevProgressBar extends ProgressBar implements XdevField
 {
 	private final Extensions	extensions		= new Extensions();
 	private boolean				persistValue	= PERSIST_VALUE_DEFAULT;
-	
-	
+												
+												
 	/**
 	 * Creates a new progress bar initially set to 0% progress.
 	 */
@@ -50,8 +49,8 @@ public class XdevProgressBar extends ProgressBar implements XdevField
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Creates a new progress bar with the given initial value.
 	 *
@@ -62,8 +61,8 @@ public class XdevProgressBar extends ProgressBar implements XdevField
 	{
 		super(progress);
 	}
-
-
+	
+	
 	/**
 	 * Creates a new progress bar bound to the given data source.
 	 *
@@ -74,8 +73,8 @@ public class XdevProgressBar extends ProgressBar implements XdevField
 	{
 		super(dataSource);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -84,8 +83,8 @@ public class XdevProgressBar extends ProgressBar implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -94,8 +93,8 @@ public class XdevProgressBar extends ProgressBar implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -104,8 +103,8 @@ public class XdevProgressBar extends ProgressBar implements XdevField
 	{
 		return this.persistValue;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

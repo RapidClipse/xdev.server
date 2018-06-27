@@ -46,13 +46,13 @@ import com.vaadin.ui.Video;
  * table of formats supported by different browsers.
  *
  * @author XDEV Software
- *
+ *		
  */
 public class XdevVideo extends Video implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -60,8 +60,8 @@ public class XdevVideo extends Video implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 *            The caption for this video.
@@ -72,8 +72,8 @@ public class XdevVideo extends Video implements XdevComponent
 	{
 		super(caption,source);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 *            The caption for this video.
@@ -82,8 +82,8 @@ public class XdevVideo extends Video implements XdevComponent
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * @return the first source pointed to in this media
 	 */
@@ -96,8 +96,8 @@ public class XdevVideo extends Video implements XdevComponent
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -106,8 +106,8 @@ public class XdevVideo extends Video implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

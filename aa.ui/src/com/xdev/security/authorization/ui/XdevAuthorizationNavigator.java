@@ -46,50 +46,52 @@ public class XdevAuthorizationNavigator extends XdevAuthenticationNavigator
 {
 	private String							permissionDeniedViewName	= null;
 	private final Map<String, Resource[]>	viewResources				= new HashMap<>();
-
-
+	
+	
 	/**
-	 * Creates a navigator that is tracking the active view using URI fragments of
-	 * the {@link Page} containing the given UI and replacing the contents of a
-	 * {@link ComponentContainer} with the active view.
+	 * Creates a navigator that is tracking the active view using URI fragments
+	 * of the {@link Page} containing the given UI and replacing the contents of
+	 * a {@link ComponentContainer} with the active view.
 	 * <p>
 	 * All components of the container are removed each time before adding the
-	 * active {@link View}. Views must implement {@link Component} when using this
-	 * constructor.
+	 * active {@link View}. Views must implement {@link Component} when using
+	 * this constructor.
 	 * <p>
-	 * Navigation is automatically initiated after {@code UI.init()}Â if a navigator
-	 * was created. If at a later point changes are made to the navigator,
-	 * {@code navigator.navigateTo(navigator.getState())} may need to be explicitly
-	 * called to ensure the current view matches the navigation state.
+	 * Navigation is automatically initiated after {@code UI.init()}Â if a
+	 * navigator was created. If at a later point changes are made to the
+	 * navigator, {@code navigator.navigateTo(navigator.getState())} may need to
+	 * be explicitly called to ensure the current view matches the navigation
+	 * state.
 	 *
 	 * @param ui
 	 *            The UI to which this Navigator is attached.
 	 * @param container
-	 *            The ComponentContainer whose contents should be replaced with the
-	 *            active view on view change
+	 *            The ComponentContainer whose contents should be replaced with
+	 *            the active view on view change
 	 */
 	public XdevAuthorizationNavigator(final UI ui, final ComponentContainer container)
 	{
 		super(ui,container);
 	}
-
-
+	
+	
 	/**
 	 * Creates a navigator.
 	 * <p>
-	 * When a custom navigation state manager is not needed, use one of the other
-	 * constructors which use a URI fragment based state manager.
+	 * When a custom navigation state manager is not needed, use one of the
+	 * other constructors which use a URI fragment based state manager.
 	 * <p>
-	 * Navigation is automatically initiated after {@code UI.init()}Â if a navigator
-	 * was created. If at a later point changes are made to the navigator,
-	 * {@code navigator.navigateTo(navigator.getState())} may need to be explicitly
-	 * called to ensure the current view matches the navigation state.
+	 * Navigation is automatically initiated after {@code UI.init()}Â if a
+	 * navigator was created. If at a later point changes are made to the
+	 * navigator, {@code navigator.navigateTo(navigator.getState())} may need to
+	 * be explicitly called to ensure the current view matches the navigation
+	 * state.
 	 *
 	 * @param ui
 	 *            The UI to which this Navigator is attached.
 	 * @param stateManager
-	 *            The NavigationStateManager keeping track of the active view and
-	 *            enabling bookmarking and direct navigation
+	 *            The NavigationStateManager keeping track of the active view
+	 *            and enabling bookmarking and direct navigation
 	 * @param display
 	 *            The ViewDisplay used to display the views handled by this
 	 *            navigator
@@ -99,19 +101,20 @@ public class XdevAuthorizationNavigator extends XdevAuthenticationNavigator
 	{
 		super(ui,stateManager,display);
 	}
-
-
+	
+	
 	/**
-	 * Creates a navigator that is tracking the active view using URI fragments of
-	 * the {@link Page} containing the given UI and replacing the contents of a
-	 * {@link SingleComponentContainer} with the active view.
+	 * Creates a navigator that is tracking the active view using URI fragments
+	 * of the {@link Page} containing the given UI and replacing the contents of
+	 * a {@link SingleComponentContainer} with the active view.
 	 * <p>
 	 * Views must implement {@link Component} when using this constructor.
 	 * <p>
-	 * Navigation is automatically initiated after {@code UI.init()}Â if a navigator
-	 * was created. If at a later point changes are made to the navigator,
-	 * {@code navigator.navigateTo(navigator.getState())} may need to be explicitly
-	 * called to ensure the current view matches the navigation state.
+	 * Navigation is automatically initiated after {@code UI.init()}Â if a
+	 * navigator was created. If at a later point changes are made to the
+	 * navigator, {@code navigator.navigateTo(navigator.getState())} may need to
+	 * be explicitly called to ensure the current view matches the navigation
+	 * state.
 	 *
 	 * @param ui
 	 *            The UI to which this Navigator is attached.
@@ -123,16 +126,17 @@ public class XdevAuthorizationNavigator extends XdevAuthenticationNavigator
 	{
 		super(ui,container);
 	}
-
-
+	
+	
 	/**
-	 * Creates a navigator that is tracking the active view using URI fragments of
-	 * the {@link Page} containing the given UI.
+	 * Creates a navigator that is tracking the active view using URI fragments
+	 * of the {@link Page} containing the given UI.
 	 * <p>
-	 * Navigation is automatically initiated after {@code UI.init()}Â if a navigator
-	 * was created. If at a later point changes are made to the navigator,
-	 * {@code navigator.navigateTo(navigator.getState())} may need to be explicitly
-	 * called to ensure the current view matches the navigation state.
+	 * Navigation is automatically initiated after {@code UI.init()}Â if a
+	 * navigator was created. If at a later point changes are made to the
+	 * navigator, {@code navigator.navigateTo(navigator.getState())} may need to
+	 * be explicitly called to ensure the current view matches the navigation
+	 * state.
 	 *
 	 * @param ui
 	 *            The UI to which this Navigator is attached.
@@ -143,8 +147,8 @@ public class XdevAuthorizationNavigator extends XdevAuthenticationNavigator
 	{
 		super(ui,display);
 	}
-
-
+	
+	
 	/**
 	 * @return the permissionDeniedViewName
 	 */
@@ -152,8 +156,8 @@ public class XdevAuthorizationNavigator extends XdevAuthenticationNavigator
 	{
 		return this.permissionDeniedViewName;
 	}
-
-
+	
+	
 	/**
 	 * @param permissionDeniedViewName
 	 *            the permissionDeniedViewName to set
@@ -162,20 +166,20 @@ public class XdevAuthorizationNavigator extends XdevAuthenticationNavigator
 	{
 		this.permissionDeniedViewName = permissionDeniedViewName;
 	}
-
-
+	
+	
 	public void setResources(final String viewName, final Resource... resources)
 	{
 		this.viewResources.put(viewName,resources);
 	}
-
-
+	
+	
 	public Resource[] getResources(final String viewName)
 	{
 		return this.viewResources.get(viewName);
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -196,8 +200,8 @@ public class XdevAuthorizationNavigator extends XdevAuthenticationNavigator
 			}
 		}
 	}
-
-
+	
+	
 	protected boolean canNavigateTo(final String navigationState)
 	{
 		final Resource[] resources = getRequiredResources(navigationState);
@@ -205,13 +209,13 @@ public class XdevAuthorizationNavigator extends XdevAuthenticationNavigator
 		{
 			return true;
 		}
-
+		
 		final Subject user = Authentication.getUser();
 		if(user == null)
 		{
 			return false;
 		}
-
+		
 		for(final Resource resource : resources)
 		{
 			if(!user.hasPermission(resource))
@@ -219,11 +223,11 @@ public class XdevAuthorizationNavigator extends XdevAuthenticationNavigator
 				return false;
 			}
 		}
-
+		
 		return true;
 	}
-
-
+	
+	
 	protected Resource[] getRequiredResources(final String navigationState)
 	{
 		for(final String viewName : this.viewResources.keySet())
@@ -233,11 +237,11 @@ public class XdevAuthorizationNavigator extends XdevAuthenticationNavigator
 				return this.viewResources.get(viewName);
 			}
 		}
-
+		
 		return null;
 	}
-
-
+	
+	
 	/**
 	 * Navigates to the permission denied view URL set with
 	 * {@link #setPermissionDeniedViewName(String)}.
@@ -252,7 +256,7 @@ public class XdevAuthorizationNavigator extends XdevAuthenticationNavigator
 		{
 			throw new IllegalStateException("No permission denied view set");
 		}
-
+		
 		navigateTo(permissionDeniedViewName);
 	}
 }

@@ -34,24 +34,23 @@ import com.xdev.ui.paging.XdevEntityLazyQueryContainer;
 
 /**
  * @author XDEV Software
- * 
+ * 		
  */
-@SuppressWarnings("deprecation")
 public class ChoiceFilterField<T> extends XdevComboBox<T> implements FilterField<Object>
 {
 	protected final List<FilterFieldChangeListener>	listeners	= new ArrayList<>();
 	protected Object								filterValue;
-	
-	
+													
+													
 	@SuppressWarnings({"unchecked","rawtypes"})
 	public ChoiceFilterField(final FilterContext context, final Class<T> beanType)
 	{
 		super();
-
+		
 		setImmediate(true);
 		addStyleName(ValoTheme.COMBOBOX_SMALL);
 		addStyleName(XdevContainerFilterComponent.FILTER_EDITOR_CLASS);
-
+		
 		final Filterable container = context.getContainer();
 		if(container instanceof XdevEntityLazyQueryContainer)
 		{
@@ -75,44 +74,44 @@ public class ChoiceFilterField<T> extends XdevComboBox<T> implements FilterField
 					.distinct().collect(Collectors.toList());
 			setContainerDataSource(beanType,values);
 		}
-
+		
 		addValueChangeListener(event -> fireFilterFieldChanged(getConvertedValue()));
 	}
-
-
+	
+	
 	@Override
 	public void addFilterFieldChangeListener(final FilterFieldChangeListener l)
 	{
 		this.listeners.add(l);
 	}
-
-
+	
+	
 	@Override
 	public void removeFilterFieldChangeListener(final FilterFieldChangeListener l)
 	{
 		this.listeners.remove(l);
 	}
-
-
+	
+	
 	protected void fireFilterFieldChanged(final Object filterValue)
 	{
 		this.filterValue = filterValue;
-
+		
 		final FilterFieldChangeEvent event = new FilterFieldChangeEvent(this,filterValue);
 		for(final FilterFieldChangeListener l : this.listeners)
 		{
 			l.filterFieldChanged(event);
 		}
 	}
-
-
+	
+	
 	@Override
 	public Object getFilterValue()
 	{
 		return this.filterValue;
 	}
-
-
+	
+	
 	@Override
 	public void setFilterValue(final Object filterValue)
 	{

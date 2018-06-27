@@ -24,7 +24,7 @@ package com.xdev.ui;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.v7.ui.VerticalLayout;
+import com.vaadin.ui.VerticalLayout;
 
 
 /**
@@ -38,12 +38,11 @@ import com.vaadin.v7.ui.VerticalLayout;
  * @author XDEV Software
  *
  */
-@SuppressWarnings("deprecation")
 public class XdevFormLayout extends FormLayout implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-
-
+	
+	
 	/**
 	 * Constructs an empty FormLayout.
 	 */
@@ -51,8 +50,8 @@ public class XdevFormLayout extends FormLayout implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * Constructs a FormLayout and adds the given components to it.
 	 *
@@ -66,13 +65,14 @@ public class XdevFormLayout extends FormLayout implements XdevComponent
 		super(children);
 	}
 	
+	
 	// init defaults
 	{
 		setMargin(true);
 		setSpacing(true);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -81,8 +81,8 @@ public class XdevFormLayout extends FormLayout implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

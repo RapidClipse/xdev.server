@@ -44,13 +44,14 @@ public final class Authentication
 	private Authentication()
 	{
 	}
-	
+
 	private final static String AUTHENTICATION_RESULT = "AUTHENTICATION_RESULT";
-	
-	
+
+
 	/**
-	 * A login with the given credentials is attempted. If successful the user is
-	 * registered in the current session and then the redirect view will be shown.
+	 * A login with the given credentials is attempted. If successful the user
+	 * is registered in the current session and then the redirect view will be
+	 * shown.
 	 *
 	 * @return <code>true</code> if the login was successful
 	 *
@@ -63,11 +64,12 @@ public final class Authentication
 	{
 		return tryLogin(credentials,authenticatorProvider,null);
 	}
-	
-	
+
+
 	/**
-	 * A login with the given credentials is attempted. If successful the user is
-	 * registered in the current session and then the redirect view will be shown.
+	 * A login with the given credentials is attempted. If successful the user
+	 * is registered in the current session and then the redirect view will be
+	 * shown.
 	 *
 	 * @return <code>true</code> if the login was successful
 	 *
@@ -103,11 +105,12 @@ public final class Authentication
 			return false;
 		}
 	}
-	
-	
+
+
 	/**
-	 * Registers the <code>user</code> with the <code>authenticationResult</code> in
-	 * the current session and navigates to the redirect view.
+	 * Registers the <code>user</code> with the
+	 * <code>authenticationResult</code> in the current session and navigates to
+	 * the redirect view.
 	 *
 	 * @param user
 	 *            the current user
@@ -122,11 +125,11 @@ public final class Authentication
 		setUser(user,authenticationResult);
 		navigateToRedirectView();
 	}
-	
-	
+
+
 	/**
-	 * Removes the current user from the current session and redirects to the login
-	 * view.
+	 * Removes the current user from the current session and redirects to the
+	 * login view.
 	 *
 	 * @see #setUser(Subject, Object)
 	 * @see #navigateToLoginView()
@@ -136,11 +139,11 @@ public final class Authentication
 		setUser(null,null);
 		navigateToLoginView();
 	}
-	
-	
+
+
 	/**
-	 * Registers the <code>user</code> with the <code>authenticationResult</code> in
-	 * the current session.
+	 * Registers the <code>user</code> with the
+	 * <code>authenticationResult</code> in the current session.
 	 *
 	 * @param user
 	 *            the current user
@@ -155,8 +158,8 @@ public final class Authentication
 		session.setAttribute(Subject.class,user);
 		session.setAttribute(AUTHENTICATION_RESULT,authenticationResult);
 	}
-	
-	
+
+
 	/**
 	 * Returns the current user, which was registered with
 	 * {@link #setUser(Subject, Object)}.
@@ -168,21 +171,21 @@ public final class Authentication
 	{
 		return UI.getCurrent().getSession().getAttribute(Subject.class);
 	}
-	
-	
+
+
 	/**
 	 * Returns the result of the last authentification of
 	 * {@link #setUser(Subject, Object)}.
 	 *
-	 * @return the current authentication result or <code>null</code> if no user is
-	 *         currently registered.
+	 * @return the current authentication result or <code>null</code> if no user
+	 *         is currently registered.
 	 */
 	public static Object getAuthenticationResult()
 	{
 		return UI.getCurrent().getSession().getAttribute(AUTHENTICATION_RESULT);
 	}
-	
-	
+
+
 	/**
 	 * Returns <code>true</code> if a user is registered in the current session,
 	 * <code>false</code> otherwise.
@@ -197,8 +200,8 @@ public final class Authentication
 	{
 		return getUser() != null;
 	}
-	
-	
+
+
 	/**
 	 * Navigates to the application's {@link LoginView}.
 	 *
@@ -219,8 +222,8 @@ public final class Authentication
 					"Navigating to login view requires XDEVAuthenticationNavigator");
 		}
 	}
-	
-	
+
+
 	/**
 	 * Navigates to the application's redirect view.
 	 * <p>

@@ -21,7 +21,7 @@
 package com.xdev.ui.paging;
 
 
-import com.vaadin.v7.ui.AbstractSelect;
+import com.vaadin.ui.AbstractSelect;
 import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.IDToBeanConverter;
 import com.xdev.ui.entitycomponent.UIModelProvider;
@@ -31,7 +31,6 @@ import com.xdev.util.JPAEntityIDResolver;
 
 
 //hibernate/JPA specific implementation
-@SuppressWarnings("deprecation")
 public class LazyLoadingUIModelProvider<BEANTYPE> implements UIModelProvider<BEANTYPE>
 {
 	private final int			batchSize;
@@ -40,14 +39,14 @@ public class LazyLoadingUIModelProvider<BEANTYPE> implements UIModelProvider<BEA
 	 * for example car.manufacturer.name
 	 */
 	private static final String	VAADIN_PROPERTY_NESTING_PATTERN	= "\\.";
-
-
+	
+	
 	public LazyLoadingUIModelProvider(final int batchSize, final Object idProperty)
 	{
 		this.batchSize = batchSize;
 	}
-	
-	
+
+
 	public LazyLoadingUIModelProvider(final int bachSize, final boolean readOnlyProperties,
 			final boolean sortableProperties)
 	{
@@ -55,18 +54,18 @@ public class LazyLoadingUIModelProvider<BEANTYPE> implements UIModelProvider<BEA
 		this.readOnlyProperties = readOnlyProperties;
 		this.sortableProperties = sortableProperties;
 	}
-	
-	
+
+
 	@Override
 	public XdevLazyEntityContainer<BEANTYPE> getModel(final AbstractSelect component,
 			final Class<BEANTYPE> entityClass, final KeyValueType<?, ?>... nestedProperties)
 	{
 		final String idAttributeName = JPAEntityIDResolver.getInstance()
 				.getEntityIDAttributeName(entityClass);
-
+		
 		final XdevLazyEntityContainer<BEANTYPE> container = new XdevLazyEntityContainer<>(
 				entityClass,this.batchSize,idAttributeName);
-
+		
 		for(final KeyValueType<?, ?> keyValuePair : nestedProperties)
 		{
 			container.addContainerProperty(keyValuePair.getKey(),keyValuePair.getType(),
@@ -74,15 +73,15 @@ public class LazyLoadingUIModelProvider<BEANTYPE> implements UIModelProvider<BEA
 		}
 		container.getQueryView().getQueryDefinition()
 				.setMaxNestedPropertyDepth(this.getMaxNestedPropertyDepth(nestedProperties));
-
+		
 		return container;
 	}
-	
-	
+
+
 	private int getMaxNestedPropertyDepth(final KeyValueType<?, ?>[] nestedProperties)
 	{
 		int maxNestedPropertyDepth = 0;
-		
+
 		for(int i = 0; i < nestedProperties.length; i++)
 		{
 			final int currentDepth = nestedProperties[i].getKey().toString()
@@ -94,8 +93,8 @@ public class LazyLoadingUIModelProvider<BEANTYPE> implements UIModelProvider<BEA
 		}
 		return maxNestedPropertyDepth;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

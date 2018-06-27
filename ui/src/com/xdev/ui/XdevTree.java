@@ -25,10 +25,10 @@ import java.util.Set;
 
 import org.jsoup.nodes.Element;
 
+import com.vaadin.data.Container;
 import com.vaadin.server.Resource;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.declarative.DesignContext;
-import com.vaadin.v7.data.Container;
-import com.vaadin.v7.ui.Tree;
 import com.xdev.ui.entitycomponent.hierarchical.XdevHierarchicalBeanItemContainer;
 import com.xdev.ui.hierarchical.DynamicHierarchicalContainer;
 import com.xdev.ui.hierarchical.TreeDataProvider;
@@ -44,7 +44,6 @@ import com.xdev.util.CaptionUtils;
  * @author XDEV Software
  *
  */
-@SuppressWarnings("deprecation")
 public class XdevTree extends Tree implements XdevField
 {
 	private final Extensions			extensions					= new Extensions();
@@ -53,8 +52,8 @@ public class XdevTree extends Tree implements XdevField
 	private String						itemCaptionValue;
 	private ItemCaptionProvider<Object>	itemCaptionProvider;
 	private ItemIconProvider<Object>	itemIconProvider;
-
-
+	
+	
 	/**
 	 * Creates a new empty tree.
 	 */
@@ -62,8 +61,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		super();
 	}
-
-
+	
+	
 	/**
 	 * Creates a new tree with caption and connect it to a Container.
 	 *
@@ -74,8 +73,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * Creates a new empty tree with caption.
 	 *
@@ -85,7 +84,7 @@ public class XdevTree extends Tree implements XdevField
 	{
 		super(caption);
 	}
-
+	
 	// init defaults
 	{
 		addExpandListener(event -> {
@@ -105,8 +104,8 @@ public class XdevTree extends Tree implements XdevField
 			}
 		});
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -115,8 +114,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		return this.extensions.add(type,extension);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -125,8 +124,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		return this.extensions.get(type);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -135,8 +134,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		return this.persistValue;
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -145,8 +144,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		this.persistValue = persistValue;
 	}
-
-
+	
+	
 	/**
 	 * Sets if the item's caption should be derived from its {@link Caption}
 	 * annotation.
@@ -162,8 +161,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		this.itemCaptionFromAnnotation = itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
 	 * @return if the item's caption should be derived from its {@link Caption}
 	 *         annotation
@@ -174,8 +173,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		return this.itemCaptionFromAnnotation;
 	}
-
-
+	
+	
 	/**
 	 * Sets a user defined caption value for the items to display.
 	 *
@@ -190,8 +189,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		this.itemCaptionValue = itemCaptionValue;
 	}
-
-
+	
+	
 	/**
 	 * Returns the user defined caption value for the items to display
 	 *
@@ -203,8 +202,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		return this.itemCaptionValue;
 	}
-
-
+	
+	
 	/**
 	 * @param itemCaptionProvider
 	 *            the itemCaptionProvider to set
@@ -214,8 +213,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		this.itemCaptionProvider = itemCaptionProvider;
 	}
-
-
+	
+	
 	/**
 	 * @return the itemCaptionProvider
 	 * @since 3.0.2
@@ -224,8 +223,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		return this.itemCaptionProvider;
 	}
-
-
+	
+	
 	@Override
 	public String getItemCaption(final Object itemId)
 	{
@@ -237,7 +236,7 @@ public class XdevTree extends Tree implements XdevField
 			{
 				return caption;
 			}
-
+			
 			if(isItemCaptionFromAnnotation())
 			{
 				if(CaptionUtils.hasCaptionAnnotationValue(itemId.getClass()))
@@ -250,11 +249,11 @@ public class XdevTree extends Tree implements XdevField
 				return CaptionUtils.resolveCaption(itemId,this.itemCaptionValue,getLocale());
 			}
 		}
-
+		
 		return super.getItemCaption(itemId);
 	}
-
-
+	
+	
 	/**
 	 * @param itemIconProvider
 	 *            the itemIconProvider to set
@@ -264,8 +263,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		this.itemIconProvider = itemIconProvider;
 	}
-
-
+	
+	
 	/**
 	 * @return the itemIconProvider
 	 * @since 3.0.2
@@ -274,8 +273,8 @@ public class XdevTree extends Tree implements XdevField
 	{
 		return this.itemIconProvider;
 	}
-
-
+	
+	
 	@Override
 	public Resource getItemIcon(final Object itemId)
 	{
@@ -284,11 +283,11 @@ public class XdevTree extends Tree implements XdevField
 		{
 			return icon;
 		}
-
+		
 		return super.getItemIcon(itemId);
 	}
-
-
+	
+	
 	public void setContainerDataSource(final TreeDataProvider provider, final boolean preloadAll)
 	{
 		final XdevHierarchicalBeanItemContainer container = new XdevHierarchicalBeanItemContainer(
@@ -299,34 +298,34 @@ public class XdevTree extends Tree implements XdevField
 		}
 		setContainerDataSource(container);
 	}
-
-
+	
+	
 	@Override
 	protected Element writeItem(final Element design, final Object itemId,
 			final DesignContext context)
 	{
 		final Element element = super.writeItem(design,itemId,context);
-
+		
 		if(isExpanded(itemId))
 		{
 			element.attributes().put("expanded",true);
 		}
-
+		
 		return element;
 	}
-
-
+	
+	
 	@Override
 	protected String readItem(final Element node, final Set<String> selected,
 			final DesignContext context)
 	{
 		final String itemId = super.readItem(node,selected,context);
-
+		
 		if(node.hasAttr("expanded"))
 		{
 			expandItem(itemId);
 		}
-
+		
 		return itemId;
 	}
 }

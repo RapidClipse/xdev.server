@@ -32,24 +32,23 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.Locale;
 
-import com.vaadin.v7.data.util.converter.Converter;
-import com.vaadin.v7.data.util.converter.StringToBigDecimalConverter;
-import com.vaadin.v7.data.util.converter.StringToBigIntegerConverter;
-import com.vaadin.v7.data.util.converter.StringToBooleanConverter;
-import com.vaadin.v7.data.util.converter.StringToByteConverter;
-import com.vaadin.v7.data.util.converter.StringToDateConverter;
-import com.vaadin.v7.data.util.converter.StringToDoubleConverter;
-import com.vaadin.v7.data.util.converter.StringToFloatConverter;
-import com.vaadin.v7.data.util.converter.StringToIntegerConverter;
-import com.vaadin.v7.data.util.converter.StringToLongConverter;
-import com.vaadin.v7.data.util.converter.StringToShortConverter;
+import com.vaadin.data.util.converter.Converter;
+import com.vaadin.data.util.converter.StringToBigDecimalConverter;
+import com.vaadin.data.util.converter.StringToBigIntegerConverter;
+import com.vaadin.data.util.converter.StringToBooleanConverter;
+import com.vaadin.data.util.converter.StringToByteConverter;
+import com.vaadin.data.util.converter.StringToDateConverter;
+import com.vaadin.data.util.converter.StringToDoubleConverter;
+import com.vaadin.data.util.converter.StringToFloatConverter;
+import com.vaadin.data.util.converter.StringToIntegerConverter;
+import com.vaadin.data.util.converter.StringToLongConverter;
+import com.vaadin.data.util.converter.StringToShortConverter;
 
 
 /**
  * @author XDEV Software
  *
  */
-@SuppressWarnings("deprecation")
 public abstract class ConverterBuilder
 {
 	private static enum ConverterType
@@ -65,79 +64,79 @@ public abstract class ConverterBuilder
 		STRING_TO_BOOLEAN,
 		STRING_TO_DATE
 	}
-
+	
 	protected final ConverterType type;
-
-
+	
+	
 	ConverterBuilder(final ConverterType type)
 	{
 		this.type = type;
 	}
-
-
+	
+	
 	public static StringToNumberConverterBuilder stringToByte()
 	{
 		return new StringToNumberConverterBuilder(ConverterType.STRING_TO_BYTE);
 	}
-
-
+	
+	
 	public static StringToNumberConverterBuilder stringToShort()
 	{
 		return new StringToNumberConverterBuilder(ConverterType.STRING_TO_SHORT);
 	}
-
-
+	
+	
 	public static StringToNumberConverterBuilder stringToInteger()
 	{
 		return new StringToNumberConverterBuilder(ConverterType.STRING_TO_INTEGER);
 	}
-
-
+	
+	
 	public static StringToNumberConverterBuilder stringToLong()
 	{
 		return new StringToNumberConverterBuilder(ConverterType.STRING_TO_LONG);
 	}
-
-
+	
+	
 	public static StringToNumberConverterBuilder stringToBigInteger()
 	{
 		return new StringToNumberConverterBuilder(ConverterType.STRING_TO_BIG_INTEGER);
 	}
-
-
+	
+	
 	public static StringToNumberConverterBuilder stringToFloat()
 	{
 		return new StringToNumberConverterBuilder(ConverterType.STRING_TO_FLOAT);
 	}
-
-
+	
+	
 	public static StringToNumberConverterBuilder stringToDouble()
 	{
 		return new StringToNumberConverterBuilder(ConverterType.STRING_TO_DOUBLE);
 	}
-
-
+	
+	
 	public static StringToNumberConverterBuilder stringToBigDecimal()
 	{
 		return new StringToNumberConverterBuilder(ConverterType.STRING_TO_BIG_DECIMAL);
 	}
-
-
+	
+	
 	public static StringToBooleanConverterBuilder stringToBoolean()
 	{
 		return new StringToBooleanConverterBuilder(ConverterType.STRING_TO_BOOLEAN);
 	}
-
-
+	
+	
 	public static StringToDateConverterBuilder stringToDate()
 	{
 		return new StringToDateConverterBuilder(ConverterType.STRING_TO_DATE);
 	}
-
-
+	
+	
 	public abstract Converter<?, ?> build();
-
-
+	
+	
 	private static Locale getLocale(final Locale thisLocale, final Locale localeParam)
 	{
 		// user set locale has priority
@@ -153,19 +152,19 @@ public abstract class ConverterBuilder
 		// use default
 		return Locale.getDefault(Locale.Category.FORMAT);
 	}
-
-
-
+	
+	
+	
 	public static class StringToNumberConverterBuilder extends ConverterBuilder
 	{
 		private static enum FormatType
 		{
 			INTEGER, NUMBER, CURRENCY, PERCENT
 		}
-
+		
 		private Locale					locale;
 		private FormatType				formatType;
-
+		
 		// NumberFormat
 		private Boolean					groupingUsed;
 		private Integer					maximumIntegerDigits;
@@ -175,7 +174,7 @@ public abstract class ConverterBuilder
 		private Currency				currency;
 		private String					currencySymbol;
 		private RoundingMode			roundingMode;
-
+		
 		// DecimalFormat
 		private DecimalFormatSymbols	decimalFormatSymbols;
 		private Boolean					decimalSeparatorAlwaysShown;
@@ -185,12 +184,12 @@ public abstract class ConverterBuilder
 		private String					negativeSuffix;
 		private String					positivePrefix;
 		private String					positiveSuffix;
-
-
+		
+		
 		StringToNumberConverterBuilder(final ConverterType type)
 		{
 			super(type);
-
+			
 			switch(type)
 			{
 				case STRING_TO_BYTE:
@@ -201,152 +200,152 @@ public abstract class ConverterBuilder
 					this.formatType = FormatType.INTEGER;
 				}
 				break;
-			
+				
 				default:
 				{
 					this.formatType = FormatType.NUMBER;
 				}
 			}
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder locale(final Locale locale)
 		{
 			this.locale = locale;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder currency()
 		{
 			this.formatType = FormatType.CURRENCY;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder percent()
 		{
 			this.formatType = FormatType.PERCENT;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder groupingUsed(final boolean groupingUsed)
 		{
 			this.groupingUsed = groupingUsed;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder maximumIntegerDigits(final int maximumIntegerDigits)
 		{
 			this.maximumIntegerDigits = maximumIntegerDigits;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder minimumIntegerDigits(final int minimumIntegerDigits)
 		{
 			this.minimumIntegerDigits = minimumIntegerDigits;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder maximumFractionDigits(final int maximumFractionDigits)
 		{
 			this.maximumFractionDigits = maximumFractionDigits;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder minimumFractionDigits(final int minimumFractionDigits)
 		{
 			this.minimumFractionDigits = minimumFractionDigits;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder currency(final Currency currency)
 		{
 			currency(); // set to currency format
 			this.currency = currency;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder currencySymbol(final String currencySymbol)
 		{
 			currency(); // set to currency format
 			this.currencySymbol = currencySymbol;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder decimalFormatSymbols(
 				final DecimalFormatSymbols decimalFormatSymbols)
 		{
 			this.decimalFormatSymbols = decimalFormatSymbols;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder roundingMode(final RoundingMode roundingMode)
 		{
 			this.roundingMode = roundingMode;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder decimalSeparatorAlwaysShown(
 				final boolean decimalSeparatorAlwaysShown)
 		{
 			this.decimalSeparatorAlwaysShown = decimalSeparatorAlwaysShown;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder groupingSize(final int groupingSize)
 		{
 			this.groupingSize = groupingSize;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder multiplier(final int multiplier)
 		{
 			this.multiplier = multiplier;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder negativePrefix(final String negativePrefix)
 		{
 			this.negativePrefix = negativePrefix;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder negativeSuffix(final String negativeSuffix)
 		{
 			this.negativeSuffix = negativeSuffix;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder positivePrefix(final String positivePrefix)
 		{
 			this.positivePrefix = positivePrefix;
 			return this;
 		}
-
-
+		
+		
 		public StringToNumberConverterBuilder positiveSuffix(final String positiveSuffix)
 		{
 			this.positiveSuffix = positiveSuffix;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public Converter<String, ? extends Number> build()
 		{
@@ -363,7 +362,7 @@ public abstract class ConverterBuilder
 						}
 					};
 				}
-
+				
 				case STRING_TO_SHORT:
 				{
 					return new StringToShortConverter()
@@ -375,7 +374,7 @@ public abstract class ConverterBuilder
 						}
 					};
 				}
-
+				
 				case STRING_TO_INTEGER:
 				{
 					return new StringToIntegerConverter()
@@ -387,7 +386,7 @@ public abstract class ConverterBuilder
 						}
 					};
 				}
-
+				
 				case STRING_TO_LONG:
 				{
 					return new StringToLongConverter()
@@ -399,7 +398,7 @@ public abstract class ConverterBuilder
 						}
 					};
 				}
-
+				
 				case STRING_TO_BIG_INTEGER:
 				{
 					return new StringToBigIntegerConverter()
@@ -417,7 +416,7 @@ public abstract class ConverterBuilder
 						}
 					};
 				}
-
+				
 				case STRING_TO_FLOAT:
 				{
 					return new StringToFloatConverter()
@@ -429,7 +428,7 @@ public abstract class ConverterBuilder
 						}
 					};
 				}
-
+				
 				case STRING_TO_DOUBLE:
 				{
 					return new StringToDoubleConverter()
@@ -441,7 +440,7 @@ public abstract class ConverterBuilder
 						}
 					};
 				}
-
+				
 				case STRING_TO_BIG_DECIMAL:
 				{
 					return new StringToBigDecimalConverter()
@@ -459,38 +458,38 @@ public abstract class ConverterBuilder
 						}
 					};
 				}
-
+				
 				default:
 					return null;
 			}
 		}
-
-
+		
+		
 		private NumberFormat getFormat(final Locale localeParam)
 		{
 			final Locale locale = getLocale(this.locale,localeParam);
-
+			
 			NumberFormat format = null;
-
+			
 			switch(this.formatType)
 			{
 				case INTEGER:
 					format = NumberFormat.getIntegerInstance(locale);
 				break;
-			
+				
 				case NUMBER:
 					format = NumberFormat.getNumberInstance(locale);
 				break;
-			
+				
 				case CURRENCY:
 					format = NumberFormat.getCurrencyInstance(locale);
 				break;
-			
+				
 				case PERCENT:
 					format = NumberFormat.getPercentInstance(locale);
 				break;
 			}
-
+			
 			if(this.groupingUsed != null)
 			{
 				format.setGroupingUsed(this.groupingUsed);
@@ -519,11 +518,11 @@ public abstract class ConverterBuilder
 			{
 				format.setRoundingMode(this.roundingMode);
 			}
-
+			
 			if(format instanceof DecimalFormat)
 			{
 				final DecimalFormat decimalFormat = (DecimalFormat)format;
-
+				
 				if(this.decimalFormatSymbols != null)
 				{
 					decimalFormat.setDecimalFormatSymbols(this.decimalFormatSymbols);
@@ -561,39 +560,39 @@ public abstract class ConverterBuilder
 					decimalFormat.setPositiveSuffix(this.positiveSuffix);
 				}
 			}
-
+			
 			return format;
 		}
 	}
-
-
-
+	
+	
+	
 	public static class StringToBooleanConverterBuilder extends ConverterBuilder
 	{
 		private String	trueString;
 		private String	falseString;
-
-
+		
+		
 		StringToBooleanConverterBuilder(final ConverterType type)
 		{
 			super(type);
 		}
-
-
+		
+		
 		public StringToBooleanConverterBuilder trueString(final String trueString)
 		{
 			this.trueString = trueString;
 			return this;
 		}
-
-
+		
+		
 		public StringToBooleanConverterBuilder falseString(final String falseString)
 		{
 			this.falseString = falseString;
 			return this;
 		}
-
-
+		
+		
 		@Override
 		public Converter<String, Boolean> build()
 		{
@@ -606,11 +605,11 @@ public abstract class ConverterBuilder
 					{
 						return StringToBooleanConverterBuilder.this.trueString;
 					}
-
+					
 					return super.getTrueString();
 				}
-
-
+				
+				
 				@Override
 				protected String getFalseString()
 				{
@@ -618,15 +617,15 @@ public abstract class ConverterBuilder
 					{
 						return StringToBooleanConverterBuilder.this.falseString;
 					}
-
+					
 					return super.getTrueString();
 				}
 			};
 		}
 	}
-
-
-
+	
+	
+	
 	public static class StringToDateConverterBuilder extends ConverterBuilder
 	{
 		private Locale				locale;
@@ -636,134 +635,134 @@ public abstract class ConverterBuilder
 		private int					timeStyle	= DateFormat.DEFAULT;
 		private String				pattern;
 		private DateFormatSymbols	dateFormatSymbols;
-
-
+		
+		
 		StringToDateConverterBuilder(final ConverterType type)
 		{
 			super(type);
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder locale(final Locale locale)
 		{
 			this.locale = locale;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder dateOnly()
 		{
 			this.date = true;
 			this.time = false;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder timeOnly()
 		{
 			this.date = false;
 			this.time = true;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder dateAndTime()
 		{
 			this.date = true;
 			this.time = true;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder dateStyleShort()
 		{
 			this.dateStyle = DateFormat.SHORT;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder dateStyleMedium()
 		{
 			this.dateStyle = DateFormat.MEDIUM;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder dateStyleLong()
 		{
 			this.dateStyle = DateFormat.LONG;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder dateStyleFull()
 		{
 			this.dateStyle = DateFormat.FULL;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder dateStyleDefault()
 		{
 			this.dateStyle = DateFormat.DEFAULT;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder timeStyleShort()
 		{
 			this.timeStyle = DateFormat.SHORT;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder timeStyleMedium()
 		{
 			this.timeStyle = DateFormat.MEDIUM;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder timeStyleLong()
 		{
 			this.timeStyle = DateFormat.LONG;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder timeStyleFull()
 		{
 			this.timeStyle = DateFormat.FULL;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder timeStyleDefault()
 		{
 			this.timeStyle = DateFormat.DEFAULT;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder pattern(final String pattern)
 		{
 			this.pattern = pattern;
 			return this;
 		}
-
-
+		
+		
 		public StringToDateConverterBuilder dateFormatSymbols(
 				final DateFormatSymbols dateFormatSymbols)
 		{
 			this.dateFormatSymbols = dateFormatSymbols;
 			return this;
 		}
-
-
+		
+		
 		private DateFormat getFormat(final Locale localeParam)
 		{
 			final Locale locale = getLocale(this.locale,localeParam);
-
+			
 			if(this.pattern != null)
 			{
 				if(this.dateFormatSymbols != null)
@@ -772,7 +771,7 @@ public abstract class ConverterBuilder
 				}
 				return new SimpleDateFormat(this.pattern,locale);
 			}
-
+			
 			if(this.date && this.time)
 			{
 				return DateFormat.getDateTimeInstance(this.dateStyle,this.timeStyle,locale);
@@ -783,8 +782,8 @@ public abstract class ConverterBuilder
 			}
 			return DateFormat.getTimeInstance(this.timeStyle,locale);
 		}
-
-
+		
+		
 		@Override
 		public Converter<String, Date> build()
 		{

@@ -28,12 +28,12 @@ import java.util.stream.Collectors;
 
 import org.jsoup.nodes.Element;
 
+import com.vaadin.data.Container;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.converter.Converter;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.declarative.DesignContext;
-import com.vaadin.v7.data.Container;
-import com.vaadin.v7.data.util.BeanItem;
-import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.v7.data.util.converter.Converter;
-import com.vaadin.v7.ui.OptionGroup;
 import com.xdev.ui.entitycomponent.BeanComponent;
 import com.xdev.ui.entitycomponent.IDToBeanCollectionConverter;
 import com.xdev.ui.entitycomponent.UIModelProvider;
@@ -46,38 +46,37 @@ import com.xdev.ui.paging.LazyLoadingUIModelProvider;
  *
  * @since 1.1
  */
-@SuppressWarnings("deprecation")
 public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 		implements BeanComponent<BEANTYPE>
 {
 	private boolean autoQueryData = true;
-	
-	
+
+
 	public AbstractBeanOptionGroup()
 	{
 		super();
 	}
-
-
+	
+	
 	public AbstractBeanOptionGroup(final String caption)
 	{
 		super(caption);
 	}
-
-
+	
+	
 	public AbstractBeanOptionGroup(final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(null,dataSource);
 	}
-
-
+	
+	
 	public AbstractBeanOptionGroup(final String caption,
 			final XdevBeanContainer<BEANTYPE> dataSource)
 	{
 		super(caption,dataSource);
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -95,25 +94,25 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 		{
 			super.setContainerDataSource(newDataSource);
 		}
-
+		
 		updateConverter();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see com.vaadin.v7.ui.AbstractSelect#setMultiSelect(boolean)
+	 * @see com.vaadin.ui.AbstractSelect#setMultiSelect(boolean)
 	 */
 	@Override
 	public void setMultiSelect(final boolean multiSelect)
 	{
 		super.setMultiSelect(multiSelect);
-
+		
 		updateConverter();
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -124,8 +123,8 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 	{
 		return this.autoQueryData;
 	}
-
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -135,11 +134,11 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 	public void setAutoQueryData(final boolean autoQuery)
 	{
 		this.autoQueryData = autoQuery;
-		
+
 		updateConverter();
 	}
-	
-	
+
+
 	/**
 	 * @since 3.0
 	 */
@@ -157,8 +156,8 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 			this.setConverter((Converter)null);
 		}
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -167,8 +166,8 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 	{
 		return this.getBeanContainerDataSource().getItem(this.getValue());
 	}
-
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -188,8 +187,8 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 			return list;
 		}
 	}
-
-
+	
+	
 	protected UIModelProvider<BEANTYPE> getModelProvider()
 	{
 		if(this.isAutoQueryData())
@@ -201,13 +200,13 @@ public abstract class AbstractBeanOptionGroup<BEANTYPE> extends OptionGroup
 			return new UIModelProvider.Implementation<BEANTYPE>();
 		}
 	}
-
-
+	
+	
 	@Override
 	public void readDesign(final Element design, final DesignContext context)
 	{
 		setContainerDataSource(new IndexedContainer());
-
+		
 		super.readDesign(design,context);
 	}
 }

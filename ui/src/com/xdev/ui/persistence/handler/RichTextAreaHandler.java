@@ -21,10 +21,9 @@
 package com.xdev.ui.persistence.handler;
 
 
-import com.vaadin.v7.ui.RichTextArea;
+import com.vaadin.ui.RichTextArea;
 
 
-@SuppressWarnings("deprecation")
 public class RichTextAreaHandler extends AbstractFieldHandler<RichTextArea>
 {
 	@Override

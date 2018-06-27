@@ -46,13 +46,13 @@ import com.vaadin.ui.Audio;
  * table of formats supported by different browsers.
  *
  * @author XDEV Software
- *
+ *		
  */
 public class XdevAudio extends Audio implements XdevComponent
 {
 	private final Extensions extensions = new Extensions();
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -60,8 +60,8 @@ public class XdevAudio extends Audio implements XdevComponent
 	{
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 *            The caption of the audio component.
@@ -70,8 +70,8 @@ public class XdevAudio extends Audio implements XdevComponent
 	{
 		super(caption);
 	}
-	
-	
+
+
 	/**
 	 * @param caption
 	 *            The caption of the audio component
@@ -82,8 +82,8 @@ public class XdevAudio extends Audio implements XdevComponent
 	{
 		super(caption,source);
 	}
-	
-	
+
+
 	/**
 	 * @return the first source pointed to in this media
 	 */
@@ -96,8 +96,8 @@ public class XdevAudio extends Audio implements XdevComponent
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -106,8 +106,8 @@ public class XdevAudio extends Audio implements XdevComponent
 	{
 		return this.extensions.add(type,extension);
 	}
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */

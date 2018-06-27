@@ -23,25 +23,24 @@ package com.xdev.ui.fieldgroup;
 
 import java.util.Map;
 
-import com.vaadin.v7.data.Validator.InvalidValueException;
-import com.vaadin.v7.ui.Field;
+import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.ui.Field;
 import com.xdev.ui.XdevFieldGroup;
 
 
-@SuppressWarnings("deprecation")
 public class CommitException extends RuntimeException
 {
-	private final com.vaadin.v7.data.fieldgroup.FieldGroup.CommitException wrapped;
-	
-	
-	public CommitException(final com.vaadin.v7.data.fieldgroup.FieldGroup.CommitException wrapped)
+	private final com.vaadin.data.fieldgroup.FieldGroup.CommitException	wrapped;
+
+
+	public CommitException(final com.vaadin.data.fieldgroup.FieldGroup.CommitException wrapped)
 	{
 		super("Commit failed");
-		
+
 		this.wrapped = wrapped;
 	}
-	
-	
+
+
 	/**
 	 * Returns a map containing the fields which failed validation and the
 	 * exceptions the corresponding validators threw.
@@ -53,8 +52,8 @@ public class CommitException extends RuntimeException
 	{
 		return this.wrapped.getInvalidFields();
 	}
-	
-	
+
+
 	/**
 	 * Returns the field group where the exception occurred
 	 *

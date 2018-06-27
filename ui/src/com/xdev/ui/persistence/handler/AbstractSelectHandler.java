@@ -21,10 +21,9 @@
 package com.xdev.ui.persistence.handler;
 
 
-import com.vaadin.v7.ui.AbstractSelect;
+import com.vaadin.ui.AbstractSelect;
 
 
-@SuppressWarnings("deprecation")
 public class AbstractSelectHandler extends AbstractFieldHandler<AbstractSelect>
 {
 	@Override

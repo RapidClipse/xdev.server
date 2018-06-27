@@ -35,22 +35,34 @@ public interface XdevComponent extends ExtendableObject
 	 * @see Component#isVisible()
 	 */
 	public boolean isVisible();
-	
-	
+
+
 	/**
 	 * @see Component#setVisible(boolean)
 	 */
 	public void setVisible(boolean visible);
-	
-	
+
+
 	/**
 	 * @see Component#isEnabled()
 	 */
 	public boolean isEnabled();
-	
-	
+
+
 	/**
 	 * @see Component#setEnabled(boolean)
 	 */
 	public void setEnabled(boolean enabled);
+
+
+	/**
+	 * @see Component#isReadOnly()
+	 */
+	public boolean isReadOnly();
+
+
+	/**
+	 * @see Component#setReadOnly(boolean)
+	 */
+	public void setReadOnly(boolean readOnly);
 }

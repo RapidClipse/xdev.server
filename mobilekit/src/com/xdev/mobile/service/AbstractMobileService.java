@@ -34,7 +34,7 @@ import elemental.json.JsonArray;
 
 /**
  * @author XDEV Software
- * 
+ * 		
  */
 public abstract class AbstractMobileService extends AbstractJavaScriptExtension
 {
@@ -63,41 +63,41 @@ public abstract class AbstractMobileService extends AbstractJavaScriptExtension
 		return ui.getExtensions().stream().filter(e -> e.getClass().equals(clazz)).map(clazz::cast)
 				.findFirst().orElse(null);
 	}
-
+	
 	private final MobileServiceConfiguration configuration;
-
-
+	
+	
 	protected AbstractMobileService(final AbstractClientConnector target,
 			final MobileServiceConfiguration configuration)
 	{
 		super(target);
-		
+
 		this.configuration = configuration;
 	}
-	
-	
+
+
 	public MobileServiceConfiguration getConfiguration()
 	{
 		return this.configuration;
 	}
-
-
+	
+	
 	protected String generateCallerID()
 	{
 		return Long.toString(System.nanoTime(),Character.MAX_RADIX);
 	}
-
-
+	
+	
 	protected String toLiteral(final String str)
 	{
 		final StringBuilder sb = new StringBuilder(str.length() + 2);
-
+		
 		sb.append('"');
-
+		
 		for(int i = 0, len = str.length(); i < len; i++)
 		{
 			final char ch = str.charAt(i);
-
+			
 			switch(ch)
 			{
 				case '\b':
@@ -129,13 +129,13 @@ public abstract class AbstractMobileService extends AbstractJavaScriptExtension
 				break;
 			}
 		}
-
+		
 		sb.append('"');
-
+		
 		return sb.toString();
 	}
-
-
+	
+	
 	protected void callError(final JsonArray arguments,
 			final Map<String, ? extends ServiceCall<?, MobileServiceError>> callMap,
 			final boolean remove)
@@ -148,9 +148,9 @@ public abstract class AbstractMobileService extends AbstractJavaScriptExtension
 			call.error(new MobileServiceError(this,arguments.get(1).asString()));
 		}
 	}
-	
-	
-	
+
+
+
 	protected static interface ServiceCall<R, E extends MobileServiceError>
 	{
 		public static <R, E extends MobileServiceError> ServiceCall<R, E> New(
@@ -158,30 +158,30 @@ public abstract class AbstractMobileService extends AbstractJavaScriptExtension
 		{
 			return new Implementation<R, E>(successCallback,errorCallback);
 		}
-		
-		
+
+
 		public void success(final R returnValue);
-
-
+		
+		
 		public void error(final E error);
-
-
-
+		
+		
+		
 		public static class Implementation<R, E extends MobileServiceError>
 				implements ServiceCall<R, E>
 		{
 			private final Consumer<R>	successCallback;
 			private final Consumer<E>	errorCallback;
-
-
+			
+			
 			public Implementation(final Consumer<R> successCallback,
 					final Consumer<E> errorCallback)
 			{
 				this.successCallback = successCallback;
 				this.errorCallback = errorCallback;
 			}
-
-
+			
+			
 			@Override
 			public void success(final R returnValue)
 			{
@@ -190,8 +190,8 @@ public abstract class AbstractMobileService extends AbstractJavaScriptExtension
 					this.successCallback.accept(returnValue);
 				}
 			}
-
-
+			
+			
 			@Override
 			public void error(final E error)
 			{

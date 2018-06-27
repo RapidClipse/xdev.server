@@ -24,14 +24,13 @@ package com.xdev.security.converter;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
-import com.vaadin.v7.data.util.converter.Converter;
+import com.vaadin.data.util.converter.Converter;
 
 
 /**
  * @author XDEV Software
  * @since 3.1
  */
-@SuppressWarnings("deprecation")
 public class StringToByteArrayConverter implements Converter<String, byte[]>
 {
 	@Override
@@ -42,11 +41,11 @@ public class StringToByteArrayConverter implements Converter<String, byte[]>
 		{
 			return value.getBytes(StandardCharsets.UTF_8);
 		}
-
+		
 		return null;
 	}
-
-
+	
+	
 	@Override
 	public String convertToPresentation(final byte[] value,
 			final Class<? extends String> targetType, final Locale locale)
@@ -56,18 +55,18 @@ public class StringToByteArrayConverter implements Converter<String, byte[]>
 		{
 			return new String(value,StandardCharsets.UTF_8);
 		}
-
+		
 		return null;
 	}
-
-
+	
+	
 	@Override
 	public Class<byte[]> getModelType()
 	{
 		return byte[].class;
 	}
-
-
+	
+	
 	@Override
 	public Class<String> getPresentationType()
 	{

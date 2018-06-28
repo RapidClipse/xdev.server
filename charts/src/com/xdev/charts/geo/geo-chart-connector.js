@@ -35,8 +35,14 @@ window.com_xdev_charts_geo_XdevGeoChart = function() {
 				createAndDrawChart(state);
 			}
 	       
-	    	window.addEventListener('resize', function() {
-	    		chart.draw(view, options);
+			window.addEventListener('resize', function()
+	    	{
+	    		
+	    		if(typeof state.dataTable != 'undefined')
+				{
+	    			chart.draw(view, options);
+				}
+	    		
 	    	});
 	    	
 	    	var element = document.getElementById(div);
@@ -88,7 +94,8 @@ window.com_xdev_charts_geo_XdevGeoChart = function() {
 		}	
 	}
 
-	function selectHandler() {
+	function selectHandler()
+	{
 		var selection = chart.getSelection();
 
 		for (var i = 0; i < selection.length; i++)
@@ -100,6 +107,30 @@ window.com_xdev_charts_geo_XdevGeoChart = function() {
 				var json = translateToJSON(state, item, data);
 				connector.select(json);
 			}
+		}
+	}
+	
+	function translateToJSON(state, item, data) 
+	{
+		if(typeof columns != 'undefined')
+		{
+			var columnLength = columns.length;
+			
+			var resultMap = new Map();
+			
+			for(cIndex = 0; cIndex < columnLength; cIndex++) {
+				var colCaption = columns[cIndex].id;
+				var colIndex = columns.map(function (icol) { return icol.id; }).indexOf(colCaption);
+				var colType = columns[colIndex].type;
+				var colValue = data.getValue(item.row, colIndex);
+				
+				if(colCaption != "role")
+				{
+					resultMap.set(colCaption, colValue);
+				}
+			}
+			
+			return strMapToObj(resultMap);
 		}
 	}
 }

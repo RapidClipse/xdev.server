@@ -35,8 +35,16 @@ import java.net.URLStreamHandlerFactory;
  */
 public class XdevURLStreamHandlerFactory implements URLStreamHandlerFactory
 {
+	private static boolean installed = false;
+	
+	
 	public static void installIfNeeded()
 	{
+		if(installed)
+		{
+			return;
+		}
+		
 		try
 		{
 			new URL("classpath:test").openConnection();
@@ -50,16 +58,23 @@ public class XdevURLStreamHandlerFactory implements URLStreamHandlerFactory
 		{
 		}
 	}
-	
-	
+
+
 	public static void install()
 	{
+		if(installed)
+		{
+			return;
+		}
+		
 		try
 		{
 			final Field field = URL.class.getDeclaredField("factory");
 			field.setAccessible(true);
 			final URLStreamHandlerFactory factory = (URLStreamHandlerFactory)field.get(null);
 			field.set(null,new XdevURLStreamHandlerFactory(factory));
+			
+			installed = true;
 		}
 		catch(NoSuchFieldException | SecurityException | IllegalArgumentException
 				| IllegalAccessException e)

@@ -55,10 +55,10 @@ public class XdevServlet extends VaadinServlet
 	{
 		return (XdevServlet)VaadinServlet.getCurrent();
 	}
-
+	
 	private final ContentSecurityPolicy contentSecurityPolicy = new ContentSecurityPolicy();
-
-
+	
+	
 	/**
 	 * @since 1.3
 	 */
@@ -66,8 +66,8 @@ public class XdevServlet extends VaadinServlet
 	{
 		return this.contentSecurityPolicy;
 	}
-
-
+	
+	
 	@Override
 	protected VaadinServletService createServletService(
 			final DeploymentConfiguration deploymentConfiguration) throws ServiceException
@@ -77,27 +77,29 @@ public class XdevServlet extends VaadinServlet
 		servletService.init();
 		return servletService;
 	}
-
-
+	
+	
 	@Override
 	public XdevServletService getService()
 	{
 		return (XdevServletService)super.getService();
 	}
-
-
+	
+	
 	@Override
 	protected void servletInitialized() throws ServletException
 	{
 		super.servletInitialized();
 
+		XdevURLStreamHandlerFactory.installIfNeeded();
+		
 		Application.init(getServletContext());
-
+		
 		try
 		{
 			final List<XdevServletExtension> extensions = ExtensionUtils.readExtensions("servlet",
 					XdevServletExtension.class);
-
+			
 			for(final XdevServletExtension extension : extensions)
 			{
 				extension.servletInitialized(this);
@@ -107,21 +109,21 @@ public class XdevServlet extends VaadinServlet
 		{
 			throw new ServletException(e);
 		}
-
+		
 		getService().addSessionInitListener(event -> initSession(event));
 	}
-
-
+	
+	
 	protected void initSession(final SessionInitEvent event)
 	{
 		final VaadinSession session = event.getSession();
 		session.setAttribute(URLParameterRegistry.class,new URLParameterRegistry());
 		session.setAttribute(Cookies.class,new Cookies(session));
-		
+
 		initSession(event,ClientInfo.get(event.getRequest()));
 	}
-
-
+	
+	
 	protected void initSession(final SessionInitEvent event, final ClientInfo clientInfo)
 	{
 		event.getSession().addBootstrapListener(new BootstrapListener()
@@ -139,14 +141,14 @@ public class XdevServlet extends VaadinServlet
 							.attr("content",csp.toString());
 				}
 			}
-
-
+			
+			
 			@Override
 			public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
 			{
 			}
 		});
-
+		
 		if(clientInfo.isMobile() || clientInfo.isTablet())
 		{
 			event.getSession().addBootstrapListener(new BootstrapListener()
@@ -159,8 +161,8 @@ public class XdevServlet extends VaadinServlet
 					// + ", maximum-scale=1.0, user-scalable=0"
 					);
 				}
-
-
+				
+				
 				@Override
 				public void modifyBootstrapFragment(final BootstrapFragmentResponse response)
 				{
@@ -168,8 +170,8 @@ public class XdevServlet extends VaadinServlet
 			});
 		}
 	}
-
-
+	
+	
 	@Override
 	protected void service(final HttpServletRequest request, final HttpServletResponse response)
 			throws ServletException, IOException
@@ -183,15 +185,15 @@ public class XdevServlet extends VaadinServlet
 			{
 				response.addHeader("Access-Control-Allow-Origin",origin);
 				response.setHeader("Allow","GET, HEAD, POST, PUT, DELETE,TRACE,OPTIONS");
-
+				
 				// allow the requested method
 				final String method = request.getHeader("Access-Control-Request-Method");
 				response.addHeader("Access-Control-Allow-Methods",method);
-
+				
 				// allow the requested headers
 				final String headers = request.getHeader("Access-Control-Request-Headers");
 				response.addHeader("Access-Control-Allow-Headers",headers);
-
+				
 				response.addHeader("Access-Control-Allow-Credentials","true");
 				response.setContentType("text/plain");
 				response.setCharacterEncoding("utf-8");
@@ -206,7 +208,7 @@ public class XdevServlet extends VaadinServlet
 				return;
 			}
 		}
-
+		
 		super.service(request,response);
 	}
 }

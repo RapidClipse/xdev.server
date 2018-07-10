@@ -61,12 +61,23 @@ public class XdevMapChart extends AbstractXdevChart implements XdevChart
 	}
 
 
+	/**
+	 * Sets the configuration for the XdevMapChart. <br>
+	 *
+	 * @param config
+	 */
 	public void setConfig(final XdevMapChartConfig config)
 	{
 		this.getState().setConfig(config);
 	}
 
 
+	/**
+	 * Sets the API key for the XdevMapChart. <br>
+	 * l
+	 *
+	 * @param apiKey
+	 */
 	public void setApiKey(final String apiKey)
 	{
 		this.getState().setMapsApiKey(apiKey);

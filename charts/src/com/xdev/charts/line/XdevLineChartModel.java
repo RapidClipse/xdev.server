@@ -37,12 +37,12 @@ import com.xdev.charts.XdevChartModel;
  */
 public class XdevLineChartModel implements XdevChartModel
 {
-	
+
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
 	private final LinkedHashMap<String, Object>							categories	= new LinkedHashMap<>();
-
-
+	
+	
 	@Override
 	public DataTable getDataTable()
 	{
@@ -52,46 +52,46 @@ public class XdevLineChartModel implements XdevChartModel
 		}
 		return this.dataTable;
 	}
-
-
+	
+	
 	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
 		return this.data;
 	}
-	
-	
+
+
 	public void addYCategory(final String caption)
 	{
 		this.categories.put(caption,null);
 		this.getDataTable().getColumns()
 				.add(Column.create(caption.toLowerCase(),caption,ColumnType.NUMBER));
 	}
-
-
+	
+	
 	public void addXCategory(final String caption, final ColumnType type)
 	{
-		this.getDataTable().getColumns().add(Column.create(caption.toLowerCase(),caption,type));
+		this.getDataTable().getColumns().add(0,Column.create(caption.toLowerCase(),caption,type));
 	}
-
-
+	
+	
 	public void addHiddenCategory(final String caption, final ColumnType type)
 	{
 		this.getDataTable().getColumns().add(Column.create(caption.toLowerCase(),"hidden",type));
 	}
-
-
+	
+	
 	@SuppressWarnings("unchecked")
 	public void addItem(final String category, Object xValue, final Integer yValue)
 	{
 		if(xValue instanceof LocalDate)
 		{
 			final LocalDate date = (LocalDate)xValue;
-			
+
 			xValue = "Date(" + date.getYear() + ", " + date.getMonthValue() + ", "
 					+ date.getDayOfMonth() + ")";
 		}
-		
+
 		if(!this.data.containsKey(xValue))
 		{
 			final LinkedHashMap<String, Object> rowData = (LinkedHashMap<String, Object>)this.categories
@@ -105,7 +105,7 @@ public class XdevLineChartModel implements XdevChartModel
 			rowData.put(category,yValue);
 			this.data.put(xValue,rowData);
 		}
-
+		
 	}
-
+	
 }

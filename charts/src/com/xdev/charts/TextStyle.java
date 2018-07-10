@@ -40,8 +40,13 @@ public class TextStyle
 	{
 		return this.color;
 	}
-	
-	
+
+
+	/**
+	 * The color can be any HTML color string, for example: 'red' or '#00cc00' <br>
+	 *
+	 * @param color
+	 */
 	public void setColor(final String color)
 	{
 		this.color = color;
@@ -54,6 +59,11 @@ public class TextStyle
 	}
 	
 	
+	/**
+	 * Sets the font name of the text style <br>
+	 * 
+	 * @param fontName
+	 */
 	public void setFontName(final String fontName)
 	{
 		this.fontName = fontName;
@@ -64,8 +74,13 @@ public class TextStyle
 	{
 		return this.fontSize;
 	}
-	
-	
+
+
+	/**
+	 * The font size, in pixels <br>
+	 *
+	 * @param fontName
+	 */
 	public void setFontSize(final Integer fontSize)
 	{
 		this.fontSize = fontSize;

@@ -76,6 +76,7 @@ window.com_xdev_charts_bar_XdevBarChart = function() {
 	    			fontSize: state.config.fontSize,
 	    			legend: state.config.legend,
 	    			isStacked: state.config.stacked,
+	    			tooltip: state.config.tooltip,
 	    			//chartArea: {top:'15%', bottom:'15%', left:'15%', right:'15%'},
 	    			hAxis: state.config.hAxis,
 	    			vAxis: state.config.vAxis
@@ -124,17 +125,14 @@ window.com_xdev_charts_bar_XdevBarChart = function() {
 			
 			var resultMap = new Map();
 			
-			for(cIndex = 0; cIndex < columnLength; cIndex++) {
-				var colCaption = columns[cIndex].id;
-				var colIndex = columns.map(function (icol) { return icol.id; }).indexOf(colCaption);
-				var colType = columns[colIndex].type;
-				var colValue = data.getValue(item.row, colIndex);
-				
-				if(colCaption != "role")
-				{
-					resultMap.set(colCaption, colValue);
-				}
-			}
+			var colIndex = item.column;
+			var colCategory = columns[colIndex].id;
+			var colType = columns[colIndex].type;
+			var colValue = data.getValue(item.row, colIndex);
+			
+			resultMap.set("category", colCategory);
+			resultMap.set("xvalue", colValue);
+			resultMap.set("yvalue", data.getValue(item.row, 0));
 			
 			return strMapToObj(resultMap);
 		}

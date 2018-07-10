@@ -21,7 +21,6 @@
 package com.xdev.charts.area;
 
 
-import java.time.LocalDate;
 import java.util.LinkedHashMap;
 
 import com.xdev.charts.Column;
@@ -41,8 +40,15 @@ public class XdevAreaChartModel implements XdevChartModel
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
 	private final LinkedHashMap<String, Object>							categories	= new LinkedHashMap<>();
-	
-	
+
+
+	public XdevAreaChartModel()
+	{
+		this.getDataTable().getColumns()
+				.add(Column.create("xcaption","xcaption",ColumnType.STRING));
+	}
+
+
 	@Override
 	public DataTable getDataTable()
 	{
@@ -59,44 +65,47 @@ public class XdevAreaChartModel implements XdevChartModel
 	{
 		return this.data;
 	}
-	
-	
-	public void addXCategory(final ColumnType type)
+
+
+	/**
+	 * Adds a new category to the XdevAreaChartModel.<br>
+	 *
+	 * @param category
+	 */
+	public void addCategory(final String category)
 	{
-		this.getDataTable().getColumns().add(Column.create("xcategory","xcategory",type));
+		this.categories.put(category,null);
+		this.getDataTable().getColumns().add(Column.create(category,category,ColumnType.NUMBER));
 	}
 	
 	
-	public void addCategory(final String caption, final ColumnType type)
+	public void addItem(final String group, final String category, final Integer value)
 	{
-		this.categories.put(caption,null);
-		this.getDataTable().getColumns().add(Column.create(caption.toLowerCase(),caption,type));
+		this.addItemInternal(group,category,value);
+	}
+	
+	
+	public void addItem(final String group, final String category, final Double value)
+	{
+		this.addItemInternal(group,category,value);
 	}
 	
 	
 	@SuppressWarnings("unchecked")
-	public void addItem(final String category, Object xValue, final Integer yValue)
+	private void addItemInternal(final String group, final String category, final Object value)
 	{
-		if(xValue instanceof LocalDate)
+		if(!this.data.containsKey(group))
 		{
-			final LocalDate date = (LocalDate)xValue;
-
-			xValue = "Date(" + date.getYear() + ", " + date.getMonthValue() + ", "
-					+ date.getDayOfMonth() + ")";
-		}
-
-		if(!this.data.containsKey(xValue))
-		{
-			final LinkedHashMap<String, Object> rowData = (LinkedHashMap<String, Object>)this.categories
+			final LinkedHashMap<String, Object> v = (LinkedHashMap<String, Object>)this.categories
 					.clone();
-			rowData.put(category,yValue);
-			this.data.put(xValue,rowData);
+			v.put(category,value);
+			this.data.put(group,v);
 		}
 		else
 		{
-			final LinkedHashMap<String, Object> rowData = this.data.get(xValue);
-			rowData.put(category,yValue);
-			this.data.put(xValue,rowData);
+			final LinkedHashMap<String, Object> v = this.data.get(group);
+			v.put(category,value);
+			this.data.put(group,v);
 		}
 	}
 }

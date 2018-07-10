@@ -38,6 +38,7 @@ public class XdevMapChartConfig implements Serializable
 	private boolean	showLine			= false;
 	private String	lineColor			= "#800000";
 	private Integer	lineWidth			= 10;
+	private boolean	showInfoWindow		= true;
 
 
 	public String getMapType()
@@ -191,4 +192,25 @@ public class XdevMapChartConfig implements Serializable
 		this.lineWidth = lineWidth;
 	}
 
+
+	/**
+	 * @return the showInfoWindow
+	 */
+	public boolean isShowInfoWindow()
+	{
+		return this.showInfoWindow;
+	}
+
+
+	/**
+	 * If set to true, shows the location description in a separate window when a
+	 * point marker is selected by the user.<br>
+	 * 
+	 * @param showInfoWindow
+	 */
+	public void setShowInfoWindow(final boolean showInfoWindow)
+	{
+		this.showInfoWindow = showInfoWindow;
+	}
+	
 }

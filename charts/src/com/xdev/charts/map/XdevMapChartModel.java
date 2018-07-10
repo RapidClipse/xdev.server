@@ -103,6 +103,9 @@ public class XdevMapChartModel implements XdevChartModel
 	
 	/**
 	 * Only works with the DataMapFormat.Latitude option. <br>
+	 * <br>
+	 * Specify locations by latitude and longitude, which loads faster than named
+	 * locations.<br>
 	 *
 	 * @param latitude
 	 * @param longitude
@@ -116,6 +119,11 @@ public class XdevMapChartModel implements XdevChartModel
 	
 	/**
 	 * Only works with the DataMapFormat.Address option. <br>
+	 * <br>
+	 * The first parameter must be a string that contains an address. This address
+	 * should be as complete as you can make it. The second parameter holds a string
+	 * that describes the location. String addresses load more slowly, especially
+	 * when you have more than 10 addresses. <br>
 	 *
 	 * @param address
 	 * @param caption

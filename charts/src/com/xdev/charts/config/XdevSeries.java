@@ -22,6 +22,9 @@ package com.xdev.charts.config;
 
 
 import java.io.Serializable;
+import java.util.List;
+
+import com.xdev.charts.Options;
 
 
 /**
@@ -30,12 +33,15 @@ import java.io.Serializable;
  */
 public class XdevSeries implements Serializable
 {
-	private String	type			= "line";
-	private String	color;
-	private String	labelInLegend;
-	private boolean	visibleInLegend	= true;
-	private Integer	lineWidth		= 2;
-	private Integer	pointSize		= 0;
+	private String			type			= "line";
+	private String			color;
+	private String			labelInLegend;
+	private boolean			visibleInLegend	= true;
+	private Integer			lineWidth		= 2;
+	private Integer			pointSize		= 0;
+	private List<Integer>	lineDashStyle;
+	private String			curveType		= Options.CURVETYPE_NONE;
+	private String			pointShape		= Options.POINTSHAPE_CIRCLE;
 
 
 	/**
@@ -165,6 +171,67 @@ public class XdevSeries implements Serializable
 	public void setPointSize(final Integer pointSize)
 	{
 		this.pointSize = pointSize;
+	}
+
+
+	public String getCurveType()
+	{
+		return this.curveType;
+	}
+
+
+	/**
+	 * Controls the curve of the lines when the line width is not zero. Can be one
+	 * of the following: <br>
+	 * <ul>
+	 * <li>'none' - Straight lines without curve.</li>
+	 * <li>'function' - The angles of the line will be smoothed.</li>
+	 * </ul>
+	 * <br>
+	 *
+	 * @param curveType
+	 */
+	public void setCurveType(final String curveType)
+	{
+		this.curveType = curveType;
+	}
+	
+	
+	public String getPointShape()
+	{
+		return this.pointShape;
+	}
+
+
+	/**
+	 * The shape of individual data elements: 'circle', 'triangle', 'square',
+	 * 'diamond', 'star', or 'polygon'. <br>
+	 *
+	 * @param pointShape
+	 */
+	public void setPointShape(final String pointShape)
+	{
+		this.pointShape = pointShape;
+	}
+	
+	
+	public List<Integer> getLineDashStyle()
+	{
+		return this.lineDashStyle;
+	}
+
+
+	/**
+	 * The on-and-off pattern for dashed lines. For instance, [4, 4] will repeat
+	 * 4-length dashes followed by 4-length gaps, and [5, 1, 3] will repeat a
+	 * 5-length dash, a 1-length gap, a 3-length dash, a 5-length gap, a 1-length
+	 * dash, and a 3-length gap.
+	 *
+	 * @param lineDashStyle
+	 */
+	public void setLineDashStyle(final List<Integer> lineDashStyle)
+	{
+		this.lineDashStyle = lineDashStyle;
 	}
 	
 }

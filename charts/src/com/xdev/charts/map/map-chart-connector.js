@@ -73,7 +73,8 @@ window.com_xdev_charts_map_XdevMapChart = function() {
 					useMapTypeControl: state.config.useMapTypeControl,
 					showLine: state.config.showLine,
 					lineColor: state.config.lineColor,
-					lineWidth: state.config.lineWidth
+					lineWidth: state.config.lineWidth,
+					showInfoWindow: state.config.showInfoWindow
 			};
 			
 			data = new google.visualization.DataTable(
@@ -103,7 +104,7 @@ window.com_xdev_charts_map_XdevMapChart = function() {
 		{
 			var item = selection[i];
 		
-			if (item.row != null && item.column != null)
+			if (item.row != null)
 			{
 				var json = translateToJSON(state, item, data);
 				connector.select(json);

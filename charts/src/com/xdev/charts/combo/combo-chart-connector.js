@@ -96,7 +96,7 @@ window.com_xdev_charts_combo_XdevComboChart = function() {
 		}	
 	}
 
-	function selectHandler()
+	function selectHandler() 
 	{
 		var selection = chart.getSelection();
 
@@ -120,17 +120,14 @@ window.com_xdev_charts_combo_XdevComboChart = function() {
 			
 			var resultMap = new Map();
 			
-			for(cIndex = 0; cIndex < columnLength; cIndex++) {
-				var colCaption = columns[cIndex].id;
-				var colIndex = columns.map(function (icol) { return icol.id; }).indexOf(colCaption);
-				var colType = columns[colIndex].type;
-				var colValue = data.getValue(item.row, colIndex);
-				
-				if(colCaption != "role")
-				{
-					resultMap.set(colCaption, colValue);
-				}
-			}
+			var colIndex = item.column;
+			var colCategory = columns[colIndex].id;
+			var colType = columns[colIndex].type;
+			var colValue = data.getValue(item.row, colIndex);
+			
+			resultMap.set("category", colCategory);
+			resultMap.set("xvalue", data.getValue(item.row, 0));
+			resultMap.set("yvalue", colValue);
 			
 			return strMapToObj(resultMap);
 		}

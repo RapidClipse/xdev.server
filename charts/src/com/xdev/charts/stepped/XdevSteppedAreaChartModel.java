@@ -36,19 +36,19 @@ import com.xdev.charts.XdevChartModel;
  */
 public class XdevSteppedAreaChartModel implements XdevChartModel
 {
-
+	
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
 	private final LinkedHashMap<String, Object>							categories	= new LinkedHashMap<>();
-	
-	
+
+
 	public XdevSteppedAreaChartModel()
 	{
 		this.getDataTable().getColumns()
 				.add(Column.create("ycaption","ycaption",ColumnType.STRING));
 	}
-	
-	
+
+
 	@Override
 	public DataTable getDataTable()
 	{
@@ -58,15 +58,15 @@ public class XdevSteppedAreaChartModel implements XdevChartModel
 		}
 		return this.dataTable;
 	}
-	
-	
+
+
 	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
 		return this.data;
 	}
-	
-	
+
+
 	public void addCategory(final String category)
 	{
 		this.categories.put(category,null);
@@ -75,8 +75,20 @@ public class XdevSteppedAreaChartModel implements XdevChartModel
 	}
 	
 	
-	@SuppressWarnings("unchecked")
+	public void addItem(final String group, final String category, final Integer value)
+	{
+		this.addItemInternal(group,category,value);
+	}
+	
+	
 	public void addItem(final String group, final String category, final Double value)
+	{
+		this.addItemInternal(group,category,value);
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	private void addItemInternal(final String group, final String category, final Object value)
 	{
 		if(!this.data.containsKey(group))
 		{
@@ -92,5 +104,5 @@ public class XdevSteppedAreaChartModel implements XdevChartModel
 			this.data.put(group,v);
 		}
 	}
-	
+
 }

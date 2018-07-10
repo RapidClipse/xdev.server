@@ -40,19 +40,20 @@ import com.xdev.charts.config.XdevPieSlice;
  */
 public class XdevPieChartModel implements XdevChartModel
 {
-	
+
 	private DataTable													dataTable	= null;
 	private final LinkedHashMap<Object, LinkedHashMap<String, Object>>	data		= new LinkedHashMap<>();
 	private final List<XdevPieSlice>									slicesList	= new ArrayList<>();
-	
-	
+
+
 	public XdevPieChartModel()
 	{
-		this.getDataTable().getColumns().add(Column.create("caption","caption",ColumnType.STRING));
+		this.getDataTable().getColumns()
+				.add(Column.create("category","category",ColumnType.STRING));
 		this.getDataTable().getColumns().add(Column.create("value","value",ColumnType.NUMBER));
 	}
-
-
+	
+	
 	@Override
 	public DataTable getDataTable()
 	{
@@ -62,25 +63,25 @@ public class XdevPieChartModel implements XdevChartModel
 		}
 		return this.dataTable;
 	}
-
-
+	
+	
 	@Override
 	public LinkedHashMap<Object, LinkedHashMap<String, Object>> getData()
 	{
 		return this.data;
 	}
-	
-	
+
+
 	public List<XdevPieSlice> getSlices()
 	{
 		return this.slicesList;
 	}
-	
-	
+
+
 	public void addItem(final String category, final Integer value, final XdevPieSlice slices)
 	{
 		this.getDataTable().getRows().add(Row.create(category,value));
-		
+
 		if(slices != null)
 		{
 			this.slicesList.add(slices);
@@ -90,5 +91,5 @@ public class XdevPieChartModel implements XdevChartModel
 			this.slicesList.add(null);
 		}
 	}
-	
+
 }

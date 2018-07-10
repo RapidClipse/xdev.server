@@ -35,26 +35,31 @@ public class TimelineOptions
 	private boolean		showRowLabels	= true;
 	private String		singleColor;
 	private TextStyle	barLabelStyle;
-
-
+	
+	
 	public TextStyle getBarLabelStyle()
 	{
 		return this.barLabelStyle;
 	}
-
-
+	
+	
+	/**
+	 * An 'TextStyle' object that specifies the bar label text style. <br>
+	 *
+	 * @param barLabelStyle
+	 */
 	public void setBarLabelStyle(final TextStyle barLabelStyle)
 	{
 		this.barLabelStyle = barLabelStyle;
 	}
-
-
+	
+	
 	public boolean isColorByRowLabel()
 	{
 		return this.colorByRowLabel;
 	}
-
-
+	
+	
 	/**
 	 * If set to true, colors every bar on the row the same. The default is to use
 	 * one color per bar label. <br>
@@ -65,38 +70,49 @@ public class TimelineOptions
 	{
 		this.colorByRowLabel = colorByRowLabel;
 	}
-
-
+	
+	
 	public boolean isGroupByRowLabel()
 	{
 		return this.groupByRowLabel;
 	}
-
-
+	
+	
+	/**
+	 * If set to false, creates one row for every entry. The default is to collect
+	 * bars with the same row label into one row. <br>
+	 *
+	 * @param groupByRowLabel
+	 */
 	public void setGroupByRowLabel(final boolean groupByRowLabel)
 	{
 		this.groupByRowLabel = groupByRowLabel;
 	}
-
-
+	
+	
 	public TextStyle getRowLabelStyle()
 	{
 		return this.rowLabelStyle;
 	}
-
-
+	
+	
+	/**
+	 * An 'TextStyle' object that specifies the bar label text style. <br>
+	 *
+	 * @param rowLabelStyle
+	 */
 	public void setRowLabelStyle(final TextStyle rowLabelStyle)
 	{
 		this.rowLabelStyle = rowLabelStyle;
 	}
-
-
+	
+	
 	public boolean isShowBarLabels()
 	{
 		return this.showBarLabels;
 	}
-	
-	
+
+
 	/**
 	 * If set to false, omits bar labels. The default is to show them. <br>
 	 *
@@ -106,14 +122,14 @@ public class TimelineOptions
 	{
 		this.showBarLabels = showBarLabels;
 	}
-
-
+	
+	
 	public boolean isShowRowLabels()
 	{
 		return this.showRowLabels;
 	}
-	
-	
+
+
 	/**
 	 * If set to false, omits row labels. The default is to show them. <br>
 	 *
@@ -123,14 +139,14 @@ public class TimelineOptions
 	{
 		this.showRowLabels = showRowLabels;
 	}
-
-
+	
+	
 	public String getSingleColor()
 	{
 		return this.singleColor;
 	}
-
-
+	
+	
 	/**
 	 * Colors all bars the same. Specified as a hex value (e.g., '#8d8'). <br>
 	 *

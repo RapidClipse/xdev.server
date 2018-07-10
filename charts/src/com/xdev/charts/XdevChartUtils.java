@@ -18,43 +18,45 @@
  * <http://www.rapidclipse.com/en/legal/license/license.html>.
  */
 
-package com.xdev.charts.combo;
+package com.xdev.charts;
 
 
-import java.io.Serializable;
-
-import com.xdev.charts.AbstractXdevChartConfig;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
- *
- * @author XDEV Software (SS)
- * @since 4.0
+ * @author XDEV Software
  *
  */
-public class XdevComboChartConfig extends AbstractXdevChartConfig implements Serializable
+public class XdevChartUtils
 {
-	private String seriesType = "bars";
-	
-	
-	/**
-	 * @return the seriesType
-	 */
-	public String getSeriesType()
+	public static void setHAxisScaling(final HAxis hAxis, final Double range, final Double min,
+			final Double max)
 	{
-		return this.seriesType;
+		final List<Ticks> list = new ArrayList<>();
+
+		for(Double i = min; i <= max; i = i + range)
+		{
+			final Ticks ticks = new Ticks();
+			ticks.setV(i);
+			list.add(ticks);
+		}
+		
+		hAxis.setTicks(list);
 	}
 	
 	
-	/**
-	 * The default line type for any series not specified in the series property.
-	 * Available values are 'line', 'area', 'bars' and 'steppedArea'. <br>
-	 *
-	 * @param seriesType
-	 *            the seriesType to set
-	 */
-	public void setSeriesType(final String seriesType)
+	public static void setVAxisScaling(final VAxis vAxis, final Integer range, final Integer min,
+			final Integer max)
 	{
-		this.seriesType = seriesType;
+		final List<Integer> list = new ArrayList<>();
+		
+		for(Integer i = min; i <= max; i = i + range)
+		{
+			list.add(i);
+		}
+
+		vAxis.setTicks(list);
 	}
 }

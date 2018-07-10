@@ -33,17 +33,47 @@ import com.xdev.charts.TimelineOptions;
  */
 public class XdevTimelineChartConfig implements Serializable
 {
-	private TimelineOptions timeline = new TimelineOptions();
-	
-	
+	private TimelineOptions	timeline					= new TimelineOptions();
+	private boolean			avoidOverlappingGridLines	= true;
+
+
 	public TimelineOptions getTimeline()
 	{
 		return this.timeline;
 	}
-
-
+	
+	
+	/**
+	 * An 'TimelineOptions' object that specifies the default Timeline-Chart style.
+	 * <br>
+	 *
+	 * @param timeline
+	 */
 	public void setTimeline(final TimelineOptions timeline)
 	{
 		this.timeline = timeline;
 	}
+	
+	
+	/**
+	 * @return the avoidOverlappingGridLines
+	 */
+	public boolean isAvoidOverlappingGridLines()
+	{
+		return this.avoidOverlappingGridLines;
+	}
+	
+	
+	/**
+	 * Whether display elements (e.g., the bars in a timeline) should obscure grid
+	 * lines. If false, grid lines may be covered completely by display elements. If
+	 * true, display elements may be altered to keep grid lines visible. <br>
+	 *
+	 * @param avoidOverlappingGridLines
+	 */
+	public void setAvoidOverlappingGridLines(final boolean avoidOverlappingGridLines)
+	{
+		this.avoidOverlappingGridLines = avoidOverlappingGridLines;
+	}
+	
 }

@@ -73,5 +73,5 @@ public class XdevBarChart extends AbstractXdevChart implements XdevChart
 		
 		this.getState().setDataTable(table);
 	}
-	
+
 }

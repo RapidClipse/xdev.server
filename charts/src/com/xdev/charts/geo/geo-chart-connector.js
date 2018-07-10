@@ -102,7 +102,7 @@ window.com_xdev_charts_geo_XdevGeoChart = function() {
 		{
 			var item = selection[i];
 		
-			if (item.row != null && item.column != null)
+			if (item.row != null)
 			{
 				var json = translateToJSON(state, item, data);
 				connector.select(json);

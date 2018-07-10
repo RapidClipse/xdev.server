@@ -53,6 +53,11 @@ public class VAxis implements Serializable
 	}
 
 
+	/**
+	 * Title property that specifies a title for the vertical axis. <br>
+	 *
+	 * @param title
+	 */
 	public void setTitle(final String title)
 	{
 		this.title = title;

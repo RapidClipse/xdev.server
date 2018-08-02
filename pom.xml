@@ -24,7 +24,7 @@
 
 	<groupId>com.xdev-software</groupId>
 	<artifactId>xdev-server</artifactId>
-	<version>4.0.0</version>
+	<version>4.0.0-M20180802-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>RapidClipse Framework</name>

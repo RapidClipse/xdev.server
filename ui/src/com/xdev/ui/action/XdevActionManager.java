@@ -26,7 +26,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.server.VaadinSession;
+import org.apache.log4j.Logger;
+
+import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
 import com.xdev.ui.XdevUI;
@@ -48,6 +51,9 @@ import com.xdev.ui.util.UIUtils;
  */
 public final class XdevActionManager
 {
+	private static final Logger LOGGER = Logger.getLogger(XdevActionManager.class);
+
+
 	/**
 	 * Returns the current action manager.
 	 *
@@ -55,18 +61,22 @@ public final class XdevActionManager
 	 */
 	public static XdevActionManager getCurrent()
 	{
-		final VaadinSession session = VaadinSession.getCurrent();
-		if(session == null)
+		final UI ui = UI.getCurrent();
+		if(!(ui instanceof XdevUI))
 		{
+			LOGGER.warn("XdevActionManager requires XdevUI, found: " + ui.getClass().getName());
 			return null;
 		}
-
-		XdevActionManager manager = session.getAttribute(XdevActionManager.class);
+		
+		final XdevUI xdevUI = (XdevUI)ui;
+		
+		XdevActionManager manager = xdevUI.getExtension(XdevActionManager.class);
 		if(manager == null)
 		{
-			manager = new XdevActionManager();
-			session.setAttribute(XdevActionManager.class,manager);
+			manager = new XdevActionManager(xdevUI);
+			xdevUI.addExtension(XdevActionManager.class,manager);
 		}
+
 		return manager;
 	}
 
@@ -82,15 +92,31 @@ public final class XdevActionManager
 	private final Map<Class<? extends ContextSensitiveHandler>, List<ContextSensitiveHandlerChangeListener>>	changeListeners;
 
 
-	private XdevActionManager()
+	private XdevActionManager(final XdevUI ui)
 	{
 		this.handlerContextMap = new HashMap<>();
 		this.changeListeners = new HashMap<>();
 
-		final UI ui = UI.getCurrent();
-		if(ui instanceof XdevUI)
+		ui.addFocusChangeListener(event -> focusChanged(event.getComponent()));
+		
+		final Navigator navigator = ui.getNavigator();
+		if(navigator != null)
 		{
-			((XdevUI)ui).addFocusChangeListener(event -> focusChanged(event.getComponent()));
+			navigator.addViewChangeListener(new ViewChangeListener()
+			{
+				@Override
+				public boolean beforeViewChange(final ViewChangeEvent event)
+				{
+					return true;
+				}
+				
+				
+				@Override
+				public void afterViewChange(final ViewChangeEvent event)
+				{
+					focusChanged(UI.getCurrent());
+				}
+			});
 		}
 	}
 
@@ -148,8 +174,8 @@ public final class XdevActionManager
 
 
 	/**
-	 * Notifies all {@link ContextSensitiveHandlerChangeListener}s that the
-	 * state of a certain handler has changed.
+	 * Notifies all {@link ContextSensitiveHandlerChangeListener}s that the state of
+	 * a certain handler has changed.
 	 *
 	 * @param handlerType
 	 *            the specific handler type

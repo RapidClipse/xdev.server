@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>com.xdev-software</groupId>
 		<artifactId>xdev-server</artifactId>
-		<version>4.0.0-M20180807-SNAPSHOT</version>
+		<version>4.0.0-M20180824-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>net.sourceforge.dynamicreports</groupId>
 			<artifactId>dynamicreports-core</artifactId>
-			<version>5.0.0</version>
+			<version>5.1.0</version>
 			<!-- see XWS-1431 -->
 			<exclusions>
 				<exclusion>

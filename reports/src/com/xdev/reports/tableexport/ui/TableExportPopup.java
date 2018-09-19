@@ -122,6 +122,12 @@ public class TableExportPopup
 		
 		for(final Object columnId : this.table.getVisibleColumns())
 		{
+			// Don't show generated columns
+			if(this.table.getColumnGenerator(columnId) != null)
+			{
+				continue;
+			}
+			
 			final TextField txtWidth = new TextField();
 			txtWidth.addStyleName("small, borderless");
 			txtWidth.setColumns(4);

@@ -87,7 +87,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	 */
 	private final Class<E>				entityClass;
 	/**
-	 * QueryDefinition contains definition of the query properties and batch size.
+	 * QueryDefinition contains definition of the query properties and batch
+	 * size.
 	 */
 	private final EntityQueryDefinition	queryDefinition;
 	/**
@@ -153,8 +154,9 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 						catch(final Exception e)
 						{
 							/*
-							 * Swallow, incompatible default type for primitive values because of
-							 * auto-boxing in vaadin property descriptor.
+							 * Swallow, incompatible default type for primitive
+							 * values because of auto-boxing in vaadin property
+							 * descriptor.
 							 */
 						}
 					}
@@ -383,8 +385,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	 * predicate. Supports the following operations:
 	 *
 	 * And, Between, Compare, Compare.Equal, Compare.Greater,
-	 * Compare.GreaterOrEqual, Compare.Less, Compare.LessOrEqual, IsNull, Like, Not,
-	 * Or, SimpleStringFilter
+	 * Compare.GreaterOrEqual, Compare.Less, Compare.LessOrEqual, IsNull, Like,
+	 * Not, Or, SimpleStringFilter
 	 *
 	 * @param filter
 	 *            the Vaadin filter
@@ -480,13 +482,18 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 					if(Collection.class.isAssignableFrom(property.getJavaType()))
 					{
 						/*
-						 * passing concrete instance to compare collection values
+						 * passing concrete instance to compare collection
+						 * values
 						 */
 						return cb.isMember(compare.getValue(),property);
 					}
 					else if(compare.getValue() == null)
 					{
 						return cb.isNull(property);
+					}
+					else if("".equals(compare.getValue()))
+					{
+						return cb.equal(cb.length(cb.trim(property)),0);
 					}
 					else
 					{
@@ -517,13 +524,18 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 					if(Collection.class.isAssignableFrom(property.getJavaType()))
 					{
 						/*
-						 * passing concrete instance to compare collection values
+						 * passing concrete instance to compare collection
+						 * values
 						 */
 						return cb.isMember(compare.getValue(),property);
 					}
 					else if(compare.getValue() == null)
 					{
 						return cb.isNull(property);
+					}
+					else if("".equals(compare.getValue()))
+					{
+						return cb.equal(cb.length(cb.trim(property)),0);
 					}
 					else
 					{
@@ -613,9 +625,9 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	
 	
 	/**
-	 * Saves the modifications done by container to the query result. Query will be
-	 * discarded after changes have been saved and new query loaded so that changed
-	 * items are sorted appropriately.
+	 * Saves the modifications done by container to the query result. Query will
+	 * be discarded after changes have been saved and new query loaded so that
+	 * changed items are sorted appropriately.
 	 *
 	 * @param addedItems
 	 *            Items to be inserted.
@@ -686,8 +698,8 @@ public class RequisitioningEntityQuery<E> implements XdevEntityQuery, Serializab
 	
 	
 	/**
-	 * Removes all items. Query will be discarded after delete all items has been
-	 * called.
+	 * Removes all items. Query will be discarded after delete all items has
+	 * been called.
 	 *
 	 * @return true if the operation succeeded or false in case of a failure.
 	 */
